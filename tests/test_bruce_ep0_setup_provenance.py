@@ -44,6 +44,25 @@ class Ep0SetupProvenanceTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"changed"):
             m.immediate_provenance([{"pc":0x102,"m":"cmp","op":"r3, #0x80"}],0x102,0x84)
 
+    def test_paired_setup_shape_never_establishes_usb_provenance(self):
+        rows=[
+          {"pc":0x100,"m":"ldrb","op":"r2, [r0]"},
+          {"pc":0x102,"m":"ldrb","op":"r3, [r0, #1]"},
+          {"pc":0x104,"m":"cmp","op":"r3, #0x81"},
+        ]
+        hits=m.setup_pair_candidates(rows)
+        self.assertEqual(len(hits),1)
+        self.assertEqual(hits[0]["base_register"],"r0")
+        self.assertEqual(hits[0]["compares_control_request_values_nearby"],
+                         [{"pc":"0x104","register":"r3","immediate":"0x81"}])
+        self.assertIn("non-USB",hits[0]["evidence"])
+
+    def test_paired_shape_rejects_different_base_register(self):
+        rows=[{"pc":0x100,"m":"ldrb","op":"r2, [r0]"},
+              {"pc":0x102,"m":"ldrb","op":"r3, [r1, #1]"},
+              {"pc":0x104,"m":"cmp","op":"r3, #0x84"}]
+        self.assertEqual(m.setup_pair_candidates(rows),[])
+
     def test_image_requires_real_hash(self):
         with self.assertRaisesRegex(ValueError,"Exact SHA"):
             m.audit(bytes(m.IMAGE_SIZE))
