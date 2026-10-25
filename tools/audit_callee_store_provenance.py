@@ -86,6 +86,12 @@ EXPECTED_STORES = {
         0x109A4:(0x5B4,), 0x109A6:(0x5C0,),
         0x109A8:(0x5B8,0x5BC), 0x109AE:(0x5B0,),
     },
+    "state_subobject": {},
+    "state_service": {},
+    "subobject_setup": {},
+    "global_state_helper": {},
+    "member_subobject_init_alt": {},
+    "linked_list_worker": {},
 }
 
 EXPECTED_HANDOFFS = (
