@@ -1,5 +1,7 @@
 # Phase 24 — Callee stores and pointer provenance
 
+> **Phase-26 provenance update:** the constructor points `global+0x560` and `+0x568` at `global+0x134`, whereas `global+0x570` is initially a **one-byte field**. Later values remain subject to potential runtime writes. [Details](initial-pointer-and-list-heads.md).
+
 **Local sample:** Stadia bootloader A, build 169429, 131,072 bytes.
 SHA-256: \`59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0\`.
 The binary remains private. The original was reviewed offline with LLVM Thumb disassembly and SHA-256 fingerprints for each inspected range.
