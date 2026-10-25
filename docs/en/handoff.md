@@ -165,3 +165,7 @@ Run `python tools/audit_usb_surface.py` and `python -m unittest discover -s test
 ## Phase 14 — Verified USB descriptors and vendor callback
 
 A private 128 KiB bootloader A image matches the recorded SHA-256. [Phase 14](usb-callbacks.md) decodes USB `18D1:946B`: vendor interface with bulk IN `0x87` and OUT `0x07` (512-byte packets), plus HID with interrupt IN `0x83` and OUT `0x03` (64-byte packets). Vendor callback at `0x60809E64` dispatches conditionally through a RAM function pointer initialized to an inert default handler. A USB-to-flash-write path **remains unproven**. The offline `tools/audit_usb_callbacks.py` requires a locally stored SHA-matched binary; nothing proprietary is published.
+
+## Phase 15 — Internal USB event dispatcher
+
+[Phase 15](usb-events.md) decodes the SHA-locked 11-case Thumb TBB event table at `0x60809C68`. Internal event IDs 4, 5 and 8 directly return through the default handler. A distinct transfer helper at `0x60809B28` guards its size argument against `0x200` (512) bytes. **These are not eleven verified externally sendable commands.** There is still no proved bulk OUT `0x07` to flash-writer path and no HAB CLOSED bypass. Offline `tools/audit_usb_event_dispatch.py` and synthetic tests are committed; the private bootloader image remains excluded.

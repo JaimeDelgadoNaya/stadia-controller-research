@@ -64,6 +64,10 @@ Phase 13 quantifies coverage of the published bootloader disassembly and adds a 
 
 A SHA-256-matched private bootloader image establishes **two USB interfaces** (vendor bulk + HID) and conditional vendor event dispatch to a RAM callback pointer. No externally reachable flash-write path or custom-firmware execution has been demonstrated.
 
+- **[Phase 15 — Internal USB event dispatch and transfer guard](docs/en/usb-events.md)**
+
+The SHA-matched bootloader contains an 11-case internal event table (not host USB commands) and a 512-byte upper-bound guard in one transfer helper. No external flash-write reachability or signature bypass is established.
+
 ## Offline reproduction
 
 Python 3.11 or newer:

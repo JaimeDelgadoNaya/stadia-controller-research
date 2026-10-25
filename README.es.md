@@ -65,6 +65,10 @@ La fase 13 cuantifica qué parte del bootloader cubren las instrucciones publica
 
 Con el bootloader original del mando verificado por SHA-256 se han reconstruido **dos interfaces USB** (vendor bulk + HID) y la ruta condicional de eventos del fabricante hasta un puntero de callback en RAM. No se ha demostrado ninguna ruta de USB a escritura flash ni ejecución de firmware propio.
 
+- **[Fase 15 — Eventos USB internos y límite de transferencia](docs/es/eventos-usb.md)**
+
+En el bootloader original verificado se ha reconstruido una tabla de 11 eventos internos (no comandos USB de host) y un control de tamaño máximo de 512 bytes en una rutina concreta. No se ha demostrado un camino externo hacia escritura flash ni elusión de firmas.
+
 ## Reproducción sin conexión
 
 Python 3.11 o posterior:
