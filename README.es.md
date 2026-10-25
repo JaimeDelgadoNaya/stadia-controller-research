@@ -73,6 +73,10 @@ En el bootloader original verificado se ha reconstruido una tabla de 11 eventos 
 
 La función previamente descrita con límite de 512 bytes pertenece a una tabla de un objeto **CDC**, distinta del callback de la interfaz USB del fabricante. Se han comprobado ambas inicializaciones y sus rutas internas, pero no se ha identificado todavía un parser accesible desde Bulk OUT `0x07` ni ejecución de firmware propio.
 
+- **[Fase 17 — Registro USB de endpoints del fabricante](docs/es/endpoints-vendor.md)**
+
+Con el bootloader A de SHA-256 verificado hemos seguido dos registros de endpoint mediante `0x60806660`. Los endpoints Bulk OUT `0x07` e IN `0x87` utilizan índices internos distintos. Falta demostrar qué callback corresponde al OUT y cómo procesa los mensajes. No se ha demostrado un bypass de HAB CLOSED.
+
 ## Reproducción sin conexión
 
 Python 3.11 o posterior:
