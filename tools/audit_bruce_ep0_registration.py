@@ -172,6 +172,12 @@ def audit(image, *, include_focused=False):
         "candidate_function_calls_to_usb_core":calls,
         "candidate_slot_writers":candidate_slot_writers(image),
         "initialized_data_pointer_census":initialized_data_callbacks(image),
+        "endpoint_callback_registrar_code": [
+            {"pc":hex(x["pc"]),"m":x["m"],"op":x["op"]}
+            for x in decode(image,0x600D10B8,0x600D10F6)],
+        "registration_caller_context": [
+            {"pc":hex(x["pc"]),"m":x["m"],"op":x["op"]}
+            for x in decode(image,0x600546C0,0x60054880)],
         "usb_core_window":
             [{"pc":hex(i["pc"]),"m":i["m"],"op":i["op"]} for i in focused]
             if include_focused else [],
@@ -195,7 +201,11 @@ def main():
         p.out.write_text(json.dumps(result,indent=2)+"\n")
     print("BL TARGET CENSUS",json.dumps(result["candidate_function_calls_to_usb_core"]))
     print("SLOT WRITER HEURISTICS",json.dumps(result["candidate_slot_writers"]))
-    print("INIT DATA CALLBACK-LIKE WORDS",json.dumps(result["initialized_data_pointer_census"]))
+    print("INIT DATA CALLBACK-LIKE WORDS SUMMARY",
+          json.dumps({"all":result["initialized_data_pointer_census"]["total_thumb_pointer_shaped_words"],
+                      "usb_related":result["initialized_data_pointer_census"]["near_usb_xip_count"]}))
+    print("ENDPOINT CALLBACK REGISTRAR CODE",json.dumps(result["endpoint_callback_registrar_code"]))
+    print("REGISTRATION CALLERS CODE",json.dumps(result["registration_caller_context"]))
     if p.show_focused:
         for ins in result["usb_core_window"]:
             print("FOCUSED",ins["pc"],ins["m"],ins["op"])
