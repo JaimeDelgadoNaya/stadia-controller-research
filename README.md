@@ -68,6 +68,10 @@ A SHA-256-matched private bootloader image establishes **two USB interfaces** (v
 
 The SHA-matched bootloader contains an 11-case internal event table (not host USB commands) and a 512-byte upper-bound guard in one transfer helper. No external flash-write reachability or signature bypass is established.
 
+- **[Phase 16 — CDC versus vendor callback provenance](docs/en/usb-reception.md)**
+
+The 512-byte guarded helper belongs to a **CDC-labelled method table**, separate from the vendor event callback. Both initial callback states and selected internal call paths are verified. A bulk OUT `0x07` host-to-flash path and custom firmware execution are still **unproven**.
+
 ## Offline reproduction
 
 Python 3.11 or newer:
