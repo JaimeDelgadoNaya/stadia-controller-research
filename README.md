@@ -13,6 +13,8 @@ firmware execution or signature bypass has been demonstrated.**
 
 **HISTORICAL DECISION — [Phase 31: stop internal firmware modification, begin external bridge](docs/en/final-execution-recovery-decision.md).** The agreed last offline work package is complete. ROM HAB **CLOSED**, signed images validate, but no authorizable custom execution or reliable rollback was established. **Stop internal modification unless independent new evidence changes the gates.** Next: reversible ESP32-S3 Stadia BLE → **PC** Xbox 360-style gamepad prototype; Xbox One/Series authentication requires separate verification.
 
+**[FillMemory separate-route analysis](docs/en/fillmemory-path-review.md).** Command tag `0x05` is enabled; the Google restricted loader's exact address policy remains unverified. No executable bypass or reliable recovery has been demonstrated.
+
 ## Current priority: on-controller software and direct Switch 2
 
 The owner excludes adapters and external boards. The active goal is software
