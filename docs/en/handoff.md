@@ -197,3 +197,7 @@ A private 128 KiB bootloader A image matches the recorded SHA-256. [Phase 14](us
 ## Phase 22 — Bounded pointer-alias prefixes
 
 [Phase 22](usb-pointer-dataflow.md) adds `tools/audit_alias_dataflow.py`: conservative Thumb decoding of at most 96 bytes after each of 29 RAM-global pointer candidate loads, stopping at call, branch and return boundaries. Stores at `0x60809790` and `0x60809842` target state field `global+0x6C4`, not IN/OUT completion callback fields `+0x5F8/+0x600`. No claim of exhaustive aliases, externally reachable USB parser, flash write path or secure boot bypass is made. Tests are synthetic; the matching bootloader remains private.
+
+## Phase 23 — Bounded interprocedural alias handoffs
+
+[Phase 23](interprocedural-aliases.md) verifies direct global-pointer handoffs at `0x6080C0B4` (constructor), `0x60802504/0x60808138` (service `0x6080B218`) and `0x6080FB4C` (initializer `0x6080B17C`). The latter derives four R0 subobject pointers `global+0x568/+0x560/+0x630/+0x578` for direct callees. The service `0x6080B218` adds `+0x630` and branches to `0x60809ABC`, which prepares `global+0x644` for another call. The SHA-locked offline `tools/audit_interprocedural_aliases.py` checks concrete machine-code edges; synthetic tests and sanitized `evidence/usb-phase23.json` are committed. No later callback setter, USB reachability or HAB bypass has been demonstrated.

@@ -97,6 +97,10 @@ El bootloader contiene **21 literales** con el puntero global y **29 cargas PC-r
 
 Análisis conservador de las 29 fuentes de alias RAM; las escrituras observadas en `+0x6C4` afectan al estado del controlador y no a los callbacks IN/OUT. Se marcan como pendientes las llamadas y ramas no seguidas.
 
+- **[Fase 23 — Relaciones de punteros entre funciones](docs/es/alias-interprocedimental.md)**
+
+Se verifican cuatro llamadas que transmiten el puntero global a funciones internas y las derivaciones de cuatro subobjetos con offsets distintos. No hay aún prueba de un setter de callback alcanzable desde USB ni de una vía hacia la escritura de firmware.
+
 ## Reproducción sin conexión
 
 Python 3.11 o posterior:
