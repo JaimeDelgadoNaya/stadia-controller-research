@@ -13,7 +13,7 @@ hemos demostrado ejecución de firmware propio ni una forma de eludir las firmas
 
 **DECISIÓN HISTÓRICA — [Fase 31: cerrar firmware interno y comenzar el puente externo](docs/es/decision-final-ejecucion.md).** El análisis offline de autenticación y recuperación ha completado el último paquete pactado. ROM HAB **CLOSED**, firmas originales válidas, sin ejecución propia autenticable ni rollback verificado. **Se detiene la investigación de modificación interna salvo nueva evidencia independiente.** Próximo paso: prototipo ESP32-S3 con BLE Stadia → gamepad Xbox 360 **para PC**, y verificación aparte de compatibilidad/autenticación de consola Xbox One/Series.
 
-**[Análisis FillMemory: hipótesis abierta](docs/es/analisis-fillmemory.md).** La última investigación confirmó que el comando `0x05` está habilitado, pero todavía falta comprobar en el cargador restringido de Google si comparte las restricciones de `WriteMemory`. No existe demostración de acceso a la configuración de ejecución ni de un bypass HAB.
+**[FillMemory verificado sobre el cargador original](docs/es/seguimiento-fillmemory-cfg.md).** La PR #27 confirmó offline que FillMemory (operación 0) llama al verificador `0x200039A8`, al igual que WriteMemory (operación 2), pero **con otra tabla de rangos permitidos**. La tabla de FillMemory no incluye los campos que habilitan Execute/Call: la escritura ordinaria sobre ellos queda descartada. Las longitudes con posible desbordamiento y los efectos de los métodos indirectos aún requieren análisis; no hay bypass HAB ni ejecución de firmware propio.
 
 ## Prioridad actual: software del propio mando y Switch 2 directa
 
