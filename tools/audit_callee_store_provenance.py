@@ -108,6 +108,7 @@ EXPECTED_HANDOFFS = (
 
 EXPECTED_FIELD_DERIVED_CALLS = (
     ("misc_subobject_body", 0xA9BA, 0x9048, "r0", 0x568),
+    ("misc_subobject_body", 0xA9DC, 0x9048, "r0", 0x570),
     ("misc_subobject_body", 0xA9F0, 0x9048, "r0", 0x568),
     ("misc_subobject_body", 0xAA26, 0x9048, "r0", 0x568),
     ("subobject_setup", 0x21D2, 0x9048, "r0", 0x560),
