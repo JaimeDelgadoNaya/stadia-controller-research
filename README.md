@@ -112,6 +112,10 @@ Four callees and their auxiliary-object initialization chain were reviewed. The 
 
 Both `global+0x560` and `global+0x568` initially point at `global+0x134`; `global+0x570` is a **byte field**, not a demonstrated third pointer. Two self-referential list heads have also been reconstructed. Later runtime changes and USB-to-flash reachability remain unproven.
 
+- **[Phase 27 — List insertion routines and pointer-field search](docs/en/list-insertions-and-aliases.md)**
+
+Verified direct insertion `0x608109B8` and ordered insertion `0x608109D0` with 14 selected static call/branch edges. Two callers compute heads using `0x2000A7F8 + 20×index`. Later reassignments of `global+0x560/+0x568` and USB reachability are still unproven.
+
 ## Offline reproduction
 
 Python 3.11 or newer:

@@ -1,0 +1,193 @@
+{
+  "phase": 27,
+  "date": "2026-10-25",
+  "source": {
+    "image": "private Stadia bootloader A",
+    "build": 169429,
+    "size_bytes": 131072,
+    "sha256": "59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0",
+    "published": false
+  },
+  "operations": {
+    "offline": true,
+    "hardware_access": false,
+    "usb_transactions": false,
+    "flash_or_fuse_operations": false
+  },
+  "regions": [
+    {
+      "name": "front_insert",
+      "start": "0x608109b8",
+      "end_exclusive": "0x608109d0",
+      "sha256": "e7f40b71833a884652dd7fed70b9eaca3ce499508eea05250a75dfe0ac09c20b"
+    },
+    {
+      "name": "ordered_insert",
+      "start": "0x608109d0",
+      "end_exclusive": "0x608109fe",
+      "sha256": "d53845c987c5eec94c7affb3b947012eabc332fd200862692e81d318f637f4a6"
+    },
+    {
+      "name": "ordered_tail_caller",
+      "start": "0x608116ee",
+      "end_exclusive": "0x60811708",
+      "sha256": "18a02756ff0af2220e5fc3c6fede785299a858a60c065f46536913192fcad37a"
+    },
+    {
+      "name": "indexed_insertion_site_a",
+      "start": "0x60811a18",
+      "end_exclusive": "0x60811a34",
+      "sha256": "2bcd99ebeaac91067591989cf73054bfa90ff406dbc7574620b6d2ce67e4cc31"
+    },
+    {
+      "name": "indexed_insertion_site_b",
+      "start": "0x60811df4",
+      "end_exclusive": "0x60811e10",
+      "sha256": "13563c0f939d7fcf4803ed69358b2b27f3a539b2e1fa0a5a92f79132d977211a"
+    }
+  ],
+  "discovered": {
+    "front_insert": {
+      "function": "0x608109b8",
+      "semantics": "node links updated at offsets +4,+8, neighbor reciprocal links, node+0x10 set to head, head count incremented",
+      "direct_calls": 9
+    },
+    "ordered_insert": {
+      "function": "0x608109d0",
+      "semantics": "compares node key, traverses via conditional branches, links and increments count",
+      "direct_calls": 4,
+      "direct_tail_branches": 1
+    },
+    "direct_edges": [
+      {
+        "callsite": "0x608114ac",
+        "target": "0x608109b8",
+        "kind": "BL",
+        "classification": "front insert"
+      },
+      {
+        "callsite": "0x60811808",
+        "target": "0x608109b8",
+        "kind": "BL",
+        "classification": "front insert"
+      },
+      {
+        "callsite": "0x60811a32",
+        "target": "0x608109b8",
+        "kind": "BL",
+        "classification": "front insert"
+      },
+      {
+        "callsite": "0x60811afa",
+        "target": "0x608109b8",
+        "kind": "BL",
+        "classification": "front insert"
+      },
+      {
+        "callsite": "0x60811cb6",
+        "target": "0x608109b8",
+        "kind": "BL",
+        "classification": "front insert"
+      },
+      {
+        "callsite": "0x60811da2",
+        "target": "0x608109b8",
+        "kind": "BL",
+        "classification": "front insert"
+      },
+      {
+        "callsite": "0x60811e0c",
+        "target": "0x608109b8",
+        "kind": "BL",
+        "classification": "front insert"
+      },
+      {
+        "callsite": "0x60811fa4",
+        "target": "0x608109b8",
+        "kind": "BL",
+        "classification": "front insert"
+      },
+      {
+        "callsite": "0x6081206e",
+        "target": "0x608109b8",
+        "kind": "BL",
+        "classification": "front insert"
+      },
+      {
+        "callsite": "0x60811706",
+        "target": "0x608109d0",
+        "kind": "BL",
+        "classification": "key-ordered insert"
+      },
+      {
+        "callsite": "0x60811d68",
+        "target": "0x608109d0",
+        "kind": "BL",
+        "classification": "key-ordered insert"
+      },
+      {
+        "callsite": "0x60812268",
+        "target": "0x608109d0",
+        "kind": "BL",
+        "classification": "key-ordered insert"
+      },
+      {
+        "callsite": "0x608123a4",
+        "target": "0x608109d0",
+        "kind": "BL",
+        "classification": "key-ordered insert"
+      },
+      {
+        "callsite": "0x608116fa",
+        "target": "0x608109d0",
+        "kind": "B.W",
+        "classification": "tail branch to key-ordered insertion"
+      }
+    ]
+  },
+  "indexed_list_buckets": {
+    "base": "0x2000a7f8",
+    "stride_bytes": 20,
+    "formula": "head = 0x2000a7f8 + 0x14*index",
+    "sites": [
+      {
+        "callsite": "0x60811a32",
+        "literal": "0x60811a7c",
+        "operation": "MLA, stride R12=0x14"
+      },
+      {
+        "callsite": "0x60811e0c",
+        "literal": "0x60811e40",
+        "operation": "MLA, stride R0=0x14"
+      }
+    ],
+    "prior_phase26_head_addresses": [
+      "0x20009114",
+      "0x20009128"
+    ],
+    "proven_index_values_or_validation": "NOT ESTABLISHED",
+    "runtime_head_addresses": "NOT MEASURED"
+  },
+  "reassignment_census": {
+    "positive_immediate_thumb2_STRW_scan": [
+      "0x60801000",
+      "0x60814f00"
+    ],
+    "candidate_sites_for_global_plus_0x560": [
+      "0x6080baec"
+    ],
+    "candidate_sites_for_global_plus_0x568": [
+      "0x6080baf2"
+    ],
+    "limitation": "Exact opcode class/offset search only, not proof that writes via aliases or alternate instructions are absent",
+    "later_pointer_replacement": "NOT PROVEN OR EXCLUDED"
+  },
+  "limitations": {
+    "host_usb_reachability": "NOT ESTABLISHED",
+    "callbacks_modified": "NOT DEMONSTRATED",
+    "host_to_flash_writer": "NOT DEMONSTRATED",
+    "HAB_bypass": "NOT DEMONSTRATED",
+    "custom_execution": "NOT DEMONSTRATED"
+  },
+  "next": "Analyze the provenance of node pointers at each direct callsite and bound checks for the indexed buckets"
+}

@@ -113,6 +113,10 @@ El destino `0x60809048` trabaja con un objeto de dirección desconocida y delega
 
 Dos campos (`global+0x560` y `global+0x568`) apuntan inicialmente a `global+0x134`; `global+0x570` se inicializa como **byte**, no como un tercer puntero. Se han reconstruido además dos cabeceras de lista auto-referenciales. Estado dinámico y ruta USB→flash sin demostrar.
 
+- **[Fase 27 — Inserción de nodos y punteros del controlador](docs/es/inserciones-listas-alias.md)**
+
+Identificadas funciones de inserción directa (`0x608109B8`) y ordenada (`0x608109D0`), con 14 transferencias estáticas verificadas. Dos llamadas calculan cabeceras desde `0x2000A7F8 + 20×índice`. No se ha demostrado una reasignación posterior de `global+0x560/+0x568`, ni acceso desde USB.
+
 ## Reproducción sin conexión
 
 Python 3.11 o posterior:
