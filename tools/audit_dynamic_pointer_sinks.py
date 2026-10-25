@@ -12,7 +12,10 @@ import hashlib
 import json
 from pathlib import Path
 
-from tools.audit_interprocedural_aliases import decode_thumb_jump
+try:
+    from .audit_interprocedural_aliases import decode_thumb_jump
+except ImportError:
+    from audit_interprocedural_aliases import decode_thumb_jump
 
 BASE = 0x60800000
 SIZE = 131072
