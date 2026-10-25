@@ -267,3 +267,7 @@ it immutable. The write-policy and USB-fragment trace excludes an ordinary
 WriteMemory patch of those entries, including a huge declared total used to
 seek wraparound at those addresses. None of these
 observations demonstrates custom execution or working Switch 2 compatibility.
+
+## FillMemory as an alternative — unproven
+
+[Separate read-only review](fillmemory-path-review.md): FillMemory tag `0x05` with handler `0x20003381` is enabled. Unlike WriteMemory it has no transfer data phase, so previously traced fragment bounds do not apply. NXP generally documents identical access rules, but the Google restricted binary's FillMemory-specific call/validation path has not yet been independently verified. Tool `tools/audit_fillmemory_route.py`, synthetic regression tests and `evidence/fillmemory-review.json`; the new CLI has not run on the original proprietary loader in this container. No host commands or device mutations. Control-memory write, unsigned execution and reliable recovery remain **unproven**.
