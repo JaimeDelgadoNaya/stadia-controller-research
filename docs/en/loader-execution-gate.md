@@ -89,3 +89,5 @@ The table also enables FillMemory. The WriteMemory fragment bound must not be
 applied to FillMemory or other commands without tracing their own receivers and
 backends. Their presence is not a custom-execution result, and this audit does
 not provide an exploit or validate a bypass through them.
+
+**Independent FillMemory follow-up:** [offline review](fillmemory-path-review.md). Command `0x05` is enabled, but the original handler has not yet been proven to share WriteMemory's policy or use another backend. Keep data-phase fragment bounds separate.
