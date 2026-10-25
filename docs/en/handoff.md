@@ -169,3 +169,7 @@ A private 128 KiB bootloader A image matches the recorded SHA-256. [Phase 14](us
 ## Phase 15 — Internal USB event dispatcher
 
 [Phase 15](usb-events.md) decodes the SHA-locked 11-case Thumb TBB event table at `0x60809C68`. Internal event IDs 4, 5 and 8 directly return through the default handler. A distinct transfer helper at `0x60809B28` guards its size argument against `0x200` (512) bytes. **These are not eleven verified externally sendable commands.** There is still no proved bulk OUT `0x07` to flash-writer path and no HAB CLOSED bypass. Offline `tools/audit_usb_event_dispatch.py` and synthetic tests are committed; the private bootloader image remains excluded.
+
+## Phase 16 — CDC/vendor callback provenance
+
+[Phase 16](usb-reception.md) confirms that the 512-byte limited `0x60809B28` belongs to the CDC-labelled method table at `0x60814E18`, installed at object offset `+0x578`. That object's optional `+0x0C` callback starts as NULL; the internal event path reaches a conditional wrapper at `0x60809C44`. Independently, the vendor event handler `0x60809E64` starts with inert Thumb callback `0x60809E3D`. A bulk OUT `0x07` receive parser and any route to flash writes are still **not established**. Reproduce offline with `tools/audit_usb_callback_provenance.py`; no private firmware has been committed.
