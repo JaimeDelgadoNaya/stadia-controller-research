@@ -21,6 +21,8 @@ firmware execution or signature bypass has been demonstrated.**
 
 **[FillMemory: initializer order and virtual backend stop](docs/en/fillmemory-init-order-first-boundary.md).** PR #30 executed the original low-level FillMemory Thumb code in bounded Unicorn memory. Wrapped-length cases enter a **byte-by-byte store loop** and hit the *virtual* unmapped region at `0x20020000` without returning. This is not a physical bus fault or custom execution proof. Initialization before dispatch is still not proven.
 
+**[New audit: OEM-signed Bruce prod/stage/dev and updater](docs/en/bruce-oem-signed-variants-execution.md).** Exact public originals verify that all three OEM images have **identical authenticated executable application bytes**; the differences are in signing material, with distinct embedded signer keys. The only aligned signed-to-tail pointer is IVT→CSF metadata. Archived updater uses ROM SDP plus a vendor-signed RAM loader. **No arbitrary execution, HAB bypass or reliable recovery demonstrated.**
+
 ## Current priority: on-controller software and direct Switch 2
 
 The owner excludes adapters and external boards. The active goal is software
