@@ -93,7 +93,7 @@ class UsbCallbackTests(unittest.TestCase):
 
     def test_endpoint_count_mismatch_rejected(self):
         conf = bytearray(self.blob[CONFIG_OFFSET:CONFIG_OFFSET+80])
-        conf[0x12+4] = 3  # vendor interface descriptor begins at offset 0x11
+        conf[0x11+4] = 3  # vendor interface: offset 0x11, bNumEndpoints at +4
         with self.assertRaisesRegex(ValueError, "endpoint count"):
             parse_configuration(bytes(conf))
 
