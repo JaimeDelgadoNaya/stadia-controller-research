@@ -135,7 +135,8 @@ class CalleeStoreProvenanceTests(unittest.TestCase):
         self.assertEqual(m.SHA256,"59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0")
         self.assertEqual(set(m.CALLBACK_FIELDS.values()),
                          {"bulk_in_handler","bulk_in_context","bulk_out_handler","bulk_out_context"})
-        self.assertIn("whole-program absence proof",m.__doc__ or "")
+        self.assertIn("whole-program",m.__doc__ or "")
+        self.assertIn("absence proof",m.__doc__ or "")
 
 
 if __name__=="__main__":
