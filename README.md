@@ -108,6 +108,10 @@ Four callees and their auxiliary-object initialization chain were reviewed. The 
 
 `0x60809048` processes an opaque incoming object and delegates calls; `0x608109FE` unlinks list nodes through dynamic RAM pointers. Neither a concrete write to known USB callback fields nor an externally reachable host-to-flash route has been demonstrated.
 
+- **[Phase 26 — Initialized pointers and list sentinels](docs/en/initial-pointer-and-list-heads.md)**
+
+Both `global+0x560` and `global+0x568` initially point at `global+0x134`; `global+0x570` is a **byte field**, not a demonstrated third pointer. Two self-referential list heads have also been reconstructed. Later runtime changes and USB-to-flash reachability remain unproven.
+
 ## Offline reproduction
 
 Python 3.11 or newer:

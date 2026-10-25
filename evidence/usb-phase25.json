@@ -132,5 +132,10 @@
     "script": "tools/audit_dynamic_pointer_sinks.py",
     "synthetic_tests": "tests/test_dynamic_pointer_sinks.py",
     "original_binary_in_ci": false
+  },
+  "phase26_correction": {
+    "status": "CORRECTED BY VERIFIED STARTUP INITIALIZER",
+    "note": "The old hypothesis treating global+0x570 as a third 32-bit pointer source is unproven: constructor 0x6080bae8 uses STRB.W zero. global+0x560 and +0x568 both initially store global+0x134 (0x20008cac). See evidence/usb-phase26.json.",
+    "superseding_evidence": "evidence/usb-phase26.json"
   }
 }

@@ -1,0 +1,185 @@
+{
+  "phase": 26,
+  "date": "2026-10-25",
+  "sample": {
+    "build": 169429,
+    "image_bytes": 131072,
+    "sha256": "59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0",
+    "private_binary_published": false
+  },
+  "code_fingerprints": [
+    {
+      "start": "0x6080bae2",
+      "end_exclusive": "0x6080bb10",
+      "sha256": "b03bf98db18da2054fd7d80b2a4cbe9cf7d6f8d51bb5351db34541e73d021883"
+    },
+    {
+      "start": "0x6081099c",
+      "end_exclusive": "0x608109b2",
+      "sha256": "8f64714e4d62060e0a8b9a64105cb9285c0780b3b11e15fd63c86079332c58cc"
+    },
+    {
+      "start": "0x60810b70",
+      "end_exclusive": "0x60810baa",
+      "sha256": "33bf649bb7a60d945eb4ff950b62a24014b8f8f6815f4d06b4d765af162b7f62"
+    },
+    {
+      "start": "0x60810c04",
+      "end_exclusive": "0x60810c1e",
+      "sha256": "0be7fbb5d9ee7e919c2c9cacc617048a28060f34edc2d46a76ecb16b8d7666f3"
+    },
+    {
+      "start": "0x6080a9a0",
+      "end_exclusive": "0x6080aa30",
+      "sha256": "61486e672e5d0a614618d43027316d8b0d9ac3a70331f4d2c0b606c0e16fdb06"
+    }
+  ],
+  "operations": {
+    "offline": true,
+    "hardware_access": false,
+    "usb_transactions": false,
+    "flash_writes": false,
+    "fuse_operations": false
+  },
+  "constructor_initial_state": {
+    "global_base": "0x20008b78",
+    "computed_pointer_address": "0x20008cac",
+    "pointer_computation": "0x6080bae2 ADD.W R3,R4,#0x134",
+    "pointer_assignments": [
+      {
+        "at": "0x6080baec",
+        "field": "0x200090d8",
+        "global_offset": "0x560",
+        "value": "0x20008cac",
+        "instruction": "STR.W R3,[R4,#0x560]"
+      },
+      {
+        "at": "0x6080baf2",
+        "field": "0x200090e0",
+        "global_offset": "0x568",
+        "value": "0x20008cac",
+        "instruction": "STR.W R3,[R4,#0x568]"
+      }
+    ],
+    "byte_not_pointer": {
+      "at": "0x6080bae8",
+      "field": "0x200090e8",
+      "global_offset": "0x570",
+      "value": 0,
+      "type": "byte",
+      "instruction": "STRB.W R5,[R4,#0x570]"
+    },
+    "transfer_like_function": "0x60809048",
+    "transfer_initial_arguments": {
+      "0x6c": "0x20008d18",
+      "0xa4": "0x20008d50",
+      "0xf8": "0x20008da4",
+      "0x154": "0x20008e00",
+      "0x158": "0x20008e04",
+      "0x15c": "0x20008e08"
+    },
+    "selected_strw_opcode_matches": {
+      "+0x560": [
+        "0x6080baec"
+      ],
+      "+0x568": [
+        "0x6080baf2"
+      ]
+    },
+    "caution": "Derived only for unchanged normal-constructor pointer values; later overwrites and alias stores not excluded"
+  },
+  "list_initialization": {
+    "condition": "nonzero flag at 0x60810b70; caller at 0x60810c06 sets R1=1",
+    "caller": "0x60810c1a -> 0x60810b38",
+    "head_initializers": [
+      {
+        "at": "0x60810b9c",
+        "target": "0x6081099c",
+        "argument": "0x20009114"
+      },
+      {
+        "at": "0x60810ba4",
+        "target": "0x6081099c",
+        "argument": "0x20009128"
+      }
+    ],
+    "heads": [
+      {
+        "head": "0x20009114",
+        "initialized_fields": [
+          {
+            "field": "0x20009114",
+            "value": "0x00000000",
+            "meaning": "count"
+          },
+          {
+            "field": "0x20009118",
+            "value": "0x2000911c",
+            "meaning": "self link"
+          },
+          {
+            "field": "0x2000911c",
+            "value": "0xffffffff",
+            "meaning": "sentinel marker, not pointer"
+          },
+          {
+            "field": "0x20009120",
+            "value": "0x2000911c",
+            "meaning": "self link"
+          },
+          {
+            "field": "0x20009124",
+            "value": "0x2000911c",
+            "meaning": "self link"
+          }
+        ]
+      },
+      {
+        "head": "0x20009128",
+        "initialized_fields": [
+          {
+            "field": "0x20009128",
+            "value": "0x00000000",
+            "meaning": "count"
+          },
+          {
+            "field": "0x2000912c",
+            "value": "0x20009130",
+            "meaning": "self link"
+          },
+          {
+            "field": "0x20009130",
+            "value": "0xffffffff",
+            "meaning": "sentinel marker, not pointer"
+          },
+          {
+            "field": "0x20009134",
+            "value": "0x20009130",
+            "meaning": "self link"
+          },
+          {
+            "field": "0x20009138",
+            "value": "0x20009130",
+            "meaning": "self link"
+          }
+        ]
+      }
+    ],
+    "limitation": "No runtime RAM capture; these are initial states before later insertions/removals."
+  },
+  "errata": {
+    "phases": [
+      24,
+      25
+    ],
+    "field": "global+0x570",
+    "correction": "STRB initializes a byte, not a proven 32-bit pointer source"
+  },
+  "claims": {
+    "runtime_pointer_replacement": "NOT PROVEN OR EXCLUDED",
+    "usb_callback_field_alias": "NOT PROVEN OR EXCLUDED",
+    "host_to_flash_write": "NOT DEMONSTRATED",
+    "hab_bypass": "NOT DEMONSTRATED",
+    "custom_execution": "NOT DEMONSTRATED"
+  }
+}

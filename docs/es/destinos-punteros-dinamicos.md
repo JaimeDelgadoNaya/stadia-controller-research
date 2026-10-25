@@ -1,5 +1,7 @@
 # Fase 25 — Análisis de dos destinos de punteros dinámicos
 
+> **Corrección verificada en fase 26:** `global+0x570` se inicializa mediante una escritura de **un byte cero** (`STRB.W`), no como puntero de 32 bits. Los campos `global+0x560` y `global+0x568` sí reciben inicialmente `global+0x134 = 0x20008CAC`. Las referencias antiguas al posible tercer puntero deben interpretarse como hipótesis no demostradas. [Análisis actualizado](inicializadores-punteros-listas.md).
+
 **Muestra:** bootloader A original de Stadia (build 169429, 131.072 bytes), SHA-256
 `59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0`.
 

@@ -1,5 +1,7 @@
 # Phase 25 — Two unresolved dynamic pointer sinks
 
+> **Phase-26 correction:** `global+0x570` is initialized with a **single zero byte** (`STRB.W`), not a proven 32-bit pointer. `global+0x560` and `global+0x568` initially both receive `global+0x134 = 0x20008CAC`. Prior wording about a possible third pointer should be treated as unproven. [Updated analysis](initial-pointer-and-list-heads.md).
+
 **Sample:** privately extracted Stadia bootloader A build 169429, 131072 bytes,
 SHA-256 `59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0`.
 The analysis is **offline**; no device access or firmware publication.

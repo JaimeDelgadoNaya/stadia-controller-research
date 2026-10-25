@@ -109,6 +109,10 @@ Se revisaron cuatro funciones y la cadena de inicialización de subobjetos. Hay 
 
 El destino `0x60809048` trabaja con un objeto de dirección desconocida y delega operaciones; `0x608109FE` desenlaza nodos de una lista mediante punteros RAM. No hay escritura sobre los callbacks USB con dirección absoluta verificada ni ruta host→flash demostrada.
 
+- **[Fase 26 — Inicialización de punteros y cabeceras de lista](docs/es/inicializadores-punteros-listas.md)**
+
+Dos campos (`global+0x560` y `global+0x568`) apuntan inicialmente a `global+0x134`; `global+0x570` se inicializa como **byte**, no como un tercer puntero. Se han reconstruido además dos cabeceras de lista auto-referenciales. Estado dinámico y ruta USB→flash sin demostrar.
+
 ## Reproducción sin conexión
 
 Python 3.11 o posterior:

@@ -1,5 +1,7 @@
 # Fase 24 — Escrituras en subobjetos y procedencia de punteros
 
+> **Actualización de procedencia, fase 26:** el constructor inicializa los campos `global+0x560` y `+0x568` apuntando a `global+0x134`, mientras que `global+0x570` es un campo **de un byte**. El seguimiento de valores dinámicos posterior sigue condicionado a posibles escrituras adicionales. [Detalles](inicializadores-punteros-listas.md).
+
 **Muestra local:** bootloader A Stadia, build 169429, 131.072 bytes.
 SHA-256: \`59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0\`.
 El binario no se sube a GitHub. La inspección se hizo offline con desensamblado Thumb de LLVM y huellas SHA-256 de los intervalos examinados.
