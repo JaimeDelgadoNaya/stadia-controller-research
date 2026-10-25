@@ -104,6 +104,10 @@ Four verified Thumb direct calls pass the global RAM object to internal routines
 
 Four callees and their auxiliary-object initialization chain were reviewed. The bounded audit records 23 store observations across 19 unique instruction sites, with no overlap with the four known callback fields. Values loaded from `global+0x568/+0x570/+0x560` and passed to `0x60809048`, plus the pointer derived from `global+0x5A8` passed to `0x608109FE`, remain unresolved.
 
+- **[Phase 25 — Dynamic pointer sinks](docs/en/dynamic-pointer-sinks.md)**
+
+`0x60809048` processes an opaque incoming object and delegates calls; `0x608109FE` unlinks list nodes through dynamic RAM pointers. Neither a concrete write to known USB callback fields nor an externally reachable host-to-flash route has been demonstrated.
+
 ## Offline reproduction
 
 Python 3.11 or newer:
