@@ -23,6 +23,8 @@ firmware execution or signature bypass has been demonstrated.**
 
 **[New audit: OEM-signed Bruce prod/stage/dev and updater](docs/en/bruce-oem-signed-variants-execution.md).** Exact public originals verify that all three OEM images have **identical authenticated executable application bytes**; the differences are in signing material, with distinct embedded signer keys. The only aligned signed-to-tail pointer is IVT→CSF metadata. Archived updater uses ROM SDP plus a vendor-signed RAM loader. **No arbitrary execution, HAB bypass or reliable recovery demonstrated.**
 
+**[Bruce normal-mode USB class receiver audit](docs/en/bruce-normal-usb-class-requests.md).** PR #32 compared OEM host's `0x81/0x83/0x84` class requests to the exact signed Bruce code. Eight raw CMP-immediate matches were cataloged, but the examined candidates operate on **buffer bytes or structure fields**, not a confirmed EP0 SETUP `bRequest`. **No host-to-custom-execution path or verified recovery.**
+
 ## Current priority: on-controller software and direct Switch 2
 
 The owner excludes adapters and external boards. The active goal is software
