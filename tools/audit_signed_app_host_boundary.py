@@ -87,6 +87,18 @@ def evaluate_boundaries(image, js, *, verifier=verify,
     if struct.unpack_from("<8I", image, IVT) != SPEC["ivt_expected"]:
         raise ValueError("Signed IVT differs")
     pointers = static_tail_references(image)
+    # Only one *aligned* XIP pointer into the non-application-authenticated
+    # zone appears in the actual signed payload: the IVT's expected CSF pointer.
+    # This is an authentication metadata reference, NOT executable code.
+    expected_csf_pointer = [{
+        "word_offset": hex(IVT+0x18),
+        "literal_pointer": hex(BASE+CSF),
+        "target_file_offset": hex(CSF),
+        "target_kind": classify_offset(CSF),
+        "thumb_bit": False,
+    }]
+    if pointers != expected_csf_pointer:
+        raise ValueError("Unexpected raw aligned references into post-signing section")
     labels = {
         "app_bytes": SIZE,
         "authenticated_application_block": CSF,
@@ -120,6 +132,7 @@ def evaluate_boundaries(image, js, *, verifier=verify,
             "signed_region_aligned_word_matches":len(pointers),
             "static_candidates":pointers[:50],
             "all_candidates_truncated":len(pointers)>50,
+            "only_static_candidate_is_ivt_csf_pointer":True,
             "evidence_level":"unaligned instructions and indirect or computed pointers may be missed; literal words are NOT verified executable references",
         },
         "app_receiver":{
