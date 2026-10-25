@@ -162,3 +162,7 @@ python -m unittest discover -s tests -v
 La [fase 13](superficie-usb.md) añade `tools/audit_usb_surface.py`: cuantifica la cobertura pública (28 regiones, 2340 bytes de 131072, 67 llamadas directas, 41 destinos no cubiertos, 16 transferencias indirectas) y prepara una exploración **exclusivamente estática** de descriptores USB y puntos de entrada usando un bootloader **local** cuyo SHA-256 debe coincidir con el de la medición. Las heurísticas no demuestran existencia ni accesibilidad de un comando USB; no hay firmware propio ejecutado. Sin binario local, solo puede producir el informe de cobertura pública.
 
 Ejecutar `python tools/audit_usb_surface.py` y `python -m unittest discover -s tests -v`. Para análisis local posterior: `python tools/audit_usb_surface.py --bootloader local/bootloader-a.bin`. No subir la imagen al repositorio.
+
+## Fase 14 — Descriptor USB verificado y callback de fabricante
+
+Se ha recibido un bootloader A de 128 KB cuyo SHA-256 coincide exactamente con el registrado. La [fase 14](callback-usb.md) documenta la configuración USB `18D1:946B`: interfaz 0 vendor con bulk IN `0x87`/OUT `0x07` (512 bytes) e interfaz 1 HID con interrupciones IN `0x83`/OUT `0x03` (64 bytes). Se verifica el callback `0x60809E64` con puntero inicial a función vacía en RAM, pero todavía **no** hay origen USB probado de una escritura en flash. El lector `tools/audit_usb_callbacks.py` funciona exclusivamente sobre el fichero local y produce JSON. El binario no se publica.
