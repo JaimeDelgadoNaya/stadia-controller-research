@@ -61,3 +61,37 @@ python -m tools.audit_fillmemory_first_boundary local/restricted_ivt_flashloader
 ```
 
 [Original signed-loader CI run](https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40237237957).
+
+
+## Original-code Unicorn emulation of the first virtual write fault
+
+The signed image's **actual** low-level routine at `0x20002698` was
+executed under **Unicorn 2.1.4 (ARM Thumb/M-class)** with just
+`0x20000000..0x2001FFFF` mapped as **virtual** RAM, plus a return
+sentinel at `0x00001000`. The code image was loaded from the pinned
+original (SHA-256 checked) and called with **synthetic arguments**.
+
+This is a **backend-only** simulation. It deliberately does not emulate
+the USB command, initialization order, original guard functions, hardware
+bus map, flash, or HAB.
+
+| Hypothetical start | Byte stores within virtual RAM | First attempted virtual unmapped write | PC | Returned? |
+|---|---:|---|---|---|
+| `0x200159E0` | 42,528 | `0x20020000` (one byte) | `0x20002700` | No |
+| `0x200159EC` | 42,516 | `0x20020000` (one byte) | `0x20002700` | No |
+
+Both cases stopped with Unicorn's **`UC_ERR_WRITE_UNMAPPED`** while
+`R2 = 3757973508` bytes remained. Machine-code emulation confirms
+the signed `BLT` enters the repeated `STRB` byte loop and does not
+return before leaving this virtual region.
+
+**This is not a physical BusFault measurement or proof of code
+execution, command reachability, persistence, or recovery.** Additional
+SoC memory mapping or aliases could change actual hardware behavior.
+
+[Original-image offline CI emulation](https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40237699575).
+
+```sh
+python -m pip install -r requirements-emulation.txt
+python -m tools.emulate_fillmemory_first_fault local/restricted_ivt_flashloader.bin
+```
