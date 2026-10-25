@@ -18,7 +18,8 @@ Tareas concretas siguientes:
    HAB posteriores. Determinar si un rango malformado puede tener efectos después
    de la validación criptográfica.
 3. Reconstruir selección de aplicación A/B, metadatos de intentos de arranque y
-   respaldo. Que el bootloader B esté vacío no demuestra que la aplicación B lo esté.
+   respaldo. La [fase 12](seleccion-aplicacion.md) documenta los selectores 2/3 y
+   las marcas de fallo; falta identificar el llamador y cualquier recuperación. Que el bootloader B esté vacío no demuestra que la aplicación B lo esté.
 4. Mapear el despacho USB normal y del bootloader y las interfaces de diagnóstico
    realmente disponibles en hardware de producción.
 5. Identificar una vía concreta y recuperable de ejecución antes de implementar
@@ -32,6 +33,14 @@ deliberadamente con archivos locales.
 ## Cambio de prioridad tras fase 29 (decisión acotada)
 
 La hoja original de tareas sigue describiendo posibles pistas, pero la **prioridad operativa ahora es [la puerta de decisión sobre actualización real](puerta-decision-actualizacion.md)**: dos paquetes offline como máximo — protocolo WebUSB del host hasta el receptor y, solo si procede, aplicación Bruce firmada y ejecución recuperable — seguidos de decisión **continuar/parar**. No se abrirán más fases de búsqueda genérica de punteros. Si no existe una entrada controlable y una vía de ejecución propia recuperable verificadas, la alternativa será puente externo para Xbox (separando XInput para PC de autenticación de consola).
+
+## Prioridad histórica tras fase 32 (sustituida más abajo)
+
+La parada de la fase 31 sustituye las hipótesis internas históricas anteriores.
+Continuar por [compatibilidad con consolas](compatibilidad-consolas.md), elegir
+una combinación documentada y probarla físicamente. La
+[preparación del puente](puente-externo.md) queda para el prototipo PC ESP32-S3;
+su salida Xbox 360 no demuestra autenticación de consola.
 
 ## Prioridad vigente: software interno y Switch 2 directa
 

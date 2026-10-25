@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "observed_date": "2026-10-25",
+  "scope": "One connected controller; normal USB mode; read-only status and descriptor queries",
+  "vid": "18D1",
+  "pid": "9400",
+  "firmware_decimal": 337784,
+  "firmware_hex": "0x52778",
+  "firmware_response_hex": "78270500D5950200",
+  "firmware_family": "bruce",
+  "device_descriptor_hex": "12010102EF020140D1180094000101020301",
+  "winusb_configuration_view_hex": "0902200001010080FA0904000002FF0000000705870200020007050702000200",
+  "descriptor_view_note": "WinUSB configuration query returned only vendor interface 00; Windows PnP separately reports HID interface 01. Do not treat the 32-byte WinUSB view as proof of absent HID.",
+  "interfaces": [
+    {
+      "driver_service": "WINUSB",
+      "number": "00",
+      "class": "USBDevice"
+    },
+    {
+      "game_controller_collection_present": true,
+      "driver_service": "HidUsb",
+      "number": "01",
+      "class": "HIDClass"
+    }
+  ],
+  "actions": [
+    "Windows Get-PnpDevice and service-property enumeration",
+    "Existing tools/Read-Stadia.ps1 firmware IN request 0x81",
+    "USB device/configuration descriptor reads"
+  ],
+  "no_driver_or_mode_changes": true,
+  "no_flash_or_reset_commands": true,
+  "limitations": [
+    "USB status and Windows PnP presence do not demonstrate Bluetooth connectivity",
+    "WinMM returned no automatically matching device; explicit index 0 capabilities returned error 165, so no input samples were obtained",
+    "Bluetooth pairing, gamepad motion/button functionality and rumble not exercised",
+    "No ESP32 hardware identified or tested"
+  ],
+  "personal_identifiers_included": false,
+  "input_diagnostic": {
+    "schema_version": 1,
+    "api": "Windows WinMM joystick read-only queries",
+    "requested_seconds": 10,
+    "interval_ms": 50,
+    "selection": "WinMM manufacturer/product IDs 18D1:9400",
+    "status": "no_matching_winmm_device",
+    "devices": [],
+    "limitations": [
+      "WinMM is a legacy input view; absence here does not prove absence of HID or Bluetooth.",
+      "WinMM manufacturer/product identifiers are driver-reported, not independently verified USB identity.",
+      "Observed min/max are sampled values, not calibrated full travel; stationary samples do not test controls.",
+      "No vibration, Bluetooth pairing, XInput, console authentication or bridge hardware is tested."
+    ],
+    "supported_slots": 16
+  },
+  "explicit_index_probe": {
+    "schema_version": 1,
+    "api": "Windows WinMM joystick read-only queries",
+    "requested_seconds": 1,
+    "interval_ms": 50,
+    "selection": "explicit_index_unverified_identity",
+    "status": "no_matching_winmm_device",
+    "devices": [],
+    "limitations": [
+      "WinMM is a legacy input view; absence here does not prove absence of HID or Bluetooth.",
+      "WinMM manufacturer/product identifiers are driver-reported, not independently verified USB identity.",
+      "Observed min/max are sampled values, not calibrated full travel; stationary samples do not test controls.",
+      "No vibration, Bluetooth pairing, XInput, console authentication or bridge hardware is tested."
+    ],
+    "supported_slots": 16,
+    "selection_error_code": 165
+  }
+}

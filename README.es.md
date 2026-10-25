@@ -11,7 +11,7 @@ hemos demostrado ejecución de firmware propio ni una forma de eludir las firmas
 
 **[Paquete A terminado — protocolo del actualizador WebHID/WebUSB](docs/es/protocolo-actualizador-webhid.md).** El host instala imágenes usando **ROM SDP y cargador firmado RAM**, no Bulk OUT `0x07` del bootloader A. Comandos y validaciones documentados en [la evidencia](evidence/archived-updater-host-protocol.json); sigue sin demostrarse ejecución de firmware propio. El paquete B se completó en la fase 31.
 
-**DECISIÓN FINAL — [Fase 31: cerrar firmware interno y comenzar el puente externo](docs/es/decision-final-ejecucion.md).** El análisis offline de autenticación y recuperación ha completado el último paquete pactado. ROM HAB **CLOSED**, firmas originales válidas, sin ejecución propia autenticable ni rollback verificado. **Se detiene la investigación de modificación interna salvo nueva evidencia independiente.** Próximo paso: prototipo ESP32-S3 con BLE Stadia → gamepad Xbox 360 **para PC**, y verificación aparte de compatibilidad/autenticación de consola Xbox One/Series.
+**DECISIÓN HISTÓRICA — [Fase 31: cerrar firmware interno y comenzar el puente externo](docs/es/decision-final-ejecucion.md).** El análisis offline de autenticación y recuperación ha completado el último paquete pactado. ROM HAB **CLOSED**, firmas originales válidas, sin ejecución propia autenticable ni rollback verificado. **Se detiene la investigación de modificación interna salvo nueva evidencia independiente.** Próximo paso: prototipo ESP32-S3 con BLE Stadia → gamepad Xbox 360 **para PC**, y verificación aparte de compatibilidad/autenticación de consola Xbox One/Series.
 
 ## Prioridad actual: software del propio mando y Switch 2 directa
 
@@ -39,6 +39,11 @@ La continuación añade [despacho USB con reubicación de código](docs/es/despa
 La consulta del mando fue solo de metadatos; no se enviaron informes de salida.
 Estos resultados no constituyen un desbloqueo.
 
+El trabajo histórico de interfaces externas se conserva en la
+[matriz de consolas](docs/es/compatibilidad-consolas.md),
+[preparación del puente](docs/es/puente-externo.md) y
+[diagnóstico Windows](docs/es/diagnostico-entrada.md). No es la prioridad vigente.
+
 ## Avances medidos
 
 | Elemento | Resultado observado |
@@ -63,6 +68,7 @@ del dispositivo; no se extrajo toda la aplicación instalada para comparar su ha
 - [Cadena de arranque, actualización y cuestiones abiertas](docs/es/arranque.md)
 - [Actualización del IVT y emulación ARM — fase 10](docs/es/actualizacion.md)
 - [Almacenamiento y emulación del escritor — fase 11](docs/es/almacenamiento.md)
+- [Selección de aplicaciones A/B y estado de arranque — fase 12](docs/es/seleccion-aplicacion.md)
 - [Próximos pasos y niveles de evidencia](docs/es/hoja-de-ruta.md)
 - [Manifiesto de evidencias](evidence/manifest.json)
 - [Créditos, procedencia y alcance de la publicación](NOTICE.md)

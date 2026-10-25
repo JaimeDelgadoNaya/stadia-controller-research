@@ -11,7 +11,7 @@ firmware execution or signature bypass has been demonstrated.**
 
 **[Package A complete — archived WebHID/WebUSB host protocol](docs/en/archived-updater-host-protocol.md).** The host installs images via **ROM SDP and signed RAM flashloader**, not bootloader-A Bulk OUT `0x07`. See [sanitized evidence](evidence/archived-updater-host-protocol.json). Custom unsigned execution remains unproven; package B was completed in phase 31.
 
-**FINAL DECISION — [Phase 31: stop internal firmware modification, begin external bridge](docs/en/final-execution-recovery-decision.md).** The agreed last offline work package is complete. ROM HAB **CLOSED**, signed images validate, but no authorizable custom execution or reliable rollback was established. **Stop internal modification unless independent new evidence changes the gates.** Next: reversible ESP32-S3 Stadia BLE → **PC** Xbox 360-style gamepad prototype; Xbox One/Series authentication requires separate verification.
+**HISTORICAL DECISION — [Phase 31: stop internal firmware modification, begin external bridge](docs/en/final-execution-recovery-decision.md).** The agreed last offline work package is complete. ROM HAB **CLOSED**, signed images validate, but no authorizable custom execution or reliable rollback was established. **Stop internal modification unless independent new evidence changes the gates.** Next: reversible ESP32-S3 Stadia BLE → **PC** Xbox 360-style gamepad prototype; Xbox One/Series authentication requires separate verification.
 
 ## Current priority: on-controller software and direct Switch 2
 
@@ -39,6 +39,11 @@ The continuation adds [USB dispatch and code relocation](docs/en/application-usb
 The device query read metadata only; no output reports were sent. These results
 are not an unlock.
 
+Historical external-route work is retained in the [console matrix](docs/en/console-compatibility.md),
+[pinned bridge preparation](docs/en/external-bridge.md) and
+[Windows input diagnostic](docs/es/diagnostico-entrada.md). It is not the current
+implementation priority.
+
 ## Measured progress
 
 | Item | Observed result |
@@ -63,6 +68,7 @@ from the device; the full installed application was not dumped and hash-matched.
 - [Boot chain, update validation and open questions](docs/en/boot-chain.md)
 - [IVT update flow and ARM emulation — phase 10](docs/en/update-flow.md)
 - [Storage mapping and wrapper emulation — phase 11](docs/en/storage.md)
+- [Application A/B selection and boot status — phase 12](docs/en/application-selection.md)
 - [Roadmap and evidence levels](docs/en/roadmap.md)
 - [Evidence manifest](evidence/manifest.json)
 - [Credits, provenance and publication scope](NOTICE.md)

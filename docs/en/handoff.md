@@ -238,6 +238,15 @@ A private 128 KiB bootloader A image matches the recorded SHA-256. [Phase 14](us
 
 [Final auth/recovery decision](final-execution-recovery-decision.md). The two agreed offline packages are complete. Host WebHID→original signed RAM flashloader supports the vendor update workflow but does not establish authorizable custom code on HAB CLOSED. Offline checks of original bootloader A and Bruce verified their RSA/CMS digests; a byte changed in temporary copies invalidated them. Bootloader A authenticates before app jump; bootloader B slot is erased, with no full flash backup or tested rollback. **STOP internal flashing, GO reversible external ESP32-S3 Stadia BLE→PC Xbox 360 bridge; Xbox-console authorization separate.** Tool `tools/audit_final_auth_recovery.py`, sanitized `evidence/phase31-final-auth-recovery.json`. Reopen only on new verified trust/execution/recovery evidence.
 
+## Historical phase 32 — external continuation
+
+The owner prioritizes use on compatible consoles. Start with the
+[console matrix](console-compatibility.md) and [external bridge](external-bridge.md).
+The phase-31 internal stop remains in effect. A normal USB read reconfirmed Bruce
+337784; WinMM obtained no input samples despite PnP HID presence. See
+`evidence/phase32-device-status.json`. Bridge source preparation is pinned and
+SHA-256 checked; no build, ESP32 board, BLE pairing or console validation occurred.
+
 ## Direct software investigation reopened by owner
 
 The owner requests software modification on Stadia itself, no external devices,
