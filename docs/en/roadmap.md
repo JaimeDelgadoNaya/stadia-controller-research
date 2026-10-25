@@ -30,3 +30,11 @@ in this repository. Initial analysis tools deliberately operate on local files.
 ## Priority change after phase 29 (finite stop/go gate)
 
 The earlier task list remains a set of hypotheses, but current execution priority is the **[bounded real-updater decision gate](update-execution-decision-gate.md)**: at most two offline work packages (archived host WebUSB protocol to actual receiver, then signed Bruce application/recoverable execution only if warranted), followed by an explicit **continue/stop** decision. Do not open another unlimited sequence of generic pointer scans. If an externally controllable and recoverable custom-execution path is not shown, shift to an external Xbox bridge while distinguishing PC XInput from console authentication.
+
+## Phase 32 execution priority
+
+The phase-31 stop supersedes the historical internal hypotheses above. Continue
+with [console compatibility](console-compatibility.md), selecting a documented
+controller/adapter/console combination and testing it physically. Use the
+[pinned bridge preparation](external-bridge.md) only for the ESP32-S3 PC prototype;
+its Xbox 360 output does not establish console authorization.

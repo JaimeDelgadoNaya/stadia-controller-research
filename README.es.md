@@ -9,15 +9,25 @@ objetivo a largo plazo es determinar si puede ejecutar firmware propio.
 **Resultado actual: el arranque seguro del mando analizado está en CLOSED. No
 hemos demostrado ejecución de firmware propio ni una forma de eludir las firmas.**
 
-**[Paquete A terminado — protocolo del actualizador WebHID/WebUSB](docs/es/protocolo-actualizador-webhid.md).** El host instala imágenes usando **ROM SDP y cargador firmado RAM**, no Bulk OUT `0x07` del bootloader A. Comandos y validaciones documentados en [la evidencia](evidence/archived-updater-host-protocol.json); sigue sin demostrarse ejecución de firmware propio. Queda **un paquete B offline** antes de aplicar la regla de parada.
+**[Paquete A terminado — protocolo del actualizador WebHID/WebUSB](docs/es/protocolo-actualizador-webhid.md).** El host instala imágenes usando **ROM SDP y cargador firmado RAM**, no Bulk OUT `0x07` del bootloader A. Comandos y validaciones documentados en [la evidencia](evidence/archived-updater-host-protocol.json); sigue sin demostrarse ejecución de firmware propio. El paquete B se completó en la fase 31; la vía interna está cerrada.
 
 **DECISIÓN FINAL — [Fase 31: cerrar firmware interno y comenzar el puente externo](docs/es/decision-final-ejecucion.md).** El análisis offline de autenticación y recuperación ha completado el último paquete pactado. ROM HAB **CLOSED**, firmas originales válidas, sin ejecución propia autenticable ni rollback verificado. **Se detiene la investigación de modificación interna salvo nueva evidencia independiente.** Próximo paso: prototipo ESP32-S3 con BLE Stadia → gamepad Xbox 360 **para PC**, y verificación aparte de compatibilidad/autenticación de consola Xbox One/Series.
 
-## Prioridad actual: ruta de actualización real o puente externo
+## Prioridad actual: compatibilidad con consolas mediante interfaces externas
 
-**[Plan con decisión obligatoria (tras fase 29)](docs/es/puerta-decision-actualizacion.md)**: comprobar el protocolo WebUSB del actualizador archivado y su receptor, analizar la aplicación Bruce firmada y **detener la modificación interna tras dos paquetes offline** si no existe una vía controlable, ejecutable y recuperable. Alternativa: puente externo para Xbox; la emulación XInput para PC no garantiza compatibilidad con consolas.
+**[Fase 32 — continuación reproducible](docs/es/puente-externo.md).** La prioridad
+es usar el mando en las consolas compatibles. Consultar la
+[matriz de consolas y adaptadores](docs/es/compatibilidad-consolas.md): soporte
+declarado por fabricante y pruebas locales se registran por separado.
 
-La imagen Bruce proporcionada se analiza como **muestra firmada de actualización**, no como copia certificada de toda la aplicación instalada. El analizador nuevo identifica una rama de mensaje en `0x60058B68` con comprobación del primer byte `5` y llamada a `0x60058AA8`; **todavía no es un comando de actualización USB probado**.
+Se ha vuelto a detectar el mando USB `18D1:9400`, Bruce **337784**, sin cambiar
+firmware, drivers ni modo. La vista WinMM no entregó muestras de entrada; esto
+no demuestra ausencia de HID. [Evidencia](evidence/phase32-device-status.json) y
+[diagnóstico de entradas Windows](docs/es/diagnostico-entrada.md).
+
+El prototipo ESP32-S3 queda preparado como una opción de desarrollo para PC:
+`python tools/prepare_external_bridge.py local/stadia-dongle-esp` descarga una
+revisión fija y comprueba sus fuentes. No se ha compilado ni validado con placa.
 
 ## Avances medidos
 
