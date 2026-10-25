@@ -44,7 +44,7 @@ En \`0x60811DC8\`, se lee un valor de \`global+0x5A8\`, se desreferencia ese val
 
 ## Límites que importan
 
-- \`0x6080A990\` y \`0x608021B4\` leen un valor de los campos \`global+0x568\` y \`global+0x560\`, respectivamente, y lo pasan a \`0x60809048\`. No se conoce estáticamente el destino de esos punteros.
+- \`0x6080A990\` lee valores de \`global+0x568\` y \`global+0x570\` y los pasa a \`0x60809048\`; \`0x608021B4\` lee \`global+0x560\` y también pasa ese valor a \`0x60809048\`. No se conocen estáticamente los destinos de esos punteros.
 - \`0x6080C150\`, llamado desde \`0x6080990C\`, reemplaza el argumento de entrada cargando otro puntero literal (\`0x20009DC0\`); no usa el alias recibido para escribir los callbacks.
 - \`0x60802174\` lee campos del objeto global y contiene un bucle incondicional en \`0x608021A6\`; la ruta que llega ahí no retorna.
 - Las funciones \`0x60809048\` y \`0x608109FE\` siguen pendientes de análisis por separado. El seguimiento de registros no demuestra que sus punteros dinámicos no puedan referenciar otras zonas.
