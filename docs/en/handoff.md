@@ -209,3 +209,7 @@ A private 128 KiB bootloader A image matches the recorded SHA-256. [Phase 14](us
 ## Phase 25 — Opaque pointer sinks
 
 [Phase 25](dynamic-pointer-sinks.md) examines `0x60809048`, a transfer-like routine reading opaque incoming-object offsets `+0x154/+0x158/+0x15C` and delegating to other callees, plus `0x608109FE`, a linked-list node unlink operation writing through unknown node/previous/next/owner pointers. Caller `0x60811DC8` derives node arguments `link+0x18` and sometimes `link+4` after dynamic pointer loads. No concrete callback-field address or host-to-flash route is established. SHA-locked offline tool `tools/audit_dynamic_pointer_sinks.py`, synthetic tests and sanitized `evidence/usb-phase25.json` are in main; no binary or device I/O.
+
+## Phase 26 — Constructor pointer provenance and list heads
+
+[Phase 26](initial-pointer-and-list-heads.md) statically verifies that `0x6080BAE2` computes `global+0x134 = 0x20008CAC` and stores this same address into `global+0x560` and `global+0x568` (`0x6080BAEC`/`0x6080BAF2`). **Correction:** `global+0x570` is initialized by a **one-byte STRB zero**, not proved to be a third pointer. Two conditional calls to `0x6081099C` initialize self-referential list heads at `global+0x59C/+0x5B0`; `0xFFFFFFFF` is a sentinel marker, not a pointer. These are **initial states**, not measured live RAM or a no-mutation proof. Reproducer: `tools/audit_pointer_initializers.py`, sanitized `evidence/usb-phase26.json`.
