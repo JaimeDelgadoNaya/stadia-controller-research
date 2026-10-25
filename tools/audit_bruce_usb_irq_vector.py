@@ -72,13 +72,24 @@ def resolve_ldr_pc_veneer(image, source):
         raise ValueError("original PC-relative veneer opcode differs")
     literal_addr=(source+4)&~3
     target=struct.unpack_from('<I',image,literal_addr-VECTOR_BASE)[0]
+    all_code=disassemble_candidate(image,target,span=0x1d0)
+    reg_terms=("#0x1ac", "#0x1bc", "#0x1b8", "#0x1b0", "#0x144", "#0x148")
+    high=[]
+    for idx,row in enumerate(all_code):
+        if any(term in row["op"] for term in reg_terms):
+            high.append({
+                "pc":row["pc"],"ins":row["m"]+" "+row["op"],
+                "context":all_code[max(0,idx-3):min(len(all_code),idx+5)],
+            })
     return {
         "veneer_pc":hex(source),
         "literal_address":hex(literal_addr),
         "target_pointer":hex(target),
         "target_classification":categorize(target),
         "target_file_offset":hex(byte_offset_for_handler(target)) if byte_offset_for_handler(target) is not None else None,
-        "target_code_preview":disassemble_candidate(image,target,span=200)[:65],
+        "target_code_preview":all_code[:65],
+        "ITCM_candidate_USB_register_accesses":high,
+        "ITCM_candidate_disassembly_len":len(all_code),
         "runtime_executed":"UNVERIFIED",
     }
 
@@ -153,6 +164,7 @@ def main():
     print("USB1_MODE_2_VENEER",v["veneer_pc"],v["literal_address"],v["target_pointer"],v["target_classification"],v["target_file_offset"])
     for ins in v["target_code_preview"][:42]:
         print("USB1_VENEER_TARGET",ins["pc"],ins["m"],ins["op"])
+    print("USB1 ITCM register candidates:",v["ITCM_candidate_USB_register_accesses"])
     for state,arm in result["USB_OTG1_mode_dispatch"]["branch_arms"].items():
         print("USB1_MODE",state,"TARGET",arm["target"])
         for ins in arm["code_preview"]:
