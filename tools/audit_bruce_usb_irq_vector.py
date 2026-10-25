@@ -63,7 +63,7 @@ def disassemble_candidate(image, vector, span=112):
 def resolve_ldr_pc_veneer(image, source):
     """Resolve a PC-relative Thumb LDR trampoline; literal bytes are not code."""
     from capstone import Cs, CS_ARCH_ARM, CS_MODE_THUMB, CS_MODE_MCLASS
-    pos=source-BASE
+    pos=source-VECTOR_BASE
     if pos < 0 or pos+8 > len(image):
         raise ValueError("veneer outside original image")
     md=Cs(CS_ARCH_ARM,CS_MODE_THUMB|CS_MODE_MCLASS)
@@ -71,7 +71,7 @@ def resolve_ldr_pc_veneer(image, source):
     if not ins or ins.mnemonic!="ldr.w" or ins.op_str.replace(" ","")!="pc,[pc,#-0x0]":
         raise ValueError("original PC-relative veneer opcode differs")
     literal_addr=(source+4)&~3
-    target=struct.unpack_from('<I',image,literal_addr-BASE)[0]
+    target=struct.unpack_from('<I',image,literal_addr-VECTOR_BASE)[0]
     return {
         "veneer_pc":hex(source),
         "literal_address":hex(literal_addr),
