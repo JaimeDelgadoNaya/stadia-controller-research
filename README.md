@@ -116,6 +116,10 @@ Both `global+0x560` and `global+0x568` initially point at `global+0x134`; `globa
 
 Verified direct insertion `0x608109B8` and ordered insertion `0x608109D0` with 14 selected static call/branch edges. Two callers compute heads using `0x2000A7F8 + 20×index`. Later reassignments of `global+0x560/+0x568` and USB reachability are still unproven.
 
+- **[Phase 28 — Indexed node and bucket-index provenance](docs/en/indexed-node-provenance.md)**
+
+At `0x60811A32` and `0x60811E0C`, nodes are embedded at `object+4` while bucket indices come from `object+0x2C`. The observed comparisons occur after insertion; upstream validation, invalid indices and USB reachability remain unproven.
+
 ## Offline reproduction
 
 Python 3.11 or newer:
