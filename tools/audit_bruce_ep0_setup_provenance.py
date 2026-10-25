@@ -123,9 +123,11 @@ def setup_pair_candidates(instructions, *, max_gap=14):
         if zero is None:
             continue
         near=instructions[idx:min(len(instructions),idx+max_gap)]
-        cmp_pairs=[(x["pc"],parse_immediate_compare(x["m"],x["op"]))
-                   for x in near]
-        cmp_pairs=[(p,r,v) for p,(r,v) in cmp_pairs if r is not None]
+        cmp_pairs=[]
+        for x in near:
+            parsed=parse_immediate_compare(x["m"],x["op"])
+            if parsed is not None:
+                cmp_pairs.append((x["pc"],parsed[0],parsed[1]))
         interesting=[{"pc":hex(pc),"register":r,"immediate":hex(v)}
                      for pc,r,v in cmp_pairs if v in (0x21,0xA1,0x81,0x83,0x84)]
         output.append({
