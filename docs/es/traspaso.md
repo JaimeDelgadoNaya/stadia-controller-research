@@ -141,3 +141,18 @@ espacio de trabajo original se conservan `outputs/bootloader-a.bin`,
 en `work/`. El ZIP es un archivo local, no un release público. El propietario
 puede proporcionar esos archivos a su siguiente entorno si desea repetir el
 análisis del binario completo. No hay ningún proceso de extracción dejado activo.
+
+## Fase 12 — Auditoría automatizada de llamadas al escritor IVT
+
+Se añadió [la auditoría de ruta de escritura](ruta-escritura.md), con
+`tools/trace_write_path.py` y pruebas de cambios de instrucciones, enlaces directos
+y tablas virtuales. El informe usa únicamente `evidence/bootloader-analysis.json`.
+Comprueba la cadena **condicionada** entre `0x6080285C` y el escritor físico
+`0x60808E38`; las llamadas IVT examinadas conservan longitud fija `0x1000`
+y offset cero. **No existe una ruta desde USB demostrada.** Tampoco hay
+elusión de HAB o ejecución de firmware propio. Ejecutar:
+
+```sh
+python tools/trace_write_path.py
+python -m unittest discover -s tests -v
+```
