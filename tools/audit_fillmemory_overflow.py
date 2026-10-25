@@ -14,6 +14,8 @@ WINDOWS = {
     "additional_memory_map_checks": (0x39F4, 0x3A9C),
     "target_region_bounds": (0x3B30, 0x3B78),
     "fill_region_and_backend": (0x3C86, 0x3CC4),
+    "peripheral_backend_methods": (0x3928, 0x397E),
+    "ram_backend_methods": (0x3CE0, 0x3D78),
 }
 
 
