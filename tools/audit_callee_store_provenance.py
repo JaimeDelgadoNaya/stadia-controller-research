@@ -330,12 +330,14 @@ def scan_range(image, name, start, end, seed_aliases, md=None):
         if op in {"mov","movs"} and len(operands)>=2 and operands[0].type==ARM_OP_REG:
             dest=operands[0].reg
             source=operands[1]
+            source_alias=aliases.get(source.reg) if source.type==ARM_OP_REG else None
+            source_provenance=dict(loaded_from[source.reg]) if source.type==ARM_OP_REG and source.reg in loaded_from else None
             aliases.pop(dest,None); loaded_from.pop(dest,None)
             if source.type==ARM_OP_REG:
-                if source.reg in aliases:
-                    aliases[dest]=aliases[source.reg]
-                elif source.reg in loaded_from:
-                    loaded_from[dest]=dict(loaded_from[source.reg])
+                if source_alias is not None:
+                    aliases[dest]=source_alias
+                elif source_provenance is not None:
+                    loaded_from[dest]=source_provenance
             continue
 
         if op in {"add","adds","addw","sub","subs","subw"} and operands and operands[0].type==ARM_OP_REG:
@@ -345,17 +347,18 @@ def scan_range(image, name, start, end, seed_aliases, md=None):
                 source_reg=operands[1].reg; immediate=operands[2].imm
             elif len(operands)==2 and operands[1].type==ARM_OP_IMM:
                 source_reg=dest; immediate=operands[1].imm
+            source_alias=aliases.get(source_reg) if source_reg is not None else None
+            source_provenance=dict(loaded_from[source_reg]) if source_reg is not None and source_reg in loaded_from else None
             aliases.pop(dest,None); loaded_from.pop(dest,None)
             if source_reg is not None and immediate is not None:
                 delta = -immediate if op.startswith("sub") else immediate
-                if source_reg in aliases:
-                    aliases[dest]=aliases[source_reg]+delta
-                elif source_reg in loaded_from:
-                    provenance=dict(loaded_from[source_reg])
-                    provenance["pointer_addend"]=provenance.get("pointer_addend",0)+delta
-                    provenance["chain"]=provenance.get("chain",[])+[
+                if source_alias is not None:
+                    aliases[dest]=source_alias+delta
+                elif source_provenance is not None:
+                    source_provenance["pointer_addend"]=source_provenance.get("pointer_addend",0)+delta
+                    source_provenance["chain"]=source_provenance.get("chain",[])+[
                         {"kind":"pointer_arithmetic","delta":delta}]
-                    loaded_from[dest]=provenance
+                    loaded_from[dest]=source_provenance
             continue
 
         if op == "bx" and operands and operands[0].type == ARM_OP_REG:
