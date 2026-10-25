@@ -239,11 +239,53 @@ def callers_of_known(image, named_targets, max_examples=20):
     return found
 
 
+REGISTRAR_ANCHORS={
+    0x600D10B8:("push","{r4, r5, r6}"),
+    0x600D10C0:("ldrb","r4, [r1, #2]"),
+    0x600D10C2:("and","r5, r4, #0xf"),
+    0x600D10C6:("cmp","r5, #7"),
+    0x600D10D0:("orr.w","r3, r3, r5, lsl #1"),
+    0x600D10D4:("movs","r5, #0xc"),
+    0x600D10D6:("mla","r3, r5, r3, r0"),
+    0x600D10DA:("str","r2, [r3, #0x10]"),
+    0x600D10DE:("str","r4, [r3, #0xc]"),
+    0x600D10E0:("strb","r2, [r3, #0x14]"),
+    0x600D10E8:("b.w","#0x600d0ede"),
+    0x60054782:("bl","#0x600d10b8"),
+    0x60054850:("bl","#0x600d10b8"),
+    0x60054774:("str.w","sb, [sp, #0xc]"),
+    0x60054794:("str.w","r8, [sp, #0xc]"),
+    0x6005479A:("str","r7, [sp, #0xc]"),
+    0x6005484C:("strd","r8, r4, [sp, #0xc]"),
+    0x600D1122:("strd","r2, r2, [r3, #0xc]"),
+}
+CALLBACK_THUMB_POINTER_ANCHORS={
+    0x600547A0:0x600CFC71,
+    0x600547A4:0x600CFC35,
+    0x600547A8:0x600CFC53,
+    0x60054870:0x600CFC1B,
+}
+
+def validate_registration_anchors(decoded,pointers):
+    for pc,semantic in REGISTRAR_ANCHORS.items():
+        if decoded.get(pc)!=semantic:
+            raise ValueError("Original EP0 endpoint registration semantic drift: "+hex(pc))
+    for pc,ptr in CALLBACK_THUMB_POINTER_ANCHORS.items():
+        if pointers.get(pc)!=ptr:
+            raise ValueError("Original endpoint literal pointer drift: "+hex(pc))
+    return True
+
+
 def audit(image, *, include_focused=False):
     if len(image)!=IMAGE_SIZE or hashlib.sha256(image).hexdigest()!=IMAGE_SHA256:
         raise ValueError("Exact signed Bruce update sample required (SHA256 and size)")
     calls=candidate_calls(image)
     focused=decode(image,FOCUSED_START,FOCUSED_END)
+    origin_code=decode(image,0x600D10B8,0x600D1134)+decode(image,0x60054728,0x60054858)
+    anchored={row["pc"]:(row["m"],row["op"]) for row in origin_code}
+    resolved=resolve_known_registrar_literals(image)
+    literals={int(item["literal_at"],16):int(item["pointer"],16) for item in resolved}
+    validate_registration_anchors(anchored,literals)
     stores=[x for x in focused if x["m"].startswith(("str","stm"))]
     return {
         "oem_signed_image_sha256_verified":True,
@@ -257,7 +299,8 @@ def audit(image, *, include_focused=False):
         "ep0_in_callback_offset_from_object":hex(0x0c+ENDPOINT_STRIDE),
         "candidate_function_calls_to_usb_core":calls,
         "candidate_slot_writers":candidate_slot_writers(image),
-        "registration_handler_literals":resolve_known_registrar_literals(image),
+        "registration_handler_literals":resolved,
+        "original_registration_semantic_anchors_verified":True,
         "registrar_pointer_refs":thumb_pointer_references(image,{
             "device_endpoint_registration_api":0x600D10B9,
             "descriptor_loop_function":0x60054729,
@@ -279,6 +322,18 @@ def audit(image, *, include_focused=False):
             [{"pc":hex(i["pc"]),"m":i["m"],"op":i["op"]} for i in focused]
             if include_focused else [],
         "candidate_stores_count_in_window":len(stores),
+        "verified_registration":{
+            "api":"0x600d10b8",
+            "slot_offset_callback":hex(0x0c),
+            "slot_offset_context":hex(0x10),
+            "per_endpoint_stride":12,
+            "input_endpoint_address_from_structure":"+2",
+            "callers":["0x60054782","0x60054850"],
+            "callback_thumb_targets":[hex(x) for x in CALLBACK_THUMB_POINTER_ANCHORS.values()],
+            "callback_targets_are_class_forwarders":"Likely, inferred from indirect jump to a class object's callback; actual class target unknown",
+            "de_registration_slot_zeroer":"0x600d1122 (slot pair zeroed under guard)",
+            "runtime_ep0_entries":"NOT IDENTIFIED",
+        },
         "ep0_runtime_callback_pointer":"NOT IDENTIFIED",
         "ep0_setup_class_brequest_receiver":"NOT IDENTIFIED",
         "host_to_custom_execution":"NOT DEMONSTRATED",
