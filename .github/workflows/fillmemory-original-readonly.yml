@@ -37,12 +37,15 @@ jobs:
           set -euo pipefail
           python -m tools.audit_fillmemory_verified /tmp/stadia-audit/loader.bin --out /tmp/stadia-audit/verified.json
           python -m tools.audit_fillmemory_cfg /tmp/stadia-audit/loader.bin --out /tmp/stadia-audit/graph.json
+          python -m tools.audit_fillmemory_overflow /tmp/stadia-audit/loader.bin --print-disassembly
+          python -m tools.audit_fillmemory_wrap_model /tmp/stadia-audit/loader.bin --out /tmp/stadia-audit/wrap.json
           python - <<'PY'
           import json
           from pathlib import Path
           root = Path("/tmp/stadia-audit")
           verified = json.loads((root / "verified.json").read_text())
           graph = json.loads((root / "graph.json").read_text())
+          wrap = json.loads((root / "wrap.json").read_text())
           print("Hash verified:", verified["sha256_matches_original"])
           print("Fill/Write shared policy:", verified["range_policy_shared"])
           print("Fill/Write operation IDs:", verified["policy_operation"])
@@ -50,6 +53,8 @@ jobs:
           print("Normal patch of Execute/Call flags:",
                 verified["normal_positive_nonwrapping_fill_to_execution_flags"])
           print("Bounded graph indirect limitations:", graph["unresolved_or_unmodeled"])
+          print("Wrapped interval model (bounded prechecks only):", [(x["field"], x["wrapped_candidate_passes_policy_precheck"], x["wrapped_candidate_matches_initial_memory_map"], x["required_length_exceeds_mapped_ram"]) for x in wrap["control_fields_offline_scenarios"]])
+          print("WARNING: protected-region gate, actual backend effect and recovery unverified.")
           print("No custom execution, bypass or recovery inferred.")
           PY
       - name: Remove temporary image and analysis files

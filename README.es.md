@@ -15,6 +15,8 @@ hemos demostrado ejecución de firmware propio ni una forma de eludir las firmas
 
 **[FillMemory verificado sobre el cargador original](docs/es/seguimiento-fillmemory-cfg.md).** La PR #27 confirmó offline que FillMemory (operación 0) llama al verificador `0x200039A8`, al igual que WriteMemory (operación 2), pero **con otra tabla de rangos permitidos**. La tabla de FillMemory no incluye los campos que habilitan Execute/Call: la escritura ordinaria sobre ellos queda descartada. Las longitudes con posible desbordamiento y los efectos de los métodos indirectos aún requieren análisis; no hay bypass HAB ni ejecución de firmware propio.
 
+**[FillMemory: desbordamiento de 32 bits y límites del backend](docs/es/desbordamiento-fillmemory.md).** El modelo fijado al cargador original demuestra que algunos extremos calculados con desbordamiento superan dos filtros estáticos; **la comprobación dinámica y la escritura efectiva no están demostradas**. El backend recorrería una longitud enorme fuera de la región declarada; no hay firmware ejecutable ni bypass HAB.
+
 ## Prioridad actual: software del propio mando y Switch 2 directa
 
 El propietario ha descartado adaptadores y placas externas. La nueva prioridad
