@@ -1,0 +1,163 @@
+{
+  "phase": 31,
+  "package": "B_FINAL",
+  "date": "2026-10-25",
+  "decision": "STOP_INTERNAL__START_EXTERNAL_BRIDGE",
+  "scope": "owner-approved offline only, no new physical USB/flash/eFuse operations",
+  "original_samples": [
+    {
+      "name": "bootloader_a",
+      "bytes": 131072,
+      "sha256": "59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0",
+      "source": "extracted from tested controller",
+      "ivt_offset": "0x0",
+      "ivt_header": "0x412000d1",
+      "ivt_entry": "0x60801000",
+      "ivt_self": "0x60001000",
+      "ivt_csf": "0x60818000",
+      "csf_file_offset": "0x18000",
+      "csf_command_bytes": 96,
+      "verified_RSA_CMS_signatures": 2,
+      "signed_blocks": [
+        {
+          "address": "0x60001000",
+          "file_offset": "0x0",
+          "bytes": 4096,
+          "explicit_alias": true
+        },
+        {
+          "address": "0x60800000",
+          "file_offset": "0x0",
+          "bytes": 98304,
+          "explicit_alias": false
+        }
+      ]
+    },
+    {
+      "name": "bruce_signed_update",
+      "bytes": 1050984,
+      "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+      "source": "owner-supplied signed Bruce update sample NOT independent installed flash backup",
+      "ivt_offset": "0xff000",
+      "ivt_header": "0x412000d1",
+      "ivt_entry": "0x60040000",
+      "ivt_self": "0x6013f000",
+      "ivt_csf": "0x6013f030",
+      "csf_file_offset": "0xff030",
+      "csf_command_bytes": 72,
+      "verified_RSA_CMS_signatures": 2,
+      "signed_blocks": [
+        {
+          "address": "0x60040000",
+          "file_offset": "0x0",
+          "bytes": 1044528,
+          "explicit_alias": false
+        }
+      ]
+    }
+  ],
+  "crypto_validation": {
+    "method": "offline RSA PKCS1v1.5 SHA256 CMS and message_digest verification with embedded HAB CSF certificates",
+    "reference_script": "tools/verify_hab.py",
+    "original_images_passed": true,
+    "changed_one_code_byte_in_separate_temporary_copy_rejected_for_each": true,
+    "fused_SRK_hash_trust_verified": false,
+    "signed_ranges_cover_entire_flash": false
+  },
+  "code_fingerprints": [
+    {
+      "name": "boot_hab_wrapper",
+      "start": "0x60801f5c",
+      "end_exclusive": "0x60801fa4",
+      "sha256": "c0a71ede67f348976e91f1795ff2718420306dbbf2b0111f5db8639e206618cd"
+    },
+    {
+      "name": "boot_app_validator",
+      "start": "0x6080200c",
+      "end_exclusive": "0x60802068",
+      "sha256": "59ebd74043303851dcb85ef7dc09563a2605c89ec9a4cdd96e8b1b91b673ddd7"
+    },
+    {
+      "name": "boot_jump",
+      "start": "0x60801ef0",
+      "end_exclusive": "0x60801f5c",
+      "sha256": "edced003e3c9b8bad25f0b9cbec5ce10c45fe4c3b7a3c4a8952f01781c62cd7f"
+    },
+    {
+      "name": "boot_update_validator",
+      "start": "0x608020a8",
+      "end_exclusive": "0x60802170",
+      "sha256": "b4f25540483bc803eae1cb8a73ee55063d63edf61d67bc5b4725a5d57f94e3f3"
+    },
+    {
+      "name": "bruce_ivt",
+      "file_range": [
+        "0xff000",
+        "0xff030"
+      ],
+      "sha256": "f6c0a147fd901ba0875e4f549e328e7a2c09f1a84678710e15094ad9ac1a533d"
+    },
+    {
+      "name": "bruce_csf_header",
+      "file_range": [
+        "0xff030",
+        "0xff078"
+      ],
+      "sha256": "e9e09fa78a4e3421928e6c5eb30b44c3bad23a0f9935f8ac2b10fc91ad13931a"
+    }
+  ],
+  "HAB_unit_evidence": {
+    "original_measurement_ref": "docs/es/mediciones.md",
+    "rom_ERROR_STATUS": "0x12343412",
+    "rom_HAB_success": "0xf0f0f0f0",
+    "flashloader_GetProperty_0x11": 1,
+    "supported_interpretation": "ROM HAB CLOSED corroborated by restricted loader OCOTP_CFG5[1]"
+  },
+  "boot_authentication": {
+    "app_validator": "0x6080200c",
+    "hab_entry_wrapper": "0x60801f5c",
+    "hab_RVT": [
+      "0x00200304",
+      "0x0020032c",
+      "0x00200308"
+    ],
+    "jump_after_success": "0x60801f46",
+    "update_prevalidation_structural": "0x608020a8 with flag=0",
+    "update_later_authentication": "0x608020a8 with flag=1",
+    "arbitrary_custom_image_accepted": "NOT DEMONSTRATED"
+  },
+  "recovery": {
+    "entered_ROM_SDP_before": true,
+    "original_signed_RAM_loader_accepted_before": true,
+    "backup_bootloader_B": "entire 128 KiB erased 0xff",
+    "full_16MB_flash_backup": false,
+    "recover_after_interrupted_write": "NOT TESTED",
+    "automatic_rollback": "NOT DEMONSTRATED",
+    "safe_recovery_for_unauthenticated_custom_image": "NOT DEMONSTRATED"
+  },
+  "stop_go": {
+    "real_host_firmware_write_protocol": true,
+    "ROM_flashloader_receiver_observed": true,
+    "executable_custom_code_authenticated": false,
+    "reliable_recovery_verified": false,
+    "must_stop_internal_under_agreed_budget": true,
+    "reopen_only_with": "independent evidence proving own-code authentication/execution AND recoverable path; no further generic pointer-only phases"
+  },
+  "external_bridge": {
+    "sample": "https://github.com/danzig666/stadia-dongle-esp",
+    "input": "Stadia BLE HID",
+    "hardware": "ESP32-S3 native USB",
+    "documented_target": "PC, wired Xbox 360/XInput gamepad",
+    "Xbox_One_Series_compatibility": "NOT ESTABLISHED",
+    "next": "Validate BLE->PC gamepad behavior first; then verify authorized console interface"
+  },
+  "scripts": {
+    "reproducer": "tools/audit_final_auth_recovery.py",
+    "synthetic_tests": "tests/test_final_auth_recovery.py",
+    "original_image_in_git": false
+  },
+  "official_references": [
+    "https://mcuxpresso.nxp.com/mcuxsdk/latest/middleware/mcu_bootloader/docs/iMXRT1060_Manufacturing_User_Guide/topics/imx_rt_bootable_image.html",
+    "https://www.pjrc.com/teensy/IMXRT1060RM_rev2.pdf"
+  ]
+}

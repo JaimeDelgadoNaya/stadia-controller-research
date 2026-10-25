@@ -101,3 +101,7 @@ original puede servir para el objetivo o si conviene implementar el puente.
 ## Resultado del paquete A (realizado)
 
 **[Matriz de mensajes host y validaciones](protocolo-actualizador-webhid.md).** El actualizador archivado utiliza WebHID en ROM SDP y cargador original firmado en RAM. La programación está documentada en el código del host, pero no hay ejecución propia autorizable ni recuperación demostradas. **No** se ha utilizado el mando. El paquete B restante queda acotado a firma/arranque, identidad del firmware firmado y recuperación; tras él se aplicará la regla de parada.
+
+## Decisión obligatoria aplicada — fase 31 (cerrado)
+
+Se completaron ambos paquetes de investigación offline. El [informe de cierre](decision-final-ejecucion.md) verifica dos firmas CMS por cada imagen original, hashes y la cadena de autenticación del bootloader A, junto con HAB CLOSED medido previamente. No se ha demostrado ejecución de imagen propia autenticable; la ranura B está vacía y tampoco existe recuperación completa o rollback probado. **DECISIÓN: PARAR modificación interna y comenzar puente externo reversible.** No retomar barridos indefinidos sin nueva evidencia independiente que cambie simultáneamente ejecución y recuperación. Evidencia saneada: `evidence/phase31-final-auth-recovery.json`.
