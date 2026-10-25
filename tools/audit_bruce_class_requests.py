@@ -55,6 +55,51 @@ def classify_request_compare(mnemonic, operands):
         return None
     return number if number in (0x81,0x83,0x84) else None
 
+def census_imm_comparisons(data, per_request_limit=30):
+    """Coarse entire-signed-app literal CMP census; not reachable CFG.
+
+    Decode chunks of 0x2000 bytes, including the copied ITCM image and XIP
+    application separately. The copied ITCM half is reported using source
+    offsets; PCs printed from its XIP bytes are *not* relocated runtime PCs.
+    """
+    from capstone import Cs, CS_ARCH_ARM, CS_MODE_THUMB, CS_MODE_MCLASS
+    md=Cs(CS_ARCH_ARM,CS_MODE_THUMB|CS_MODE_MCLASS)
+    zones=(
+        ("ITCM_source_NOT_runtime_PC",ITCM_SOURCE_OFFSET,
+         ITCM_SOURCE_OFFSET+ITCM_LENGTH),
+        ("XIP_signed_application", ITCM_SOURCE_OFFSET+ITCM_LENGTH,0xFF000)
+    )
+    results={hex(v):{"count_in_linear_decode":0,"examples":[]} for v in (0x81,0x83,0x84)}
+    for kind,start,end in zones:
+        for chunk in range(start,end,0x2000):
+            decoded=list(md.disasm(data[chunk:min(chunk+0x2000,end)],XIP_BASE+chunk))
+            for i,ins in enumerate(decoded):
+                value=classify_request_compare(ins.mnemonic,ins.op_str)
+                if value is None:
+                    continue
+                row=results[hex(value)]
+                row["count_in_linear_decode"]+=1
+                if len(row["examples"])>=per_request_limit:
+                    continue
+                context=decoded[max(0,i-6):i+5]
+                row["examples"].append({
+                    "file_offset":hex(ins.address-XIP_BASE),
+                    "decoded_address_not_necessarily_runtime":hex(ins.address),
+                    "zone":kind,
+                    "preceding_byte_load":[
+                        {"pc":hex(prev.address),"ins":prev.mnemonic+" "+prev.op_str}
+                        for prev in decoded[max(0,i-10):i]
+                        if prev.mnemonic.startswith("ldrb")
+                    ],
+                    "assembly_context":[x.mnemonic+" "+x.op_str for x in context],
+                    "reachable_from_host":"UNVERIFIED",
+                })
+    return {
+        "by_value":results,
+        "limitation":"Linear chunk disassembly only, no proof these are code rather than data or use USB setup.bRequest; direct compares miss tables and computed dispatch.",
+    }
+
+
 def inspect(data):
     if len(data)!=IMAGE_SIZE or hashlib.sha256(data).hexdigest()!=IMAGE_SHA256:
         raise ValueError("Requires exact original signed Bruce SHA-256")
@@ -85,6 +130,7 @@ def inspect(data):
         "host_archived_class_requests":["0x81 IN version","0x83 OUT battery init","0x84 IN battery"],
         "windows":windows,
         "candidate_immediate_cmp":candidates,
+        "whole_image_cmp_census":census_imm_comparisons(data),
         "receiver_for_host_0x81_0x83_0x84":"NOT IDENTIFIED BY THIS BOUNDED PREVIEW",
         "reachable_arbitrary_execution":"NOT ESTABLISHED",
         "scope":"Static Thumb disassembly of selected XIP windows; functions may cross windows and code may contain literal pools",
@@ -107,6 +153,7 @@ def main():
             for i in details["disassembly_preview"]:
                 print(i["address"],i["mnemonic"],i["operands"])
         print("CANDIDATE CMP",json.dumps(result["candidate_immediate_cmp"]))
+        print("WHOLE IMAGE CMP CENSUS",json.dumps(result["whole_image_cmp_census"]))
     elif not args.out:
         print(json.dumps(result,indent=2))
 
