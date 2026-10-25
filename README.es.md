@@ -77,6 +77,10 @@ La función previamente descrita con límite de 512 bytes pertenece a una tabla 
 
 Con el bootloader A de SHA-256 verificado hemos seguido dos registros de endpoint mediante `0x60806660`. Los endpoints Bulk OUT `0x07` e IN `0x87` utilizan índices internos distintos. Falta demostrar qué callback corresponde al OUT y cómo procesa los mensajes. No se ha demostrado un bypass de HAB CLOSED.
 
+- **[Fase 18 — Inicialización RAM y callback Bulk OUT identificado](docs/es/inicializacion-ram-usb.md)**
+
+El código de arranque copia los descriptores compactos de endpoints desde flash a RAM. Este flujo permite **asignar con evidencia el callback Bulk OUT `0x07` a `0x6080A06A`** y Bulk IN `0x87` a `0x60809E30`. El destino final del callback OUT y la ruta al escritor de flash siguen sin demostrarse.
+
 ## Reproducción sin conexión
 
 Python 3.11 o posterior:
