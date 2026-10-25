@@ -43,6 +43,9 @@ esos requisitos. [Interfaz BLE, revisión
 
 ## Trabajo acotado y criterios de avance
 
+Continuación: [decodificación USB de entrada](decodificacion-entrada.md), con
+pruebas contra el descriptor medido. Falta verificar las etiquetas físicas.
+
 1. Analizar offline el receptor USB de la aplicación Bruce y los límites de
    ejecución/autenticación. Documentar entradas realmente controlables y su
    recorrido; un desbordamiento aislado o una escritura flash no bastan.
