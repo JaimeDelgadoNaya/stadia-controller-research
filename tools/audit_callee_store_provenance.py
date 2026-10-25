@@ -458,7 +458,10 @@ def audit(image, expected_sha256=SHA256):
                                 "bytes":e-s,"sha256":h}
                                for n,(s,e,h) in CODE_RANGES.items()],
         "function_analyses":results,
-        "direct_store_count":len(stores),"direct_stores":stores,
+        "direct_store_observation_count":len(stores),
+        "unique_direct_store_instruction_site_count":len({s["at"] for s in stores}),
+        "unique_direct_store_instruction_sites":sorted({s["at"] for s in stores}),
+        "direct_stores":stores,
         "direct_callback_field_store_count":len(callback_writes),
         "direct_callback_field_stores":callback_writes,
         "dynamic_pointer_access_count":len(dynamic_accesses),
