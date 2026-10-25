@@ -15,6 +15,12 @@ from tools.audit_signed_app_surface import IMAGE_SIZE, IMAGE_SHA256, ASSUMED_XIP
 from tools.audit_app_usb_dispatch import ITCM_SOURCE_OFFSET, ITCM_LENGTH
 
 IRQS={"USB_OTG2":112,"USB_OTG1":113}
+# Two direct tail branches in the hash-pinned OTG1 wrapper. Not proof that
+# either branch has been taken in a live board.
+USB1_BRANCH_ARMS={
+    2:0x6013D1F8,
+    3:0x600D546A,
+}
 VECTOR_BASE=ASSUMED_XIP_BASE
 VECTOR_STRIDE=4
 CORE_EXCEPTIONS=16
@@ -76,11 +82,28 @@ def inspect(image):
             "live_SCB_VTOR_matches_image_vector_table":"UNVERIFIED",
             "handler_connected_to_EP0_setup_callback":"UNVERIFIED",
         })
+    targets={}
+    for state,target in USB1_BRANCH_ARMS.items():
+        targets[str(state)]={
+            "target":hex(target),
+            "target_kind":categorize(target|1),
+            "code_preview":disassemble_candidate(image,target|1,span=208)[:65],
+            "live_reachability":"UNVERIFIED",
+            "EP0_effect":"UNVERIFIED",
+        }
     return {
         "original_bruce_sha256":IMAGE_SHA256,
         "image_validated":True,
         "assumption":"Standard Cortex-M vector at signed image start. Running VTOR may be relocated; this is NOT a live register measurement.",
         "vectors":rows,
+        "USB_OTG1_mode_dispatch":{
+            "entry":"0x600610d0",
+            "selector":"global structure at +0x3e78 (runtime RAM state not measured)",
+            "mode_2_branch":"0x6013d1f8",
+            "mode_3_branch":"0x600d546a",
+            "branch_arms":targets,
+            "condition_code":"observed CMP #2/#3 and conditional branches; no physical mode state captured",
+        },
         "USB_to_EP0_proof":False,
         "host_control_request_receivers_identified":False,
         "unsafe_device_ops":False
@@ -102,7 +125,11 @@ def main():
               "file",row["handler_source_file_offset"])
         for i in row["handler_disassembly_preview"][:32]:
             print(i["pc"],i["m"],i["op"])
-    print("EP0 callback established? No (vector is only first static link).")
+    for state,arm in result["USB_OTG1_mode_dispatch"]["branch_arms"].items():
+        print("USB1_MODE",state,"TARGET",arm["target"])
+        for ins in arm["code_preview"]:
+            print(ins["pc"],ins["m"],ins["op"])
+    print("EP0 callback established? No (vector and mode arms are static only).")
 
 
 if __name__=="__main__":
