@@ -83,3 +83,7 @@ Public updater references:
 
 All investigation is offline with no USB operations, flash writes,
 or proprietary image publication.
+
+## Package A outcome (completed)
+
+**[Actual archived host-to-receiver protocol](archived-updater-host-protocol.md).** Archived host code uses WebHID via NXP ROM SDP and original signed RAM flashloader; firmware flash commands are documented but neither arbitrary custom execution nor reliable recovery is shown. No device was used. The sole remaining package B is limited to boot/authentication, signed image identity and recovery evidence, after which the mandatory STOP/GO decision applies.

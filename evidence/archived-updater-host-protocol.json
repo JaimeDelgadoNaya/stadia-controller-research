@@ -1,0 +1,209 @@
+{
+  "package": "A",
+  "phase": "post_phase_29_updater_host_protocol",
+  "date": "2026-10-25",
+  "scope": "offline read-only static source analysis",
+  "archived_source": {
+    "repo": "hazrpg/stadia-flasher",
+    "path": "controller/app_combined.js",
+    "url": "https://github.com/hazrpg/stadia-flasher/blob/main/controller/app_combined.js",
+    "bytes": 149810,
+    "git_blob_sha1": "3c877738c12e7d5750714cd0770935ad39bd9990",
+    "format": "Closure-minified JavaScript",
+    "executed": false
+  },
+  "corroboration": [
+    "https://github.com/GaryOderNichts/StadiaController/blob/main/stadiatool/sdp.py",
+    "https://github.com/GaryOderNichts/StadiaController/blob/main/stadiatool/flashloader.py",
+    "https://github.com/JaimeDelgadoNaya/stadia-controller-research/blob/main/docs/es/mediciones.md",
+    "https://github.com/JaimeDelgadoNaya/stadia-controller-research/blob/main/docs/es/arranque.md"
+  ],
+  "device_filters": [
+    {
+      "vid": "0x15a2",
+      "pid": "0x0073",
+      "transport": "WebHID",
+      "class": "original signed RAM flashloader"
+    },
+    {
+      "vid": "0x18d1",
+      "pid": "0x9400",
+      "transport": "WebUSB",
+      "class": "normal controller"
+    },
+    {
+      "vid": "0x18d1",
+      "pid": "0x946b",
+      "transport": "enumerated mode",
+      "class": "bootloader interface"
+    },
+    {
+      "vid": "0x1fc9",
+      "pid": "0x0135",
+      "transport": "WebHID",
+      "class": "ROM SDP"
+    }
+  ],
+  "source_audited_calls": {
+    "webusb_controlTransferIn": 1,
+    "webusb_controlTransferOut": 1,
+    "webusb_transferOut": 0,
+    "webusb_transferIn": 0,
+    "webhid_sendReport": 4
+  },
+  "host_commands": [
+    {
+      "step": 1,
+      "device": "0x18d1:0x9400",
+      "api": "WebUSB",
+      "kind": "class_interface_controlIn",
+      "bRequest": "0x81",
+      "length": 64,
+      "context": "Dj/Bj/Aj",
+      "semantics": "version LE32"
+    },
+    {
+      "step": 2,
+      "device": "0x18d1:0x9400",
+      "api": "WebUSB",
+      "kind": "class_interface_controlOut",
+      "bRequest": "0x83",
+      "context": "Cj",
+      "semantics": "init battery read"
+    },
+    {
+      "step": 3,
+      "device": "0x18d1:0x9400",
+      "api": "WebUSB",
+      "kind": "class_interface_controlIn",
+      "bRequest": "0x84",
+      "length": 64,
+      "context": "Ej/Bj",
+      "semantics": "battery result 16-bit"
+    },
+    {
+      "step": 4,
+      "device": "0x1fc9:0x0135",
+      "api": "WebHID",
+      "kind": "SDP WRITE_FILE",
+      "command": "0x0404",
+      "hid_command_report": 1,
+      "hid_data_report": 2,
+      "destination_RAM": "0x20000000",
+      "payload": "restricted_ivt_flashloader.bin",
+      "context": "wm/bj/cj",
+      "notes": "signed original RAM loader, big endian SDP command"
+    },
+    {
+      "step": 5,
+      "device": "0x1fc9:0x0135",
+      "api": "WebHID",
+      "kind": "SDP JUMP_ADDRESS",
+      "command": "0x0b0b",
+      "hid_command_report": 1,
+      "jump_ivt": "0x20000400",
+      "context": "bj/cj"
+    },
+    {
+      "step": 6,
+      "device": "0x15a2:0x0073",
+      "api": "WebHID",
+      "kind": "flashloader ConfigureMemory",
+      "command": "0x11",
+      "context": "pj"
+    },
+    {
+      "step": 7,
+      "device": "0x15a2:0x0073",
+      "api": "WebHID",
+      "kind": "flashloader ReadMemory",
+      "command": "0x03",
+      "context": "oj"
+    },
+    {
+      "step": 8,
+      "device": "0x15a2:0x0073",
+      "api": "WebHID",
+      "kind": "flashloader FillMemory",
+      "command": "0x05",
+      "context": "jj"
+    },
+    {
+      "step": 9,
+      "device": "0x15a2:0x0073",
+      "api": "WebHID",
+      "kind": "FlashEraseRegion",
+      "command": "0x02",
+      "chunks_max_bytes": 16384,
+      "context": "mj"
+    },
+    {
+      "step": 10,
+      "device": "0x15a2:0x0073",
+      "api": "WebHID",
+      "kind": "WriteMemory",
+      "command": "0x04",
+      "hid_command_report": 1,
+      "hid_data_report": 2,
+      "payload_chunks_max_bytes": 512,
+      "context": "nj"
+    },
+    {
+      "step": 11,
+      "device": "0x15a2:0x0073",
+      "api": "WebHID",
+      "kind": "Reset",
+      "command": "0x0b",
+      "context": "Zi.prototype.reset"
+    },
+    {
+      "step": 12,
+      "device": "0x18d1:0x9400",
+      "api": "WebUSB",
+      "kind": "version verification",
+      "bRequest": "0x81",
+      "context": "xm/Dj",
+      "semantics": "build-number equality only"
+    }
+  ],
+  "host_image_validation": {
+    "functions": [
+      "lm",
+      "Ri",
+      "Qi"
+    ],
+    "checks": [
+      "signed filename selection by mode and hardware type",
+      "metadata header",
+      "metadata footer",
+      "metadata size==256",
+      "reset vector within known partition range",
+      "optional 4096-byte IVT for bootable image"
+    ],
+    "cryptographic_signature_verified_by_host": "NOT SHOWN",
+    "device_HAB_closed": "previously measured, Google signed RAM loader accepted"
+  },
+  "actual_receivers": {
+    "ROM_SDP": "NXP ROM HID receiver, function body not extracted",
+    "signed_ram_flashloader": "restricted RAM flashloader HID command listener, protocol corroborated independently",
+    "normal_app": "class-interface handler for version/battery; exact receiver address not yet linked"
+  },
+  "critical_distinctions": {
+    "bootloader_A_bulk_out_0x07": "not exercised for firmware bytes in this host script",
+    "bruce_app_handler_0x60058b68": "not linked to host update",
+    "proprietary_images_published": false,
+    "physical_flash_tests": false
+  },
+  "decision": {
+    "package_A": "COMPLETE",
+    "package_B": "ONE remaining offline work package, then mandatory stop/go",
+    "unsigned_custom_execution": "NOT DEMONSTRATED",
+    "recovery": "NOT DEMONSTRATED",
+    "bridge_if_no_path": "Stadia BLE or USB -> external adapter -> verified Xbox-compatible authorized interface; PC XInput alone insufficient"
+  },
+  "reproducibility": {
+    "script": "tools/audit_archived_updater.py",
+    "synthetic_tests": "tests/test_archived_updater.py",
+    "archived_updater_file_in_repo": false
+  }
+}
