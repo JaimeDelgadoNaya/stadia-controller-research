@@ -24,6 +24,8 @@ CANDIDATE_RANGES = (
     ("vendor_component_second_callsite_context", 0x21540, 0x215B4),
     ("nearby_vendor_dispatch", 0x215B8, 0x21770),
     ("normal_mode_known_message_parser", 0x18B64, 0x18C00),
+    ("focused_candidate_0x81", 0x30C20, 0x30D24),
+    ("focused_candidate_0x84", 0xB4B20, 0xB4B88),
 )
 
 def disassemble(data, start, end, *, max_output=160):
