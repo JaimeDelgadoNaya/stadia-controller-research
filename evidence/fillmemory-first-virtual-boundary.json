@@ -1,0 +1,48 @@
+{
+  "date": "2026-10-25",
+  "source": "SHA-256 verified original signed restricted_ivt_flashloader.bin",
+  "sha256": "c39ea8962cc3094a9167ba80634f1ea0652b747b4572d1de2802d9f2f4e144c5",
+  "byte_length": 100672,
+  "init_pointer_in_provider_table": {
+    "slot": "0x20016078",
+    "function": "0x20009904"
+  },
+  "boot_order_verified": false,
+  "boot_order_comment": "Initializer is registered via a provider function pointer; nonexhaustive static direct-call scan cannot establish execution before USB dispatch.",
+  "engine": "Unicorn 2.1.4 ARM Thumb/M-class",
+  "code_source": "actual signed low-level FillMemory routine at 0x20002698",
+  "memory_map": "0x20000000..0x2001ffff virtual RAM; 0x1000 return sentinel; no SoC peripherals",
+  "mode": "backend-only, synthetic args; no USB/HID command, no physical device access",
+  "cases": [
+    {
+      "start": "0x200159e0",
+      "request_bytes": 3758016036,
+      "byte_tail": true,
+      "virtual_valid_bytes_to_boundary": 42528,
+      "unmapped_virtual_attempt": "0x20020000",
+      "attempt_size": 1,
+      "pc": "0x20002700",
+      "remaining_r2": 3757973508,
+      "returned_before_exit": false
+    },
+    {
+      "start": "0x200159ec",
+      "request_bytes": 3758016024,
+      "byte_tail": true,
+      "virtual_valid_bytes_to_boundary": 42516,
+      "unmapped_virtual_attempt": "0x20020000",
+      "attempt_size": 1,
+      "pc": "0x20002700",
+      "remaining_r2": 3757973508,
+      "returned_before_exit": false
+    }
+  ],
+  "emulator_exception": "UC_ERR_WRITE_UNMAPPED at artificial RAM boundary",
+  "physical_fault_demonstrated": false,
+  "custom_code_execution_demonstrated": false,
+  "HAB_bypass_demonstrated": false,
+  "recoverable_hardware_writes_demonstrated": false,
+  "no_physical_device_access": true,
+  "ci_url": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40237699575",
+  "limitation": "Does not emulate full MCU, transport, initialization ordering, dynamic protected-memory state, persistent firmware or recovery."
+}
