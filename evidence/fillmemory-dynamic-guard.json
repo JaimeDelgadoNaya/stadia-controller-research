@@ -1,0 +1,56 @@
+{
+  "date": "2026-10-25",
+  "scope": "Stadia signed RAM flashloader FillMemory guard - original-image offline audit",
+  "loader_sha256": "c39ea8962cc3094a9167ba80634f1ea0652b747b4572d1de2802d9f2f4e144c5",
+  "loader_bytes": 100672,
+  "authenticity": "exact sha256 checked in isolated CI; no original firmware committed",
+  "guard_function": "0x20003b30",
+  "global_ram": "0x202081f4",
+  "provider_table": "0x20016074",
+  "context_ram": "0x20212cd0",
+  "initializer_entry": "0x20009904",
+  "initializer_pointer": "0x20009905 at 0x20016078",
+  "initializer_fields": [
+    {
+      "offset": "+0x70",
+      "field_ram": "0x20212d40",
+      "signed_literal": "0x20002000",
+      "store_pc": "0x2000992c"
+    },
+    {
+      "offset": "+0x74",
+      "field_ram": "0x20212d44",
+      "signed_literal": "0x20016d08",
+      "store_pc": "0x20009934"
+    },
+    {
+      "offset": "+0x78",
+      "field_ram": "0x20212d48",
+      "signed_literal": "0x20208000",
+      "store_pc": "0x2000993a"
+    },
+    {
+      "offset": "+0x7c",
+      "field_ram": "0x20212d4c",
+      "signed_literal": "0x20216fff",
+      "store_pc": "0x20009946"
+    }
+  ],
+  "if_initialized": {
+    "normal_length_4_rejected_for_execute_call": true,
+    "wrapped_length_not_rejected_by_initial_and_dynamic_prechecks": true,
+    "wrapped_length_exceeds_declared_ram": true,
+    "actual_write_effect": "NOT DEMONSTRATED"
+  },
+  "uncertainties": {
+    "initializer_called_on_physical_device": "NOT MEASURED",
+    "other_setters": "NOT EXCLUDED",
+    "memory_effect": "NOT DEMONSTRATED",
+    "custom_execution": "NOT DEMONSTRATED",
+    "HAB_bypass": "NOT DEMONSTRATED",
+    "safe_recovery": "NOT DEMONSTRATED"
+  },
+  "verification": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40236085352",
+  "device_commands": false,
+  "flash_writes": false
+}
