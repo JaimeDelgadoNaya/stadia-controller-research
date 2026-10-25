@@ -1,0 +1,76 @@
+{
+  "date": "2026-10-25",
+  "parent_pull_request": 24,
+  "title": "FillMemory pathway bounded audit; hypothesis unproven",
+  "original_loader": {
+    "name": "restricted_ivt_flashloader.bin",
+    "bytes": 100672,
+    "sha256": "c39ea8962cc3094a9167ba80634f1ea0652b747b4572d1de2802d9f2f4e144c5",
+    "private_or_proprietary_binary_committed": false,
+    "local_original_rerun_of_fill_auditor": false
+  },
+  "established_from_parent_pr": {
+    "FillMemory": {
+      "tag": "0x05",
+      "handler_thumb": "0x20003381",
+      "enabled": true
+    },
+    "WriteMemory": {
+      "tag": "0x04",
+      "handler_thumb": "0x200030d9",
+      "enabled": true
+    },
+    "Execute": {
+      "tag": "0x09",
+      "handler_thumb": "0x200033a1",
+      "enabled": false
+    },
+    "Call": {
+      "tag": "0x0a",
+      "handler_thumb": "0x2000340d",
+      "enabled": false
+    },
+    "known_WriteMemory_policy": "0x200039a8",
+    "known_WriteMemory_backend": "0x20003b7c",
+    "WriteMemory_receiver_fragment_upper_bound": "uint16; not transferable to FillMemory"
+  },
+  "independent_protocol_sources": [
+    "https://github.com/GaryOderNichts/StadiaController/blob/main/stadiatool/flashloader.py",
+    "https://mcuxpresso.nxp.com/mcuxsdk/25.09.00/html/middleware/mcu_bootloader/docs/MCU_Bootloader_Reference_Manual/topics/mcu_bootloader_command_api.html"
+  ],
+  "FillMemory_protocol": {
+    "arguments": [
+      "destination_address uint32",
+      "byte_length uint32",
+      "pattern uint32"
+    ],
+    "requires_separate_data_stage": false,
+    "standards_alignment": "nominal 4-byte words; exact Google policy still to verify",
+    "upstream_reference": "generic NXP FillMemory normally obeys WriteMemory rules"
+  },
+  "unresolved_technical_questions": [
+    "Does the original FillMemory handler call the same memory range gate as WriteMemory on relevant paths?",
+    "Does the backend validate size and end address without overflow, including alignment and region transitions?",
+    "Can any command mutate restricted loader control memory in normal state?",
+    "Does any such mutation lead to custom execution with reliable recovery and unchanged HAB security assumptions?"
+  ],
+  "offline_tool": "tools/audit_fillmemory_route.py",
+  "tests": "tests/test_fillmemory_route.py",
+  "docs": [
+    "docs/es/analisis-fillmemory.md",
+    "docs/en/fillmemory-path-review.md"
+  ],
+  "limits": {
+    "full_original_FillMemory_CCFG_verified": false,
+    "restricted_control_memory_write": "NOT DEMONSTRATED",
+    "HAB_CLOSED_bypass": "NOT DEMONSTRATED",
+    "custom_execution": "NOT DEMONSTRATED",
+    "recoverable_path": "NOT VERIFIED"
+  },
+  "actions": {
+    "device_connected": false,
+    "usb_commands_sent": false,
+    "flash_writes": false,
+    "eFuse_writes": false
+  }
+}
