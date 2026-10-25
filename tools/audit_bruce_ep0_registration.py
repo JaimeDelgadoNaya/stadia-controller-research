@@ -315,6 +315,17 @@ def audit(image, *, include_focused=False):
         "endpoint_callback_registrar_code": [
             {"pc":hex(x["pc"]),"m":x["m"],"op":x["op"]}
             for x in decode(image,0x600D10B8,0x600D10F6)],
+        "class_dispatch_windows":{
+            "class_event_forwarders":[
+                {"pc":hex(x["pc"]),"m":x["m"],"op":x["op"]}
+                for x in decode(image,0x600CFC1A,0x600CFC8E)],
+            "class_configuration_event":[
+                {"pc":hex(x["pc"]),"m":x["m"],"op":x["op"]}
+                for x in decode(image,0x600CFD28,0x600CFDE0)],
+            "usb_class_object_initialization":[
+                {"pc":hex(x["pc"]),"m":x["m"],"op":x["op"]}
+                for x in decode(image,0x600D0340,0x600D03BE)],
+        },
         "registration_caller_context": [
             {"pc":hex(x["pc"]),"m":x["m"],"op":x["op"]}
             for x in decode(image,0x600546C0,0x60054880)],
@@ -363,6 +374,7 @@ def main():
     print("USB DESCRIPTOR LOOP CALLERS",json.dumps(result["direct_callers_of_descriptor_loops"]))
     print("ENDPOINT CALLBACK REGISTRAR CODE",json.dumps(result["endpoint_callback_registrar_code"]))
     print("REGISTRATION CALLERS CODE",json.dumps(result["registration_caller_context"]))
+    print("CLASS CALLBACK CONTEXT",json.dumps(result["class_dispatch_windows"]))
     if p.show_focused:
         for ins in result["usb_core_window"]:
             print("FOCUSED",ins["pc"],ins["m"],ins["op"])
