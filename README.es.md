@@ -9,6 +9,12 @@ objetivo a largo plazo es determinar si puede ejecutar firmware propio.
 **Resultado actual: el arranque seguro del mando analizado está en CLOSED. No
 hemos demostrado ejecución de firmware propio ni una forma de eludir las firmas.**
 
+## Prioridad actual: ruta de actualización real o puente externo
+
+**[Plan con decisión obligatoria (tras fase 29)](docs/es/puerta-decision-actualizacion.md)**: comprobar el protocolo WebUSB del actualizador archivado y su receptor, analizar la aplicación Bruce firmada y **detener la modificación interna tras dos paquetes offline** si no existe una vía controlable, ejecutable y recuperable. Alternativa: puente externo para Xbox; la emulación XInput para PC no garantiza compatibilidad con consolas.
+
+La imagen Bruce proporcionada se analiza como **muestra firmada de actualización**, no como copia certificada de toda la aplicación instalada. El analizador nuevo identifica una rama de mensaje en `0x60058B68` con comprobación del primer byte `5` y llamada a `0x60058AA8`; **todavía no es un comando de actualización USB probado**.
+
 ## Avances medidos
 
 | Elemento | Resultado observado |

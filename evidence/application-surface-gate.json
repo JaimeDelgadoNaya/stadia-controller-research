@@ -1,0 +1,96 @@
+{
+  "pivot": "post_phase_29",
+  "analysis_date": "2026-10-25",
+  "offline_only": true,
+  "firmware_app": {
+    "sample": "owner-supplied bruce_pvt_a_prod_signed(1).bin",
+    "file_size_bytes": 1050984,
+    "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+    "provenance": "signed Bluetooth firmware *update image* sample; not a verified complete installed-flash extraction",
+    "base_assumption": "0x60040000",
+    "initial_sp": "0x2002b828",
+    "thumb_reset": "0x60040501",
+    "code_region": {
+      "start": "0x60058b68",
+      "end_exclusive": "0x60058be0",
+      "sha256": "2509b2d695fd6b55bcfcd4a9b63e32766976e5858e41b1a7fc8583d153c54a1e"
+    },
+    "candidate": {
+      "entry": "0x60058b68",
+      "nonnull_input": "0x60058b70",
+      "first_input_byte_comparison": "0x60058b74 CMP R3,#5",
+      "byte_classification": "internal message/payload first byte, NOT proven USB setup.bRequest",
+      "branch_target_callsite": "0x60058b7a",
+      "branch_target": "0x60058aa8",
+      "unknown_host_message_literal": "0x60058bd8",
+      "unknown_host_message_address": "0x6011b5f3",
+      "updater_or_flash_writer": "NOT TRACED",
+      "usb_host_to_entry": "NOT TRACED"
+    },
+    "raw_string_literal_refs": {
+      "unknown_host_request": {
+        "sample_offset": "0x000db5f3",
+        "refs": [
+          "0x00018bd8"
+        ]
+      },
+      "update_applied_log": {
+        "sample_offset": "0x000dbfc7",
+        "refs": [
+          "0x0001b3fc"
+        ]
+      },
+      "usb_vendor_component": {
+        "sample_offset": "0x000de054",
+        "refs": [
+          "0x00021504",
+          "0x000215b4"
+        ]
+      },
+      "ascii_build_337784": {
+        "sample_offset": "0x000db4b6",
+        "refs": [
+          "0x00018380",
+          "0x0001d96c"
+        ]
+      }
+    }
+  },
+  "bootloader_previous": {
+    "sample": "user-extracted bootloader A 169429",
+    "sha256": "59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0",
+    "vendor_bulk_out_endpoint": "0x07",
+    "bulk_out_initial_callback": "0x6080affc returns immediately",
+    "real_host_packet_to_flash_writer": "NOT DEMONSTRATED",
+    "hab": "CLOSED (one controller, prior physical measurement)"
+  },
+  "historical_webusb_updater": {
+    "public_references": [
+      "https://github.com/GaryOderNichts/StadiaController",
+      "https://github.com/hazrpg/stadia-flasher",
+      "https://github.com/merlinschumacher/Stadia-Controller-Bluetooth-Firmware-Bin"
+    ],
+    "documented_sequence": [
+      "restricted_ivt_flashloader.bin",
+      "flashloader_fcb_get_vendor_id.bin",
+      "bruce_pvt_a_prod_signed.bin"
+    ],
+    "sequence_semantics": "public archived host updater; code-level transfer parameters still must be extracted and tied to receiving firmware",
+    "custom_unsigned_firmware_supported": "NOT SHOWN"
+  },
+  "stop_go": {
+    "remaining_work_packages": 2,
+    "package_A": "host WebUSB state machine and actual USB receive/validation graph, read only",
+    "package_B": "app parser or alternate execution/auth/recovery when package A yields a concrete path",
+    "continue_only_if": "provable externally sourced entry AND authorizable custom execution AND verified recoverability",
+    "stop_if": "no host-controllable receiver, only vendor-signed image installation, unproven bypass, or no recoverable boot route after packages",
+    "fallback": "external BLE/USB Stadia to console-compatible authorized bridge; PC Xbox360/XInput is NOT proof of Xbox-console compatibility"
+  },
+  "operations": {
+    "controller_connected": false,
+    "usb_commands_sent": false,
+    "flash_erased": false,
+    "firmware_programmed": false,
+    "proprietary_images_committed": false
+  }
+}
