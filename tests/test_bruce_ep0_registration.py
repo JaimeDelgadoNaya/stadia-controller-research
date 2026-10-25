@@ -9,6 +9,25 @@ class EP0RegistrationTests(unittest.TestCase):
         self.assertEqual(r.ENDPOINT_STRIDE,12)
         self.assertEqual(0xc+r.ENDPOINT_STRIDE,0x18)
 
+    def test_registrar_provenance_pins_callback_and_context_stores(self):
+        decoded=dict(r.REGISTRAR_ANCHORS)
+        pointers=dict(r.CALLBACK_THUMB_POINTER_ANCHORS)
+        self.assertTrue(r.validate_registration_anchors(decoded,pointers))
+        self.assertEqual(decoded[0x600D10DE],("str","r4, [r3, #0xc]"))
+        self.assertEqual(decoded[0x600D10DA],("str","r2, [r3, #0x10]"))
+        self.assertEqual(pointers[0x600547A8],0x600CFC53)
+
+    def test_semantic_drift_and_literal_drift_rejected(self):
+        decoded=dict(r.REGISTRAR_ANCHORS)
+        pointers=dict(r.CALLBACK_THUMB_POINTER_ANCHORS)
+        decoded[0x600D10DE]=("str","r4, [r3, #0x1c]")
+        with self.assertRaisesRegex(ValueError,"semantic drift"):
+            r.validate_registration_anchors(decoded,pointers)
+        decoded=dict(r.REGISTRAR_ANCHORS)
+        pointers[0x60054870]=0x600CFC1D
+        with self.assertRaisesRegex(ValueError,"literal pointer drift"):
+            r.validate_registration_anchors(decoded,pointers)
+
     def test_requires_known_exact_oem_image(self):
         with self.assertRaisesRegex(ValueError,"Exact signed Bruce"):
             r.audit(bytes(r.IMAGE_SIZE))
