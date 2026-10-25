@@ -153,6 +153,43 @@ def initialized_data_callbacks(image, limit=70):
         "original_image_matches_runtime_ep0_slot":"NOT VERIFIED",
     }
 
+def resolve_known_registrar_literals(image):
+    """Decode PC-relative constant words in *specific* verified XIP callsites.
+
+    Literal bytes at 0x600547a0/a4/a8 and 0x60054870 must not be treated
+    as instructions. A literal value can designate a signed handler without
+    proving the branch is taken or EP0 uses this entry.
+    """
+    import struct
+    refs=[
+        {"load_pc":0x60054736,"reg":"r7","disp":0x68},
+        {"load_pc":0x60054738,"reg":"r8","disp":0x68},
+        {"load_pc":0x6005473C,"reg":"sb","disp":0x68},
+        {"load_pc":0x6005480E,"reg":"r8","disp":0x60},
+    ]
+    results=[]
+    for ref in refs:
+        literal=((ref["load_pc"]+4)&~3)+ref["disp"]
+        if not BASE <= literal < BASE+0xFF000:
+            raise ValueError("PC-relative reference out of image")
+        value=struct.unpack_from("<I",image,literal-BASE)[0]
+        valid_thumb=bool(value&1) and BASE<= (value&~1)<BASE+0xFF000
+        item={"load_pc":hex(ref["load_pc"]),
+              "register":ref["reg"],"literal_at":hex(literal),
+              "pointer":hex(value),"signed_xip_thumb":valid_thumb,
+              "registration_path": "endpoint_descriptor_loop" if ref["load_pc"]!=0x6005480E
+                                    else "alternate_endpoint_descriptor_loop",
+              "callback_currently_installed_in_EP0":"UNVERIFIED"}
+        if valid_thumb:
+            target=value&~1
+            item["target_preview"]=[
+                {"pc":hex(row["pc"]),"m":row["m"],"op":row["op"]}
+                for row in decode(image,target,min(target+112,BASE+0xFF000))[:40]
+            ]
+        results.append(item)
+    return results
+
+
 def audit(image, *, include_focused=False):
     if len(image)!=IMAGE_SIZE or hashlib.sha256(image).hexdigest()!=IMAGE_SHA256:
         raise ValueError("Exact signed Bruce update sample required (SHA256 and size)")
@@ -171,6 +208,7 @@ def audit(image, *, include_focused=False):
         "ep0_in_callback_offset_from_object":hex(0x0c+ENDPOINT_STRIDE),
         "candidate_function_calls_to_usb_core":calls,
         "candidate_slot_writers":candidate_slot_writers(image),
+        "registration_handler_literals":resolve_known_registrar_literals(image),
         "initialized_data_pointer_census":initialized_data_callbacks(image),
         "endpoint_callback_registrar_code": [
             {"pc":hex(x["pc"]),"m":x["m"],"op":x["op"]}
@@ -204,6 +242,7 @@ def main():
     print("INIT DATA CALLBACK-LIKE WORDS SUMMARY",
           json.dumps({"all":result["initialized_data_pointer_census"]["total_thumb_pointer_shaped_words"],
                       "usb_related":result["initialized_data_pointer_census"]["near_usb_xip_count"]}))
+    print("REGISTRATION HANDLER POINTERS",json.dumps(result["registration_handler_literals"]))
     print("ENDPOINT CALLBACK REGISTRAR CODE",json.dumps(result["endpoint_callback_registrar_code"]))
     print("REGISTRATION CALLERS CODE",json.dumps(result["registration_caller_context"]))
     if p.show_focused:
