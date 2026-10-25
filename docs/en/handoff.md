@@ -181,3 +181,7 @@ A private 128 KiB bootloader A image matches the recorded SHA-256. [Phase 14](us
 ## Phase 18 — RAM initializer resolves bulk OUT callback
 
 [Phase 18](usb-ram-initialization.md) verifies a **400-byte** normal-startup flash-to-RAM copy, from `0x608161E0` into RAM `0x20000000`. It contains compact endpoint records `87 02 00 02` at RAM `0x200000D8` and `07 02 00 02` at `0x200000DC`. Verified loop and callback table associate **IN `0x87` with `0x60809E30`** and **OUT `0x07` with `0x6080A06A`**. The latter forwards into `0x6080A062`, which loads a dynamically registered callback from `+0x18`, still unresolved. SHA-locked offline auditor: `tools/audit_endpoint_ram_init.py`; sanitized evidence: `evidence/usb-phase18.json`. No custom execution or HAB bypass is demonstrated.
+
+## Phase 19 — Initially inert USB completion callbacks
+
+[Phase 19](usb-completion-defaults.md) follows `0x60806554` → `0x6080A06A` → `0x6080A062`. The vendor object at RAM `0x20009160` has an initial OUT `0x07` handler at `0x20009178` pointing to Thumb `0x6080AFFD` (function `0x6080AFFC`) and initial IN `0x87` handler at `0x20009170` pointing to `0x6080AFFB` (function `0x6080AFFA`). Both are **single-instruction BX LR return-only stubs**; handler contexts are initially zero. No later registration is ruled out, and external USB-to-flash reachability or HAB bypass is not established. SHA-locked offline tool: `tools/audit_vendor_completion.py`; sanitized `evidence/usb-phase19.json`; synthetic tests.

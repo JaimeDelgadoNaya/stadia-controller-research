@@ -81,6 +81,10 @@ Con el bootloader A de SHA-256 verificado hemos seguido dos registros de endpoin
 
 El código de arranque copia los descriptores compactos de endpoints desde flash a RAM. Este flujo permite **asignar con evidencia el callback Bulk OUT `0x07` a `0x6080A06A`** y Bulk IN `0x87` a `0x60809E30`. El destino final del callback OUT y la ruta al escritor de flash siguen sin demostrarse.
 
+- **[Fase 19 — Callbacks USB iniciales sin procesamiento](docs/es/callbacks-finalizacion-usb.md)**
+
+Los callbacks de finalización del fabricante para Bulk IN `0x87` y Bulk OUT `0x07` se inicializan apuntando a rutinas `BX LR` que retornan inmediatamente. **No** se descarta sustitución posterior, otras rutas de actualización ni se ha superado HAB CLOSED.
+
 ## Reproducción sin conexión
 
 Python 3.11 o posterior:

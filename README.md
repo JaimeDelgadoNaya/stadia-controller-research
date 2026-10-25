@@ -80,6 +80,10 @@ On the SHA-verified bootloader A, two endpoint registrations reach `0x60806660`.
 
 Normal startup copies compact endpoint records from flash into RAM, proving the initial **bulk OUT `0x07` callback is `0x6080A06A`** and bulk IN `0x87` is `0x60809E30`. The final dynamic handler, external flash-write reachability and HAB bypass remain unresolved.
 
+- **[Phase 19 — Initially inert vendor USB completion handlers](docs/en/usb-completion-defaults.md)**
+
+The initial vendor bulk IN `0x87` and OUT `0x07` completion callbacks both point to single-instruction `BX LR` stubs. Later registration and other USB update paths are **not excluded**; HAB CLOSED has not been bypassed.
+
 ## Offline reproduction
 
 Python 3.11 or newer:
