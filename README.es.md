@@ -21,6 +21,8 @@ hemos demostrado ejecución de firmware propio ni una forma de eludir las firmas
 
 **[FillMemory: orden de inicialización y límite virtual del backend](docs/es/arranque-primer-limite-fillmemory.md).** La PR #30 emula la rutina de llenado original en Unicorn: las longitudes envueltas entran en un bucle **byte a byte** y la CPU virtual alcanza una escritura fuera de la región declarada en `0x20020000`, sin retornar. **No es una prueba de fallo físico ni de ejecución propia.** El orden real de llamada al inicializador sigue sin verificarse.
 
+**[Nueva investigación: Bruce OEM firmado y actualizador](docs/es/ejecucion-bruce-variantes-firmadas.md).** La PR #31 verificó tres imágenes OEM prod/stage/dev contra el archivo original: las tres tienen **idéntico código y bloque autenticado**. Las diferencias están en el material de firma, con claves de certificado distintas. Una búsqueda alineada solo encontró el puntero estructural IVT→CSF hacia el tramo posterior. El actualizador sigue usando ROM SDP y cargador RAM firmado. **No hay ejecución propia, HAB bypass ni recuperación probados.**
+
 ## Prioridad actual: software del propio mando y Switch 2 directa
 
 El propietario ha descartado adaptadores y placas externas. La nueva prioridad
