@@ -16,6 +16,7 @@ WINDOWS = {
     "fill_region_and_backend": (0x3C86, 0x3CC4),
     "peripheral_backend_methods": (0x3928, 0x397E),
     "ram_backend_methods": (0x3CE0, 0x3D78),
+    "shared_fill_loop": (0x2680, 0x2740),
 }
 
 
