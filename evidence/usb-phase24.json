@@ -456,6 +456,11 @@
       "source_field": "global+0x568"
     },
     {
+      "at": "0x6080a9dc",
+      "target": "0x60809048",
+      "source_field": "global+0x570"
+    },
+    {
       "at": "0x6080a9f0",
       "target": "0x60809048",
       "source_field": "global+0x568"
