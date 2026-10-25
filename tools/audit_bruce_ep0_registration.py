@@ -97,11 +97,11 @@ def candidate_slot_writers(image, limit=40):
             after=ins[j+1:min(j+23,len(ins))]
             near_before=[(x.address,x.mnemonic,x.op_str) for x in before]
             stride12=any(x.mnemonic.startswith(("mov","movs")) and
-                         re.search(r"#(?:0xc|12)\\b",x.op_str)
+                         re.search(r"#(?:0xc|12)\b",x.op_str)
                          for x in before)
             stores=[x for x in after if x.mnemonic.startswith(("str","stm"))]
             pair_writes=[x for x in stores if x.mnemonic.startswith(("strd","stm")) or
-                         re.search(r"\\[r\\d+, #0x(?:c|10|18|1c)\\]",x.op_str)]
+                         re.search(r"\[r\d+, #0x(?:c|10|18|1c)\]",x.op_str)]
             if not stride12 or not pair_writes:
                 continue
             points=0
