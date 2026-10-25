@@ -198,3 +198,7 @@ La [fase 21](fuentes-alias-ram.md) identificó **21 literales alineados** que co
 ## Fase 22 — Seguimiento acotado de alias
 
 [Documentación fase 22](flujo-punteros-usb.md). El nuevo `tools/audit_alias_dataflow.py` sigue como máximo 96 bytes por cada uno de los 29 orígenes de punteros RAM, deteniéndose en llamadas, ramas o retornos. Las escrituras observadas en `0x60809790` y `0x60809842` afectan al estado `global+0x6C4`, no a los callbacks `+0x5F8/+0x600`. El análisis no descarta vías indirectas ni demuestra una ruta de entrada USB hasta la flash. Las pruebas sintéticas y `evidence/usb-phase22.json` están en la rama; el binario original sigue privado.
+
+## Fase 23 — Alias interprocedimentales verificados
+
+La [fase 23](alias-interprocedimental.md) identifica cuatro llamadas `BL` que reciben el objeto global RAM `0x20008B78`: `0x6080C0B4` → constructor `0x6080BAC0`, `0x60802504/0x60808138` → servicio `0x6080B218` y `0x6080FB4C` → `0x6080B17C`. Esta última función preserva la base en R4 y prepara llamadas con los offsets `+0x568/+0x560/+0x630/+0x578`. El servicio `0x6080B218` crea `global+0x630`, salta a `0x60809ABC` y prepara `global+0x644` para otra llamada. El auditor `tools/audit_interprocedural_aliases.py` verifica las instrucciones, literales y destinos, con pruebas sintéticas y `evidence/usb-phase23.json`. **No se ha demostrado un setter posterior ni alcanzabilidad desde USB**, y no se ha conectado el mando.
