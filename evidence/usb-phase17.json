@@ -1,0 +1,54 @@
+{
+  "phase": 17,
+  "date": "2026-10-25",
+  "verified_local_firmware": true,
+  "image_sha256": "59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0",
+  "image_bytes": 131072,
+  "original_firmware_published": false,
+  "device_access": false,
+  "vendor_endpoint_descriptors": [
+    {
+      "endpoint": "0x07",
+      "transfer": "bulk OUT",
+      "packet_max_bytes": 512,
+      "endpoint_index": 14,
+      "callback_field_offset": "0xb4"
+    },
+    {
+      "endpoint": "0x87",
+      "transfer": "bulk IN",
+      "packet_max_bytes": 512,
+      "endpoint_index": 15,
+      "callback_field_offset": "0xc0"
+    }
+  ],
+  "registration": {
+    "entry": "0x60809eb8",
+    "selected_callback_at": "0x60809f12",
+    "endpoint_init_callsite": "0x60809f1a",
+    "endpoint_init_target": "0x60806660",
+    "callback_table": "0x60814f24",
+    "table_entries": [
+      "0x60809e31",
+      "0x6080a06b"
+    ],
+    "endpoint_descriptor_source": "runtime RAM near 0x200000d8",
+    "direction_to_callback": "UNRESOLVED"
+  },
+  "usb_stack_helper": {
+    "function": "0x60806660",
+    "endpoint_validation": "number <= 7",
+    "index": "2*number + direction",
+    "entry_stride_bytes": 12,
+    "callback_offset": 12,
+    "context_offset": 16
+  },
+  "callbacks": {
+    "first": "0x60809e30 indirect forwarding",
+    "second": "0x6080a06a -> 0x6080a062 indirect forwarding"
+  },
+  "host_bulk_out_to_parser": "NOT TRACED",
+  "usb_to_flash_writer": "NOT DEMONSTRATED",
+  "HAB_closed_bypass": "NOT DEMONSTRATED",
+  "custom_firmware_execution": "NOT DEMONSTRATED"
+}
