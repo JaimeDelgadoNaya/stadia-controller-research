@@ -55,6 +55,7 @@ INSTRUCTIONS = {
     0x10A10: ("5a60", "conditional owner+4 update"),
     0x10A14: ("0261", "clear [node+0x10]"),
     0x10A18: ("013a", "decrement owner count value"),
+    0x10A1A: ("1a60", "store decremented count to owner+0x00"),
     0x10A1C: ("1868", "read owner count value"),
     0x11DCA: ("c368", "load parent from [context+0xC]"),
     0x11DCC: ("dc68", "load link from [parent+0xC]"),
