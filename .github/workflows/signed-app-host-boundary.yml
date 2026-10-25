@@ -4,7 +4,9 @@ on:
   pull_request:
     paths:
       - 'tools/audit_signed_app_host_boundary.py'
+      - 'tools/audit_signed_bruce_variants.py'
       - 'tests/test_signed_app_host_boundary.py'
+      - 'tests/test_signed_bruce_variants.py'
       - '.github/workflows/signed-app-host-boundary.yml'
   workflow_dispatch:
 
@@ -33,6 +35,12 @@ jobs:
           curl --fail --location --silent --show-error --retry 3 --max-time 45 \
             'https://raw.githubusercontent.com/hazrpg/stadia-flasher/main/controller/app_combined.js' \
             -o /tmp/stadia-app-offline/app_combined.js
+          curl --fail --location --silent --show-error --retry 3 --max-time 60 \
+            'https://raw.githubusercontent.com/StadiaMemories/firmware/main/bruce_dvt_a_stage_signed.bin' \
+            -o /tmp/stadia-app-offline/stage.bin
+          curl --fail --location --silent --show-error --retry 3 --max-time 60 \
+            'https://raw.githubusercontent.com/StadiaMemories/firmware/main/bruce_dvt_a_dev_signed.bin' \
+            -o /tmp/stadia-app-offline/dev.bin
           echo '466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3  /tmp/stadia-app-offline/bruce.bin' | sha256sum -c -
       - name: Verify app cryptographic coverage and archived host split
         shell: bash
@@ -41,15 +49,22 @@ jobs:
           python -m tools.audit_signed_app_host_boundary \
             /tmp/stadia-app-offline/bruce.bin /tmp/stadia-app-offline/app_combined.js \
             --out /tmp/stadia-app-offline/report.json
+          python -m tools.audit_signed_bruce_variants \
+            /tmp/stadia-app-offline/bruce.bin /tmp/stadia-app-offline/stage.bin \
+            /tmp/stadia-app-offline/dev.bin --out /tmp/stadia-app-offline/variants.json
           python - <<'PY'
           import json
           from pathlib import Path
           x=json.loads(Path('/tmp/stadia-app-offline/report.json').read_text())
+          variants=json.loads(Path('/tmp/stadia-app-offline/variants.json').read_text())
           print('Owner/public signed app SHA-identical:',x['source_identification']['matches_owner_private_sample_sha256'])
           print('Embedded RSA/CMS signature checks:',x['auth']['embedded_certificates_rsa_and_cms_checked'])
           print('Firmware signed length:',x['auth']['file_layout']['authenticated_application_block'])
           print('Uncovered includes CSF+trailing auth material:',x['auth']['file_layout']['not_in_application_signed_block_total_bytes'])
-          print('Static tail pointer candidates:',x['tail_xref_candidates']['signed_region_aligned_word_matches'])
+          print('Static tail pointer candidates:',x['tail_xref_candidates']['static_candidates'])
+          print('All are expected IVT CSF metadata:',x['tail_xref_candidates']['only_static_candidate_is_ivt_csf_pointer'])
+          print('Prod/stage/dev signature variants:', {k: v['embedded_rsa_cms_signatures_valid'] for k,v in variants['images'].items()})
+          print('Stage/dev compared to production:',variants['comparisons_to_prod'])
           print('Archived host identity checked:',x['source_identification']['archived_host_js_exact_blob_checked'])
           print('No demonstrated custom execution, physical installed identity or recovery.')
           PY
