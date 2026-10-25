@@ -11,6 +11,8 @@ firmware execution or signature bypass has been demonstrated.**
 
 **[Package A complete — archived WebHID/WebUSB host protocol](docs/en/archived-updater-host-protocol.md).** The host installs images via **ROM SDP and signed RAM flashloader**, not bootloader-A Bulk OUT `0x07`. See [sanitized evidence](evidence/archived-updater-host-protocol.json). Custom unsigned execution remains unproven; **one bounded package B** remains before the stop/go gate.
 
+**FINAL DECISION — [Phase 31: stop internal firmware modification, begin external bridge](docs/en/final-execution-recovery-decision.md).** The agreed last offline work package is complete. ROM HAB **CLOSED**, signed images validate, but no authorizable custom execution or reliable rollback was established. **Stop internal modification unless independent new evidence changes the gates.** Next: reversible ESP32-S3 Stadia BLE → **PC** Xbox 360-style gamepad prototype; Xbox One/Series authentication requires separate verification.
+
 ## Current priority: real host update route or external bridge
 
 **[Bounded stop/go gate (post phase 29)](docs/en/update-execution-decision-gate.md)**: inspect the archived WebUSB host updater and its actual receiver, then the signed Bruce application; **end internal firmware-modification research after two offline packages** if no controllable, executable and recoverable path is shown. A PC XInput bridge alone does not establish Xbox-console compatibility.
