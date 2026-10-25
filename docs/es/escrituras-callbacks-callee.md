@@ -6,7 +6,7 @@ El binario no se sube a GitHub. La inspección se hizo offline con desensamblado
 
 ## Resultado principal
 
-Se revisaron los cuatro destinos de la fase 23 y la cadena de inicialización que sale de \`0x60809D98\`. En los intervalos examinados se contabilizan **23 escrituras directas con dirección calculable** a través de alias conocidos. **Ninguna solapa los cuatro campos de callback USB**:
+Se revisaron los cuatro destinos de la fase 23 y la cadena de inicialización que sale de \`0x60809D98\`. En los intervalos examinados se contabilizan **23 observaciones de escrituras directas con dirección calculable, correspondientes a 19 sitios de instrucción únicos** (la función `0x6081099C` se analiza con dos offsets de entrada distintos) a través de alias conocidos. **Ninguna solapa los cuatro campos de callback USB**:
 
 - IN handler: \`global+0x5F8\` = \`0x20009170\`
 - IN context: \`global+0x5FC\` = \`0x20009174\`
