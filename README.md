@@ -96,6 +96,10 @@ The image has **21 aligned global-pointer literals** and **29 candidate PC-relat
 
 Conservative tracking of 29 RAM-alias source candidates, with writes to state field `+0x6C4` distinguished from the IN/OUT completion callback fields. Call and branch boundaries remain unresolved.
 
+- **[Phase 23 — Bounded interprocedural pointer handoffs](docs/en/interprocedural-aliases.md)**
+
+Four verified Thumb direct calls pass the global RAM object to internal routines. One initializer derives four subobject pointers. No externally reachable callback setter, USB-to-flash write path, or HAB bypass is demonstrated.
+
 ## Offline reproduction
 
 Python 3.11 or newer:
