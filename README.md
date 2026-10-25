@@ -120,6 +120,10 @@ Verified direct insertion `0x608109B8` and ordered insertion `0x608109D0` with 1
 
 At `0x60811A32` and `0x60811E0C`, nodes are embedded at `object+4` while bucket indices come from `object+0x2C`. The observed comparisons occur after insertion; upstream validation, invalid indices and USB reachability remain unproven.
 
+- **[Phase 29 — Bucket-index writer provenance and bounds](docs/en/bucket-index-writers.md)**
+
+One constructor clamps `object+0x2C` to **0–15** and initializes `object+0x50`; four later paths may copy or update the index. This is not proof that the initial bound holds at runtime or that USB can control the index.
+
 ## Offline reproduction
 
 Python 3.11 or newer:
