@@ -1,0 +1,69 @@
+{
+  "date": "2026-10-25",
+  "scope": "Read-only, archived OEM Bruce prod/stage/dev and OEM updater source",
+  "sample": {
+    "source": "StadiaMemories/firmware/bruce_pvt_a_prod_signed.bin",
+    "bytes": 1050984,
+    "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+    "matches_owner_update_image": true,
+    "installed_flash_equivalence": "NOT VERIFIED"
+  },
+  "source_hashes": {
+    "prod_blob": "387001dba1eaa5fa4cc61e3101d28a77ba8fb5b4",
+    "stage_blob": "24bc5ac853a473ad0bbc5ddf542ce0fcbb645f74",
+    "dev_blob": "1d17db94272fa05e79e6838d664d92c29c26687d"
+  },
+  "auth": {
+    "valid_cms_rsa_signatures_each": 2,
+    "application_authenticated_end_exclusive": "0xff030",
+    "included_ivt_start": "0xff000",
+    "csf_commands": [
+      "0xff030",
+      "0xff078"
+    ],
+    "post_csf_bytes": 6384,
+    "total_outside_signed_app_block": 6456,
+    "verified_against_fused_srk": false
+  },
+  "static_tail_ref": {
+    "count_aligned_direct_literal_candidates": 1,
+    "only_candidate_word_offset": "0xff018",
+    "value": "0x6013f030",
+    "target": "IVT→CSF",
+    "execution_entry": false,
+    "scan_complete_cfg": false
+  },
+  "variant_comparison": {
+    "stage": {
+      "authenticated_application_code_bytes_differ": 0,
+      "entire_signed_block_bytes_differ": 0,
+      "post_signed_material_bytes_differ": 3182,
+      "first_difference": "0xff03a",
+      "shares_embedded_signer_pubkey_with_prod": false
+    },
+    "dev": {
+      "authenticated_application_code_bytes_differ": 0,
+      "entire_signed_block_bytes_differ": 0,
+      "post_signed_material_bytes_differ": 3192,
+      "first_difference": "0xff03a",
+      "shares_embedded_signer_pubkey_with_prod": false
+    }
+  },
+  "host": {
+    "archived_blob_sha1": "3c877738c12e7d5750714cd0770935ad39bd9990",
+    "update_receiver": "Google signed RAM flashloader",
+    "normal_usb": "version/battery",
+    "app_hid_tag5": "two channel HID control, not firmware update",
+    "new_custom_execution_proven": false
+  },
+  "conclusion": {
+    "custom_code_execution": false,
+    "recovery": false,
+    "console_native_support": false,
+    "dev_stage_different_executable_builds": false
+  },
+  "no_device_access": true,
+  "no_firmware_writes": true,
+  "no_private_binary_uploaded": true,
+  "ci": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40239207683"
+}
