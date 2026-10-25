@@ -105,6 +105,63 @@ def decode_window(image, candidate, before=100, after=120):
             for i in dec.disasm(image[start:stop], BASE+start)]
 
 
+def setup_pair_candidates(instructions, *, max_gap=14):
+    """Identify local LDRB [base,#0]/[base,#1] pairs and CMP candidates.
+
+    No claim of real USB layout: a shared base register can refer to many
+    structures; chunk linear disassembly can include data/pools.
+    """
+    output=[]
+    for idx, row in enumerate(instructions):
+        one=parse_byte_load(row["m"],row["op"])
+        if one is None or one[2]!=1:
+            continue
+        recent=instructions[max(0,idx-max_gap):idx]
+        zero=next((x for x in reversed(recent)
+                   if (lambda a: a and a[1]==one[1] and a[2]==0)(
+                       parse_byte_load(x["m"],x["op"]))),None)
+        if zero is None:
+            continue
+        near=instructions[idx:min(len(instructions),idx+max_gap)]
+        cmp_pairs=[(x["pc"],parse_immediate_compare(x["m"],x["op"]))
+                   for x in near]
+        cmp_pairs=[(p,r,v) for p,(r,v) in cmp_pairs if r is not None]
+        interesting=[{"pc":hex(pc),"register":r,"immediate":hex(v)}
+                     for pc,r,v in cmp_pairs if v in (0x21,0xA1,0x81,0x83,0x84)]
+        output.append({
+            "load_type_zero":hex(zero["pc"]),
+            "load_request_one":hex(row["pc"]),
+            "base_register":one[1],
+            "compares_control_request_values_nearby":interesting,
+            "evidence":"same-base local byte-load pattern; may be non-USB or unexecuted",
+        })
+    return output
+
+
+def scan_signed_xip_setup_pairs(image, limit=75):
+    """Bounded linear XIP pass; deliberately excludes relocated ITCM."""
+    from capstone import Cs, CS_ARCH_ARM, CS_MODE_THUMB, CS_MODE_MCLASS
+    from tools.audit_app_usb_dispatch import ITCM_SOURCE_OFFSET, ITCM_LENGTH
+    start=(ITCM_SOURCE_OFFSET+ITCM_LENGTH+1)&~1
+    dec=Cs(CS_ARCH_ARM,CS_MODE_THUMB|CS_MODE_MCLASS)
+    all_pairs=[]
+    interesting=[]
+    for off in range(start,0xFF000,0x2000):
+        inst=[{"pc":v.address,"m":v.mnemonic,"op":v.op_str}
+              for v in dec.disasm(image[off:min(off+0x2000,0xFF000)],BASE+off)]
+        chunk_pairs=setup_pair_candidates(inst)
+        all_pairs.extend(chunk_pairs)
+        interesting.extend(x for x in chunk_pairs if x["compares_control_request_values_nearby"])
+    return {
+        "same_register_ldrb_offset_0_and_1_patterns":len(all_pairs),
+        "with_nearby_control_value_compares":len(interesting),
+        "nearby_comparison_candidates":interesting[:limit],
+        "candidate_list_truncated":len(interesting)>limit,
+        "method_limit":"Inexact linear XIP decoding, fixed windows and one-register base matching; misses ITCM, normalized/indirect/table dispatch, and does not establish EP0 provenance.",
+        "verified_usb_setup_callback":False,
+    }
+
+
 def audit(image):
     if len(image) != IMAGE_SIZE or hashlib.sha256(image).hexdigest() != IMAGE_SHA256:
         raise ValueError("Exact SHA-256-verified original Bruce update image required")
@@ -126,6 +183,7 @@ def audit(image):
                                "0x21/0x83 OUT battery init",
                                "0xa1/0x84 IN battery"],
         "original_8_loosely_decoded_candidates":rows,
+        "broader_setup_shape_census":scan_signed_xip_setup_pairs(image),
         "direct_setup_brequest_offset_1_byte_load_candidates":sum(
             1 for row in rows if row["direct_ldrb_at_setup_brequest_offset_1"]),
         "established_EP0_registered_callback":None,
@@ -156,6 +214,7 @@ def main():
         for row in report["original_8_loosely_decoded_candidates"]:
             print(row["pc"],row["immediate"],row["nearest_same_register_ldrb"],
                   "exact_OFFSET_1?",row["direct_ldrb_at_setup_brequest_offset_1"])
+        print("BROADER POTENTIAL EP0 SETUP SHAPES",json.dumps(report["broader_setup_shape_census"]))
     elif not a.out:
         print(json.dumps(report,indent=2))
 
