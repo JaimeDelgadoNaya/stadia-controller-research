@@ -155,3 +155,9 @@ execution is demonstrated.** Reproduce with:
 python tools/trace_write_path.py
 python -m unittest discover -s tests -v
 ```
+
+## Phase 13 — USB input surface boundary
+
+[Phase 13](usb-surface.md) adds `tools/audit_usb_surface.py`: it audits the selected public instruction coverage (28 regions, 2340 of 131072 instruction bytes, 67 direct calls, 41 targets outside selected ranges, 16 indirect transfers), and offers **offline-only** descriptor/pointer/vector/heuristic callgraph triage of an owner's SHA-256-verified local bootloader image. Candidate descriptors do not demonstrate usable USB commands or external reachability. No custom firmware execution is established.
+
+Run `python tools/audit_usb_surface.py` and `python -m unittest discover -s tests -v`. With a matching private image, run `python tools/audit_usb_surface.py --bootloader local/bootloader-a.bin`. Never commit proprietary firmware.
