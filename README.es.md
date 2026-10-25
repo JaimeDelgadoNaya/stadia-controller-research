@@ -61,6 +61,10 @@ física fuera de límites ni ejecución de firmware personalizado.
 
 La fase 13 cuantifica qué parte del bootloader cubren las instrucciones publicadas y ofrece una inspección USB **estática, de solo lectura** para una copia local con SHA-256 verificado. No se ha identificado todavía un comando USB que permita ejecutar firmware propio.
 
+- **[Fase 14 — USB del bootloader: interfaz de fabricante y callback](docs/es/callback-usb.md)**
+
+Con el bootloader original del mando verificado por SHA-256 se han reconstruido **dos interfaces USB** (vendor bulk + HID) y la ruta condicional de eventos del fabricante hasta un puntero de callback en RAM. No se ha demostrado ninguna ruta de USB a escritura flash ni ejecución de firmware propio.
+
 ## Reproducción sin conexión
 
 Python 3.11 o posterior:
