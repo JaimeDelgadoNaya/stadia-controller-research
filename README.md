@@ -28,6 +28,9 @@ firmware execution or signature bypass has been demonstrated.**
 
 **[New phase: signed Bruce USB SETUP → endpoint callback chain](docs/en/bruce-ep0-callback-chain.md).** PR #33 verifies the OTG1 vector, relocated ITCM SETUP intake, XIP dispatcher at `0x600D0FB6` and dynamic callback call `0x600D104E`. **Actual EP0 callback registration and OEM class bRequest handlers remain unresolved.** No physical memory writes or arbitrary code execution.
 
+
+**[Signed Bruce endpoint callback registration — phase #34](docs/en/bruce-ep0-registration.md).** The original OEM image verifies `0x600D10B8` as the 12-byte endpoint callback registrar, two descriptor-loop callers and four signed class-event forwarders. **The actual EP0 slot and host `bRequest 0x81/0x83/0x84` receiver remain unidentified.** No custom code execution, HAB bypass, physical USB commands or device modifications.
+
 ## Current priority: on-controller software and direct Switch 2
 
 The owner excludes adapters and external boards. The active goal is software
