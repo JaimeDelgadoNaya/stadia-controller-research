@@ -37,6 +37,7 @@ jobs:
           set -euo pipefail
           python -m tools.audit_fillmemory_verified /tmp/stadia-audit/loader.bin --out /tmp/stadia-audit/verified.json
           python -m tools.audit_fillmemory_cfg /tmp/stadia-audit/loader.bin --out /tmp/stadia-audit/graph.json
+          python -m tools.audit_fillmemory_overflow /tmp/stadia-audit/loader.bin --print-disassembly
           python - <<'PY'
           import json
           from pathlib import Path
