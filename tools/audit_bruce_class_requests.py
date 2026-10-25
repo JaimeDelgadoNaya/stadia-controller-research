@@ -102,6 +102,46 @@ def census_imm_comparisons(data, per_request_limit=30):
     }
 
 
+SEMANTIC_ANCHORS = {
+    0x60070C4C: ("ldrb", "r3, [r1]"),
+    0x60070C50: ("cmp", "r3, #0x30"),
+    0x60070C54: ("cmp", "r3, #0x81"),
+    0x60070C6C: ("ldrb", "r0, [r1, #1]"),
+    0x60070C72: ("ldrb", "r3, [r1, #3]"),
+    0x60070CD4: ("ldrb", "r3, [r1, #3]"),
+    0x60070CE2: ("strb", "r3, [r4, #8]"),
+    0x60070CFC: ("ldrb", "r3, [r1, #5]"),
+    0x600F4B40: ("ldrb.w", "r3, [r3, #0x32]"),
+    0x600F4B44: ("cmp", "r3, #0x84"),
+    0x600F4B4A: ("ldrb.w", "r3, [r3, #0x32]"),
+    0x600F4B4E: ("cmp", "r3, #2"),
+}
+
+def check_semantic_anchors(decoded):
+    for address, expected in SEMANTIC_ANCHORS.items():
+        if decoded.get(address)!=expected:
+            raise ValueError("Changed original comparison/dataflow anchor: "+hex(address))
+    return True
+
+def audit_exact_candidate_anchors(data):
+    from capstone import Cs, CS_ARCH_ARM, CS_MODE_THUMB, CS_MODE_MCLASS
+    md=Cs(CS_ARCH_ARM,CS_MODE_THUMB|CS_MODE_MCLASS)
+    found={}
+    for address in SEMANTIC_ANCHORS:
+        offset=address-XIP_BASE
+        instruction=next(iter(md.disasm(data[offset:offset+4],address,count=1)),None)
+        if instruction:
+            found[address]=(instruction.mnemonic,instruction.op_str)
+    check_semantic_anchors(found)
+    return {
+        "candidate_0x81":"compares data buffer byte 0 to 0x81/0x30 and reads bytes +1,+3,+5; then decodes fields into state. No demonstrated linkage to USB setup.bRequest 0x81",
+        "candidate_0x84":"compares a field at object +0x32 with 0x84 or 2, with adjacent state predicates; not proven USB setup.bRequest 0x84",
+        "anchored_instruction_count":len(SEMANTIC_ANCHORS),
+        "USB_setup_source_reached":"NOT VERIFIED",
+        "arbitrary_execution_or_update_path":"NOT VERIFIED",
+    }
+
+
 def inspect(data):
     if len(data)!=IMAGE_SIZE or hashlib.sha256(data).hexdigest()!=IMAGE_SHA256:
         raise ValueError("Requires exact original signed Bruce SHA-256")
@@ -133,6 +173,7 @@ def inspect(data):
         "windows":windows,
         "candidate_immediate_cmp":candidates,
         "whole_image_cmp_census":census_imm_comparisons(data),
+        "focused_candidate_semantics":audit_exact_candidate_anchors(data),
         "receiver_for_host_0x81_0x83_0x84":"NOT IDENTIFIED BY THIS BOUNDED PREVIEW",
         "reachable_arbitrary_execution":"NOT ESTABLISHED",
         "scope":"Static Thumb disassembly of selected XIP windows; functions may cross windows and code may contain literal pools",
@@ -156,6 +197,7 @@ def main():
                 print(i["address"],i["mnemonic"],i["operands"])
         print("CANDIDATE CMP",json.dumps(result["candidate_immediate_cmp"]))
         print("WHOLE IMAGE CMP CENSUS",json.dumps(result["whole_image_cmp_census"]))
+        print("FOCUSED SEMANTICS",json.dumps(result["focused_candidate_semantics"]))
     elif not args.out:
         print(json.dumps(result,indent=2))
 
