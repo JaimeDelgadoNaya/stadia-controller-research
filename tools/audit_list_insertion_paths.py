@@ -72,6 +72,8 @@ ANCHORS = {
     0x11A2E:"0cfb0030", # MLA R0,R12,R0,R3
     0x11E00:"1420",     # MOVS R0,#20
     0x11E08:"00fb0230", # MLA R0,R0,R2,R3
+    0xBAEC:"c4f86035", # STR.W R3,[R4,#0x560] initial pointer
+    0xBAF2:"c4f86835", # STR.W R3,[R4,#0x568] initial pointer
 }
 
 BUCKET_LITERALS = {
