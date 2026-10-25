@@ -1,0 +1,509 @@
+{
+  "phase": 24,
+  "date": "2026-10-25",
+  "sample": {
+    "kind": "private Stadia bootloader A",
+    "build": 169429,
+    "bytes": 131072,
+    "sha256": "59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0",
+    "published": false
+  },
+  "provenance": {
+    "original_sha256_checked_locally": true,
+    "manual_disassembly": "LLVM objdump, Thumbv7E-M",
+    "range_fingerprints_computed_from_original": true,
+    "reproducer": "tools/audit_callee_store_provenance.py",
+    "ci_uses_synthetic_sequences": true,
+    "original_binary_in_ci": false
+  },
+  "operations": {
+    "hardware_access": false,
+    "usb_transactions": false,
+    "flash_or_fuse_operations": false
+  },
+  "callback_fields": {
+    "base": "0x20008b78",
+    "bulk_in_handler": "0x20009170",
+    "bulk_in_context": "0x20009174",
+    "bulk_out_handler": "0x20009178",
+    "bulk_out_context": "0x2000917c"
+  },
+  "inspected_ranges": [
+    {
+      "name": "misc_subobject",
+      "start": "0x6080a990",
+      "end_exclusive": "0x6080aa3c",
+      "bytes": 172,
+      "sha256": "9846228281d488b762dd0af06741682ce861e6c1011687065ebb8c42becbd1f0"
+    },
+    {
+      "name": "state_subobject",
+      "start": "0x608022a0",
+      "end_exclusive": "0x608022e8",
+      "bytes": 72,
+      "sha256": "097be77920ee84cc83618fc99cce5a8d76b26c450e6c6d25a7895f43b4e687f9"
+    },
+    {
+      "name": "controller_data_init",
+      "start": "0x6080990c",
+      "end_exclusive": "0x6080995e",
+      "bytes": 82,
+      "sha256": "f1503f6e76e3996adf8c4c698e3995131a372757eb343df61fed680bb9918e9c"
+    },
+    {
+      "name": "cdc_subobject",
+      "start": "0x60809d98",
+      "end_exclusive": "0x60809da8",
+      "bytes": 16,
+      "sha256": "d8060378f81c652ced44c93ea3210118d6be1d0f80fa28afff0e7d253dd2fe3c"
+    },
+    {
+      "name": "state_service",
+      "start": "0x60802174",
+      "end_exclusive": "0x608021a8",
+      "bytes": 52,
+      "sha256": "a3a428e31aa337e2b114d6d1b6a57687b759d6df4d10fa2bf052260e15b04edd"
+    },
+    {
+      "name": "subobject_setup",
+      "start": "0x608021b4",
+      "end_exclusive": "0x6080228a",
+      "bytes": 214,
+      "sha256": "c65fab5320452ebd44eba634c1bce282d1da0099c9e4686df1707b531a5fd545"
+    },
+    {
+      "name": "global_state_helper",
+      "start": "0x6080c150",
+      "end_exclusive": "0x6080c16c",
+      "bytes": 28,
+      "sha256": "d5dd59b65ca1a822ef37f00208f6bb8d955a5b0e3ff56af5ea45cfa3cb9b1fe5"
+    },
+    {
+      "name": "member_init",
+      "start": "0x60810210",
+      "end_exclusive": "0x60810236",
+      "bytes": 38,
+      "sha256": "a5cb4ce7a201c637ffd0c668b3103ba465acf3152fc7552e78b3130e231841bf"
+    },
+    {
+      "name": "member_constructor",
+      "start": "0x60810bb8",
+      "end_exclusive": "0x60810c30",
+      "bytes": 120,
+      "sha256": "5f4547526ac63d076f8458632a76424eafbdd4db39662299ec8e245a6fbf1397"
+    },
+    {
+      "name": "member_subobject_init",
+      "start": "0x60810b38",
+      "end_exclusive": "0x60810bac",
+      "bytes": 116,
+      "sha256": "0fa57a7b2597da9f56a7f8d8cd8e8572710b2ed2eb8cc61bb1de584872cd23b7"
+    },
+    {
+      "name": "linked_node_init",
+      "start": "0x6081099c",
+      "end_exclusive": "0x608109b2",
+      "bytes": 22,
+      "sha256": "8f64714e4d62060e0a8b9a64105cb9285c0780b3b11e15fd63c86079332c58cc"
+    },
+    {
+      "name": "linked_list_worker",
+      "start": "0x60811dc8",
+      "end_exclusive": "0x60811e30",
+      "bytes": 104,
+      "sha256": "48bc771095a3b03dcc8888a9b1047d448380e26cf9dcc2989424ca31d77b1b16"
+    }
+  ],
+  "direct_store_instruction_count": 23,
+  "direct_callback_field_store_count": 0,
+  "direct_stores": [
+    {
+      "function": "misc_subobject_body",
+      "at": "0x6080a9d4",
+      "global_offsets": [
+        "0x574"
+      ],
+      "ram_addresses": [
+        "0x200090ec"
+      ],
+      "width_bytes": 4,
+      "callback_fields_overlapped": []
+    },
+    {
+      "function": "misc_subobject_body",
+      "at": "0x6080aa36",
+      "global_offsets": [
+        "0x574"
+      ],
+      "ram_addresses": [
+        "0x200090ec"
+      ],
+      "width_bytes": 4,
+      "callback_fields_overlapped": []
+    },
+    {
+      "function": "controller_data_init",
+      "at": "0x60809910",
+      "global_offsets": [
+        "0x6c0"
+      ],
+      "ram_addresses": [
+        "0x20009238"
+      ],
+      "width_bytes": 4,
+      "callback_fields_overlapped": []
+    },
+    {
+      "function": "cdc_subobject",
+      "at": "0x60809da4",
+      "global_offsets": [
+        "0x588"
+      ],
+      "ram_addresses": [
+        "0x20009100"
+      ],
+      "width_bytes": 1,
+      "callback_fields_overlapped": []
+    },
+    {
+      "function": "member_init",
+      "at": "0x60810226",
+      "global_offsets": [
+        "0x5dc"
+      ],
+      "ram_addresses": [
+        "0x20009154"
+      ],
+      "width_bytes": 4,
+      "callback_fields_overlapped": []
+    },
+    {
+      "function": "member_constructor",
+      "at": "0x60810c10",
+      "global_offsets": [
+        "0x5d2"
+      ],
+      "ram_addresses": [
+        "0x2000914a"
+      ],
+      "width_bytes": 1,
+      "callback_fields_overlapped": []
+    },
+    {
+      "function": "member_constructor",
+      "at": "0x60810c14",
+      "global_offsets": [
+        "0x58c"
+      ],
+      "ram_addresses": [
+        "0x20009104"
+      ],
+      "width_bytes": 4,
+      "callback_fields_overlapped": []
+    },
+    {
+      "function": "member_constructor",
+      "at": "0x60810c16",
+      "global_offsets": [
+        "0x5c8",
+        "0x5cc"
+      ],
+      "ram_addresses": [
+        "0x20009140",
+        "0x20009144"
+      ],
+      "width_bytes": 8,
+      "callback_fields_overlapped": []
+    },
+    {
+      "function": "member_constructor",
+      "at": "0x60810c22",
+      "global_offsets": [
+        "0x5d8"
+      ],
+      "ram_addresses": [
+        "0x20009150"
+      ],
+      "width_bytes": 1,
+      "callback_fields_overlapped": []
+    },
+    {
+      "function": "member_subobject_init_body",
+      "at": "0x60810b54",
+      "global_offsets": [
+        "0x594"
+      ],
+      "ram_addresses": [
+        "0x2000910c"
+      ],
+      "width_bytes": 4,
+      "callback_fields_overlapped": []
+    },
+    {
+      "function": "member_subobject_init_body",
+      "at": "0x60810b5e",
+      "global_offsets": [
+        "0x590"
+      ],
+      "ram_addresses": [
+        "0x20009108"
+      ],
+      "width_bytes": 4,
+      "callback_fields_overlapped": []
+    },
+    {
+      "function": "member_subobject_init_body",
+      "at": "0x60810b62",
+      "global_offsets": [
+        "0x598"
+      ],
+      "ram_addresses": [
+        "0x20009110"
+      ],
+      "width_bytes": 4,
+      "callback_fields_overlapped": []
+    },
+    {
+      "function": "member_subobject_init_body",
+      "at": "0x60810b66",
+      "global_offsets": [
+        "0x5c4"
+      ],
+      "ram_addresses": [
+        "0x2000913c"
+      ],
+      "width_bytes": 4,
+      "callback_fields_overlapped": []
+    },
+    {
+      "function": "member_subobject_init_body",
+      "at": "0x60810b68",
+      "global_offsets": [
+        "0x5d0"
+      ],
+      "ram_addresses": [
+        "0x20009148"
+      ],
+      "width_bytes": 1,
+      "callback_fields_overlapped": []
+    },
+    {
+      "function": "member_subobject_init_body",
+      "at": "0x60810b6c",
+      "global_offsets": [
+        "0x5d1"
+      ],
+      "ram_addresses": [
+        "0x20009149"
+      ],
+      "width_bytes": 1,
+      "callback_fields_overlapped": []
+    },
+    {
+      "function": "linked_node_init_at_59c",
+      "at": "0x608109a4",
+      "global_offsets": [
+        "0x5a0"
+      ],
+      "ram_addresses": [
+        "0x20009118"
+      ],
+      "width_bytes": 4,
+      "callback_fields_overlapped": []
+    },
+    {
+      "function": "linked_node_init_at_59c",
+      "at": "0x608109a6",
+      "global_offsets": [
+        "0x5ac"
+      ],
+      "ram_addresses": [
+        "0x20009124"
+      ],
+      "width_bytes": 4,
+      "callback_fields_overlapped": []
+    },
+    {
+      "function": "linked_node_init_at_59c",
+      "at": "0x608109a8",
+      "global_offsets": [
+        "0x5a4",
+        "0x5a8"
+      ],
+      "ram_addresses": [
+        "0x2000911c",
+        "0x20009120"
+      ],
+      "width_bytes": 8,
+      "callback_fields_overlapped": []
+    },
+    {
+      "function": "linked_node_init_at_59c",
+      "at": "0x608109ae",
+      "global_offsets": [
+        "0x59c"
+      ],
+      "ram_addresses": [
+        "0x20009114"
+      ],
+      "width_bytes": 4,
+      "callback_fields_overlapped": []
+    },
+    {
+      "function": "linked_node_init_at_5b0",
+      "at": "0x608109a4",
+      "global_offsets": [
+        "0x5b4"
+      ],
+      "ram_addresses": [
+        "0x2000912c"
+      ],
+      "width_bytes": 4,
+      "callback_fields_overlapped": []
+    },
+    {
+      "function": "linked_node_init_at_5b0",
+      "at": "0x608109a6",
+      "global_offsets": [
+        "0x5c0"
+      ],
+      "ram_addresses": [
+        "0x20009138"
+      ],
+      "width_bytes": 4,
+      "callback_fields_overlapped": []
+    },
+    {
+      "function": "linked_node_init_at_5b0",
+      "at": "0x608109a8",
+      "global_offsets": [
+        "0x5b8",
+        "0x5bc"
+      ],
+      "ram_addresses": [
+        "0x20009130",
+        "0x20009134"
+      ],
+      "width_bytes": 8,
+      "callback_fields_overlapped": []
+    },
+    {
+      "function": "linked_node_init_at_5b0",
+      "at": "0x608109ae",
+      "global_offsets": [
+        "0x5b0"
+      ],
+      "ram_addresses": [
+        "0x20009128"
+      ],
+      "width_bytes": 4,
+      "callback_fields_overlapped": []
+    }
+  ],
+  "direct_alias_handoffs": [
+    {
+      "at": "0x608022ae",
+      "target": "0x608021b4",
+      "argument": "global+0x560"
+    },
+    {
+      "at": "0x608022c2",
+      "target": "0x60802174",
+      "argument": "global+0x560"
+    },
+    {
+      "at": "0x60809916",
+      "target": "0x6080c150",
+      "argument": "global+0x630",
+      "note": "callee immediately loads unrelated literal pointer 0x20009dc0"
+    },
+    {
+      "at": "0x60809d9e",
+      "target": "0x60810210",
+      "argument": "global+0x58c"
+    },
+    {
+      "at": "0x60810222",
+      "target": "0x60810bb8",
+      "argument": "global+0x58c"
+    },
+    {
+      "at": "0x60810c1a",
+      "target": "0x60810b38",
+      "argument": "global+0x58c"
+    },
+    {
+      "at": "0x60810b7a",
+      "target": "0x60811dc8",
+      "argument": "global+0x59c"
+    },
+    {
+      "at": "0x60810b9c",
+      "target": "0x6081099c",
+      "argument": "global+0x59c"
+    },
+    {
+      "at": "0x60810ba4",
+      "target": "0x6081099c",
+      "argument": "global+0x5b0"
+    }
+  ],
+  "field_derived_unknown_pointer_sinks": [
+    {
+      "at": "0x6080a9ba",
+      "target": "0x60809048",
+      "source_field": "global+0x568"
+    },
+    {
+      "at": "0x6080a9f0",
+      "target": "0x60809048",
+      "source_field": "global+0x568"
+    },
+    {
+      "at": "0x6080aa26",
+      "target": "0x60809048",
+      "source_field": "global+0x568"
+    },
+    {
+      "at": "0x608021d2",
+      "target": "0x60809048",
+      "source_field": "global+0x560"
+    },
+    {
+      "at": "0x60811de2",
+      "target": "0x608109fe",
+      "source_field": "global+0x5a8",
+      "derivation": "load pointer from field, dereference at +0xC, add +0x18"
+    }
+  ],
+  "additional_observations": [
+    {
+      "at": "0x608021a6",
+      "finding": "unconditional self-loop in 0x60802174; path reaching it does not return"
+    },
+    {
+      "at": "0x60809910",
+      "store": "global+0x6c0",
+      "ram": "0x20009238",
+      "finding": "state field, not callback +0x6c4"
+    },
+    {
+      "at": "0x60810226",
+      "store": "global+0x5dc",
+      "ram": "0x20009154",
+      "finding": "auxiliary member; helper 0x60810bb8 receives global+0x58c"
+    }
+  ],
+  "limitations": [
+    "No runtime RAM capture; values loaded from global+0x568/+0x560 and +0x5a8 are dynamic pointers.",
+    "The callees 0x60809048 and 0x608109fe are not fully audited; their dynamic pointer targets remain unresolved.",
+    "No whole-program CFG or host-reachability proof."
+  ],
+  "conclusions": {
+    "direct_callback_field_write_in_inspected_ranges": "NOT FOUND",
+    "later_callback_setter": "NOT PROVEN OR EXCLUDED",
+    "usb_host_to_flash_write": "NOT DEMONSTRATED",
+    "hab_closed_bypass": "NOT DEMONSTRATED",
+    "custom_firmware_execution": "NOT DEMONSTRATED"
+  }
+}
