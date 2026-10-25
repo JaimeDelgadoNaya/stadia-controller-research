@@ -32,3 +32,11 @@ deliberadamente con archivos locales.
 ## Cambio de prioridad tras fase 29 (decisión acotada)
 
 La hoja original de tareas sigue describiendo posibles pistas, pero la **prioridad operativa ahora es [la puerta de decisión sobre actualización real](puerta-decision-actualizacion.md)**: dos paquetes offline como máximo — protocolo WebUSB del host hasta el receptor y, solo si procede, aplicación Bruce firmada y ejecución recuperable — seguidos de decisión **continuar/parar**. No se abrirán más fases de búsqueda genérica de punteros. Si no existe una entrada controlable y una vía de ejecución propia recuperable verificadas, la alternativa será puente externo para Xbox (separando XInput para PC de autenticación de consola).
+
+## Prioridad vigente: software interno y Switch 2 directa
+
+La instrucción posterior del propietario descarta dispositivos externos y
+sustituye la prioridad de puente anterior. Ver [el objetivo directo](switch2-directa.md)
+y [la corrección del receptor de aplicación](funcion-mensaje-aplicacion.md).
+Se autoriza investigación offline acotada; firmas, ejecución propia y recuperación
+siguen siendo bloqueos técnicos. No se ha modificado firmware en esta revisión.

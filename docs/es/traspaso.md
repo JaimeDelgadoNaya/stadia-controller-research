@@ -238,3 +238,11 @@ El [informe de fase 28](procedencia-nodos-indices.md) demuestra estáticamente d
 ## Fase 31 — CIERRE de la vía interna
 
 [Decisión final autenticación/recuperación](decision-final-ejecucion.md). Con ambas investigaciones acotadas terminadas, la cadena host WebHID→flashloader firmado funciona para imágenes previstas, pero no aporta código propio autenticable en HAB CLOSED. Se volvió a comprobar en privado firmas RSA/CMS y digest de bootloader A y Bruce, y un cambio de un byte en copia temporal invalida la verificación. El bootloader A valida antes de saltar; el slot B continúa vacío en mediciones previas; falta copia integral y rollback. **STOP modificación interna, GO puente ESP32-S3 Stadia BLE→PC Xbox 360 como prototipo reversible; estudiar aparte interfaz Xbox real autorizada.** Script `tools/audit_final_auth_recovery.py`, evidencia `evidence/phase31-final-auth-recovery.json`. Reabrir solo ante evidencia nueva de ejecución propia autorizada y recuperación real.
+
+## Investigación directa reabierta por el propietario
+
+El propietario pide modificación del software del mando, sin dispositivos
+externos, e incluye Switch 2. Esto sustituye la prioridad de puente externo,
+pero no los resultados de HAB/firma/recuperación de la fase 31. La nueva revisión
+es offline y acotada al receptor de mensajes de la aplicación y a requisitos
+USB/BLE. Ver [Switch 2 directa](switch2-directa.md). No se ha flasheado el mando.

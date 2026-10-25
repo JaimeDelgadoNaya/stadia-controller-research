@@ -9,15 +9,29 @@ whether custom firmware can run on the original hardware.
 **Current result: secure boot is CLOSED on the tested controller. No custom
 firmware execution or signature bypass has been demonstrated.**
 
-**[Package A complete — archived WebHID/WebUSB host protocol](docs/en/archived-updater-host-protocol.md).** The host installs images via **ROM SDP and signed RAM flashloader**, not bootloader-A Bulk OUT `0x07`. See [sanitized evidence](evidence/archived-updater-host-protocol.json). Custom unsigned execution remains unproven; **one bounded package B** remains before the stop/go gate.
+**[Package A complete — archived WebHID/WebUSB host protocol](docs/en/archived-updater-host-protocol.md).** The host installs images via **ROM SDP and signed RAM flashloader**, not bootloader-A Bulk OUT `0x07`. See [sanitized evidence](evidence/archived-updater-host-protocol.json). Custom unsigned execution remains unproven; package B was completed in phase 31.
 
 **FINAL DECISION — [Phase 31: stop internal firmware modification, begin external bridge](docs/en/final-execution-recovery-decision.md).** The agreed last offline work package is complete. ROM HAB **CLOSED**, signed images validate, but no authorizable custom execution or reliable rollback was established. **Stop internal modification unless independent new evidence changes the gates.** Next: reversible ESP32-S3 Stadia BLE → **PC** Xbox 360-style gamepad prototype; Xbox One/Series authentication requires separate verification.
 
-## Current priority: real host update route or external bridge
+## Current priority: on-controller software and direct Switch 2
 
-**[Bounded stop/go gate (post phase 29)](docs/en/update-execution-decision-gate.md)**: inspect the archived WebUSB host updater and its actual receiver, then the signed Bruce application; **end internal firmware-modification research after two offline packages** if no controllable, executable and recoverable path is shown. A PC XInput bridge alone does not establish Xbox-console compatibility.
+The owner excludes adapters and external boards. The active goal is software
+modification on the original Stadia electronics for direct console use, including
+**Switch 2**. See [feasibility and minimum target](docs/en/direct-switch2.md).
 
-The supplied Bruce update file is a **signed candidate application image, not a verified complete installed-flash dump**. A candidate message handler at `0x60058B68` checks input byte `5` before calling `0x60058AA8`; it is **not yet a proven USB update command**.
+Nintendo documents wired original Pro Controller support on Switch 2. Emulating
+that USB protocol is an initial target conditional on achieving custom execution
+on Stadia; a name or VID/PID change alone is insufficient. Switch 2 controllers
+use proprietary BLE rather than Stadia's generic BLE HID profile.
+
+The owner's new instruction reopens bounded offline investigation. Phase 31's
+technical blockers remain: repeated local signature verification passes original
+images and rejects a one-byte mutation. Custom execution, HAB bypass and complete
+recovery remain unproven. No controller firmware was changed.
+
+The [message receiver review](docs/en/application-message-role.md) corrects the entry and identifies
+tag 5 as two-value HID control, possibly rumble; it does not establish a
+firmware update handler.
 
 ## Measured progress
 

@@ -9,15 +9,29 @@ objetivo a largo plazo es determinar si puede ejecutar firmware propio.
 **Resultado actual: el arranque seguro del mando analizado está en CLOSED. No
 hemos demostrado ejecución de firmware propio ni una forma de eludir las firmas.**
 
-**[Paquete A terminado — protocolo del actualizador WebHID/WebUSB](docs/es/protocolo-actualizador-webhid.md).** El host instala imágenes usando **ROM SDP y cargador firmado RAM**, no Bulk OUT `0x07` del bootloader A. Comandos y validaciones documentados en [la evidencia](evidence/archived-updater-host-protocol.json); sigue sin demostrarse ejecución de firmware propio. Queda **un paquete B offline** antes de aplicar la regla de parada.
+**[Paquete A terminado — protocolo del actualizador WebHID/WebUSB](docs/es/protocolo-actualizador-webhid.md).** El host instala imágenes usando **ROM SDP y cargador firmado RAM**, no Bulk OUT `0x07` del bootloader A. Comandos y validaciones documentados en [la evidencia](evidence/archived-updater-host-protocol.json); sigue sin demostrarse ejecución de firmware propio. El paquete B se completó en la fase 31.
 
 **DECISIÓN FINAL — [Fase 31: cerrar firmware interno y comenzar el puente externo](docs/es/decision-final-ejecucion.md).** El análisis offline de autenticación y recuperación ha completado el último paquete pactado. ROM HAB **CLOSED**, firmas originales válidas, sin ejecución propia autenticable ni rollback verificado. **Se detiene la investigación de modificación interna salvo nueva evidencia independiente.** Próximo paso: prototipo ESP32-S3 con BLE Stadia → gamepad Xbox 360 **para PC**, y verificación aparte de compatibilidad/autenticación de consola Xbox One/Series.
 
-## Prioridad actual: ruta de actualización real o puente externo
+## Prioridad actual: software del propio mando y Switch 2 directa
 
-**[Plan con decisión obligatoria (tras fase 29)](docs/es/puerta-decision-actualizacion.md)**: comprobar el protocolo WebUSB del actualizador archivado y su receptor, analizar la aplicación Bruce firmada y **detener la modificación interna tras dos paquetes offline** si no existe una vía controlable, ejecutable y recuperable. Alternativa: puente externo para Xbox; la emulación XInput para PC no garantiza compatibilidad con consolas.
+El propietario ha descartado adaptadores y placas externas. La nueva prioridad
+es investigar modificación del software del Stadia para conectarlo directamente
+a consolas, incluyendo **Switch 2**. [Viabilidad y objetivo mínimo](docs/es/switch2-directa.md).
 
-La imagen Bruce proporcionada se analiza como **muestra firmada de actualización**, no como copia certificada de toda la aplicación instalada. El analizador nuevo identifica una rama de mensaje en `0x60058B68` con comprobación del primer byte `5` y llamada a `0x60058AA8`; **todavía no es un comando de actualización USB probado**.
+Nintendo documenta soporte por cable para el Pro Controller original en Switch 2;
+emular su protocolo USB es un primer objetivo condicionado a conseguir ejecución
+propia en Stadia. No basta cambiar el nombre o VID/PID. El BLE de los mandos
+Switch 2 usa un protocolo propietario diferente del HID BLE de Stadia.
+
+La instrucción del propietario reabre una investigación offline acotada; no
+convierte en resueltos los bloqueos técnicos de la fase 31. La reverificación
+local confirma firmas originales y fallo tras mutar un byte. No hay todavía
+firmware propio ejecutable, bypass HAB ni recuperación completa demostrados.
+
+La [revisión del receptor de mensajes](docs/es/funcion-mensaje-aplicacion.md) corrige su entrada y
+clasifica la etiqueta 5 como control HID de dos valores, posiblemente vibración;
+no se ha demostrado que sea actualización de firmware.
 
 ## Avances medidos
 

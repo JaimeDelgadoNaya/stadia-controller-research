@@ -30,3 +30,11 @@ in this repository. Initial analysis tools deliberately operate on local files.
 ## Priority change after phase 29 (finite stop/go gate)
 
 The earlier task list remains a set of hypotheses, but current execution priority is the **[bounded real-updater decision gate](update-execution-decision-gate.md)**: at most two offline work packages (archived host WebUSB protocol to actual receiver, then signed Bruce application/recoverable execution only if warranted), followed by an explicit **continue/stop** decision. Do not open another unlimited sequence of generic pointer scans. If an externally controllable and recoverable custom-execution path is not shown, shift to an external Xbox bridge while distinguishing PC XInput from console authentication.
+
+## Current priority: internal software and direct Switch 2
+
+The owner's later instruction excludes external devices and supersedes the
+external-bridge priority above. See [the direct target](direct-switch2.md) and
+[application receiver correction](application-message-role.md). Bounded offline
+investigation is resumed; signatures, custom execution and recovery remain
+technical barriers. No controller firmware was modified in this review.

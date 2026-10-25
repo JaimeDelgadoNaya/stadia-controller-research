@@ -1,0 +1,49 @@
+{
+  "analysis_date": "2026-10-25",
+  "offline_only": true,
+  "sample_kind": "signed Bruce update image; installed identity unverified",
+  "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+  "bytes": 1050984,
+  "region_sha256": "a83def5a442b49781d9cfc31593f43809657de8173e01457cc077debe74f40e0",
+  "classification": "two-channel HID control; rumble strongly inferred from timer label and consumer",
+  "corrected_entry": "0x60058b64",
+  "previous_incomplete_entry": "0x60058b68",
+  "entry_length_guard": "unsigned (length - 1) <= 254, hence original length 1..255",
+  "tag": 5,
+  "payload_pointer": "input + 1",
+  "payload_length": "original length - 1",
+  "handler": "0x60058aa8",
+  "handler_length_guard": "payload length > 3",
+  "decoded_values": "two little-endian uint16 values from first four payload bytes",
+  "state_writes": [
+    "0x2001a430 uint16",
+    "0x2001a432 uint16"
+  ],
+  "event_argument": 6,
+  "event_helper": "0x6013d2a0",
+  "callback_registration": {
+    "wrapper": "0x60058bdc",
+    "helper": "0x600d543c",
+    "thumb_callback_literal": "0x60058b65 at 0x60058c0c",
+    "installed_field": "object 0x20009e00 + 0x14",
+    "executing_host_to_callback_chain": "not established"
+  },
+  "consumer": {
+    "timer_label": "HidRumbleTimer",
+    "initializer": "0x60058e84",
+    "thumb_callback_literal": "0x60058a7d at 0x60058ec8",
+    "reads": "two uint16 values from incoming object offsets 0 and 2",
+    "direct_calls": [
+      "0x60058a9a -> 0x600d6d2a",
+      "0x600d6d6e -> 0x600658b4"
+    ]
+  },
+  "component": "hid_input_target.cc",
+  "limits": [
+    "No USB endpoint, report descriptor or live host reachability established",
+    "No malformed input or rumble command sent to device",
+    "This bounded path does not establish firmware update or custom execution",
+    "Does not prove absence of other receivers or vulnerabilities",
+    "No signature bypass, installable patch, recovery or Switch 2 compatibility demonstrated"
+  ]
+}
