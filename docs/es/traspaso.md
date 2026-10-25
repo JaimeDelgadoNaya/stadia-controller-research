@@ -194,3 +194,7 @@ El [informe fase 20](censo-escrituras-callback.md) verifica en el bootloader pri
 ## Fase 21 — Origen de alias al objeto global RAM
 
 La [fase 21](fuentes-alias-ram.md) identificó **21 literales alineados** que contienen `0x20008B78` y **29 cargas PC-relativas Thumb candidatas** que los referencian. El paso `0x6080C0B2` (`LDR R0,[PC,#8]`) → `0x6080C0B4` (`BL 0x6080BAC0`) → `0x6080BAC4` (`MOV R4,R0`) demuestra una cadena estática hasta las cuatro escrituras de inicialización de callbacks/contextos del constructor. Los usos de `0x60809E6A` y `0x60809EB8` son lecturas de otros campos. **No se ha demostrado un setter posterior, entrada USB al escritor ni bypass de HAB CLOSED.** Herramienta offline: `tools/audit_global_alias_sources.py`; tests sintéticos y `evidence/usb-phase21.json`. Los 29 sitios son candidatos de instrucción, no todas rutas alcanzables.
+
+## Fase 22 — Seguimiento acotado de alias
+
+[Documentación fase 22](flujo-punteros-usb.md). El nuevo `tools/audit_alias_dataflow.py` sigue como máximo 96 bytes por cada uno de los 29 orígenes de punteros RAM, deteniéndose en llamadas, ramas o retornos. Las escrituras observadas en `0x60809790` y `0x60809842` afectan al estado `global+0x6C4`, no a los callbacks `+0x5F8/+0x600`. El análisis no descarta vías indirectas ni demuestra una ruta de entrada USB hasta la flash. Las pruebas sintéticas y `evidence/usb-phase22.json` están en la rama; el binario original sigue privado.

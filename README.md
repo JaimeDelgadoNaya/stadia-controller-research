@@ -92,6 +92,10 @@ The bounded Thumb-2 encoding search finds only constructor stores for the vendor
 
 The image has **21 aligned global-pointer literals** and **29 candidate PC-relative loads**. One direct alias chain reaches the known constructor initialization stores; this is **not** a later callback setter or proof of USB-to-flash reachability.
 
+- **[Phase 22 — Bounded USB pointer dataflow](docs/en/usb-pointer-dataflow.md)**
+
+Conservative tracking of 29 RAM-alias source candidates, with writes to state field `+0x6C4` distinguished from the IN/OUT completion callback fields. Call and branch boundaries remain unresolved.
+
 ## Offline reproduction
 
 Python 3.11 or newer:
