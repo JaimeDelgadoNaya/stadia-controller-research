@@ -178,3 +178,7 @@ Se ha revisado el bootloader A original con SHA-256 verificado y se ha documenta
 ## Fase 17 — Registro USB de endpoints
 
 La [fase 17](endpoints-vendor.md) verifica la inicialización de **dos endpoints** del fabricante y el uso de dos callbacks en tabla `0x60814F24`, con llamada a registrador `0x60806660`. El registro indexa por número y dirección de endpoint (OUT `0x07` → índice 14; IN `0x87` → 15). **Queda pendiente** asociar cada callback al endpoint exacto, porque el descriptor del registro se obtiene de RAM en ejecución, y seguir el parser real de paquetes. `tools/audit_vendor_endpoints.py` verifica SHA-256 y huellas de código offline; evidencias saneadas en `evidence/usb-phase17.json`; el binario no se publica. No se han enviado comandos ni escrito flash.
+
+## Fase 18 — Identificación del callback Bulk OUT por inicialización RAM
+
+El [informe fase 18](inicializacion-ram-usb.md) verifica en el bootloader A SHA-256 conocido la copia de **400 bytes** de flash `0x608161E0` a RAM `0x20000000` durante el arranque normal. Esa copia contiene `87 02 00 02` en `0x200000D8` y `07 02 00 02` en `0x200000DC`. Combinando la rutina de registro y tabla de callbacks de fase 17 se demuestra en ese flujo que **Bulk IN `0x87` -> `0x60809E30` y Bulk OUT `0x07` -> `0x6080A06A`**. El segundo reenvía a `0x6080A062`, cuyo destino final es indirecto y aún no está resuelto. Script offline: `tools/audit_endpoint_ram_init.py`; evidencia saneada `evidence/usb-phase18.json`; pruebas sintéticas. **No se ha ejecutado código propio ni superado HAB CLOSED.**

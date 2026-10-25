@@ -76,6 +76,10 @@ The 512-byte guarded helper belongs to a **CDC-labelled method table**, separate
 
 On the SHA-verified bootloader A, two endpoint registrations reach `0x60806660`. Bulk OUT `0x07` and IN `0x87` map to distinct internal slots, but the specific OUT callback assignment and actual message parser are unproven. HAB CLOSED has not been bypassed.
 
+- **[Phase 18 — RAM initialization resolves bulk OUT callback](docs/en/usb-ram-initialization.md)**
+
+Normal startup copies compact endpoint records from flash into RAM, proving the initial **bulk OUT `0x07` callback is `0x6080A06A`** and bulk IN `0x87` is `0x60809E30`. The final dynamic handler, external flash-write reachability and HAB bypass remain unresolved.
+
 ## Offline reproduction
 
 Python 3.11 or newer:
