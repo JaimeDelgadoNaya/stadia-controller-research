@@ -201,3 +201,7 @@ A private 128 KiB bootloader A image matches the recorded SHA-256. [Phase 14](us
 ## Phase 23 — Bounded interprocedural alias handoffs
 
 [Phase 23](interprocedural-aliases.md) verifies direct global-pointer handoffs at `0x6080C0B4` (constructor), `0x60802504/0x60808138` (service `0x6080B218`) and `0x6080FB4C` (initializer `0x6080B17C`). The latter derives four R0 subobject pointers `global+0x568/+0x560/+0x630/+0x578` for direct callees. The service `0x6080B218` adds `+0x630` and branches to `0x60809ABC`, which prepares `global+0x644` for another call. The SHA-locked offline `tools/audit_interprocedural_aliases.py` checks concrete machine-code edges; synthetic tests and sanitized `evidence/usb-phase23.json` are committed. No later callback setter, USB reachability or HAB bypass has been demonstrated.
+
+## Phase 24 — Callee store and pointer provenance
+
+[Phase 24](callee-callback-store-audit.md) reviews the four phase-23 callees and the auxiliary initialization chain from `0x60809D98`. It records 23 store observations across 19 unique instruction sites (the same `0x6081099C` initializer is analyzed with two incoming offsets); none overlaps `global+0x5F8/+0x5FC/+0x600/+0x604`. The chain `global+0x58C → 0x60810210 → 0x60810BB8 → 0x60810B38` initializes fields through `+0x5D8`. `0x60811DC8` loads a pointer from `global+0x5A8` and passes a derived pointer to `0x608109FE`; this dynamic target and the `0x60809048` paths remain unresolved. Offline tool `tools/audit_callee_store_provenance.py`, synthetic tests and sanitized `evidence/usb-phase24.json`.
