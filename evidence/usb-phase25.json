@@ -1,0 +1,136 @@
+{
+  "phase": 25,
+  "date": "2026-10-25",
+  "sample": {
+    "build": 169429,
+    "bytes": 131072,
+    "sha256": "59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0",
+    "private_original_published": false
+  },
+  "operations": {
+    "offline": true,
+    "hardware_access": false,
+    "usb_transactions": false,
+    "flash_or_fuse_writes": false
+  },
+  "attested_regions": [
+    {
+      "name": "transfer_opaque_pointee",
+      "start": "0x60809048",
+      "end_exclusive": "0x60809174",
+      "bytes": 300,
+      "sha256": "6c7ce7cefc72ac6df2a368bd994d9730222f75097b008ce40e348eb43dddd769"
+    },
+    {
+      "name": "list_unlink_opaque_node",
+      "start": "0x608109fe",
+      "end_exclusive": "0x60810a20",
+      "bytes": 34,
+      "sha256": "fdc286134a639f4c97aaccb60d18a8c2e408aee918f5d2ff934945342f3be166"
+    },
+    {
+      "name": "list_caller",
+      "start": "0x60811dc8",
+      "end_exclusive": "0x60811df4",
+      "bytes": 44,
+      "sha256": "9feff6083c2aa76a8068b6da5f9bedca0fee70a73652be8aae600ec42069ffb9"
+    }
+  ],
+  "transfer": {
+    "entry": "0x60809048",
+    "inputs_source_fields": [
+      "global+0x560",
+      "global+0x568",
+      "global+0x570"
+    ],
+    "pointee_address": "UNKNOWN",
+    "input_derived_offsets": [
+      "+0xa4",
+      "+0x6c",
+      "+0xf8"
+    ],
+    "reads": [
+      "+0x00",
+      "+0x154",
+      "+0x158",
+      "+0x15c"
+    ],
+    "no_direct_store_through_input_in_selected_region": true,
+    "delegated_calls": [
+      "0x608101aa",
+      "0x608101bc",
+      "0x608041f0",
+      "0x60808e7c",
+      "0x6081022c"
+    ],
+    "underlying_callee_side_effects": "NOT EXHAUSTIVELY ANALYZED"
+  },
+  "unlink": {
+    "entry": "0x608109fe",
+    "kind": "doubly_linked_node_detach_pattern",
+    "input_pointer": "UNRESOLVED",
+    "writes": [
+      {
+        "at": "0x60810a04",
+        "dest": "previous+0x08"
+      },
+      {
+        "at": "0x60810a08",
+        "dest": "next+0x04"
+      },
+      {
+        "at": "0x60810a10",
+        "dest": "owner+0x04",
+        "conditional": true
+      },
+      {
+        "at": "0x60810a14",
+        "dest": "node+0x10",
+        "value": 0
+      },
+      {
+        "at": "0x60810a1a",
+        "dest": "owner+0x00",
+        "value": "decremented count"
+      }
+    ],
+    "caller": {
+      "entry": "0x60811dc8",
+      "loads": [
+        "parent=[context+0xc]",
+        "link=[parent+0xc]"
+      ],
+      "calls": [
+        {
+          "at": "0x60811de2",
+          "arg": "link+0x18",
+          "target": "0x608109fe"
+        },
+        {
+          "at": "0x60811df0",
+          "arg": "link+0x04",
+          "target": "0x608109fe",
+          "conditional": true
+        }
+      ],
+      "actual_runtime_node_address": "UNKNOWN"
+    }
+  },
+  "open_questions": [
+    "Who initializes global+0x560/+0x568/+0x570 values?",
+    "Where are linked nodes and owner pointers allocated in RAM?",
+    "Are any of these callees reachable from externally supplied USB data?"
+  ],
+  "limits": {
+    "absolute_stores_to_usb_callback_fields": "NOT DEMONSTRATED",
+    "alias_to_callback_storage": "NOT PROVEN OR EXCLUDED",
+    "host_usb_to_flash": "NOT DEMONSTRATED",
+    "hab_closed_bypass": "NOT DEMONSTRATED",
+    "custom_firmware_execution": "NOT DEMONSTRATED"
+  },
+  "reproducibility": {
+    "script": "tools/audit_dynamic_pointer_sinks.py",
+    "synthetic_tests": "tests/test_dynamic_pointer_sinks.py",
+    "original_binary_in_ci": false
+  }
+}
