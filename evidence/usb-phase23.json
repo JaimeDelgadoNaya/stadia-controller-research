@@ -1,0 +1,86 @@
+{
+  "phase": 23,
+  "date": "2026-10-25",
+  "sample": {
+    "name": "bootloader A",
+    "build": 169429,
+    "bytes": 131072,
+    "sha256": "59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0",
+    "private_binary_published": false
+  },
+  "no_hardware_access": true,
+  "usb_transactions": false,
+  "flash_operations": false,
+  "scope": "Anchored direct Thumb BL and B.W edges, not full interprocedural reachability",
+  "direct_global_pointer_handoffs": [
+    {
+      "load": "0x6080c0b2",
+      "call": "0x6080c0b4",
+      "target": "0x6080bac0",
+      "argument": "0x20008b78"
+    },
+    {
+      "load": "0x60802502",
+      "call": "0x60802504",
+      "target": "0x6080b218",
+      "argument": "0x20008b78"
+    },
+    {
+      "load": "0x60808136",
+      "call": "0x60808138",
+      "target": "0x6080b218",
+      "argument": "0x20008b78"
+    },
+    {
+      "load": "0x6080fb4a",
+      "call": "0x6080fb4c",
+      "target": "0x6080b17c",
+      "argument": "0x20008b78"
+    }
+  ],
+  "subsystem_initializer": {
+    "function": "0x6080b17c",
+    "saved_global": "R4 <- R0 at 0x6080b17e",
+    "calls": [
+      {
+        "site": "0x6080b186",
+        "argument": "global+0x568",
+        "target": "0x6080a990"
+      },
+      {
+        "site": "0x6080b18e",
+        "argument": "global+0x560",
+        "target": "0x608022a0"
+      },
+      {
+        "site": "0x6080b196",
+        "argument": "global+0x630",
+        "target": "0x6080990c"
+      },
+      {
+        "site": "0x6080b19e",
+        "argument": "global+0x578",
+        "target": "0x60809d98"
+      }
+    ],
+    "path_condition": "Previous calls return normally and preserve R4; callee effects not audited"
+  },
+  "controller_service": {
+    "function": "0x6080b218",
+    "argument_derivation": "global+0x630",
+    "tail_site": "0x6080b21c",
+    "tail_target": "0x60809abc",
+    "first_callee_site": "0x60809ac2",
+    "first_callee": "0x60809688",
+    "argument": "global+0x644",
+    "condition": "Straight-line path to first unmodelled callee"
+  },
+  "uncertainty": {
+    "actual_usb_host_reachability": "NOT DEMONSTRATED",
+    "callback_setter": "NOT DEMONSTRATED OR EXCLUDED",
+    "flash_write_reachability": "NOT DEMONSTRATED",
+    "HAB_bypass": "NOT DEMONSTRATED",
+    "custom_firmware_execution": "NOT DEMONSTRATED"
+  },
+  "next": "Analyze four specific callee bodies with bounded store provenance"
+}
