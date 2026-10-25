@@ -267,3 +267,7 @@ it immutable. The write-policy and USB-fragment trace excludes an ordinary
 WriteMemory patch of those entries, including a huge declared total used to
 seek wraparound at those addresses. None of these
 observations demonstrates custom execution or working Switch 2 compatibility.
+
+## FillMemory hypothesis (execution NOT established)
+
+[Review](fillmemory-path-review.md), [read-only audit](../../tools/audit_fillmemory_route.py) and [evidence](../../evidence/fillmemory-review.json). Command `0x05` / handler `0x20003381` are enabled. The WriteMemory restricted-range proof does not transfer automatically to FillMemory. NXP generally specifies the same access rules but the actual restricted loader-specific receiver/backend has not been inspected with the new CLI against the original binary in this session. No HID write, command execution, custom code or reliable recovery was demonstrated.
