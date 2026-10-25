@@ -121,6 +121,10 @@ Identificadas funciones de inserción directa (`0x608109B8`) y ordenada (`0x6081
 
 En las llamadas `0x60811A32` y `0x60811E0C`, el nodo es un subobjeto `objeto+4` y el índice procede del campo `objeto+0x2C`. Las comparaciones observadas se ejecutan después de insertar; no se ha demostrado la ausencia de validaciones anteriores, un índice fuera de límites ni acceso desde USB.
 
+- **[Fase 29 — Escrituras y límites del índice de listas](docs/es/escrituras-indices-listas.md)**
+
+El constructor limita el índice `objeto+0x2C` a **0–15** y también inicializa `objeto+0x50`; cuatro rutas posteriores pueden copiar o actualizar el índice. No está demostrado que el límite inicial se mantenga globalmente ni que exista un índice controlable desde USB.
+
 ## Reproducción sin conexión
 
 Python 3.11 o posterior:
