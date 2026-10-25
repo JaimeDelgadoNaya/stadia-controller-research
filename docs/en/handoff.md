@@ -177,3 +177,7 @@ A private 128 KiB bootloader A image matches the recorded SHA-256. [Phase 14](us
 ## Phase 17 — Vendor USB endpoint registration
 
 [Phase 17](vendor-endpoints.md) verifies two endpoint registrations through `0x60806660` and a two-entry callback table at `0x60814F24`. Endpoint address and direction determine separate internal indices: bulk OUT `0x07` → 14 and IN `0x87` → 15. **Callback assignment by direction is not yet determined** because the endpoint registration reads a runtime RAM descriptor. The true receive parser, flash-writer reachability and HAB bypass remain unproven. `tools/audit_vendor_endpoints.py` operates offline on the matching private binary with SHA-256/region checks; sanitized evidence is public.
+
+## Phase 18 — RAM initializer resolves bulk OUT callback
+
+[Phase 18](usb-ram-initialization.md) verifies a **400-byte** normal-startup flash-to-RAM copy, from `0x608161E0` into RAM `0x20000000`. It contains compact endpoint records `87 02 00 02` at RAM `0x200000D8` and `07 02 00 02` at `0x200000DC`. Verified loop and callback table associate **IN `0x87` with `0x60809E30`** and **OUT `0x07` with `0x6080A06A`**. The latter forwards into `0x6080A062`, which loads a dynamically registered callback from `+0x18`, still unresolved. SHA-locked offline auditor: `tools/audit_endpoint_ram_init.py`; sanitized evidence: `evidence/usb-phase18.json`. No custom execution or HAB bypass is demonstrated.
