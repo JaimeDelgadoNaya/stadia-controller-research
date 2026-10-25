@@ -97,9 +97,17 @@ def compare_images(prod,stage,dev):
         candidate_keys={v["public_key_spki_sha256"]
                         for v in results[label]["embedded_certificates"].values()}
         changed=sum(1 for a,b in zip(prod[:IVT],samples[label][:IVT]) if a!=b)
+        changed_signed=sum(1 for a,b in zip(prod[:SIGN_LEN],samples[label][:SIGN_LEN]) if a!=b)
+        changed_tail=sum(1 for a,b in zip(prod[SIGN_LEN:],samples[label][SIGN_LEN:]) if a!=b)
+        first_diff=next((i for i,(a,b) in enumerate(zip(prod,samples[label]))
+                         if a!=b),None)
         comparisons[label]={
             "same_full_image_as_prod":results[label]["sha256"]==results["prod"]["sha256"],
             "different_authenticated_code_bytes":changed,
+            "different_full_authenticated_block_bytes":changed_signed,
+            "different_post_authenticated_bytes":changed_tail,
+            "first_differing_file_offset":hex(first_diff) if first_diff is not None else None,
+            "same_original_application_logic_as_prod":changed==0,
             "shares_embedded_signer_public_key_with_prod":bool(prod_keys & candidate_keys),
             "image_boots_on_HAB_CLOSED_prod_controller":"NOT TESTED",
             "debug_mode_unlocked":"NOT DEMONSTRATED",
