@@ -33,7 +33,7 @@ REGIONS = {
         "2d91db7b02d7c7b80a725572b5e24dc242dae2cf5ba68f01d265d8d57e991d44"),
     "route_b_node_and_index": (
         0x11DC8, 0x11E2E,
-        "1d6cc5cbce079b652003101b81bff555d8f2165032d5c06d8d8d0d0fdb16ec30"),
+        "467ea8ab603171d1155a4e41bb5a799b3082ac2d09b97e0610435daa47d0053d"),
     "earlier_bucket_read": (
         0x119A0, 0x119C4,
         "5a8345ddf7936e83fb67fe5e51e9de588cab48e194845aca49ee0a4b256a7634"),
@@ -44,7 +44,7 @@ REGIONS = {
 
 # Important local Thumb encodings; derived from actual build 169429 bytes.
 ANCHORS = {
-    0x119EC: "f8da2000",  # LDR.W R2,[R10]
+    0x119EC: "daf80020",  # LDR.W R2,[R10]
     0x119F0: "d268",      # LDR R2,[R2,#0xC]
     0x119F2: "d668",      # LDR R6,[R2,#0xC]
     0x119FE: "06f10408",  # ADD.W R8,R6,#4: node address
