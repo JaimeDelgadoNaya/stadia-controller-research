@@ -362,19 +362,22 @@ def main():
     result=audit(p.image.read_bytes(),include_focused=p.show_focused)
     if p.out:
         p.out.write_text(json.dumps(result,indent=2)+"\n")
-    print("BL TARGET CENSUS",json.dumps(result["candidate_function_calls_to_usb_core"]))
-    print("SLOT WRITER HEURISTICS",json.dumps(result["candidate_slot_writers"]))
-    print("INIT DATA CALLBACK-LIKE WORDS SUMMARY",
-          json.dumps({"all":result["initialized_data_pointer_census"]["total_thumb_pointer_shaped_words"],
-                      "usb_related":result["initialized_data_pointer_census"]["near_usb_xip_count"]}))
-    print("REGISTRATION HANDLER POINTERS",json.dumps(
-          [{k:v for k,v in row.items() if k!="target_preview"} 
-           for row in result["registration_handler_literals"]]))
-    print("REGISTRAR ALIGNED POINTER REFS",json.dumps(result["registrar_pointer_refs"]))
-    print("USB DESCRIPTOR LOOP CALLERS",json.dumps(result["direct_callers_of_descriptor_loops"]))
-    print("ENDPOINT CALLBACK REGISTRAR CODE",json.dumps(result["endpoint_callback_registrar_code"]))
-    print("REGISTRATION CALLERS CODE",json.dumps(result["registration_caller_context"]))
-    print("CLASS CALLBACK CONTEXT",json.dumps(result["class_dispatch_windows"]))
+    print("ORIGINAL SIGNED IMAGE VERIFIED:",result["oem_signed_image_sha256_verified"])
+    print("REGISTRAR:",result["verified_registration"]["api"],
+          "slot stride",result["verified_registration"]["per_endpoint_stride"],
+          "semantic anchors",result["original_registration_semantic_anchors_verified"])
+    print("DIRECT REGISTRAR CALLS:",result["verified_registration"]["callers"])
+    print("ORIGINAL REGISTERED FORWARDER CONSTANTS:",
+          [row["pointer"] for row in result["registration_handler_literals"]])
+    print("CLASS CALLBACK FORWARDERS ARE INDIRECT; EP0 RUNTIME SLOT UNKNOWN.")
+    print("DESCRIPTOR LOOP DIRECT XIP CALLS:",{
+          k:[q["callsite"] for q in v]
+          for k,v in result["direct_callers_of_descriptor_loops"].items()})
+    print("CANDIDATE STRIDE-12 STORE REGIONS:",
+          result["candidate_slot_writers"]["total_candidate_regions"])
+    print("INIT-DATA USB-AREA THUMB-SHAPED POINTERS:",
+          result["initialized_data_pointer_census"]["near_usb_xip_count"])
+    print("FIRMWARE WRITES: none (offline parser)")
     if p.show_focused:
         for ins in result["usb_core_window"]:
             print("FOCUSED",ins["pc"],ins["m"],ins["op"])
