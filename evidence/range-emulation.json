@@ -1,0 +1,92 @@
+{
+  "image_sha256": "59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0",
+  "helper_address": "0x60801fe6",
+  "emulator": "Unicorn",
+  "emulator_version": "2.1.4",
+  "helper_bytes": 36,
+  "helper_sha256": "29d8988e80bc7a4292ead2e4c029ae437ce0f7220eb66962f10a2c0c3a3eb3ce",
+  "hardware_access": false,
+  "results": [
+    {
+      "case": "whole_interval",
+      "start": "0x60000000",
+      "size": "0x1000000",
+      "computed_end_uint32": "0x60ffffff",
+      "arm_accepts": true,
+      "model_accepts": true,
+      "nonwrapping_accepts": true,
+      "instructions_executed": 15
+    },
+    {
+      "case": "last_byte",
+      "start": "0x60ffffff",
+      "size": "0x1",
+      "computed_end_uint32": "0x60ffffff",
+      "arm_accepts": true,
+      "model_accepts": true,
+      "nonwrapping_accepts": true,
+      "instructions_executed": 15
+    },
+    {
+      "case": "past_last_byte",
+      "start": "0x60ffffff",
+      "size": "0x2",
+      "computed_end_uint32": "0x61000000",
+      "arm_accepts": false,
+      "model_accepts": false,
+      "nonwrapping_accepts": false,
+      "instructions_executed": 15
+    },
+    {
+      "case": "below_interval",
+      "start": "0x5fffffff",
+      "size": "0x1",
+      "computed_end_uint32": "0x5fffffff",
+      "arm_accepts": false,
+      "model_accepts": false,
+      "nonwrapping_accepts": false,
+      "instructions_executed": 7
+    },
+    {
+      "case": "above_interval",
+      "start": "0x61000000",
+      "size": "0x1",
+      "computed_end_uint32": "0x61000000",
+      "arm_accepts": false,
+      "model_accepts": false,
+      "nonwrapping_accepts": false,
+      "instructions_executed": 10
+    },
+    {
+      "case": "zero_size_at_lower_bound",
+      "start": "0x60000000",
+      "size": "0x0",
+      "computed_end_uint32": "0x5fffffff",
+      "arm_accepts": false,
+      "model_accepts": false,
+      "nonwrapping_accepts": false,
+      "instructions_executed": 14
+    },
+    {
+      "case": "zero_size_inside_interval",
+      "start": "0x60000010",
+      "size": "0x0",
+      "computed_end_uint32": "0x6000000f",
+      "arm_accepts": true,
+      "model_accepts": true,
+      "nonwrapping_accepts": false,
+      "instructions_executed": 15
+    },
+    {
+      "case": "wrapped_range",
+      "start": "0x60000010",
+      "size": "0xfffffff8",
+      "computed_end_uint32": "0x60000007",
+      "arm_accepts": true,
+      "model_accepts": true,
+      "nonwrapping_accepts": false,
+      "instructions_executed": 15
+    }
+  ],
+  "scope": "Isolated arithmetic function only; no whole-program reachability or signature bypass demonstrated"
+}

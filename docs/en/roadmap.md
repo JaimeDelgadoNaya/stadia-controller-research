@@ -5,12 +5,14 @@
 **Measured:** device responses, region contents, final normal-mode version.
 **Offline verified:** signed-block hashes and CMS signatures using embedded keys.
 **Static inference:** selected control flow and RVT mapping for the recorded hash.
+**Emulated:** the isolated range helper agrees with its arithmetic model in eight cases.
 **Open question:** arithmetic reachability, update callbacks and alternative code execution.
 
 Next bounded tasks:
 
-1. Reconstruct the indirect callbacks between `0x60801E36` and `0x60801E66`,
-   including destination restrictions and failure/rollback behavior.
+1. Resolve storage virtual methods and the concrete mapping of descriptor `0x12`.
+   Phase 10 resolved the separate power/input callback and traced fixed IVT
+   transfer arguments and restoration logic; backend restrictions remain open.
 2. Trace boot-data sizes into the range helper and the subsequent HAB checks.
    Determine whether any malformed range can matter after cryptographic validation.
 3. Reconstruct application A/B selection, boot-attempt metadata and fallback

@@ -30,6 +30,7 @@ del dispositivo; no se extrajo toda la aplicación instalada para comparar su ha
 
 - [Mediciones y método de extracción](docs/es/mediciones.md)
 - [Cadena de arranque, actualización y cuestiones abiertas](docs/es/arranque.md)
+- [Actualización del IVT y emulación ARM — fase 10](docs/es/actualizacion.md)
 - [Próximos pasos y niveles de evidencia](docs/es/hoja-de-ruta.md)
 - [Manifiesto de evidencias](evidence/manifest.json)
 - [Créditos, procedencia y alcance de la publicación](NOTICE.md)
@@ -41,6 +42,11 @@ bootloader. Se documenta una observación aritmética en la comprobación de ran
 con un ejemplo reproducible sin conexión; su impacto y cualquier elusión de la
 autenticación siguen sin demostrarse.
 
+La fase 10 resuelve el callback indirecto como una comprobación de alimentación
+y entrada física; también traza los argumentos fijos de 4096 bytes y la ruta de
+restauración del IVT. La emulación ARM aislada de las instrucciones confirma el
+ejemplo aritmético en ocho casos, sin demostrar un exploit en el mando.
+
 ## Reproducción sin conexión
 
 Python 3.11 o posterior:
@@ -51,6 +57,14 @@ python -m venv .venv
 python -m pip install -r requirements.txt
 python -m unittest discover -s tests -v
 python tools/model_ranges.py
+```
+
+Reproducción opcional de las instrucciones a partir de la evidencia pública, sin
+un binario completo de firmware ni un mando conectado:
+
+```sh
+python -m pip install -r requirements-emulation.txt
+python tools/emulate_range_check.py
 ```
 
 Con tu propia extracción del bootloader coincidente:

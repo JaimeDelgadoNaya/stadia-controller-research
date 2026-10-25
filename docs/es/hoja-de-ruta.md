@@ -5,12 +5,14 @@
 **Medido:** respuestas del mando, contenido de regiones y versión final en modo normal.
 **Verificado sin conexión:** hashes de bloques firmados y firmas CMS con claves incluidas.
 **Inferido estáticamente:** flujo de control seleccionado y correspondencia RVT para el hash registrado.
+**Emulado:** la función de rangos aislada coincide con su modelo aritmético en ocho casos.
 **Cuestión abierta:** alcance de la observación aritmética, callbacks y ejecución alternativa.
 
 Tareas concretas siguientes:
 
-1. Reconstruir los callbacks indirectos entre `0x60801E36` y `0x60801E66`, sus
-   restricciones de destino y el comportamiento de error y recuperación.
+1. Resolver los métodos virtuales de almacenamiento y el destino del descriptor
+   `0x12`. La fase 10 resolvió el callback de alimentación/entrada y trazó tamaños
+   fijos y restauración del IVT; faltan las restricciones de la implementación.
 2. Seguir los tamaños boot-data hasta la comprobación de rangos y las llamadas
    HAB posteriores. Determinar si un rango malformado puede tener efectos después
    de la validación criptográfica.

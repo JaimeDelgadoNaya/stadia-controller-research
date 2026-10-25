@@ -30,6 +30,7 @@ from the device; the full installed application was not dumped and hash-matched.
 
 - [Device measurements and extraction method](docs/en/measurements.md)
 - [Boot chain, update validation and open questions](docs/en/boot-chain.md)
+- [IVT update flow and ARM emulation — phase 10](docs/en/update-flow.md)
 - [Roadmap and evidence levels](docs/en/roadmap.md)
 - [Evidence manifest](evidence/manifest.json)
 - [Credits, provenance and publication scope](NOTICE.md)
@@ -39,6 +40,11 @@ the application's reset handler. It also distinguishes structural pre-validation
 from the authentication-enabled calls around a bootloader update operation.
 An arithmetic range-check observation is recorded with an offline witness;
 reachability with useful impact and any authentication bypass remain unproven.
+
+Phase 10 resolves the indirect callback to a power/input guard and traces the
+fixed 4096-byte IVT transfer arguments and restoration path. Executing the
+recorded range helper in isolated ARM emulation confirms the arithmetic witness
+across eight cases; it does not establish a device-level exploit.
 
 ## Offline reproduction
 
@@ -50,6 +56,14 @@ python -m venv .venv
 python -m pip install -r requirements.txt
 python -m unittest discover -s tests -v
 python tools/model_ranges.py
+```
+
+Optional instruction-level reproduction from the public evidence, without a
+firmware binary or connected controller:
+
+```sh
+python -m pip install -r requirements-emulation.txt
+python tools/emulate_range_check.py
 ```
 
 With your own matching bootloader dump:
