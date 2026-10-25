@@ -23,6 +23,8 @@ hemos demostrado ejecución de firmware propio ni una forma de eludir las firmas
 
 **[Nueva investigación: Bruce OEM firmado y actualizador](docs/es/ejecucion-bruce-variantes-firmadas.md).** La PR #31 verificó tres imágenes OEM prod/stage/dev contra el archivo original: las tres tienen **idéntico código y bloque autenticado**. Las diferencias están en el material de firma, con claves de certificado distintas. Una búsqueda alineada solo encontró el puntero estructural IVT→CSF hacia el tramo posterior. El actualizador sigue usando ROM SDP y cargador RAM firmado. **No hay ejecución propia, HAB bypass ni recuperación probados.**
 
+**[Receptores USB normales Bruce: nueva auditoría](docs/es/receptores-usb-clase-bruce.md).** La PR #32 contrastó las peticiones de clase `0x81/0x83/0x84` del actualizador archivado con el código original. Encontró ocho comparaciones literales, pero las candidatas estudiadas leen **bytes de búfer o campos de estructuras**, no un `bRequest` con origen verificado desde EP0. **Todavía no hay cadena host→receptor→ejecución propia ni recuperación fiable.**
+
 ## Prioridad actual: software del propio mando y Switch 2 directa
 
 El propietario ha descartado adaptadores y placas externas. La nueva prioridad
