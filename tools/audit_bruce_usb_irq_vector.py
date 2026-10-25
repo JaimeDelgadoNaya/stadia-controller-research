@@ -96,6 +96,26 @@ def resolve_ldr_pc_veneer(image, source):
         "runtime_executed":"UNVERIFIED",
     }
 
+EP0_RECEIVER_ANCHORS = {
+    0x600D0FCA: ("ldrb", "r2, [r1, #8]"),
+    0x600D1010: ("and", "r3, r2, #0xf"),
+    0x600D1014: ("cmp", "r3, #7"),
+    0x600D1018: ("lsls", "r3, r3, #1"),
+    0x600D101A: ("orr.w", "r3, r3, r2, lsr #7"),
+    0x600D1020: ("mla", "r2, r2, r3, r0"),
+    0x600D1024: ("ldr", "r0, [r2, #0xc]"),
+    0x600D1028: ("ldr", "r0, [r1]"),
+    0x600D102C: ("ldr", "r0, [r1, #4]"),
+    0x600D104A: ("ldrd", "r5, r2, [r3, #0xc]"),
+    0x600D104E: ("blx", "r5"),
+}
+
+def check_setup_dispatch_anchors(decoded):
+    for pc, expected in EP0_RECEIVER_ANCHORS.items():
+        if decoded.get(pc)!=expected:
+            raise ValueError("Original EP0 callback dispatch semantic drift at "+hex(pc))
+    return True
+
 def inspect(image):
     if len(image)!=IMAGE_SIZE or hashlib.sha256(image).hexdigest()!=IMAGE_SHA256:
         raise ValueError("Exact signed Bruce image size and SHA-256 required")
@@ -125,6 +145,9 @@ def inspect(image):
     if setup_helper_raw_literal != 0x600D0FB7:
         raise ValueError("Pinned original SETUP handler veneer target differs")
     setup_receiver_disassembly=disassemble_candidate(image,setup_helper_raw_literal,span=360)[:135]
+    check_setup_dispatch_anchors({
+        int(ins["pc"],16):(ins["m"],ins["op"]) for ins in setup_receiver_disassembly
+    })
     targets={}
     for state,target in USB1_BRANCH_ARMS.items():
         targets[str(state)]={
@@ -154,7 +177,13 @@ def inspect(image):
                 "helper_word_after_entry":hex(setup_helper_raw_literal),
                 "resolved_signed_xip_receiver":"0x600d0fb6",
                 "receiver_code_preview":setup_receiver_disassembly,
-                "handler_callback_after_helper":"UNVERIFIED",
+                "callback_slot_index":"2*(endpoint & 0x0F) + ((endpoint >> 7) & 1)",
+                "callback_slot_stride_bytes":12,
+                "callback_is_taken_from_runtime_object":True,
+                "callback_dispatch_pc":"0x600d104e",
+                "callback_pointer_at_rest":"UNRESOLVED: runtime endpoint slot",
+                "direct_callback_reached_from_signed_code":"CONDITIONAL on status and registered slot",
+                "handler_callback_after_helper":"DYNAMIC callback slot confirmed; actual endpoint-0 receiver pointer unknown",
                 "host_bRequest_0x81_0x83_0x84_effect":"UNVERIFIED",
             },
             "condition_code":"observed CMP #2/#3 and conditional branches; no physical mode state captured",
