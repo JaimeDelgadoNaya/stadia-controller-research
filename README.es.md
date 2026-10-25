@@ -85,6 +85,10 @@ El código de arranque copia los descriptores compactos de endpoints desde flash
 
 Los callbacks de finalización del fabricante para Bulk IN `0x87` y Bulk OUT `0x07` se inicializan apuntando a rutinas `BX LR` que retornan inmediatamente. **No** se descarta sustitución posterior, otras rutas de actualización ni se ha superado HAB CLOSED.
 
+- **[Fase 20 — Censo de posibles escrituras en callbacks USB](docs/es/censo-escrituras-callback.md)**
+
+El barrido de codificaciones Thumb-2 para los campos RAM de los callbacks OUT/IN solo identifica las inicializaciones del constructor dentro del intervalo estudiado. **La ausencia de otros patrones no demuestra que no existan setters indirectos**, ni implica una ruta USB a escritura flash o un bypass HAB CLOSED.
+
 ## Reproducción sin conexión
 
 Python 3.11 o posterior:

@@ -84,6 +84,10 @@ Normal startup copies compact endpoint records from flash into RAM, proving the 
 
 The initial vendor bulk IN `0x87` and OUT `0x07` completion callbacks both point to single-instruction `BX LR` stubs. Later registration and other USB update paths are **not excluded**; HAB CLOSED has not been bypassed.
 
+- **[Phase 20 — Bounded USB callback-writer census](docs/en/callback-writer-census.md)**
+
+The bounded Thumb-2 encoding search finds only constructor stores for the vendor IN/OUT callback fields within the selected range. **No later setter is proved or ruled out**, and there is no externally reachable flash-write or HAB-bypass demonstration.
+
 ## Offline reproduction
 
 Python 3.11 or newer:
