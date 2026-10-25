@@ -9,6 +9,8 @@ objetivo a largo plazo es determinar si puede ejecutar firmware propio.
 **Resultado actual: el arranque seguro del mando analizado está en CLOSED. No
 hemos demostrado ejecución de firmware propio ni una forma de eludir las firmas.**
 
+**[Paquete A terminado — protocolo del actualizador WebHID/WebUSB](docs/es/protocolo-actualizador-webhid.md).** El host instala imágenes usando **ROM SDP y cargador firmado RAM**, no Bulk OUT `0x07` del bootloader A. Comandos y validaciones documentados en [la evidencia](evidence/archived-updater-host-protocol.json); sigue sin demostrarse ejecución de firmware propio. Queda **un paquete B offline** antes de aplicar la regla de parada.
+
 ## Prioridad actual: ruta de actualización real o puente externo
 
 **[Plan con decisión obligatoria (tras fase 29)](docs/es/puerta-decision-actualizacion.md)**: comprobar el protocolo WebUSB del actualizador archivado y su receptor, analizar la aplicación Bruce firmada y **detener la modificación interna tras dos paquetes offline** si no existe una vía controlable, ejecutable y recuperable. Alternativa: puente externo para Xbox; la emulación XInput para PC no garantiza compatibilidad con consolas.
