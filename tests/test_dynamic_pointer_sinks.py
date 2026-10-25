@@ -96,7 +96,7 @@ class DynamicPointerSinkTests(unittest.TestCase):
     def test_incorrect_stored_region_digest(self):
         bad=dict(m.REGIONS)
         with self.assertRaisesRegex(ValueError,"Code-region SHA mismatch"):
-            test_scan(self.fake,ranges=bad)
+            test_scan(self.fake,regions=bad)
 
     def test_local_region_mutation_rejected(self):
         altered=bytearray(self.fake)
