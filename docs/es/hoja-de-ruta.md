@@ -18,7 +18,8 @@ Tareas concretas siguientes:
    HAB posteriores. Determinar si un rango malformado puede tener efectos después
    de la validación criptográfica.
 3. Reconstruir selección de aplicación A/B, metadatos de intentos de arranque y
-   respaldo. Que el bootloader B esté vacío no demuestra que la aplicación B lo esté.
+   respaldo. La [fase 12](seleccion-aplicacion.md) documenta los selectores 2/3 y
+   las marcas de fallo; falta identificar el llamador y cualquier recuperación. Que el bootloader B esté vacío no demuestra que la aplicación B lo esté.
 4. Mapear el despacho USB normal y del bootloader y las interfaces de diagnóstico
    realmente disponibles en hardware de producción.
 5. Identificar una vía concreta y recuperable de ejecución antes de implementar
