@@ -40,7 +40,8 @@ def fixture_image():
     ):
         struct.pack_into("<I", data, at, pointer)
     for at, pattern in (
-        (0x9E64, "7f29"), (0x9E6E, "d0f8f035"),
+        (0x9E3C, "4ff000007047"), (0x9E64, "7f29"),
+        (0x9E68, "0dd9"), (0x9E72, "a34207d0"), (0x9E6E, "d0f8f035"),
         (0x9E76, "d0f8f405"), (0x9E7A, "9847"),
         (0xBB46, "c4f8f035"), (0xBB68, "c4f8f455"),
     ):
