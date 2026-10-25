@@ -41,6 +41,8 @@ jobs:
           python -m tools.audit_fillmemory_wrap_model /tmp/stadia-audit/loader.bin --out /tmp/stadia-audit/wrap.json
           python -m tools.audit_fillmemory_dynamic_guard /tmp/stadia-audit/loader.bin --summary --out /tmp/stadia-audit/guard.json
           python -m tools.audit_fillmemory_init_limits /tmp/stadia-audit/loader.bin --out /tmp/stadia-audit/guard-init.json
+          python -m tools.audit_fillmemory_init_flow /tmp/stadia-audit/loader.bin --out /tmp/stadia-audit/initflow.json --preview
+          python -m tools.audit_fillmemory_first_boundary /tmp/stadia-audit/loader.bin --out /tmp/stadia-audit/boundary.json
           python - <<'PY'
           import json
           from pathlib import Path
@@ -50,6 +52,8 @@ jobs:
           wrap = json.loads((root / "wrap.json").read_text())
           guard = json.loads((root / "guard.json").read_text())
           init = json.loads((root / "guard-init.json").read_text())
+          initflow = json.loads((root / "initflow.json").read_text())
+          boundary = json.loads((root / "boundary.json").read_text())
           print("Hash verified:", verified["sha256_matches_original"])
           print("Fill/Write shared policy:", verified["range_policy_shared"])
           print("Fill/Write operation IDs:", verified["policy_operation"])
@@ -63,6 +67,10 @@ jobs:
           print("Dynamic guard modeled with signed defaults:", [(x["normal_four_bytes_rejected_by_guard"],x["wrapped_length_rejected_by_guard_if_initialized"],x["wrapped_length_exceeds_loader_ram"]) for x in init["conditional_guard_cases"]])
           print("Guard RAM state has been physically measured:", guard["provenance"]["initial_context_bytes_known"])
           print("WARNING: runtime protected-region values and backend effect unverified.")
+          print("Static initializer references:", initflow["static_literal_pointers"])
+          print("Boot-before-Fill proven:", initflow["boot_before_command_init_verified"])
+          print("First region exits and signed loop:", [(c["start"],c["idealized_first_region_exit"]) for c in boundary["cases"]])
+          print("Not a full bus emulator or proof of execution/recovery.")
           print("No custom execution, bypass or recovery inferred.")
           PY
       - name: Remove temporary image and analysis files
