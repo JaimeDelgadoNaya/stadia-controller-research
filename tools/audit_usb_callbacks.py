@@ -145,7 +145,10 @@ def audit(image, expected_sha256=EXPECTED_SHA256):
     # These instruction slices are direct matches for the audited build,
     # not a general-purpose decoder or proof of dynamic control flow.
     anchors = {
+        0x9E3C: bytes.fromhex("4f f0 00 00 70 47"),  # default handler returns zero
         0x9E64: bytes.fromhex("7f 29"),  # cmp r1, #0x7f
+        0x9E68: bytes.fromhex("0d d9"),  # skip callbacks for events <= 0x7f
+        0x9E72: bytes.fromhex("a3 42 07 d0"),  # compare with default stub and skip
         0x9E6E: bytes.fromhex("d0 f8 f0 35"),  # ldr.w r3, [r0,#0x5f0]
         0x9E76: bytes.fromhex("d0 f8 f4 05"),  # ldr.w r0, [r0,#0x5f4]
         0x9E7A: bytes.fromhex("98 47"),  # blx r3
