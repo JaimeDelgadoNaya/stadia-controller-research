@@ -213,3 +213,7 @@ A private 128 KiB bootloader A image matches the recorded SHA-256. [Phase 14](us
 ## Phase 26 — Constructor pointer provenance and list heads
 
 [Phase 26](initial-pointer-and-list-heads.md) statically verifies that `0x6080BAE2` computes `global+0x134 = 0x20008CAC` and stores this same address into `global+0x560` and `global+0x568` (`0x6080BAEC`/`0x6080BAF2`). **Correction:** `global+0x570` is initialized by a **one-byte STRB zero**, not proved to be a third pointer. Two conditional calls to `0x6081099C` initialize self-referential list heads at `global+0x59C/+0x5B0`; `0xFFFFFFFF` is a sentinel marker, not a pointer. These are **initial states**, not measured live RAM or a no-mutation proof. Reproducer: `tools/audit_pointer_initializers.py`, sanitized `evidence/usb-phase26.json`.
+
+## Phase 27 — List insertion and indexed bucket callsites
+
+[Phase 27](list-insertions-and-aliases.md) verifies `0x608109B8` as direct linked-list insertion (9 decoded BL sites) and `0x608109D0` as key-ordered insertion (4 decoded BL sites plus one B.W tail). Two `0x608109B8` callers derive list heads with `MLA`: `0x2000A7F8 + 0x14×index`, distinct from the initialized heads at `0x20009114/0x20009128`. A deliberately bounded positive-immediate Thumb-2 `STR.W` search for global `+0x560/+0x568` only finds constructor sites; **other alias writes and later reassignment are not ruled out**. Offline tool `tools/audit_list_insertion_paths.py`, synthetic tests and sanitized `evidence/usb-phase27.json`. No host USB-to-flash route or HAB CLOSED bypass is demonstrated.
