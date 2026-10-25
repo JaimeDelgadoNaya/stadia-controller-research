@@ -93,6 +93,10 @@ El barrido de codificaciones Thumb-2 para los campos RAM de los callbacks OUT/IN
 
 El bootloader contiene **21 literales** con el puntero global y **29 cargas PC-relativas candidatas**. Se ha verificado una ruta directa de alias hasta las inicializaciones de callbacks del constructor, **no** una sustitución posterior ni una ruta USB de escritura flash.
 
+- **[Fase 22 — Flujo acotado de punteros USB](docs/es/flujo-punteros-usb.md)**
+
+Análisis conservador de las 29 fuentes de alias RAM; las escrituras observadas en `+0x6C4` afectan al estado del controlador y no a los callbacks IN/OUT. Se marcan como pendientes las llamadas y ramas no seguidas.
+
 ## Reproducción sin conexión
 
 Python 3.11 o posterior:
