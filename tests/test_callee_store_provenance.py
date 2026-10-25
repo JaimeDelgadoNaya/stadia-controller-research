@@ -21,7 +21,7 @@ class CalleeStoreProvenanceTests(unittest.TestCase):
         self.assertEqual(len(r["stores_via_known_alias"]),1)
         s=r["stores_via_known_alias"][0]
         self.assertEqual(s["global_offsets_written"],[0x574])
-        self.assertEqual(s["ram_addresses"],["0x20008bec"])
+        self.assertEqual(s["ram_addresses"],["0x200090ec"])
         self.assertEqual(s["callback_fields_overlapped"],[])
 
     def test_direct_callback_store_is_detected(self):
@@ -34,7 +34,7 @@ class CalleeStoreProvenanceTests(unittest.TestCase):
     def test_subword_overlap_is_classified(self):
         self.assertEqual(m.callback_fields_overlapped(0x5F9,1),["bulk_in_handler"])
         self.assertEqual(m.callback_fields_overlapped(0x5FF,2),
-                         ["bulk_in_handler","bulk_out_handler"])
+                         ["bulk_out_handler"])
         self.assertEqual(m.callback_fields_overlapped(0x600,4),["bulk_out_handler"])
         self.assertEqual(m.callback_fields_overlapped(0x5D8,4),[])
 
@@ -59,7 +59,7 @@ class CalleeStoreProvenanceTests(unittest.TestCase):
 
     def test_caller_saved_clobber_preserves_r4_alias(self):
         # MOV r4,r0; ADDS r0,#0x14; BL 0x60810210; MOVS r3,#1; STRB r3,[r4,#0x10]
-        code=bytes.fromhex("0446143006f037fa01232374")
+        code=bytes.fromhex("10b50446143006f037fa01232374")
         image=image_with(0x9D98,code)
         r=m.scan_range(image,"synthetic",0x9D98,0x9D98+len(code),{"r0":0x578})
         call=next(c for c in r["field_derived_call_handoffs"]
@@ -93,7 +93,7 @@ class CalleeStoreProvenanceTests(unittest.TestCase):
 
     def test_dynamic_pointer_dereference_is_kept_unresolved(self):
         # LDR r3,[r0,#0xC]; LDR r4,[r3,#0xC]
-        image=image_with(0x1000,bytes.fromhex("c3685c68"))
+        image=image_with(0x1000,bytes.fromhex("c368dc68"))
         r=m.scan_range(image,"synthetic",0x1000,0x1004,{"r0":0x59C})
         self.assertEqual(r["reads_via_known_alias"][0]["global_offsets_read"],[0x5A8])
         self.assertEqual(r["dynamic_pointer_accesses"][0]["kind"],
@@ -102,8 +102,8 @@ class CalleeStoreProvenanceTests(unittest.TestCase):
                          ["root_global_field_offset"],0x5A8)
 
     def test_unknown_base_is_not_attributed_to_global_object(self):
-        image=image_with(0x1000,bytes.fromhex("53600460"))
-        r=m.scan_range(image,"synthetic",0x1000,0x1004,{"r0":0x568})
+        image=image_with(0x1000,bytes.fromhex("5360"))
+        r=m.scan_range(image,"synthetic",0x1000,0x1002,{"r0":0x568})
         self.assertEqual(r["stores_via_known_alias"],[])
 
     def test_invalid_range_rejected(self):
@@ -135,7 +135,7 @@ class CalleeStoreProvenanceTests(unittest.TestCase):
         self.assertEqual(m.SHA256,"59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0")
         self.assertEqual(set(m.CALLBACK_FIELDS.values()),
                          {"bulk_in_handler","bulk_in_context","bulk_out_handler","bulk_out_context"})
-        self.assertIn("No whole-program CFG",m.__doc__ or "No whole-program CFG")
+        self.assertIn("whole-program absence proof",m.__doc__ or "")
 
 
 if __name__=="__main__":
