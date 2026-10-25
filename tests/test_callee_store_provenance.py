@@ -34,7 +34,7 @@ class CalleeStoreProvenanceTests(unittest.TestCase):
     def test_subword_overlap_is_classified(self):
         self.assertEqual(m.callback_fields_overlapped(0x5F9,1),["bulk_in_handler"])
         self.assertEqual(m.callback_fields_overlapped(0x5FF,2),
-                         ["bulk_out_handler"])
+                         ["bulk_in_context","bulk_out_handler"])
         self.assertEqual(m.callback_fields_overlapped(0x600,4),["bulk_out_handler"])
         self.assertEqual(m.callback_fields_overlapped(0x5D8,4),[])
 
