@@ -9,6 +9,16 @@ objetivo a largo plazo es determinar si puede ejecutar firmware propio.
 **Resultado actual: el arranque seguro del mando analizado está en CLOSED. No
 hemos demostrado ejecución de firmware propio ni una forma de eludir las firmas.**
 
+**[Paquete A terminado — protocolo del actualizador WebHID/WebUSB](docs/es/protocolo-actualizador-webhid.md).** El host instala imágenes usando **ROM SDP y cargador firmado RAM**, no Bulk OUT `0x07` del bootloader A. Comandos y validaciones documentados en [la evidencia](evidence/archived-updater-host-protocol.json); sigue sin demostrarse ejecución de firmware propio. Queda **un paquete B offline** antes de aplicar la regla de parada.
+
+**DECISIÓN FINAL — [Fase 31: cerrar firmware interno y comenzar el puente externo](docs/es/decision-final-ejecucion.md).** El análisis offline de autenticación y recuperación ha completado el último paquete pactado. ROM HAB **CLOSED**, firmas originales válidas, sin ejecución propia autenticable ni rollback verificado. **Se detiene la investigación de modificación interna salvo nueva evidencia independiente.** Próximo paso: prototipo ESP32-S3 con BLE Stadia → gamepad Xbox 360 **para PC**, y verificación aparte de compatibilidad/autenticación de consola Xbox One/Series.
+
+## Prioridad actual: ruta de actualización real o puente externo
+
+**[Plan con decisión obligatoria (tras fase 29)](docs/es/puerta-decision-actualizacion.md)**: comprobar el protocolo WebUSB del actualizador archivado y su receptor, analizar la aplicación Bruce firmada y **detener la modificación interna tras dos paquetes offline** si no existe una vía controlable, ejecutable y recuperable. Alternativa: puente externo para Xbox; la emulación XInput para PC no garantiza compatibilidad con consolas.
+
+La imagen Bruce proporcionada se analiza como **muestra firmada de actualización**, no como copia certificada de toda la aplicación instalada. El analizador nuevo identifica una rama de mensaje en `0x60058B68` con comprobación del primer byte `5` y llamada a `0x60058AA8`; **todavía no es un comando de actualización USB probado**.
+
 ## Avances medidos
 
 | Elemento | Resultado observado |
@@ -49,6 +59,82 @@ La fase 10 resuelve el callback indirecto como una comprobación de alimentació
 y entrada física; también traza los argumentos fijos de 4096 bytes y la ruta de
 restauración del IVT. La emulación ARM aislada de las instrucciones confirma el
 ejemplo aritmético en ocho casos, sin demostrar un exploit en el mando.
+
+
+- **[Fase 12: auditoría de ruta de escritura IVT](docs/es/ruta-escritura.md)**
+
+La **fase 12** audita una ruta de llamadas hasta el escritor físico de flash bajo
+un contexto IVT construido. Comprueba instrucciones, tablas virtuales y los
+argumentos fijos de 4096 bytes. **No demuestra accesibilidad desde USB**, escritura
+física fuera de límites ni ejecución de firmware personalizado.
+
+- **[Fase 13 — Superficie USB y límites del despacho](docs/es/superficie-usb.md)**
+
+La fase 13 cuantifica qué parte del bootloader cubren las instrucciones publicadas y ofrece una inspección USB **estática, de solo lectura** para una copia local con SHA-256 verificado. No se ha identificado todavía un comando USB que permita ejecutar firmware propio.
+
+- **[Fase 14 — USB del bootloader: interfaz de fabricante y callback](docs/es/callback-usb.md)**
+
+Con el bootloader original del mando verificado por SHA-256 se han reconstruido **dos interfaces USB** (vendor bulk + HID) y la ruta condicional de eventos del fabricante hasta un puntero de callback en RAM. No se ha demostrado ninguna ruta de USB a escritura flash ni ejecución de firmware propio.
+
+- **[Fase 15 — Eventos USB internos y límite de transferencia](docs/es/eventos-usb.md)**
+
+En el bootloader original verificado se ha reconstruido una tabla de 11 eventos internos (no comandos USB de host) y un control de tamaño máximo de 512 bytes en una rutina concreta. No se ha demostrado un camino externo hacia escritura flash ni elusión de firmas.
+
+- **[Fase 16 — Procedencia de callbacks CDC y del fabricante](docs/es/recepcion-usb.md)**
+
+La función previamente descrita con límite de 512 bytes pertenece a una tabla de un objeto **CDC**, distinta del callback de la interfaz USB del fabricante. Se han comprobado ambas inicializaciones y sus rutas internas, pero no se ha identificado todavía un parser accesible desde Bulk OUT `0x07` ni ejecución de firmware propio.
+
+- **[Fase 17 — Registro USB de endpoints del fabricante](docs/es/endpoints-vendor.md)**
+
+Con el bootloader A de SHA-256 verificado hemos seguido dos registros de endpoint mediante `0x60806660`. Los endpoints Bulk OUT `0x07` e IN `0x87` utilizan índices internos distintos. Falta demostrar qué callback corresponde al OUT y cómo procesa los mensajes. No se ha demostrado un bypass de HAB CLOSED.
+
+- **[Fase 18 — Inicialización RAM y callback Bulk OUT identificado](docs/es/inicializacion-ram-usb.md)**
+
+El código de arranque copia los descriptores compactos de endpoints desde flash a RAM. Este flujo permite **asignar con evidencia el callback Bulk OUT `0x07` a `0x6080A06A`** y Bulk IN `0x87` a `0x60809E30`. El destino final del callback OUT y la ruta al escritor de flash siguen sin demostrarse.
+
+- **[Fase 19 — Callbacks USB iniciales sin procesamiento](docs/es/callbacks-finalizacion-usb.md)**
+
+Los callbacks de finalización del fabricante para Bulk IN `0x87` y Bulk OUT `0x07` se inicializan apuntando a rutinas `BX LR` que retornan inmediatamente. **No** se descarta sustitución posterior, otras rutas de actualización ni se ha superado HAB CLOSED.
+
+- **[Fase 20 — Censo de posibles escrituras en callbacks USB](docs/es/censo-escrituras-callback.md)**
+
+El barrido de codificaciones Thumb-2 para los campos RAM de los callbacks OUT/IN solo identifica las inicializaciones del constructor dentro del intervalo estudiado. **La ausencia de otros patrones no demuestra que no existan setters indirectos**, ni implica una ruta USB a escritura flash o un bypass HAB CLOSED.
+
+- **[Fase 21 — Fuentes del puntero global RAM y cadena de alias](docs/es/fuentes-alias-ram.md)**
+
+El bootloader contiene **21 literales** con el puntero global y **29 cargas PC-relativas candidatas**. Se ha verificado una ruta directa de alias hasta las inicializaciones de callbacks del constructor, **no** una sustitución posterior ni una ruta USB de escritura flash.
+
+- **[Fase 22 — Flujo acotado de punteros USB](docs/es/flujo-punteros-usb.md)**
+
+Análisis conservador de las 29 fuentes de alias RAM; las escrituras observadas en `+0x6C4` afectan al estado del controlador y no a los callbacks IN/OUT. Se marcan como pendientes las llamadas y ramas no seguidas.
+
+- **[Fase 23 — Relaciones de punteros entre funciones](docs/es/alias-interprocedimental.md)**
+
+Se verifican cuatro llamadas que transmiten el puntero global a funciones internas y las derivaciones de cuatro subobjetos con offsets distintos. No hay aún prueba de un setter de callback alcanzable desde USB ni de una vía hacia la escritura de firmware.
+
+- **[Fase 24 — Escrituras y procedencia de punteros en funciones receptoras](docs/es/escrituras-callbacks-callee.md)**
+
+Se revisaron cuatro funciones y la cadena de inicialización de subobjetos. Hay 23 observaciones de escrituras directas (19 sitios únicos al considerar dos bases para el mismo inicializador) y ninguna solapa los cuatro campos callback conocidos. Los valores cargados de `global+0x568/+0x570/+0x560` y pasados a `0x60809048`, además del puntero derivado de `global+0x5A8` pasado a `0x608109FE`, siguen sin resolverse.
+
+- **[Fase 25 — Destinos de punteros dinámicos](docs/es/destinos-punteros-dinamicos.md)**
+
+El destino `0x60809048` trabaja con un objeto de dirección desconocida y delega operaciones; `0x608109FE` desenlaza nodos de una lista mediante punteros RAM. No hay escritura sobre los callbacks USB con dirección absoluta verificada ni ruta host→flash demostrada.
+
+- **[Fase 26 — Inicialización de punteros y cabeceras de lista](docs/es/inicializadores-punteros-listas.md)**
+
+Dos campos (`global+0x560` y `global+0x568`) apuntan inicialmente a `global+0x134`; `global+0x570` se inicializa como **byte**, no como un tercer puntero. Se han reconstruido además dos cabeceras de lista auto-referenciales. Estado dinámico y ruta USB→flash sin demostrar.
+
+- **[Fase 27 — Inserción de nodos y punteros del controlador](docs/es/inserciones-listas-alias.md)**
+
+Identificadas funciones de inserción directa (`0x608109B8`) y ordenada (`0x608109D0`), con 14 transferencias estáticas verificadas. Dos llamadas calculan cabeceras desde `0x2000A7F8 + 20×índice`. No se ha demostrado una reasignación posterior de `global+0x560/+0x568`, ni acceso desde USB.
+
+- **[Fase 28 — Procedencia de nodos e índices de listas indexadas](docs/es/procedencia-nodos-indices.md)**
+
+En las llamadas `0x60811A32` y `0x60811E0C`, el nodo es un subobjeto `objeto+4` y el índice procede del campo `objeto+0x2C`. Las comparaciones observadas se ejecutan después de insertar; no se ha demostrado la ausencia de validaciones anteriores, un índice fuera de límites ni acceso desde USB.
+
+- **[Fase 29 — Escrituras y límites del índice de listas](docs/es/escrituras-indices-listas.md)**
+
+El constructor limita el índice `objeto+0x2C` a **0–15** y también inicializa `objeto+0x50`; cuatro rutas posteriores pueden copiar o actualizar el índice. No está demostrado que el límite inicial se mantenga globalmente ni que exista un índice controlable desde USB.
 
 ## Reproducción sin conexión
 

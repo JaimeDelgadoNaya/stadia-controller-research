@@ -29,3 +29,7 @@ Tareas concretas siguientes:
 El repositorio no contiene una auditoría completa de ROM, una copia integral del
 dispositivo, un exploit ni firmware propio. Las herramientas iniciales trabajan
 deliberadamente con archivos locales.
+
+## Cambio de prioridad tras fase 29 (decisión acotada)
+
+La hoja original de tareas sigue describiendo posibles pistas, pero la **prioridad operativa ahora es [la puerta de decisión sobre actualización real](puerta-decision-actualizacion.md)**: dos paquetes offline como máximo — protocolo WebUSB del host hasta el receptor y, solo si procede, aplicación Bruce firmada y ejecución recuperable — seguidos de decisión **continuar/parar**. No se abrirán más fases de búsqueda genérica de punteros. Si no existe una entrada controlable y una vía de ejecución propia recuperable verificadas, la alternativa será puente externo para Xbox (separando XInput para PC de autenticación de consola).

@@ -1,0 +1,28 @@
+name: Offline research tests
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  offline:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install offline test requirements
+        run: python -m pip install -r requirements-emulation.txt
+      - name: Run offline test suite
+        run: python -m unittest discover -s tests -v
+      - name: Reproduce analysis without connected hardware
+        run: |
+          python tools/trace_write_path.py > /tmp/stadia-write-path.json
+          python tools/model_ranges.py > /tmp/stadia-range-model.json
+          python tools/emulate_range_check.py > /tmp/stadia-range-emulated.json
+          python tools/emulate_storage.py > /tmp/stadia-storage-emulated.json

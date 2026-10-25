@@ -1,0 +1,104 @@
+{
+  "phase": 28,
+  "date": "2026-10-25",
+  "firmware": {
+    "kind": "owner-extracted Stadia bootloader A",
+    "build": 169429,
+    "bytes": 131072,
+    "sha256": "59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0",
+    "binary_in_repository": false
+  },
+  "verification": {
+    "offline": true,
+    "real_binary_sha256_checked": true,
+    "original_region_hashes_and_instruction_anchors_checked": true,
+    "usb_transfers": false,
+    "flash_or_fuse_writes": false
+  },
+  "region_hashes": [
+    {
+      "range": [
+        "0x608119ec",
+        "0x60811a46"
+      ],
+      "sha256": "2d91db7b02d7c7b80a725572b5e24dc242dae2cf5ba68f01d265d8d57e991d44"
+    },
+    {
+      "range": [
+        "0x60811dc8",
+        "0x60811e2e"
+      ],
+      "sha256": "467ea8ab603171d1155a4e41bb5a799b3082ac2d09b97e0610435daa47d0053d"
+    },
+    {
+      "range": [
+        "0x608119a0",
+        "0x608119c4"
+      ],
+      "sha256": "5a8345ddf7936e83fb67fe5e51e9de588cab48e194845aca49ee0a4b256a7634"
+    },
+    {
+      "range": [
+        "0x608109b8",
+        "0x608109d0"
+      ],
+      "sha256": "e7f40b71833a884652dd7fed70b9eaca3ce499508eea05250a75dfe0ac09c20b"
+    }
+  ],
+  "common": {
+    "bucket_base": "0x2000a7f8",
+    "head_stride_bytes": 20,
+    "head_formula": "0x2000a7f8 + 20*index",
+    "index_field_offset": "0x2c",
+    "node_field_offset": "0x04"
+  },
+  "sites": [
+    {
+      "route": "A",
+      "callsite": "0x60811a32",
+      "callee": "0x608109b8",
+      "primary_object": "R6 = [[ [R10] + 0xC ] + 0xC]",
+      "node": "R8 = R6 + 4",
+      "node_setup": "0x608119fe",
+      "index": "R0 = [R6 + 0x2C]",
+      "index_load": "0x60811a14",
+      "head_MLA": "0x60811a2e",
+      "comparison_after_call": "0x60811a3c",
+      "pre_call_index_bounds_check_in_bounded_window": "NOT IDENTIFIED"
+    },
+    {
+      "route": "B",
+      "callsite": "0x60811e0c",
+      "callee": "0x608109b8",
+      "primary_object": "R4 = [[incoming R0 + 0xC] + 0xC]",
+      "node": "R5 = R4 + 4",
+      "node_setup": "0x60811dec",
+      "index": "R2 = [R4 + 0x2C]",
+      "index_load": "0x60811df6",
+      "head_MLA": "0x60811e08",
+      "comparison_after_call": "0x60811e18",
+      "pre_call_index_bounds_check_in_bounded_window": "NOT IDENTIFIED"
+    }
+  ],
+  "uncertainty": {
+    "actual_index_value": "UNKNOWN",
+    "bucket_array_element_count": "UNKNOWN",
+    "index_validity_invariants": "NOT TRACED EXHAUSTIVELY",
+    "earlier_caller_guards": "NOT TRACED EXHAUSTIVELY",
+    "index_host_controlled": "NOT DEMONSTRATED",
+    "out_of_bounds_access": "NOT DEMONSTRATED",
+    "memory_corruption": "NOT DEMONSTRATED",
+    "usb_to_flash": "NOT DEMONSTRATED",
+    "hab_bypass": "NOT DEMONSTRATED",
+    "custom_firmware_execution": "NOT DEMONSTRATED"
+  },
+  "deliverables": {
+    "tool": "tools/audit_bucket_node_provenance.py",
+    "tests": "tests/test_bucket_node_provenance.py",
+    "documents": [
+      "docs/es/procedencia-nodos-indices.md",
+      "docs/en/indexed-node-provenance.md"
+    ]
+  },
+  "next": "Trace assignments and upstream constraints on object +0x2c index; do not infer vulnerabilities from a post-call comparison alone."
+}

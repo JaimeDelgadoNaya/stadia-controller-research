@@ -1,0 +1,68 @@
+{
+  "phase": 22,
+  "date": "2026-10-25",
+  "image": {
+    "kind": "Stadia bootloader A",
+    "build": 169429,
+    "bytes": 131072,
+    "sha256": "59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0",
+    "original_published": false
+  },
+  "hardware_access": false,
+  "usb_transactions": false,
+  "flash_fuse_operations": false,
+  "scope": {
+    "pc_relative_sources_from_phase21": 29,
+    "maximum_prefix_bytes": 96,
+    "decoder": "Capstone ARM Thumb",
+    "limits": "Single linear prefix; stops at branch, call, return and unmodelled transfers; no live reachability"
+  },
+  "verified_examples": [
+    {
+      "source_load": "0x6080978e",
+      "store": "0x60809790",
+      "instruction": "STRB.W R3,[R2,#0x6C4]",
+      "destination": "0x2000923c",
+      "classification": "endpoint/control state, NOT USB bulk OUT callback"
+    },
+    {
+      "source_load": "0x60809838",
+      "store": "0x60809842",
+      "instruction": "STRB.W R3,[R4,#0x6C4]",
+      "destination": "0x2000923c",
+      "classification": "endpoint/control state, NOT USB bulk OUT callback"
+    },
+    {
+      "source_load": "0x60809e6a",
+      "reads": [
+        "0x20009168",
+        "0x2000916c"
+      ],
+      "classification": "vendor event handler callback/context, distinct from completion callbacks"
+    },
+    {
+      "source_load": "0x60809eb8",
+      "reads": [
+        "0x2000923c"
+      ],
+      "classification": "vendor endpoint setup state"
+    }
+  ],
+  "callback_fields": {
+    "bulk_in": "0x20009170",
+    "bulk_out": "0x20009178",
+    "initial_handlers": [
+      "0x6080affa",
+      "0x6080affc"
+    ]
+  },
+  "uncertainty": {
+    "later_callback_setter": "NOT PROVEN OR EXCLUDED",
+    "interprocedural_aliases": "NOT RESOLVED",
+    "host_to_bulk_parser": "NOT DEMONSTRATED",
+    "host_to_flash": "NOT DEMONSTRATED",
+    "hab_closed_bypass": "NOT DEMONSTRATED",
+    "custom_execution": "NOT DEMONSTRATED"
+  },
+  "next": "Bounded interprocedural alias tracing through selected callsites"
+}

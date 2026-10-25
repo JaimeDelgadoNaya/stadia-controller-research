@@ -1,0 +1,90 @@
+{
+  "phase": 15,
+  "date": "2026-10-25",
+  "source": "SHA-256-verified local 128KiB bootloader A (not published)",
+  "image_sha256": "59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0",
+  "binary_in_repository": false,
+  "hardware_access": false,
+  "flash_writes": false,
+  "internal_event_dispatch": {
+    "function": "0x60809c58",
+    "table": "0x60809c68",
+    "callback_entry": "0x60816284",
+    "events": [
+      {
+        "id": 1,
+        "target": "0x60809c74",
+        "default_return_one": false
+      },
+      {
+        "id": 2,
+        "target": "0x60809ccc",
+        "default_return_one": false
+      },
+      {
+        "id": 3,
+        "target": "0x60809cf2",
+        "default_return_one": false
+      },
+      {
+        "id": 4,
+        "target": "0x60809d74",
+        "default_return_one": true
+      },
+      {
+        "id": 5,
+        "target": "0x60809d74",
+        "default_return_one": true
+      },
+      {
+        "id": 6,
+        "target": "0x60809cfa",
+        "default_return_one": false
+      },
+      {
+        "id": 7,
+        "target": "0x60809d22",
+        "default_return_one": false
+      },
+      {
+        "id": 8,
+        "target": "0x60809d74",
+        "default_return_one": true
+      },
+      {
+        "id": 9,
+        "target": "0x60809d48",
+        "default_return_one": false
+      },
+      {
+        "id": 10,
+        "target": "0x60809d54",
+        "default_return_one": false
+      },
+      {
+        "id": 11,
+        "target": "0x60809d68",
+        "default_return_one": false
+      }
+    ],
+    "unhandled_event_action": "default return 1",
+    "host_command_mapping": "NOT ESTABLISHED"
+  },
+  "guarded_transfer_helper": {
+    "address": "0x60809b28",
+    "max_bytes": 512,
+    "too_large_return_code": 3,
+    "externally_controllable_argument": "NOT ESTABLISHED"
+  },
+  "separate_vendor_event_handler": {
+    "address": "0x60809e64",
+    "table": "0x60816290",
+    "event_threshold": "above 127",
+    "callback_ram": "0x20009168",
+    "initial_callback": "0x60809e3d",
+    "later_registration": "NOT RECONSTRUCTED"
+  },
+  "external_usb_to_flash_path": "NOT DEMONSTRATED",
+  "signature_bypass": "NOT DEMONSTRATED",
+  "custom_firmware_execution": "NOT DEMONSTRATED"
+}

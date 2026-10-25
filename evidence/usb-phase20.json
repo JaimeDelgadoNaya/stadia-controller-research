@@ -1,0 +1,86 @@
+{
+  "phase": 20,
+  "date": "2026-10-25",
+  "sample": {
+    "build": 169429,
+    "bytes": 131072,
+    "sha256": "59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0",
+    "binary_published": false
+  },
+  "environment": {
+    "offline": true,
+    "controller_access": false,
+    "usb_transactions": false,
+    "flash_operations": false
+  },
+  "scan": {
+    "interval_start": "0x60801000",
+    "interval_end_exclusive": "0x60814f00",
+    "alignment": 2,
+    "opcode_class": "Thumb2 positive-immediate STR.W Rt,[Rn,#imm12]",
+    "warning": "Candidate byte encodings: not validated control flow or complete alias analysis"
+  },
+  "fields": [
+    {
+      "name": "bulk_in_handler",
+      "ram": "0x20009170",
+      "offset": "0x5f8",
+      "raw_strw_sites": [
+        "0x6080bb50"
+      ],
+      "absolute_pointer_literals": []
+    },
+    {
+      "name": "bulk_in_context",
+      "ram": "0x20009174",
+      "offset": "0x5fc",
+      "raw_strw_sites": [
+        "0x6080bb6c"
+      ],
+      "absolute_pointer_literals": []
+    },
+    {
+      "name": "bulk_out_handler",
+      "ram": "0x20009178",
+      "offset": "0x600",
+      "raw_strw_sites": [
+        "0x6080bb5a"
+      ],
+      "absolute_pointer_literals": []
+    },
+    {
+      "name": "bulk_out_context",
+      "ram": "0x2000917c",
+      "offset": "0x604",
+      "raw_strw_sites": [
+        "0x6080bb70"
+      ],
+      "absolute_pointer_literals": []
+    }
+  ],
+  "limited_vendor_object_scan": {
+    "start": "0x60809e24",
+    "end_exclusive": "0x6080a076",
+    "candidate_store_forms": [
+      "Thumb16 STR word",
+      "Thumb2 positive-immediate STR.W"
+    ],
+    "offsets": [
+      "0x10",
+      "0x14",
+      "0x18",
+      "0x1c"
+    ],
+    "raw_candidates": []
+  },
+  "conclusions": {
+    "setter_identified_by_these_patterns": false,
+    "absence_of_setter_proven": false,
+    "other_modes_and_pointer_aliases": "NOT EXCLUDED",
+    "external_host_parser": "NOT ESTABLISHED",
+    "usb_to_flash_write": "NOT DEMONSTRATED",
+    "HAB_bypass": "NOT DEMONSTRATED",
+    "custom_execution": "NOT DEMONSTRATED"
+  },
+  "next": "Resolve pointer/data-flow aliases and potential setter paths; inspect other USB receive pathways"
+}

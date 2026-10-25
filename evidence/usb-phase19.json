@@ -1,0 +1,63 @@
+{
+  "phase": 19,
+  "date": "2026-10-25",
+  "firmware": {
+    "build": 169429,
+    "bytes": 131072,
+    "sha256": "59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0",
+    "original_binary_published": false
+  },
+  "device_access": false,
+  "usb_transactions": false,
+  "flash_writes": false,
+  "usb_core_path": {
+    "callback_registration": "0x60806674-0x60806686",
+    "completion_invocation": "0x60806554-0x60806558",
+    "bulk_out_adapter": "0x6080a06a",
+    "final_forwarder": "0x6080a062"
+  },
+  "vendor_object": {
+    "ram_base": "0x20009160",
+    "global_base": "0x20008b78",
+    "constructor": "0x6080bac0"
+  },
+  "defaults": [
+    {
+      "endpoint": "0x87",
+      "direction": "IN",
+      "field": "0x20009170",
+      "context": "0x20009174",
+      "literal": "0x6080bbb4",
+      "function_thumb": "0x6080affb",
+      "function": "0x6080affa",
+      "bytes": "7047",
+      "mnemonic": "bx lr",
+      "initial_context": 0
+    },
+    {
+      "endpoint": "0x07",
+      "direction": "OUT",
+      "field": "0x20009178",
+      "context": "0x2000917c",
+      "literal": "0x6080bbb8",
+      "function_thumb": "0x6080affd",
+      "function": "0x6080affc",
+      "bytes": "7047",
+      "mnemonic": "bx lr",
+      "initial_context": 0
+    }
+  ],
+  "static_scan": {
+    "encoding": "c4f80036",
+    "exact_matches": [
+      "0x6080bb5a"
+    ],
+    "limit": "Exact opcode encoding only, no proof of missing runtime handlers"
+  },
+  "later_registration": "NOT RULED OUT",
+  "other_usb_update_routes": "NOT EXCLUDED",
+  "usb_to_flash": "NOT DEMONSTRATED",
+  "hab_bypass": "NOT DEMONSTRATED",
+  "custom_execution": "NOT DEMONSTRATED",
+  "note": "Offline normal constructor only; actual RAM state not measured. Proprietary image not included."
+}
