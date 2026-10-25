@@ -117,6 +117,10 @@ Dos campos (`global+0x560` y `global+0x568`) apuntan inicialmente a `global+0x13
 
 Identificadas funciones de inserción directa (`0x608109B8`) y ordenada (`0x608109D0`), con 14 transferencias estáticas verificadas. Dos llamadas calculan cabeceras desde `0x2000A7F8 + 20×índice`. No se ha demostrado una reasignación posterior de `global+0x560/+0x568`, ni acceso desde USB.
 
+- **[Fase 28 — Procedencia de nodos e índices de listas indexadas](docs/es/procedencia-nodos-indices.md)**
+
+En las llamadas `0x60811A32` y `0x60811E0C`, el nodo es un subobjeto `objeto+4` y el índice procede del campo `objeto+0x2C`. Las comparaciones observadas se ejecutan después de insertar; no se ha demostrado la ausencia de validaciones anteriores, un índice fuera de límites ni acceso desde USB.
+
 ## Reproducción sin conexión
 
 Python 3.11 o posterior:
