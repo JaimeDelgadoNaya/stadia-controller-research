@@ -309,8 +309,8 @@ def scan_range(image, name, start, end, seed_aliases, md=None):
                     arguments[arg_name] = _provenance_for_alias(aliases[reg])
                 elif reg in loaded_from:
                     arguments[arg_name] = {
-                        "kind":"field_derived_unknown_value",
                         **loaded_from[reg],
+                        "argument_kind":"field_derived_unknown_value",
                     }
             if arguments:
                 calls.append({"at":fmt_addr(ins.address),"mnemonic":mnemonic,
@@ -431,7 +431,7 @@ def audit(image, expected_sha256=SHA256):
         if not matches or matches[0]["target"]!=fmt_addr(BASE+target):
             raise ValueError(f"Field-derived call mismatch at {fmt_addr(BASE+site)}")
         prov=matches[0]["argument_provenance"].get(arg_reg,{})
-        if prov.get("kind")!="field_derived_unknown_value" or _root_field(prov)!=field_offset:
+        if prov.get("argument_kind")!="field_derived_unknown_value" or _root_field(prov)!=field_offset:
             raise ValueError(f"Dynamic pointer provenance mismatch at {fmt_addr(BASE+site)}")
 
     stores=[{"function":a["name"],**s} for a in results for s in a["stores_via_known_alias"]]
