@@ -57,6 +57,10 @@ un contexto IVT construido. Comprueba instrucciones, tablas virtuales y los
 argumentos fijos de 4096 bytes. **No demuestra accesibilidad desde USB**, escritura
 física fuera de límites ni ejecución de firmware personalizado.
 
+- **[Fase 13 — Superficie USB y límites del despacho](docs/es/superficie-usb.md)**
+
+La fase 13 cuantifica qué parte del bootloader cubren las instrucciones publicadas y ofrece una inspección USB **estática, de solo lectura** para una copia local con SHA-256 verificado. No se ha identificado todavía un comando USB que permita ejecutar firmware propio.
+
 ## Reproducción sin conexión
 
 Python 3.11 o posterior:

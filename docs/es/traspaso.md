@@ -156,3 +156,9 @@ elusión de HAB o ejecución de firmware propio. Ejecutar:
 python tools/trace_write_path.py
 python -m unittest discover -s tests -v
 ```
+
+## Fase 13 — Delimitar el despacho USB
+
+La [fase 13](superficie-usb.md) añade `tools/audit_usb_surface.py`: cuantifica la cobertura pública (28 regiones, 2340 bytes de 131072, 67 llamadas directas, 41 destinos no cubiertos, 16 transferencias indirectas) y prepara una exploración **exclusivamente estática** de descriptores USB y puntos de entrada usando un bootloader **local** cuyo SHA-256 debe coincidir con el de la medición. Las heurísticas no demuestran existencia ni accesibilidad de un comando USB; no hay firmware propio ejecutado. Sin binario local, solo puede producir el informe de cobertura pública.
+
+Ejecutar `python tools/audit_usb_surface.py` y `python -m unittest discover -s tests -v`. Para análisis local posterior: `python tools/audit_usb_surface.py --bootloader local/bootloader-a.bin`. No subir la imagen al repositorio.

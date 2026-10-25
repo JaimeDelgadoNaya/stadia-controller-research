@@ -56,6 +56,10 @@ constructed IVT context. It verifies instruction anchors, virtual tables and
 fixed 4096-byte arguments. **USB reachability**, out-of-bounds physical writes,
 and custom-firmware execution are **not established**.
 
+- **[Phase 13 — USB surface and dispatcher limits](docs/en/usb-surface.md)**
+
+Phase 13 quantifies coverage of the published bootloader disassembly and adds a **read-only** static USB triage tool for a locally SHA-verified image. No exploitable USB dispatcher or custom-firmware execution has been demonstrated.
+
 ## Offline reproduction
 
 Python 3.11 or newer:
