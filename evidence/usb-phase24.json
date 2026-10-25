@@ -114,7 +114,8 @@
       "sha256": "48bc771095a3b03dcc8888a9b1047d448380e26cf9dcc2989424ca31d77b1b16"
     }
   ],
-  "direct_store_instruction_count": 23,
+  "direct_store_observation_count": 23,
+  "unique_direct_store_instruction_site_count": 19,
   "direct_callback_field_store_count": 0,
   "direct_stores": [
     {
