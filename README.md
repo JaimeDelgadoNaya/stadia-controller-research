@@ -102,7 +102,7 @@ Four verified Thumb direct calls pass the global RAM object to internal routines
 
 - **[Phase 24 — Callee stores and pointer provenance](docs/en/callee-callback-store-audit.md)**
 
-Four callees and their auxiliary-object initialization chain were reviewed. The bounded audit records 23 store observations across 19 unique instruction sites, with no overlap with the four known callback fields. Dynamic pointer sinks at `0x60809048` and `0x608109FE` remain unresolved.
+Four callees and their auxiliary-object initialization chain were reviewed. The bounded audit records 23 store observations across 19 unique instruction sites, with no overlap with the four known callback fields. Values loaded from `global+0x568/+0x570/+0x560` and passed to `0x60809048`, plus the pointer derived from `global+0x5A8` passed to `0x608109FE`, remain unresolved.
 
 ## Offline reproduction
 
