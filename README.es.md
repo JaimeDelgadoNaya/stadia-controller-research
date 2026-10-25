@@ -49,6 +49,12 @@ y entrada física; también traza los argumentos fijos de 4096 bytes y la ruta d
 restauración del IVT. La emulación ARM aislada de las instrucciones confirma el
 ejemplo aritmético en ocho casos, sin demostrar un exploit en el mando.
 
+
+La **fase 12** audita una ruta de llamadas hasta el escritor físico de flash bajo
+un contexto IVT construido. Comprueba instrucciones, tablas virtuales y los
+argumentos fijos de 4096 bytes. **No demuestra accesibilidad desde USB**, escritura
+física fuera de límites ni ejecución de firmware personalizado.
+
 ## Reproducción sin conexión
 
 Python 3.11 o posterior:
