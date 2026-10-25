@@ -1,0 +1,120 @@
+{
+  "phase": 29,
+  "date": "2026-10-25",
+  "sample": {
+    "kind": "private Stadia bootloader A",
+    "build": 169429,
+    "bytes": 131072,
+    "sha256": "59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0",
+    "binary_in_github": false
+  },
+  "safety": {
+    "offline": true,
+    "hardware_access": false,
+    "usb_transactions": false,
+    "flash_or_fuse_operations": false
+  },
+  "method": {
+    "scan_window": [
+      "0x60811400",
+      "0x60812200"
+    ],
+    "end_exclusive": true,
+    "encoding": "Thumb16 STR Rt,[Rn,#0x2C]",
+    "byte_anchor_verification": true,
+    "regional_sha256_verification": true,
+    "not_full_cfg": true
+  },
+  "regions": [
+    {
+      "name": "object_constructor_clamp",
+      "start": "0x6081154c",
+      "end_exclusive": "0x608115a8",
+      "sha256": "1619774c84a3e4f91da570a7658639d6c09d322dd327bb537c2c08b6603aa06e"
+    },
+    {
+      "name": "index_restore_from_global",
+      "start": "0x60811f48",
+      "end_exclusive": "0x60811fd0",
+      "sha256": "3e28843d0516a8f1a1440fd8c73ed062c90170edec825c2ace4d3177e6eedfa4"
+    },
+    {
+      "name": "index_restore_from_member",
+      "start": "0x60811fec",
+      "end_exclusive": "0x60812078",
+      "sha256": "ba102732fed712ef9aa14d9f15d22d97c2b1d8b30fc02b9658809b0f0b711e67"
+    },
+    {
+      "name": "index_update_from_argument",
+      "start": "0x6081208c",
+      "end_exclusive": "0x60812126",
+      "sha256": "6fb623947593ec80d3a0b6953c81ddddb16026d2ce65eb9df87fbcbdd7162614"
+    }
+  ],
+  "writers": [
+    {
+      "site": "0x608115a0",
+      "source": "Unsigned clamped input from [SP+0x20]",
+      "local_bounds": "0..15",
+      "related": "0x60811596 CMP #15, 0x6081159C IT HS, 0x6081159E MOVHS #15; 0x608115A2 stores same value at object+0x50"
+    },
+    {
+      "site": "0x60811f90",
+      "source": "[reference object+0x2C]",
+      "precondition": "0x60811f5a CMP, 0x60811f5c BHS restrict path"
+    },
+    {
+      "site": "0x60811fb2",
+      "source": "[reference object+0x2C]",
+      "precondition": "alternative route"
+    },
+    {
+      "site": "0x60812056",
+      "source": "[object+0x50]",
+      "precondition": "state transition"
+    },
+    {
+      "site": "0x608120d6",
+      "source": "max_unsigned(incoming argument R1, [object+0x50])",
+      "precondition": "0x608120a8 CMP, 0x608120aa IT LO, 0x608120ac MOVLO"
+    }
+  ],
+  "reference_object_pointer_slot": "0x2000a7ec",
+  "bounded_scan_result": {
+    "count": 5,
+    "sites": [
+      "0x608115a0",
+      "0x60811f90",
+      "0x60811fb2",
+      "0x60812056",
+      "0x608120d6"
+    ],
+    "scope": "Only Thumb16 immediate word stores at offset +0x2c in one selected image window"
+  },
+  "global_state": {
+    "bucket_formula": "0x2000a7f8 + 20*index",
+    "bucket_count": "UNKNOWN",
+    "later_index_domain": "UNKNOWN",
+    "source_field_plus_0x50_mutation": "NOT EXHAUSTIVELY RESOLVED",
+    "caller_validation": "NOT EXHAUSTIVELY RESOLVED"
+  },
+  "conclusions": {
+    "initial_constructor_index_range": "0..15",
+    "global_index_range": "NOT PROVEN",
+    "out_of_bounds_access": "NOT DEMONSTRATED",
+    "external_host_control": "NOT DEMONSTRATED",
+    "callback_replacement": "NOT DEMONSTRATED",
+    "usb_to_flash": "NOT DEMONSTRATED",
+    "hab_closed_bypass": "NOT DEMONSTRATED",
+    "custom_firmware_execution": "NOT DEMONSTRATED"
+  },
+  "deliverables": {
+    "script": "tools/audit_bucket_index_writers.py",
+    "tests": "tests/test_bucket_index_writers.py",
+    "docs": [
+      "docs/es/escrituras-indices-listas.md",
+      "docs/en/bucket-index-writers.md"
+    ]
+  },
+  "next": "Track writes to object+0x50, provenance of argument R1 and reference object pointer at 0x2000a7ec."
+}
