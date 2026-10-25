@@ -14,7 +14,11 @@ REGIONS = [(0x1C64, 0x1CC0), (0x1CC8, 0x1D38), (0x1D40, 0x1D9C),
            (0x1EF0, 0x1F4A), (0x1F5C, 0x1F9E), (0x1FAC, 0x1FE6),
            (0x1FE6, 0x200A), (0x200C, 0x2096), (0x20A8, 0x2170),
            (0x21B4, 0x228A), (0x22FC, 0x231A), (0x285C, 0x2908),
-           (0x7E64, 0x7E92)]
+           (0x7E64, 0x7E92), (0x8A50, 0x8A98),
+           (0xAA3C, 0xAA40), (0xAA66, 0xAA7A), (0xAA7C, 0xAAFE),
+           (0xAB10, 0xAB4C), (0xAB4C, 0xAB8E), (0xB0F0, 0xB134),
+           (0xBA2E, 0xBA96), (0xBAC0, 0xBADE), (0xBCB6, 0xBCC4),
+           (0xBD50, 0xBDCA), (0xBE40, 0xBE44)]
 
 
 def analyze(data):
@@ -44,7 +48,12 @@ def analyze(data):
         records.append({"start": hex(BASE + start), "end_exclusive": hex(BASE + end), "instructions": instructions})
     return {"sha256": EXPECTED, "bytes": len(data),
             "build": struct.unpack_from("<I", data, 0x1414)[0],
-            "functions": records, "scope": "Selected instruction ranges; not a whole-program audit"}
+            "functions": records,
+            "storage_vtables": [{"address": hex(BASE + offset),
+                                  "entries": [hex(v) for v in struct.unpack_from(
+                                      "<" + "I" * (8 if offset == 0x15320 else 6), data, offset)]}
+                                 for offset in (0x15300, 0x15320)],
+            "scope": "Selected instruction ranges; not a whole-program audit"}
 
 
 if __name__ == "__main__":

@@ -1,0 +1,52 @@
+{
+  "hardware_access": false,
+  "object_context": "constructed from statically traced IVT geometry",
+  "backend": "intercepted mock returning success; no physical flash routines executed",
+  "results": [
+    {
+      "offset": "0x0",
+      "length": "0x1000",
+      "backend_calls": [
+        {
+          "device": "0x20008f34",
+          "flash_offset": "0x1000",
+          "source": "0x200019c8",
+          "length": "0x1000"
+        }
+      ],
+      "physical_backend_executed": false,
+      "case": "actual_ivt_arguments"
+    },
+    {
+      "offset": "0x1000",
+      "length": "0x1",
+      "backend_calls": [],
+      "stopped_at_bounds_error_path": true,
+      "physical_backend_executed": false,
+      "case": "past_partition"
+    },
+    {
+      "offset": "0x0",
+      "length": "0x1001",
+      "backend_calls": [],
+      "stopped_at_bounds_error_path": true,
+      "physical_backend_executed": false,
+      "case": "oversized"
+    },
+    {
+      "offset": "0xfffffff0",
+      "length": "0x10",
+      "backend_calls": [
+        {
+          "device": "0x20008f34",
+          "flash_offset": "0xff0",
+          "source": "0x200019c8",
+          "length": "0x10"
+        }
+      ],
+      "physical_backend_executed": false,
+      "case": "synthetic_wrapped_offset"
+    }
+  ],
+  "scope": "Synthetic wrapper arguments; external control and device-level impact are not established"
+}

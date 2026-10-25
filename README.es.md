@@ -28,9 +28,11 @@ del dispositivo; no se extrajo toda la aplicación instalada para comparar su ha
 
 ## Documentación
 
+- **[Traspaso completo: estado, reproducción y dónde continuar](docs/es/traspaso.md)**
 - [Mediciones y método de extracción](docs/es/mediciones.md)
 - [Cadena de arranque, actualización y cuestiones abiertas](docs/es/arranque.md)
 - [Actualización del IVT y emulación ARM — fase 10](docs/es/actualizacion.md)
+- [Almacenamiento y emulación del escritor — fase 11](docs/es/almacenamiento.md)
 - [Próximos pasos y niveles de evidencia](docs/es/hoja-de-ruta.md)
 - [Manifiesto de evidencias](evidence/manifest.json)
 - [Créditos, procedencia y alcance de la publicación](NOTICE.md)

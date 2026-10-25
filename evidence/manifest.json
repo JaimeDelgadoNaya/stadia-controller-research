@@ -29,8 +29,8 @@
   "evidence_files": [
     {
       "file": "bootloader-analysis.json",
-      "bytes": 107118,
-      "sha256": "1b9fe8fb98992fd1ea43904ef0c573dea272f31b55d443b1b446e16d385417cd"
+      "bytes": 146836,
+      "sha256": "195887b3ce4231d523bfb49eff9dc0e03dc6bc7de4a7605d0e4782c7036361ee"
     },
     {
       "file": "flash-probe.json",
@@ -71,13 +71,22 @@
       "file": "signature-verification.json",
       "bytes": 2936,
       "sha256": "e88be0886064df3d727481a48f30263d9faa891242756417351a1fb0b86ffd8c"
+    },
+    {
+      "file": "storage-emulation.json",
+      "bytes": 1382,
+      "sha256": "c81b6567f510e99f172b76a39b688a2caf842ebc87fe7a39afa0a5f8252ae551"
     }
   ],
   "analysis_phases": [
     9,
-    10
+    10,
+    11
   ],
   "hardware_access_during_phase_10": false,
   "phase_10_tests_passed": 11,
-  "isolated_arm_cases": 8
+  "isolated_arm_cases": 8,
+  "hardware_access_during_phase_11": false,
+  "phase_11_tests_passed": 14,
+  "storage_wrapper_cases": 4
 }

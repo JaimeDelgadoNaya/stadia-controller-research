@@ -1,0 +1,142 @@
+# Complete research handoff
+
+[Español](../es/traspaso.md)
+
+Status on 2026-10-25. This document is sufficient to resume without the chat.
+There is no installable custom firmware or demonstrated custom-code execution.
+
+## Original objective
+
+Determine whether the Stadia Controller can run custom firmware on its original
+electronics, eventually improving platform compatibility. Direct Xbox-console
+support would additionally require solving that console's authentication; no
+new controller protocol or Xbox-console support has been implemented.
+
+## Established state
+
+| Item | Result | Evidence level |
+|---|---|---|
+| Installed application | Bruce 337784 (`0x52778`) | Device USB read |
+| Bootloader A | 169429 (`0x295D5`), extracted | Device read and verified CMS signatures |
+| Bootloader B slot | 128 KiB entirely `0xFF` | Device read and spot re-reads |
+| MCU | ID `0x006C0000`, upstream label 106XA0 | Device read |
+| Flash | ID `0x17C8`, GigaDevice 16 MB | Device read |
+| HAB | CLOSED; ROM `0x12343412`, property 0x11 = 1 | Two device-query paths |
+| Final device state after physical tests | Normal USB, unchanged version response | Post-reset device read |
+| Image-range helper | Accepts a wrapped range and one zero-size case | Original instructions in isolated emulation |
+| Storage bounds | Can delegate outside a partition with a synthetic offset | Emulation with a mocked physical writer |
+| Custom execution / signature bypass | Not demonstrated | Open |
+
+Measurements concern one controller. The full installed application was not
+extracted; reading its build does not hash-verify its complete contents.
+
+## Hardware work already performed
+
+The existing WinUSB driver was used to read the version, and HID for diagnostics.
+The owner pressed the buttons to transition from `18D1:9400` through `18D1:946B`
+to ROM `1FC9:0135`. ROM ERROR_STATUS was queried before loading any code. The
+original Google signed loader was subsequently loaded only into RAM. HAB and
+MCU identifiers were queried, then flash was read through a temporary read-only
+FlexSPI LUT.
+
+There were volatile RAM/SRAM and FlexSPI-register writes, but no firmware
+programming, flash erase or fuse programming commands. Two 128 KiB regions were
+extracted: A contains the bootloader and B is erased. Loader RESET succeeded;
+normal mode and the identical eight-byte version response were confirmed.
+Phases 9, 10 and 11 involved no hardware access.
+
+## Reading order
+
+1. [Measurements](measurements.md): protocols, responses, extraction and limits.
+2. [Phase 9](boot-chain.md): application validation, HAB and structural-only flag.
+3. [Phase 10](update-flow.md): callback, IVT buffers and restoration.
+4. [Phase 11](storage.md): descriptor 0x12, storage methods and mocked delegation.
+5. [Manifest](../../evidence/manifest.json): artifact hashes and scope.
+
+## Minimal address map
+
+All addresses refer to A build 169429, SHA-256
+`59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0`.
+
+| Address | Research description |
+|---|---|
+| `0x60801DD4` | IVT update/selection flow |
+| `0x60801EF0` | Validated application handoff |
+| `0x60801F5C` | HAB entry/authenticate_image_no_dcd/exit wrapper |
+| `0x60801FE6` | Image-range helper, 32-bit arithmetic |
+| `0x6080200C` | Application validator |
+| `0x608020A8` | Structural/authenticated bootloader validator |
+| `0x608022FC` | Power/input guard callback |
+| `0x6080285C` | Thumb thunk to that guard |
+| `0x6080AA66` | Partition-offset to flash-offset translation |
+| `0x6080AA7C` | Offset-plus-length bounds helper |
+| `0x6080B0F0` | Plain partition write wrapper |
+| `0x60815300` | Plain partition vtable |
+| `0x60815320` | Physical-device vtable |
+| `0x60001000` | Shared IVT, descriptor 0x12, 4096 bytes |
+
+Labels are inferred descriptions, not recovered source symbols.
+`evidence/bootloader-analysis.json` records selected instruction bytes, direct
+calls, literals and tables. Decoding uses Thumb M-class mode.
+
+## Reproduce from a clean clone
+
+```sh
+python -m venv .venv
+# Activate .venv with your operating system's command.
+python -m pip install -r requirements-emulation.txt
+python -m unittest discover -s tests -v
+python tools/model_ranges.py
+python tools/emulate_range_check.py
+python tools/emulate_storage.py
+```
+
+Tests and emulators use public evidence without a controller or full firmware
+binary. The complete suite contains 14 tests. The range emulator executes eight
+cases. The storage emulator executes four invocations with a constructed object;
+it intercepts the physical writer and returns mock success. It does not establish
+that real flash would accept the delegated request.
+
+With your own matching dump:
+
+```sh
+python tools/analyze_bootloader.py local/bootloader-a.bin
+python tools/verify_hab.py local/bootloader-a.bin --base 0x60800000 --csf-offset 0x18000 --alias 0x60001000:0:0x1000
+```
+
+The alias represents the shared IVT with the image's first 4096 bytes. Verification
+checks content digests and signatures with embedded certificates, not the fused
+SRK trust anchor independently. These regions are not a complete 16 MB recovery
+backup.
+
+## Claims that remain unproven
+
+- CLOSED is measured: loading RAM data is not proof it can execute.
+- The Google signed loader ran; custom code did not.
+- “dev” is not an unlock: the compared Bruce images share their content before
+  the final signing area.
+- Empty B refers to bootloader B, not the unmeasured application B region.
+- IVT restoration exists, but recovery from power loss has not been demonstrated.
+- Arithmetic witnesses work in emulation, but an external input controlling
+  those parameters in the reviewed path has not been demonstrated.
+- The IVT caller uses offset zero and fixed length 4096. Out-of-partition writes
+  alone do not establish HAB bypass or code execution.
+
+## Next useful work
+
+1. Trace callers of `0x6080B0F0` through their interfaces to determine whether
+   USB or another controllable input can supply the relevant parameters.
+2. Separate reachability from effect: examine later checks, alignment, permitted
+   destinations and authentication before assigning device-level impact.
+3. Reconstruct application A/B selection and boot-attempt metadata.
+4. Propose a physical experiment only for a concrete, recoverable hypothesis.
+   Modified firmware flashing is unnecessary to reproduce the published work.
+
+## Material retained locally
+
+Public artifacts omit full proprietary firmware and personal device identifiers.
+The original workspace retains `outputs/bootloader-a.bin`,
+`outputs/bootloader-b.bin`, the phase-8 report and ZIP, and extraction scripts in
+`work/`. The ZIP is a local archive, not a public release. The owner may supply
+these files to a subsequent environment for full-image analysis. No extraction
+process was left running.

@@ -10,9 +10,10 @@
 
 Tareas concretas siguientes:
 
-1. Resolver los métodos virtuales de almacenamiento y el destino del descriptor
-   `0x12`. La fase 10 resolvió el callback de alimentación/entrada y trazó tamaños
-   fijos y restauración del IVT; faltan las restricciones de la implementación.
+1. Seguir parámetros controlables externamente hasta los métodos de almacenamiento.
+   La fase 11 sitúa el descriptor `0x12` en el IVT compartido de 4096 bytes y emula
+   el escritor con backend físico simulado. Faltan accesibilidad de entradas y
+   aceptación real de parámetros malformados.
 2. Seguir los tamaños boot-data hasta la comprobación de rangos y las llamadas
    HAB posteriores. Determinar si un rango malformado puede tener efectos después
    de la validación criptográfica.

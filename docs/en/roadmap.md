@@ -10,9 +10,10 @@
 
 Next bounded tasks:
 
-1. Resolve storage virtual methods and the concrete mapping of descriptor `0x12`.
-   Phase 10 resolved the separate power/input callback and traced fixed IVT
-   transfer arguments and restoration logic; backend restrictions remain open.
+1. Trace externally controllable arguments into the resolved storage methods.
+   Phase 11 maps descriptor `0x12` to the 4096-byte shared IVT and emulates the
+   plain write wrapper with a mocked physical backend. Input reachability and
+   real-device acceptance of malformed arguments remain unproven.
 2. Trace boot-data sizes into the range helper and the subsequent HAB checks.
    Determine whether any malformed range can matter after cryptographic validation.
 3. Reconstruct application A/B selection, boot-attempt metadata and fallback
