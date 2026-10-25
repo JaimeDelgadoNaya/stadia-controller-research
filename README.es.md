@@ -25,6 +25,9 @@ hemos demostrado ejecución de firmware propio ni una forma de eludir las firmas
 
 **[Receptores USB normales Bruce: nueva auditoría](docs/es/receptores-usb-clase-bruce.md).** La PR #32 contrastó las peticiones de clase `0x81/0x83/0x84` del actualizador archivado con el código original. Encontró ocho comparaciones literales, pero las candidatas estudiadas leen **bytes de búfer o campos de estructuras**, no un `bRequest` con origen verificado desde EP0. **Todavía no hay cadena host→receptor→ejecución propia ni recuperación fiable.**
 
+
+**[Nueva fase: cadena USB SETUP → callback de endpoint en Bruce](docs/es/traza-ep0-bruce.md).** La PR #33 verifica, sobre la imagen original firmada, el vector OTG1, su trampolín a ITCM, la recepción de `ENDPTSETUPSTAT` y el despachador `0x600D0FB6` que llama al callback dinámico en `0x600D104E`. **Falta identificar la dirección realmente registrada para EP0 y el receptor de las consultas 0x81/0x83/0x84.** No hay ejecución propia ni modificación física.
+
 ## Prioridad actual: software del propio mando y Switch 2 directa
 
 El propietario ha descartado adaptadores y placas externas. La nueva prioridad
