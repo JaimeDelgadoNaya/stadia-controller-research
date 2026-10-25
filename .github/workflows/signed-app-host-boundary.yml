@@ -63,7 +63,7 @@ jobs:
           python -m tools.audit_bruce_class_requests /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/class.json --preview
           python -m tools.audit_bruce_ep0_setup_provenance /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/ep0.json --compact
           python -m tools.audit_bruce_usb_irq_vector /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/usb-vectors.json
-          python -m tools.audit_bruce_ep0_registration /tmp/stadia-app-offline/bruce.bin --show-focused --out /tmp/stadia-app-offline/registration.json
+          python -m tools.audit_bruce_ep0_registration /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/registration.json
           python - <<'PY'
           import json
           from pathlib import Path
