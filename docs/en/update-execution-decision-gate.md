@@ -87,3 +87,7 @@ or proprietary image publication.
 ## Package A outcome (completed)
 
 **[Actual archived host-to-receiver protocol](archived-updater-host-protocol.md).** Archived host code uses WebHID via NXP ROM SDP and original signed RAM flashloader; firmware flash commands are documented but neither arbitrary custom execution nor reliable recovery is shown. No device was used. The sole remaining package B is limited to boot/authentication, signed image identity and recovery evidence, after which the mandatory STOP/GO decision applies.
+
+## Mandatory final decision applied — phase 31 (closed)
+
+Both bounded offline packages are complete. The [closing report](final-execution-recovery-decision.md) verifies original CMS signatures and boot authentication, with prior HAB CLOSED measurement. No authenticated custom execution was shown, bootloader B is erased, and full recovery/rollback has not been demonstrated. **DECISION: STOP internal modification; GO on reversible external bridge** unless new independent evidence establishes both trusted execution and reliable recovery. Sanitized `evidence/phase31-final-auth-recovery.json`.
