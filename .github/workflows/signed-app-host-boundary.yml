@@ -6,9 +6,11 @@ on:
       - 'tools/audit_signed_app_host_boundary.py'
       - 'tools/audit_signed_bruce_variants.py'
       - 'tools/audit_bruce_class_requests.py'
+      - 'tools/audit_bruce_ep0_setup_provenance.py'
       - 'tests/test_signed_app_host_boundary.py'
       - 'tests/test_signed_bruce_variants.py'
       - 'tests/test_bruce_class_requests.py'
+      - 'tests/test_bruce_ep0_setup_provenance.py'
       - '.github/workflows/signed-app-host-boundary.yml'
   workflow_dispatch:
 
@@ -55,6 +57,7 @@ jobs:
             /tmp/stadia-app-offline/bruce.bin /tmp/stadia-app-offline/stage.bin \
             /tmp/stadia-app-offline/dev.bin --out /tmp/stadia-app-offline/variants.json
           python -m tools.audit_bruce_class_requests /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/class.json --preview
+          python -m tools.audit_bruce_ep0_setup_provenance /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/ep0.json --compact
           python - <<'PY'
           import json
           from pathlib import Path
