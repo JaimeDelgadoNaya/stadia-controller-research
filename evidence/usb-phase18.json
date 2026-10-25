@@ -1,0 +1,59 @@
+{
+  "phase": 18,
+  "date": "2026-10-25",
+  "source": "private bootloader A verified by SHA-256; binary not published",
+  "bootloader_build": 169429,
+  "sha256": "59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0",
+  "original_firmware_in_repository": false,
+  "hardware_access": false,
+  "usb_transactions": false,
+  "flash_writes": false,
+  "normal_startup_copy": {
+    "routine": "0x60801600",
+    "source_flash": "0x608161e0",
+    "ram_start": "0x20000000",
+    "ram_end_exclusive": "0x20000190",
+    "size_bytes": 400,
+    "live_ram_measured": false
+  },
+  "records": [
+    {
+      "iteration": 0,
+      "flash_initializer": "0x608162b8",
+      "ram": "0x200000d8",
+      "endpoint": "0x87",
+      "usb_direction": "bulk IN",
+      "attributes": "0x02",
+      "max_packet_bytes": 512,
+      "usb_descriptor": "0x60815296",
+      "thumb_callback": "0x60809e31",
+      "callback_function": "0x60809e30",
+      "endpoint_slot": 15
+    },
+    {
+      "iteration": 1,
+      "flash_initializer": "0x608162bc",
+      "ram": "0x200000dc",
+      "endpoint": "0x07",
+      "usb_direction": "bulk OUT",
+      "attributes": "0x02",
+      "max_packet_bytes": 512,
+      "usb_descriptor": "0x6081529d",
+      "thumb_callback": "0x6080a06b",
+      "callback_function": "0x6080a06a",
+      "endpoint_slot": 14
+    }
+  ],
+  "callback_mapping": "RESOLVED ON NORMAL STARTUP PATH",
+  "bulk_out_indirect": {
+    "trampoline": "0x6080a06a",
+    "next": "0x6080a062",
+    "function_field": "[r0+0x18]",
+    "context_field": "[r0+0x1c]",
+    "target": "NOT RESOLVED"
+  },
+  "host_packet_parser": "NOT IDENTIFIED",
+  "usb_to_flash_writer": "NOT DEMONSTRATED",
+  "hab_bypass": "NOT DEMONSTRATED",
+  "custom_firmware_execution": "NOT DEMONSTRATED"
+}
