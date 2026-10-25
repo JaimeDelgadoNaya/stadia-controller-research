@@ -190,6 +190,55 @@ def resolve_known_registrar_literals(image):
     return results
 
 
+def thumb_pointer_references(image, pointers):
+    """All aligned literal references to selected original Thumb functions."""
+    import struct
+    result={}
+    for name,pointer in pointers.items():
+        needle=struct.pack("<I",pointer)
+        offsets=[off for off in range(0,0xFF030-3,4)
+                 if image[off:off+4]==needle]
+        result[name]={
+            "thumb_pointer":hex(pointer),
+            "aligned_word_reference_count":len(offsets),
+            "aligned_word_offsets":[hex(i) for i in offsets[:70]],
+            "candidate_table_or_literal_only":True
+        }
+    return result
+
+
+def callers_of_known(image, named_targets, max_examples=20):
+    """XIP direct BL caller census, not a full interprocedural CFG."""
+    from capstone import Cs, CS_ARCH_ARM, CS_MODE_THUMB, CS_MODE_MCLASS
+    md=Cs(CS_ARCH_ARM,CS_MODE_THUMB|CS_MODE_MCLASS)
+    wanted={v:k for k,v in named_targets.items()}
+    found={k:[] for k in named_targets}
+    start=(ITCM_SOURCE_OFFSET+ITCM_LENGTH+1)&~1
+    for off in range(start,0xFF000,0x2000):
+        ins=list(md.disasm(image[off:min(off+0x2000,0xFF000)],BASE+off))
+        for idx,row in enumerate(ins):
+            if row.mnemonic!="bl" or not row.op_str.startswith("#"):
+                continue
+            try:
+                val=int(row.op_str[1:],0)
+            except ValueError:
+                continue
+            if val not in wanted:
+                continue
+            name=wanted[val]
+            if len(found[name])>=max_examples:
+                continue
+            found[name].append({
+                "callsite":hex(row.address),
+                "before":[hex(i.address)+" "+i.mnemonic+" "+i.op_str
+                          for i in ins[max(0,idx-12):idx]],
+                "after":[hex(i.address)+" "+i.mnemonic+" "+i.op_str
+                         for i in ins[idx+1:idx+5]],
+                "live_call_edge":"UNVERIFIED linear decode",
+            })
+    return found
+
+
 def audit(image, *, include_focused=False):
     if len(image)!=IMAGE_SIZE or hashlib.sha256(image).hexdigest()!=IMAGE_SHA256:
         raise ValueError("Exact signed Bruce update sample required (SHA256 and size)")
@@ -209,6 +258,16 @@ def audit(image, *, include_focused=False):
         "candidate_function_calls_to_usb_core":calls,
         "candidate_slot_writers":candidate_slot_writers(image),
         "registration_handler_literals":resolve_known_registrar_literals(image),
+        "registrar_pointer_refs":thumb_pointer_references(image,{
+            "device_endpoint_registration_api":0x600D10B9,
+            "descriptor_loop_function":0x60054729,
+            "alternate_endpoint_loop_function":0x600547AD,
+            "signed_setup_event_dispatcher":0x600D0FB7,
+        }),
+        "direct_callers_of_descriptor_loops":callers_of_known(image,{
+            "descriptor_loop_function":0x60054728,
+            "alternate_endpoint_loop_function":0x600547AC,
+        }),
         "initialized_data_pointer_census":initialized_data_callbacks(image),
         "endpoint_callback_registrar_code": [
             {"pc":hex(x["pc"]),"m":x["m"],"op":x["op"]}
@@ -242,7 +301,11 @@ def main():
     print("INIT DATA CALLBACK-LIKE WORDS SUMMARY",
           json.dumps({"all":result["initialized_data_pointer_census"]["total_thumb_pointer_shaped_words"],
                       "usb_related":result["initialized_data_pointer_census"]["near_usb_xip_count"]}))
-    print("REGISTRATION HANDLER POINTERS",json.dumps(result["registration_handler_literals"]))
+    print("REGISTRATION HANDLER POINTERS",json.dumps(
+          [{k:v for k,v in row.items() if k!="target_preview"} 
+           for row in result["registration_handler_literals"]]))
+    print("REGISTRAR ALIGNED POINTER REFS",json.dumps(result["registrar_pointer_refs"]))
+    print("USB DESCRIPTOR LOOP CALLERS",json.dumps(result["direct_callers_of_descriptor_loops"]))
     print("ENDPOINT CALLBACK REGISTRAR CODE",json.dumps(result["endpoint_callback_registrar_code"]))
     print("REGISTRATION CALLERS CODE",json.dumps(result["registration_caller_context"]))
     if p.show_focused:
