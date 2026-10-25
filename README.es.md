@@ -89,6 +89,10 @@ Los callbacks de finalización del fabricante para Bulk IN `0x87` y Bulk OUT `0x
 
 El barrido de codificaciones Thumb-2 para los campos RAM de los callbacks OUT/IN solo identifica las inicializaciones del constructor dentro del intervalo estudiado. **La ausencia de otros patrones no demuestra que no existan setters indirectos**, ni implica una ruta USB a escritura flash o un bypass HAB CLOSED.
 
+- **[Fase 21 — Fuentes del puntero global RAM y cadena de alias](docs/es/fuentes-alias-ram.md)**
+
+El bootloader contiene **21 literales** con el puntero global y **29 cargas PC-relativas candidatas**. Se ha verificado una ruta directa de alias hasta las inicializaciones de callbacks del constructor, **no** una sustitución posterior ni una ruta USB de escritura flash.
+
 ## Reproducción sin conexión
 
 Python 3.11 o posterior:
