@@ -66,6 +66,8 @@ jobs:
           from pathlib import Path
           x=json.loads(Path('/tmp/stadia-app-offline/report.json').read_text())
           variants=json.loads(Path('/tmp/stadia-app-offline/variants.json').read_text())
+          irq=json.loads(Path('/tmp/stadia-app-offline/usb-vectors.json').read_text())
+          ep0=json.loads(Path('/tmp/stadia-app-offline/ep0.json').read_text())
           print('Owner/public signed app SHA-identical:',x['source_identification']['matches_owner_private_sample_sha256'])
           print('Embedded RSA/CMS signature checks:',x['auth']['embedded_certificates_rsa_and_cms_checked'])
           print('Firmware signed length:',x['auth']['file_layout']['authenticated_application_block'])
@@ -75,6 +77,11 @@ jobs:
           print('Prod/stage/dev signature variants:', {k: v['embedded_rsa_cms_signatures_valid'] for k,v in variants['images'].items()})
           print('Stage/dev compared to production:',variants['comparisons_to_prod'])
           print('Archived host identity checked:',x['source_identification']['archived_host_js_exact_blob_checked'])
+          print('Signed Bruce USB IRQ vectors:',[(q['peripheral'],q['signed_image_vector'],q['vector_classification'],q['handler_source_file_offset']) for q in irq['vectors']])
+          print('Direct bRequest offset+1 comparisons in original 8:',ep0['direct_setup_brequest_offset_1_byte_load_candidates'])
+          print('Broader potential SETUP load pairs:',ep0['broader_setup_shape_census']['same_register_ldrb_offset_0_and_1_patterns'])
+          print('Pairs with host request immediate comparisons:',ep0['broader_setup_shape_census']['with_nearby_control_value_compares'])
+          print('IRQ-to-EP0 callback not yet demonstrated.')
           print('No demonstrated custom execution, physical installed identity or recovery.')
           PY
       - name: Remove all transient OEM inputs and audit results
