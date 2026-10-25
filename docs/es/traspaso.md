@@ -166,3 +166,7 @@ Ejecutar `python tools/audit_usb_surface.py` y `python -m unittest discover -s t
 ## Fase 14 — Descriptor USB verificado y callback de fabricante
 
 Se ha recibido un bootloader A de 128 KB cuyo SHA-256 coincide exactamente con el registrado. La [fase 14](callback-usb.md) documenta la configuración USB `18D1:946B`: interfaz 0 vendor con bulk IN `0x87`/OUT `0x07` (512 bytes) e interfaz 1 HID con interrupciones IN `0x83`/OUT `0x03` (64 bytes). Se verifica el callback `0x60809E64` con puntero inicial a función vacía en RAM, pero todavía **no** hay origen USB probado de una escritura en flash. El lector `tools/audit_usb_callbacks.py` funciona exclusivamente sobre el fichero local y produce JSON. El binario no se publica.
+
+## Fase 15 — Despachador de eventos USB interno
+
+El [informe de fase 15](eventos-usb.md) comprueba, sobre el bootloader A 169429 de SHA-256 conocido, la tabla `TBB` de **11 eventos internos** en `0x60809C68`, con ramas 4, 5 y 8 hacia la devolución predeterminada 1. La rutina `0x60809B28` limita a `0x200` bytes su argumento de transferencia. **No son once comandos de host**; todavía no hay traza desde Bulk OUT `0x07` hasta el escritor de flash ni vulneración de HAB CLOSED. El analizador `tools/audit_usb_event_dispatch.py` funciona offline y exige el SHA exacto. Pruebas sintéticas disponibles en `tests/test_usb_event_dispatch.py`; el binario original continúa privado.
