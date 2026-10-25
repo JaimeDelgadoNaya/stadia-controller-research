@@ -103,7 +103,7 @@ Se verifican cuatro llamadas que transmiten el puntero global a funciones intern
 
 - **[Fase 24 — Escrituras y procedencia de punteros en funciones receptoras](docs/es/escrituras-callbacks-callee.md)**
 
-Se revisaron cuatro funciones y la cadena de inicialización de subobjetos. Hay 23 observaciones de escrituras directas (19 sitios únicos al considerar dos bases para el mismo inicializador) y ninguna solapa los cuatro campos callback conocidos. Los punteros cargados de campos RAM hacia `0x60809048` y `0x608109FE` siguen sin resolverse.
+Se revisaron cuatro funciones y la cadena de inicialización de subobjetos. Hay 23 observaciones de escrituras directas (19 sitios únicos al considerar dos bases para el mismo inicializador) y ninguna solapa los cuatro campos callback conocidos. Los valores cargados de `global+0x568/+0x570/+0x560` y pasados a `0x60809048`, además del puntero derivado de `global+0x5A8` pasado a `0x608109FE`, siguen sin resolverse.
 
 ## Reproducción sin conexión
 
