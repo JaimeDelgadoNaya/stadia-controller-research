@@ -11,7 +11,8 @@ def base_image():
 
 def emit(code, location=0x1100, literal_at=0x110C):
     data=base_image()
-    data[location:location+len(code)] = bytes.fromhex(code)
+    raw = bytes.fromhex(code)
+    data[location:location+len(raw)] = raw
     struct.pack_into("<I",data,literal_at,m.GLOBAL)
     return bytes(data)
 
