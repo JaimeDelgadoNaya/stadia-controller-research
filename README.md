@@ -43,6 +43,7 @@ from the device; the full installed application was not dumped and hash-matched.
 - [Boot chain, update validation and open questions](docs/en/boot-chain.md)
 - [IVT update flow and ARM emulation — phase 10](docs/en/update-flow.md)
 - [Storage mapping and wrapper emulation — phase 11](docs/en/storage.md)
+- [Application A/B selection and boot status — phase 12](docs/en/application-selection.md)
 - [Roadmap and evidence levels](docs/en/roadmap.md)
 - [Evidence manifest](evidence/manifest.json)
 - [Credits, provenance and publication scope](NOTICE.md)
