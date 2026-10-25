@@ -193,3 +193,7 @@ A private 128 KiB bootloader A image matches the recorded SHA-256. [Phase 14](us
 ## Phase 21 — RAM global alias sources
 
 [Phase 21](global-ram-aliases.md) identifies **21 aligned** `0x20008B78` global-pointer words and **29 Thumb PC-relative load candidates** to those literals. The verified static path `0x6080C0B2` LDR global → `0x6080C0B4` BL to `0x6080BAC0` → `0x6080BAC4` MOV R4,R0 links a known alias to four initial constructor stores. Other checked sources at `0x60809E6A` and `0x60809EB8` perform reads. This does not prove runtime reachability, a later callback setter, USB packet parser, flash write or HAB bypass. Offline tool: `tools/audit_global_alias_sources.py`; synthetic tests and sanitized `evidence/usb-phase21.json`.
+
+## Phase 22 — Bounded pointer-alias prefixes
+
+[Phase 22](usb-pointer-dataflow.md) adds `tools/audit_alias_dataflow.py`: conservative Thumb decoding of at most 96 bytes after each of 29 RAM-global pointer candidate loads, stopping at call, branch and return boundaries. Stores at `0x60809790` and `0x60809842` target state field `global+0x6C4`, not IN/OUT completion callback fields `+0x5F8/+0x600`. No claim of exhaustive aliases, externally reachable USB parser, flash write path or secure boot bypass is made. Tests are synthetic; the matching bootloader remains private.
