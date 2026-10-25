@@ -97,3 +97,7 @@ prometerá soporte de consola sin prueba documentada.
 La meta no es agotar todas las posibles escrituras ARM. Es decidir, con un
 presupuesto finito de investigación y sin arriesgar el mando, si el firmware
 original puede servir para el objetivo o si conviene implementar el puente.
+
+## Resultado del paquete A (realizado)
+
+**[Matriz de mensajes host y validaciones](protocolo-actualizador-webhid.md).** El actualizador archivado utiliza WebHID en ROM SDP y cargador original firmado en RAM. La programación está documentada en el código del host, pero no hay ejecución propia autorizable ni recuperación demostradas. **No** se ha utilizado el mando. El paquete B restante queda acotado a firma/arranque, identidad del firmware firmado y recuperación; tras él se aplicará la regla de parada.
