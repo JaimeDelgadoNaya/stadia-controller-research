@@ -100,7 +100,7 @@ class GlobalAliasTests(unittest.TestCase):
     def test_literal_mutation_rejected(self):
         changed=bytearray(self.image)
         struct.pack_into("<I",changed,0xC0BC,0)
-        with self.assertRaisesRegex(ValueError,"Constructor literal"):
+        with self.assertRaisesRegex(ValueError,"Constructor does not use expected global"):
             audited(bytes(changed))
 
     def test_strict_counts_refuses_partial_fixture(self):
