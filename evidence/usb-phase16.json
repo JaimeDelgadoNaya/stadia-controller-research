@@ -13,7 +13,7 @@
   "cdc_guard_length": 512,
   "cdc_optional_callback_wrapper": "0x60809c44",
   "cdc_event_invocation_site": "0x60809ce4",
-  "cdc_callback_initially_null_at": "0x2000910c",
+  "cdc_callback_initially_null_at": "0x200090fc",
   "vendor_label": "usb_device_vendor.cc",
   "vendor_event_handler": "0x60809e64",
   "vendor_callback_pointer": "0x20009168",
