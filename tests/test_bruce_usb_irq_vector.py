@@ -19,6 +19,19 @@ class USBVectorTests(unittest.TestCase):
         self.assertEqual(v.categorize(0x20001235),"RAM_pointer_unverified")
         self.assertIsNone(v.byte_offset_for_handler(0x20001235))
 
+    def test_signed_setup_dispatch_anchors_and_semantic_drift(self):
+        original=dict(v.EP0_RECEIVER_ANCHORS)
+        self.assertTrue(v.check_setup_dispatch_anchors(original))
+        altered=dict(original)
+        altered[0x600D104E]=("bx","lr")
+        with self.assertRaisesRegex(ValueError,"semantic drift"):
+            v.check_setup_dispatch_anchors(altered)
+
+    def test_callback_is_dynamic_not_an_immediate_constant(self):
+        self.assertEqual(v.EP0_RECEIVER_ANCHORS[0x600D104A],
+                         ("ldrd","r5, r2, [r3, #0xc]"))
+        self.assertEqual(v.EP0_RECEIVER_ANCHORS[0x600D104E],("blx","r5"))
+
     def test_source_requires_exact_original(self):
         with self.assertRaisesRegex(ValueError,"signed Bruce"):
             v.inspect(bytes(v.IMAGE_SIZE))
