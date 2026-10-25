@@ -170,3 +170,7 @@ Se ha recibido un bootloader A de 128 KB cuyo SHA-256 coincide exactamente con e
 ## Fase 15 — Despachador de eventos USB interno
 
 El [informe de fase 15](eventos-usb.md) comprueba, sobre el bootloader A 169429 de SHA-256 conocido, la tabla `TBB` de **11 eventos internos** en `0x60809C68`, con ramas 4, 5 y 8 hacia la devolución predeterminada 1. La rutina `0x60809B28` limita a `0x200` bytes su argumento de transferencia. **No son once comandos de host**; todavía no hay traza desde Bulk OUT `0x07` hasta el escritor de flash ni vulneración de HAB CLOSED. El analizador `tools/audit_usb_event_dispatch.py` funciona offline y exige el SHA exacto. Pruebas sintéticas disponibles en `tests/test_usb_event_dispatch.py`; el binario original continúa privado.
+
+## Fase 16 — Separación de callbacks CDC y vendor
+
+Se ha revisado el bootloader A original con SHA-256 verificado y se ha documentado la [fase 16](recepcion-usb.md). El límite de 512 bytes en `0x60809B28` pertenece a la tabla `0x60814E18` de un objeto marcado como CDC, inicializado en `0x6080BB1C`. El callback opcional de dicho objeto se inicializa a cero y la rutina `0x60809C44` solo lo invoca cuando no es nulo. El callback del fabricante en `0x60809E64` es independiente y arranca apuntando al stub `0x60809E3D`. **No se ha reconstruido la entrada Bulk OUT `0x07` hasta un parser ni una ruta hacia escrituras flash.** Analizador offline: `tools/audit_usb_callback_provenance.py`, evidencias saneadas y pruebas sintéticas; binario privado no publicado.

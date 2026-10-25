@@ -1,0 +1,29 @@
+{
+  "phase": 16,
+  "sample": "sample-001",
+  "date": "2026-10-25",
+  "verified_sha256": "59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0",
+  "artifact_size": 131072,
+  "image_published": false,
+  "device_contacted": false,
+  "cdc_label": "usb_device_cdc.cc",
+  "cdc_method_table": "0x60814e18",
+  "cdc_method_table_constructor_literal": "0x6080bba8",
+  "cdc_guarded_method": "0x60809b28",
+  "cdc_guard_length": 512,
+  "cdc_optional_callback_wrapper": "0x60809c44",
+  "cdc_event_invocation_site": "0x60809ce4",
+  "cdc_callback_initially_null_at": "0x200090fc",
+  "vendor_label": "usb_device_vendor.cc",
+  "vendor_event_handler": "0x60809e64",
+  "vendor_callback_pointer": "0x20009168",
+  "vendor_callback_default": "0x60809e3d",
+  "exact_store_opcode_matches": [
+    "0x6080bb46"
+  ],
+  "exact_store_scan_limitation": "only matches one instruction encoding, does not rule out other writes",
+  "usb_bulk_out_active_command_parser": "NOT IDENTIFIED",
+  "usb_to_flash_writer": "NOT DEMONSTRATED",
+  "HAB_CLOSED_bypass": "NOT DEMONSTRATED",
+  "custom_firmware_execution": "NOT DEMONSTRATED"
+}

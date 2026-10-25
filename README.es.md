@@ -69,6 +69,10 @@ Con el bootloader original del mando verificado por SHA-256 se han reconstruido 
 
 En el bootloader original verificado se ha reconstruido una tabla de 11 eventos internos (no comandos USB de host) y un control de tamaño máximo de 512 bytes en una rutina concreta. No se ha demostrado un camino externo hacia escritura flash ni elusión de firmas.
 
+- **[Fase 16 — Procedencia de callbacks CDC y del fabricante](docs/es/recepcion-usb.md)**
+
+La función previamente descrita con límite de 512 bytes pertenece a una tabla de un objeto **CDC**, distinta del callback de la interfaz USB del fabricante. Se han comprobado ambas inicializaciones y sus rutas internas, pero no se ha identificado todavía un parser accesible desde Bulk OUT `0x07` ni ejecución de firmware propio.
+
 ## Reproducción sin conexión
 
 Python 3.11 o posterior:
