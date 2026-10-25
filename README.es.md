@@ -50,6 +50,8 @@ restauración del IVT. La emulación ARM aislada de las instrucciones confirma e
 ejemplo aritmético en ocho casos, sin demostrar un exploit en el mando.
 
 
+- **[Fase 12: auditoría de ruta de escritura IVT](docs/es/ruta-escritura.md)**
+
 La **fase 12** audita una ruta de llamadas hasta el escritor físico de flash bajo
 un contexto IVT construido. Comprueba instrucciones, tablas virtuales y los
 argumentos fijos de 4096 bytes. **No demuestra accesibilidad desde USB**, escritura
