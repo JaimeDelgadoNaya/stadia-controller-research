@@ -1,0 +1,92 @@
+{
+  "analysis_date": "2026-10-26",
+  "scope": "Original signed OEM Bruce EP0 class callback slot registration; offline-only",
+  "source": {
+    "kind": "archived OEM signed Bruce update image; not installed flash readback",
+    "size_bytes": 1050984,
+    "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3"
+  },
+  "endpoint_dispatch": {
+    "xip": "0x600d0fb6",
+    "indirect_blx": "0x600d104e",
+    "index_formula": "2*(endpoint&15)+((endpoint>>7)&1)",
+    "stride_bytes": 12
+  },
+  "registrar": {
+    "function": "0x600d10b8",
+    "config_endpoint_address_load": "0x600d10c0",
+    "endpoint_range_guard": "0x600d10c6",
+    "index_combine": "0x600d10d0",
+    "multiply_add_stride": "0x600d10d6",
+    "context_store": "0x600d10da",
+    "function_store": "0x600d10de",
+    "state_reset": "0x600d10e0",
+    "configure_tail": "0x600d10e8",
+    "de_registration_zeroer": "0x600d1122",
+    "ep0_out_index": 0,
+    "ep0_in_index": 1,
+    "relative_offsets": {
+      "ep0_out_function": "0xc",
+      "ep0_out_context": "0x10",
+      "ep0_in_function": "0x18",
+      "ep0_in_context": "0x1c"
+    },
+    "direct_XIP_call_sites": [
+      "0x60054782",
+      "0x60054850"
+    ],
+    "caller_functions": [
+      "0x60054728",
+      "0x600547ac"
+    ],
+    "higher_level_call_sites": [
+      "0x600cfd92",
+      "0x600d03ac"
+    ],
+    "possible_tail_branch": "0x600cfda0"
+  },
+  "literal_function_constants": [
+    {
+      "literal_file_pc": "0x600547a0",
+      "thumb": "0x600cfc71",
+      "forwarder": "0x600cfc70",
+      "event": 3
+    },
+    {
+      "literal_file_pc": "0x600547a4",
+      "thumb": "0x600cfc35",
+      "forwarder": "0x600cfc34",
+      "event": 1
+    },
+    {
+      "literal_file_pc": "0x600547a8",
+      "thumb": "0x600cfc53",
+      "forwarder": "0x600cfc52",
+      "event": 2
+    },
+    {
+      "literal_file_pc": "0x60054870",
+      "thumb": "0x600cfc1b",
+      "forwarder": "0x600cfc1a",
+      "event": 4
+    }
+  ],
+  "census": {
+    "heuristic_stride_12_store_regions": 7,
+    "thumb_shaped_words_in_startup_data": 258,
+    "subset_target_usb_xip_range": 56,
+    "aligned_xip_word_references_to_registrar_thumb_pointer": 0,
+    "scan_exhaustive": false
+  },
+  "verified_static_semantics": true,
+  "proven_live_EP0_registration": false,
+  "proven_class_receiver": false,
+  "proven_brequest_81_83_84_receiver": false,
+  "proven_user_code_execution": false,
+  "proven_HAB_bypass": false,
+  "safe_rollback_proven": false,
+  "physical_device_access": false,
+  "physical_usb_commands": false,
+  "flash_or_fuses_written": false,
+  "repository_PR": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/pull/34"
+}
