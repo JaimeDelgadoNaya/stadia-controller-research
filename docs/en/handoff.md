@@ -205,3 +205,7 @@ A private 128 KiB bootloader A image matches the recorded SHA-256. [Phase 14](us
 ## Phase 24 — Callee store and pointer provenance
 
 [Phase 24](callee-callback-store-audit.md) reviews the four phase-23 callees and the auxiliary initialization chain from `0x60809D98`. It records 23 store observations across 19 unique instruction sites (the same `0x6081099C` initializer is analyzed with two incoming offsets); none overlaps `global+0x5F8/+0x5FC/+0x600/+0x604`. The chain `global+0x58C → 0x60810210 → 0x60810BB8 → 0x60810B38` initializes fields through `+0x5D8`. `0x60811DC8` loads a pointer from `global+0x5A8` and passes a derived pointer to `0x608109FE`; this dynamic target and the `0x60809048` paths (values loaded from `global+0x568/+0x570/+0x560`) remain unresolved. Offline tool `tools/audit_callee_store_provenance.py`, synthetic tests and sanitized `evidence/usb-phase24.json`.
+
+## Phase 25 — Opaque pointer sinks
+
+[Phase 25](dynamic-pointer-sinks.md) examines `0x60809048`, a transfer-like routine reading opaque incoming-object offsets `+0x154/+0x158/+0x15C` and delegating to other callees, plus `0x608109FE`, a linked-list node unlink operation writing through unknown node/previous/next/owner pointers. Caller `0x60811DC8` derives node arguments `link+0x18` and sometimes `link+4` after dynamic pointer loads. No concrete callback-field address or host-to-flash route is established. SHA-locked offline tool `tools/audit_dynamic_pointer_sinks.py`, synthetic tests and sanitized `evidence/usb-phase25.json` are in main; no binary or device I/O.
