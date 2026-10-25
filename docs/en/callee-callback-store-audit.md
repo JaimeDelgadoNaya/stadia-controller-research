@@ -44,7 +44,7 @@ At \`0x60811DC8\`, code reads the value at \`global+0x5A8\`, dereferences that v
 
 ## Important limitations
 
-- \`0x6080A990\` and \`0x608021B4\` read values from \`global+0x568\` and \`global+0x560\`, respectively, and pass them to \`0x60809048\`. Their pointees are not statically known.
+- \`0x6080A990\` reads values from \`global+0x568\` and \`global+0x570\` and passes them to \`0x60809048\`; \`0x608021B4\` reads \`global+0x560\` and also passes that value to \`0x60809048\`. The pointees are not statically known.
 - \`0x6080C150\`, called by \`0x6080990C\`, replaces its incoming argument with a literal pointer (\`0x20009DC0\)); it does not use the supplied alias to write the USB callbacks.
 - \`0x60802174\` reads global-object fields and contains an unconditional self-loop at \`0x608021A6\); a path reaching it does not return.
 - \`0x60809048\` and \`0x608109FE\` remain separate analysis targets. Register provenance does not prove that their dynamic pointers cannot reference other areas.
