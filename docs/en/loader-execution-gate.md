@@ -89,3 +89,7 @@ The table also enables FillMemory. The WriteMemory fragment bound must not be
 applied to FillMemory or other commands without tracing their own receivers and
 backends. Their presence is not a custom-execution result, and this audit does
 not provide an exploit or validate a bypass through them.
+
+## Follow-up: FillMemory
+
+The [separate FillMemory review](fillmemory-path-review.md) evaluates whether the enabled pattern-fill command shares WriteMemory's restricted address policy. The read-only new tool **has not yet been run against the original mounted binary** in this environment. No privileged memory write, unsigned execution or reliable recovery has been demonstrated.
