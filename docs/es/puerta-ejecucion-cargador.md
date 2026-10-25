@@ -77,3 +77,5 @@ La tabla también habilita FillMemory. El límite por fragmentos de WriteMemory
 no se puede aplicar a FillMemory ni a otras órdenes sin revisar sus propios
 receptores y backends. Su presencia no demuestra ejecución propia; este auditor
 no proporciona ni valida una elusión a través de ellas.
+
+**Análisis independiente de FillMemory:** [nueva revisión offline](analisis-fillmemory.md). La entrada de comando `0x05` está habilitada, pero todavía no se ha verificado sobre el binario original si comparte la política de rangos de WriteMemory o si tiene otra ruta. La diferencia de fase de datos obliga a mantener las conclusiones separadas.
