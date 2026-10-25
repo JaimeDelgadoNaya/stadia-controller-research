@@ -6,7 +6,7 @@ The binary remains private. The original was reviewed offline with LLVM Thumb di
 
 ## Main result
 
-The four phase-23 callees and the initialization chain reached from \`0x60809D98\` were inspected. The bounded ranges contain **23 direct stores with calculable global-object-relative addresses**. **None overlaps the four USB callback fields**:
+The four phase-23 callees and the initialization chain reached from \`0x60809D98\` were inspected. The bounded ranges contain **23 direct-store observations with calculable global-object-relative addresses, covering 19 unique instruction sites** (function `0x6081099C` is analyzed with two different incoming object offsets). **None overlaps the four USB callback fields**:
 
 - IN handler: \`global+0x5F8\` = \`0x20009170\`
 - IN context: \`global+0x5FC\` = \`0x20009174\`
