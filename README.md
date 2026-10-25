@@ -15,6 +15,8 @@ firmware execution or signature bypass has been demonstrated.**
 
 **[FillMemory policy verified on the original signed loader](docs/en/fillmemory-verified-policy.md).** FillMemory (operation 0) and WriteMemory (operation 2) invoke the same range verifier `0x200039A8` with **different allowed-address tables**. The normal FillMemory table excludes the Execute/Call gate bytes. Overflow and indirect-backend effects remain unproven; there is no HAB bypass or custom firmware execution.
 
+**[FillMemory 32-bit wrap and backend limitations](docs/en/fillmemory-overflow-boundaries.md).** An original-image-anchored model finds wrapped end addresses that pass two static range checks. The dynamic protection check and real write effects remain **unverified**; the backend attempts a huge fill beyond the mapped RAM region. No custom execution or HAB bypass has been shown.
+
 ## Current priority: on-controller software and direct Switch 2
 
 The owner excludes adapters and external boards. The active goal is software
