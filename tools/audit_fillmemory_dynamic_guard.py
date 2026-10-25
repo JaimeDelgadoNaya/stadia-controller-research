@@ -32,12 +32,12 @@ def read_u32(data: bytes, off: int) -> int:
     return struct.unpack_from("<I", data, off)[0]
 
 
-def code_window(data: bytes, offset: int, length: int):
+def code_window(data: bytes, offset: int, length: int, *, strict=True):
     """Linear disassembly for context only; not a CFG or proof of execution."""
     from capstone import Cs, CS_ARCH_ARM, CS_MODE_THUMB, CS_MODE_MCLASS
     md = Cs(CS_ARCH_ARM, CS_MODE_THUMB | CS_MODE_MCLASS)
     ins = list(md.disasm(data[offset:offset + length], BASE + offset))
-    if sum(i.size for i in ins) != length:
+    if sum(i.size for i in ins) != length and strict:
         raise ValueError("partial instruction decoding in context window")
     return [{"address": hex(i.address), "mnemonic": i.mnemonic,
              "operands": i.op_str} for i in ins]
@@ -139,7 +139,8 @@ def analyze_original(data: bytes):
             "context_source": "outside 0x20208000..0x20208830 initialized snapshot; writes during startup/runtime require independent proof",
         },
         "guard_disassembly": guard,
-        "provider_function_context": code_window(data,0x98F0,0x180),
+        "provider_function_context": code_window(data,0x98F0,0x180, strict=False),
+        "provider_context_warning": "Best-effort linear preview only: stops if bytes do not decode; data and function boundaries unproven.",
         "write_site_inventory": scan_store_candidates(data),
         "runtime_values": {"field_0x70":None,"field_0x74":None,"field_0x78":None,"field_0x7c":None},
         "conclusion": "Four guard bounds are RAM dynamic; exact original defaults/reachability NOT established by immutable image alone.",
