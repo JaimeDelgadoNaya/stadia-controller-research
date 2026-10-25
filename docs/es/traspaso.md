@@ -268,3 +268,7 @@ que sea inmutable. El análisis de política y fragmentos USB excluye el parcheo
 directo por WriteMemory de esas entradas, incluido el intento de provocar una
 vuelta aritmética mediante una longitud total enorme en esas direcciones.
 Ninguna de estas observaciones demuestra ejecución propia o Switch 2 funcional.
+
+## Hipótesis FillMemory (sin prueba de ejecución)
+
+[Informe](analisis-fillmemory.md), [auditor solo lectura](../../tools/audit_fillmemory_route.py) y [evidencia](../../evidence/fillmemory-review.json). Tag `0x05` y handler `0x20003381` habilitados; la ruta ordinaria de WriteMemory tiene control de rangos, pero **no se ha trazado el backend FillMemory** en el binario original dentro de este entorno. NXP indica que ambos deberían compartir reglas en una implementación general; hay que verificar el cargador firmado específico. Sin comandos HID, modificaciones de memoria, jailbreak ni recuperación medida.
