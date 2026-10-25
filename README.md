@@ -9,24 +9,40 @@ whether custom firmware can run on the original hardware.
 **Current result: secure boot is CLOSED on the tested controller. No custom
 firmware execution or signature bypass has been demonstrated.**
 
-**[Package A complete — archived WebHID/WebUSB host protocol](docs/en/archived-updater-host-protocol.md).** The host installs images via **ROM SDP and signed RAM flashloader**, not bootloader-A Bulk OUT `0x07`. See [sanitized evidence](evidence/archived-updater-host-protocol.json). Custom unsigned execution remains unproven; package B was completed in phase 31; the internal track is closed.
+**[Package A complete — archived WebHID/WebUSB host protocol](docs/en/archived-updater-host-protocol.md).** The host installs images via **ROM SDP and signed RAM flashloader**, not bootloader-A Bulk OUT `0x07`. See [sanitized evidence](evidence/archived-updater-host-protocol.json). Custom unsigned execution remains unproven; package B was completed in phase 31.
 
-**FINAL DECISION — [Phase 31: stop internal firmware modification, begin external bridge](docs/en/final-execution-recovery-decision.md).** The agreed last offline work package is complete. ROM HAB **CLOSED**, signed images validate, but no authorizable custom execution or reliable rollback was established. **Stop internal modification unless independent new evidence changes the gates.** Next: reversible ESP32-S3 Stadia BLE → **PC** Xbox 360-style gamepad prototype; Xbox One/Series authentication requires separate verification.
+**HISTORICAL DECISION — [Phase 31: stop internal firmware modification, begin external bridge](docs/en/final-execution-recovery-decision.md).** The agreed last offline work package is complete. ROM HAB **CLOSED**, signed images validate, but no authorizable custom execution or reliable rollback was established. **Stop internal modification unless independent new evidence changes the gates.** Next: reversible ESP32-S3 Stadia BLE → **PC** Xbox 360-style gamepad prototype; Xbox One/Series authentication requires separate verification.
 
-## Current priority: console compatibility through external interfaces
+## Current priority: on-controller software and direct Switch 2
 
-**[Phase 32 — reproducible continuation](docs/en/external-bridge.md).** The owner
-prioritizes compatible consoles. See the [console/adapter matrix](docs/en/console-compatibility.md)
-for manufacturer claims and separate local validation status.
+The owner excludes adapters and external boards. The active goal is software
+modification on the original Stadia electronics for direct console use, including
+**Switch 2**. See [feasibility and minimum target](docs/en/direct-switch2.md).
 
-The connected controller was queried again in normal USB `18D1:9400`, Bruce
-**337784**, without firmware, driver or mode changes. WinMM yielded no input
-samples, which does not establish absent HID. See [device evidence](evidence/phase32-device-status.json)
-and the [Windows input diagnostic](docs/es/diagnostico-entrada.md).
+Nintendo documents wired original Pro Controller support on Switch 2. Emulating
+that USB protocol is an initial target conditional on achieving custom execution
+on Stadia; a name or VID/PID change alone is insufficient. Switch 2 controllers
+use proprietary BLE rather than Stadia's generic BLE HID profile.
 
-The ESP32-S3 PC prototype can be fetched at a pinned revision with source hashes:
-`python tools/prepare_external_bridge.py local/stadia-dongle-esp`.
-No bridge build or board validation has been performed.
+The owner's new instruction reopens bounded offline investigation. Phase 31's
+technical blockers remain: repeated local signature verification passes original
+images and rejects a one-byte mutation. Custom execution, HAB bypass and complete
+recovery remain unproven. No controller firmware was changed.
+
+The [message receiver review](docs/en/application-message-role.md) corrects the entry and identifies
+tag 5 as two-value HID control, possibly rumble; it does not establish a
+firmware update handler.
+
+The continuation adds [USB dispatch and code relocation](docs/en/application-usb-dispatch.md),
+[live HID capabilities](docs/es/capacidades-hid.md) and the
+[loader's initial Execute/Call gate](docs/en/loader-execution-gate.md).
+The device query read metadata only; no output reports were sent. These results
+are not an unlock.
+
+Historical external-route work is retained in the [console matrix](docs/en/console-compatibility.md),
+[pinned bridge preparation](docs/en/external-bridge.md) and
+[Windows input diagnostic](docs/es/diagnostico-entrada.md). It is not the current
+implementation priority.
 
 ## Measured progress
 

@@ -9,25 +9,40 @@ objetivo a largo plazo es determinar si puede ejecutar firmware propio.
 **Resultado actual: el arranque seguro del mando analizado está en CLOSED. No
 hemos demostrado ejecución de firmware propio ni una forma de eludir las firmas.**
 
-**[Paquete A terminado — protocolo del actualizador WebHID/WebUSB](docs/es/protocolo-actualizador-webhid.md).** El host instala imágenes usando **ROM SDP y cargador firmado RAM**, no Bulk OUT `0x07` del bootloader A. Comandos y validaciones documentados en [la evidencia](evidence/archived-updater-host-protocol.json); sigue sin demostrarse ejecución de firmware propio. El paquete B se completó en la fase 31; la vía interna está cerrada.
+**[Paquete A terminado — protocolo del actualizador WebHID/WebUSB](docs/es/protocolo-actualizador-webhid.md).** El host instala imágenes usando **ROM SDP y cargador firmado RAM**, no Bulk OUT `0x07` del bootloader A. Comandos y validaciones documentados en [la evidencia](evidence/archived-updater-host-protocol.json); sigue sin demostrarse ejecución de firmware propio. El paquete B se completó en la fase 31.
 
-**DECISIÓN FINAL — [Fase 31: cerrar firmware interno y comenzar el puente externo](docs/es/decision-final-ejecucion.md).** El análisis offline de autenticación y recuperación ha completado el último paquete pactado. ROM HAB **CLOSED**, firmas originales válidas, sin ejecución propia autenticable ni rollback verificado. **Se detiene la investigación de modificación interna salvo nueva evidencia independiente.** Próximo paso: prototipo ESP32-S3 con BLE Stadia → gamepad Xbox 360 **para PC**, y verificación aparte de compatibilidad/autenticación de consola Xbox One/Series.
+**DECISIÓN HISTÓRICA — [Fase 31: cerrar firmware interno y comenzar el puente externo](docs/es/decision-final-ejecucion.md).** El análisis offline de autenticación y recuperación ha completado el último paquete pactado. ROM HAB **CLOSED**, firmas originales válidas, sin ejecución propia autenticable ni rollback verificado. **Se detiene la investigación de modificación interna salvo nueva evidencia independiente.** Próximo paso: prototipo ESP32-S3 con BLE Stadia → gamepad Xbox 360 **para PC**, y verificación aparte de compatibilidad/autenticación de consola Xbox One/Series.
 
-## Prioridad actual: compatibilidad con consolas mediante interfaces externas
+## Prioridad actual: software del propio mando y Switch 2 directa
 
-**[Fase 32 — continuación reproducible](docs/es/puente-externo.md).** La prioridad
-es usar el mando en las consolas compatibles. Consultar la
-[matriz de consolas y adaptadores](docs/es/compatibilidad-consolas.md): soporte
-declarado por fabricante y pruebas locales se registran por separado.
+El propietario ha descartado adaptadores y placas externas. La nueva prioridad
+es investigar modificación del software del Stadia para conectarlo directamente
+a consolas, incluyendo **Switch 2**. [Viabilidad y objetivo mínimo](docs/es/switch2-directa.md).
 
-Se ha vuelto a detectar el mando USB `18D1:9400`, Bruce **337784**, sin cambiar
-firmware, drivers ni modo. La vista WinMM no entregó muestras de entrada; esto
-no demuestra ausencia de HID. [Evidencia](evidence/phase32-device-status.json) y
-[diagnóstico de entradas Windows](docs/es/diagnostico-entrada.md).
+Nintendo documenta soporte por cable para el Pro Controller original en Switch 2;
+emular su protocolo USB es un primer objetivo condicionado a conseguir ejecución
+propia en Stadia. No basta cambiar el nombre o VID/PID. El BLE de los mandos
+Switch 2 usa un protocolo propietario diferente del HID BLE de Stadia.
 
-El prototipo ESP32-S3 queda preparado como una opción de desarrollo para PC:
-`python tools/prepare_external_bridge.py local/stadia-dongle-esp` descarga una
-revisión fija y comprueba sus fuentes. No se ha compilado ni validado con placa.
+La instrucción del propietario reabre una investigación offline acotada; no
+convierte en resueltos los bloqueos técnicos de la fase 31. La reverificación
+local confirma firmas originales y fallo tras mutar un byte. No hay todavía
+firmware propio ejecutable, bypass HAB ni recuperación completa demostrados.
+
+La [revisión del receptor de mensajes](docs/es/funcion-mensaje-aplicacion.md) corrige su entrada y
+clasifica la etiqueta 5 como control HID de dos valores, posiblemente vibración;
+no se ha demostrado que sea actualización de firmware.
+
+La continuación añade [despacho USB con reubicación de código](docs/es/despacho-usb-aplicacion.md),
+[capacidades HID medidas](docs/es/capacidades-hid.md) y
+[el bloqueo inicial de Execute/Call del cargador](docs/es/puerta-ejecucion-cargador.md).
+La consulta del mando fue solo de metadatos; no se enviaron informes de salida.
+Estos resultados no constituyen un desbloqueo.
+
+El trabajo histórico de interfaces externas se conserva en la
+[matriz de consolas](docs/es/compatibilidad-consolas.md),
+[preparación del puente](docs/es/puente-externo.md) y
+[diagnóstico Windows](docs/es/diagnostico-entrada.md). No es la prioridad vigente.
 
 ## Avances medidos
 

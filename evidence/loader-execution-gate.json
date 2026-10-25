@@ -1,0 +1,148 @@
+{
+  "loader_sha256": "c39ea8962cc3094a9167ba80634f1ea0652b747b4572d1de2802d9f2f4e144c5",
+  "loader_bytes": 100672,
+  "method": "Offline instruction and table verification; no device I/O or emulation",
+  "startup_copy": {
+    "source": "0x200164d8",
+    "destination": "0x20208000",
+    "bytes": 2096
+  },
+  "command_table": "0x20015978",
+  "entry_bytes": 12,
+  "dispatcher": "0x20002eb4",
+  "gate_load": "0x20002f0a",
+  "disabled_response_status": "0x2710",
+  "commands": [
+    {
+      "tag": 2,
+      "name": "FlashEraseRegion",
+      "handler": "0x20003015",
+      "data_handler": "0x0",
+      "enabled_byte": 1,
+      "dispatches": true
+    },
+    {
+      "tag": 3,
+      "name": "ReadMemory",
+      "handler": "0x200035a5",
+      "data_handler": "0x20003281",
+      "enabled_byte": 1,
+      "dispatches": true
+    },
+    {
+      "tag": 4,
+      "name": "WriteMemory",
+      "handler": "0x200030d9",
+      "data_handler": "0x20003175",
+      "enabled_byte": 1,
+      "dispatches": true
+    },
+    {
+      "tag": 5,
+      "name": "FillMemory",
+      "handler": "0x20003381",
+      "data_handler": "0x0",
+      "enabled_byte": 1,
+      "dispatches": true
+    },
+    {
+      "tag": 7,
+      "name": "GetProperty",
+      "handler": "0x200034b1",
+      "data_handler": "0x0",
+      "enabled_byte": 1,
+      "dispatches": true
+    },
+    {
+      "tag": 8,
+      "name": "ReceiveSBFile",
+      "handler": "0x20003035",
+      "data_handler": "0x20003175",
+      "enabled_byte": 0,
+      "dispatches": false
+    },
+    {
+      "tag": 9,
+      "name": "Execute",
+      "handler": "0x200033a1",
+      "data_handler": "0x0",
+      "enabled_byte": 0,
+      "dispatches": false
+    },
+    {
+      "tag": 10,
+      "name": "Call",
+      "handler": "0x2000340d",
+      "data_handler": "0x0",
+      "enabled_byte": 0,
+      "dispatches": false
+    },
+    {
+      "tag": 11,
+      "name": "Reset",
+      "handler": "0x20002f69",
+      "data_handler": "0x0",
+      "enabled_byte": 1,
+      "dispatches": true
+    },
+    {
+      "tag": 17,
+      "name": "ConfigureMemory",
+      "handler": "0x20003081",
+      "data_handler": "0x0",
+      "enabled_byte": 1,
+      "dispatches": true
+    }
+  ],
+  "get_property_0x11": {
+    "case": "0x20009af0",
+    "callee": "0x2000a87c",
+    "source_register": "OCOTP_CFG5 0x401f4460",
+    "bit": 1,
+    "meaning": "Fuse-derived status; distinct from the command-table enabled byte"
+  },
+  "write_policy": {
+    "data_phase_call": "0x20003250",
+    "backend": "0x20003b7c",
+    "policy": "0x200039a8",
+    "operation": 2,
+    "initialized_ranges_at": "0x2020826c",
+    "image_offset": "0x16744",
+    "ranges_inclusive": [
+      [
+        "0x2000",
+        "0x21ff"
+      ],
+      [
+        "0x60000000",
+        "0x60000fff"
+      ],
+      [
+        "0x60001000",
+        "0x60001fff"
+      ],
+      [
+        "0x60004000",
+        "0x60ffffff"
+      ]
+    ],
+    "rejected_status": "0x27d8",
+    "ordinary_table_patch": "Positive nonwrapping writes to 0x200159e0 or 0x200159ec fail the write policy before generic RAM dispatch.",
+    "usb_fragment_gate": {
+      "length_decode": "0x20004f5e..0x20004f78",
+      "width_bits": 16,
+      "conservative_max_bytes": 65535,
+      "remaining_clamp": "0x200031ec..0x200031fe",
+      "backend_length": "min(remaining command bytes, received fragment length)",
+      "result": "A huge declared command length cannot wrap the table-address policy check: backend fragments are at most uint16 on this intact USB path."
+    },
+    "scope": "The uint16 bound is conservative, not a demonstrated maximum-size USB transfer. Other mutation paths, malformed/corrupted transport state and general integer-wrap effects remain outside scope."
+  },
+  "conclusion": "Execute and Call handlers exist but their table entries are disabled; the normal command dispatcher returns 0x2710 before calling either handler.",
+  "limits": [
+    "Applies to this exact original signed loader and its initialized normal dispatch path.",
+    "USB WriteMemory fragment sizing and its policy were traced; ReadMemory, other transports and corrupted-state paths were not exhaustively audited.",
+    "Does not rule out a separate vulnerability, corrupted dispatch state, other loader image or other execution channel.",
+    "No custom execution, signature bypass, flash programming, recovery test or console support was demonstrated."
+  ]
+}

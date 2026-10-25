@@ -239,7 +239,7 @@ El [informe de fase 28](procedencia-nodos-indices.md) demuestra estáticamente d
 
 [Decisión final autenticación/recuperación](decision-final-ejecucion.md). Con ambas investigaciones acotadas terminadas, la cadena host WebHID→flashloader firmado funciona para imágenes previstas, pero no aporta código propio autenticable en HAB CLOSED. Se volvió a comprobar en privado firmas RSA/CMS y digest de bootloader A y Bruce, y un cambio de un byte en copia temporal invalida la verificación. El bootloader A valida antes de saltar; el slot B continúa vacío en mediciones previas; falta copia integral y rollback. **STOP modificación interna, GO puente ESP32-S3 Stadia BLE→PC Xbox 360 como prototipo reversible; estudiar aparte interfaz Xbox real autorizada.** Script `tools/audit_final_auth_recovery.py`, evidencia `evidence/phase31-final-auth-recovery.json`. Reabrir solo ante evidencia nueva de ejecución propia autorizada y recuperación real.
 
-## Fase 32 — Continuación externa y prioridad de consolas
+## Fase 32 histórica — continuación externa
 
 El propietario prioriza usar el mando en las consolas compatibles. Continuar por
 [la matriz de consolas](compatibilidad-consolas.md) y [el puente externo](puente-externo.md).
@@ -247,3 +247,24 @@ Sigue vigente la parada de la fase 31. Una consulta USB normal confirma Bruce
 337784; WinMM no obtuvo muestras pese a la presencia HID en PnP. Evidencia:
 `evidence/phase32-device-status.json`. La preparación del puente fija commit y
 hashes; no se ha compilado ni probado placa ESP32, BLE o consola.
+
+## Investigación directa reabierta por el propietario
+
+El propietario pide modificación del software del mando, sin dispositivos
+externos, e incluye Switch 2. Esto sustituye la prioridad de puente externo,
+pero no los resultados de HAB/firma/recuperación de la fase 31. La nueva revisión
+es offline y acotada al receptor de mensajes de la aplicación y a requisitos
+USB/BLE. Ver [Switch 2 directa](switch2-directa.md). No se ha flasheado el mando.
+
+## Continuación: despacho USB y puerta de ejecución del cargador
+
+La lectura HID actual declara salida ID5 de cinco bytes, dos valores de 16 bits;
+coincide con el descriptor histórico y con el parser de control de vibración.
+Ver [capacidades medidas](capacidades-hid.md),
+[despacho de la aplicación](despacho-usb-aplicacion.md) y
+[puerta Execute/Call del cargador](puerta-ejecucion-cargador.md).
+La tabla del cargador está en RAM y sus entradas iniciales desactivadas no prueban
+que sea inmutable. El análisis de política y fragmentos USB excluye el parcheo
+directo por WriteMemory de esas entradas, incluido el intento de provocar una
+vuelta aritmética mediante una longitud total enorme en esas direcciones.
+Ninguna de estas observaciones demuestra ejecución propia o Switch 2 funcional.

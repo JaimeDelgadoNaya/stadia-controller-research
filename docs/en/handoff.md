@@ -238,7 +238,7 @@ A private 128 KiB bootloader A image matches the recorded SHA-256. [Phase 14](us
 
 [Final auth/recovery decision](final-execution-recovery-decision.md). The two agreed offline packages are complete. Host WebHID→original signed RAM flashloader supports the vendor update workflow but does not establish authorizable custom code on HAB CLOSED. Offline checks of original bootloader A and Bruce verified their RSA/CMS digests; a byte changed in temporary copies invalidated them. Bootloader A authenticates before app jump; bootloader B slot is erased, with no full flash backup or tested rollback. **STOP internal flashing, GO reversible external ESP32-S3 Stadia BLE→PC Xbox 360 bridge; Xbox-console authorization separate.** Tool `tools/audit_final_auth_recovery.py`, sanitized `evidence/phase31-final-auth-recovery.json`. Reopen only on new verified trust/execution/recovery evidence.
 
-## Phase 32 — External continuation and console priority
+## Historical phase 32 — external continuation
 
 The owner prioritizes use on compatible consoles. Start with the
 [console matrix](console-compatibility.md) and [external bridge](external-bridge.md).
@@ -246,3 +246,24 @@ The phase-31 internal stop remains in effect. A normal USB read reconfirmed Bruc
 337784; WinMM obtained no input samples despite PnP HID presence. See
 `evidence/phase32-device-status.json`. Bridge source preparation is pinned and
 SHA-256 checked; no build, ESP32 board, BLE pairing or console validation occurred.
+
+## Direct software investigation reopened by owner
+
+The owner requests software modification on Stadia itself, no external devices,
+and includes Switch 2. This supersedes external-bridge priority, not phase 31's
+HAB/signature/recovery results. The renewed review is offline and bounded to the
+application message receiver and USB/BLE requirements. See [direct Switch 2](direct-switch2.md).
+No controller flashing was performed.
+
+## Continuation: application USB dispatch and loader execution gate
+
+Current HID metadata declares five-byte output ID5 containing two 16-bit values;
+this agrees with the historical descriptor and the rumble-control parser. See
+[application dispatch](application-usb-dispatch.md),
+[loader execution gate](loader-execution-gate.md) and
+[live HID capabilities](../es/capacidades-hid.md).
+The loader command table resides in RAM; initially disabled entries do not make
+it immutable. The write-policy and USB-fragment trace excludes an ordinary
+WriteMemory patch of those entries, including a huge declared total used to
+seek wraparound at those addresses. None of these
+observations demonstrates custom execution or working Switch 2 compatibility.

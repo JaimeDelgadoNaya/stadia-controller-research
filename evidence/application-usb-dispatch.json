@@ -1,0 +1,58 @@
+{
+  "analysis_date": "2026-10-25",
+  "offline_only": true,
+  "sample_kind": "signed Bruce update image; installed identity unverified",
+  "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+  "address_correction": {
+    "startup": "0x6004059a..0x600405ac copies to ITCM",
+    "source_image_address": "0x6004081c",
+    "destination": "0x00000000",
+    "length": "0x0000bdf8",
+    "dispatcher_file_offset": "0x000029bc",
+    "dispatcher_stored_image_address": "0x600429bc",
+    "dispatcher_runtime_address": "0x000021a0",
+    "reason": "PC-relative calls in copied code must be decoded at runtime PC"
+  },
+  "initialized_callback": {
+    "source_image_address": "0x6013e058",
+    "destination_ram": "0x200031f0",
+    "thumb_callback": "0x000021a1",
+    "configuration_getter": "0x6006262c returns 0x200031f0",
+    "live_registration_or_invocation": "not measured"
+  },
+  "registration": {
+    "wrapper": "0x60058bdc",
+    "helper_0x600d543c": "copies callback/context pair to object +8, not +0x10",
+    "object": "0x20009e00",
+    "separate_direct_stores": {
+      "+0x10": "Thumb thunk 0x600d3687",
+      "+0x14": "Thumb tag-5 parser 0x60058b65"
+    }
+  },
+  "static_receive_chain": {
+    "internal_event": 2,
+    "event_is_host_command": false,
+    "dispatcher": "0x000021a0 -> event block 0x000021d6",
+    "guard": "global byte at 0x2000a33c nonzero",
+    "length_guard": "callback skipped for length 0xffffffff sentinel",
+    "buffer_and_length": "event-data words +0 and +4",
+    "function_alias": "0x200064c0 + 0x3950 = object +0x10",
+    "context_alias": "0x200064c0 + 0x3954 = object +0x14",
+    "invoke": "0x000021f4 BLX -> 0x600d3686 argument thunk -> 0x60058b64",
+    "tag5_effect": "two-channel HID control; rumble strongly inferred from timer label and consumer"
+  },
+  "receive_rearm": {
+    "call": "0x000021f8 -> ITCM veneer 0x0000b610 -> 0x600d5400",
+    "endpoint_argument": 3,
+    "length_argument": 64,
+    "next_helper": "0x600d0e38",
+    "actual_endpoint_direction_and_packet_completion_source": "not independently established by this bounded audit"
+  },
+  "limits": [
+    "Static conditional callback path; live host-to-callback invocation not measured",
+    "Internal event 2 is not a proven USB host opcode or bRequest",
+    "Endpoint argument 3 and length 64 do not alone prove endpoint direction or HID report semantics",
+    "No generic vendor request receiver, flash-update route or arbitrary execution established",
+    "No device IO, signature bypass, installable patch or Switch 2 compatibility"
+  ]
+}

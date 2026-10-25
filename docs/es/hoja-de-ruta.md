@@ -34,10 +34,18 @@ deliberadamente con archivos locales.
 
 La hoja original de tareas sigue describiendo posibles pistas, pero la **prioridad operativa ahora es [la puerta de decisión sobre actualización real](puerta-decision-actualizacion.md)**: dos paquetes offline como máximo — protocolo WebUSB del host hasta el receptor y, solo si procede, aplicación Bruce firmada y ejecución recuperable — seguidos de decisión **continuar/parar**. No se abrirán más fases de búsqueda genérica de punteros. Si no existe una entrada controlable y una vía de ejecución propia recuperable verificadas, la alternativa será puente externo para Xbox (separando XInput para PC de autenticación de consola).
 
-## Prioridad ejecutiva tras fase 32
+## Prioridad histórica tras fase 32 (sustituida más abajo)
 
 La parada de la fase 31 sustituye las hipótesis internas históricas anteriores.
 Continuar por [compatibilidad con consolas](compatibilidad-consolas.md), elegir
 una combinación documentada y probarla físicamente. La
 [preparación del puente](puente-externo.md) queda para el prototipo PC ESP32-S3;
 su salida Xbox 360 no demuestra autenticación de consola.
+
+## Prioridad vigente: software interno y Switch 2 directa
+
+La instrucción posterior del propietario descarta dispositivos externos y
+sustituye la prioridad de puente anterior. Ver [el objetivo directo](switch2-directa.md)
+y [la corrección del receptor de aplicación](funcion-mensaje-aplicacion.md).
+Se autoriza investigación offline acotada; firmas, ejecución propia y recuperación
+siguen siendo bloqueos técnicos. No se ha modificado firmware en esta revisión.
