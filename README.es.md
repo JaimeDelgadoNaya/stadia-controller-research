@@ -105,6 +105,10 @@ Se verifican cuatro llamadas que transmiten el puntero global a funciones intern
 
 Se revisaron cuatro funciones y la cadena de inicialización de subobjetos. Hay 23 observaciones de escrituras directas (19 sitios únicos al considerar dos bases para el mismo inicializador) y ninguna solapa los cuatro campos callback conocidos. Los valores cargados de `global+0x568/+0x570/+0x560` y pasados a `0x60809048`, además del puntero derivado de `global+0x5A8` pasado a `0x608109FE`, siguen sin resolverse.
 
+- **[Fase 25 — Destinos de punteros dinámicos](docs/es/destinos-punteros-dinamicos.md)**
+
+El destino `0x60809048` trabaja con un objeto de dirección desconocida y delega operaciones; `0x608109FE` desenlaza nodos de una lista mediante punteros RAM. No hay escritura sobre los callbacks USB con dirección absoluta verificada ni ruta host→flash demostrada.
+
 ## Reproducción sin conexión
 
 Python 3.11 o posterior:
