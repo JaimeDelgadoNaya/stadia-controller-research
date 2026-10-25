@@ -88,6 +88,10 @@ The initial vendor bulk IN `0x87` and OUT `0x07` completion callbacks both point
 
 The bounded Thumb-2 encoding search finds only constructor stores for the vendor IN/OUT callback fields within the selected range. **No later setter is proved or ruled out**, and there is no externally reachable flash-write or HAB-bypass demonstration.
 
+- **[Phase 21 — Global RAM literal sources and constructor alias](docs/en/global-ram-aliases.md)**
+
+The image has **21 aligned global-pointer literals** and **29 candidate PC-relative loads**. One direct alias chain reaches the known constructor initialization stores; this is **not** a later callback setter or proof of USB-to-flash reachability.
+
 ## Offline reproduction
 
 Python 3.11 or newer:
