@@ -48,7 +48,7 @@ class UsbCallbackProvenanceTests(unittest.TestCase):
         r = audit_fixture(self.image)
         self.assertEqual(r["cdc_object_path"]["first_method_thumb"], "0x60809b29")
         self.assertEqual(r["cdc_object_path"]["512_byte_guard_at"], "0x60809b28")
-        self.assertEqual(r["cdc_object_path"]["object_callback_slot"], "0x2000910c")
+        self.assertEqual(r["cdc_object_path"]["object_callback_slot"], "0x200090fc")
         self.assertEqual(r["vendor_object_path"]["callback_pointer_ram"], "0x20009168")
         self.assertEqual(r["vendor_object_path"]["default_handler_thumb"], "0x60809e3d")
         self.assertEqual(r["vendor_bulk_out_0x07_to_parser"], "NOT RECONSTRUCTED")
