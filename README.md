@@ -49,6 +49,8 @@ recorded range helper in isolated ARM emulation confirms the arithmetic witness
 across eight cases; it does not establish a device-level exploit.
 
 
+- **[Phase 12: IVT write-path audit](docs/en/write-path.md)**
+
 **Phase 12** audits a selected call path to the physical flash writer with a
 constructed IVT context. It verifies instruction anchors, virtual tables and
 fixed 4096-byte arguments. **USB reachability**, out-of-bounds physical writes,
