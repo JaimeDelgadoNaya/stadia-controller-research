@@ -17,6 +17,8 @@ firmware execution or signature bypass has been demonstrated.**
 
 **[FillMemory 32-bit wrap and backend limitations](docs/en/fillmemory-overflow-boundaries.md).** An original-image-anchored model finds wrapped end addresses that pass two static range checks. The dynamic protection check and real write effects remain **unverified**; the backend attempts a huge fill beyond the mapped RAM region. No custom execution or HAB bypass has been shown.
 
+**[FillMemory dynamic-guard initialized bounds](docs/en/fillmemory-dynamic-guard-provenance.md).** PR #29 verifies the four constants written by the original signed initializer. With those limits, the modeled guard can miss a wrapped end address, but completing the implied ~3.5 GiB fill is unproven. No physical initialized RAM measurement, firmware execution, or safe recovery is claimed.
+
 ## Current priority: on-controller software and direct Switch 2
 
 The owner excludes adapters and external boards. The active goal is software
