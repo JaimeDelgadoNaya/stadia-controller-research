@@ -32,7 +32,7 @@ ANCHORS = {
     0x9B28: "b2f5007f",      # CMP.W r2,#0x200 (512-byte guard in CDC method)
     0x9C44: "10b5c368",      # PUSH {r4,lr}; LDR r3,[r0,#0xC] (callback)
     0x9C4A: "13b1114620469847", # CBZ r3; MOV r1,r2; MOV r0,r4; BLX r3
-    0x9CE0: "f50060af",      # ADD.W r0,r0,#0x578
+    0x9CE0: "00f5af60",      # ADD.W r0,r0,#0x578
     0x9CE4: "fff7aeff",      # BL 0x60809C44 (event-mediated callback)
     0xBB40: "1b4b",          # LDR r3,[pc] from 0xBBB0
     0xBB46: "c4f8f035",      # STR.W r3,[r4,#0x5F0] vendor default handler
