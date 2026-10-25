@@ -174,3 +174,7 @@ El [informe de fase 15](eventos-usb.md) comprueba, sobre el bootloader A 169429 
 ## Fase 16 — Separación de callbacks CDC y vendor
 
 Se ha revisado el bootloader A original con SHA-256 verificado y se ha documentado la [fase 16](recepcion-usb.md). El límite de 512 bytes en `0x60809B28` pertenece a la tabla `0x60814E18` de un objeto marcado como CDC, inicializado en `0x6080BB1C`. El callback opcional de dicho objeto se inicializa a cero y la rutina `0x60809C44` solo lo invoca cuando no es nulo. El callback del fabricante en `0x60809E64` es independiente y arranca apuntando al stub `0x60809E3D`. **No se ha reconstruido la entrada Bulk OUT `0x07` hasta un parser ni una ruta hacia escrituras flash.** Analizador offline: `tools/audit_usb_callback_provenance.py`, evidencias saneadas y pruebas sintéticas; binario privado no publicado.
+
+## Fase 17 — Registro USB de endpoints
+
+La [fase 17](endpoints-vendor.md) verifica la inicialización de **dos endpoints** del fabricante y el uso de dos callbacks en tabla `0x60814F24`, con llamada a registrador `0x60806660`. El registro indexa por número y dirección de endpoint (OUT `0x07` → índice 14; IN `0x87` → 15). **Queda pendiente** asociar cada callback al endpoint exacto, porque el descriptor del registro se obtiene de RAM en ejecución, y seguir el parser real de paquetes. `tools/audit_vendor_endpoints.py` verifica SHA-256 y huellas de código offline; evidencias saneadas en `evidence/usb-phase17.json`; el binario no se publica. No se han enviado comandos ni escrito flash.

@@ -72,6 +72,10 @@ The SHA-matched bootloader contains an 11-case internal event table (not host US
 
 The 512-byte guarded helper belongs to a **CDC-labelled method table**, separate from the vendor event callback. Both initial callback states and selected internal call paths are verified. A bulk OUT `0x07` host-to-flash path and custom firmware execution are still **unproven**.
 
+- **[Phase 17 — Vendor endpoint callback registration](docs/en/vendor-endpoints.md)**
+
+On the SHA-verified bootloader A, two endpoint registrations reach `0x60806660`. Bulk OUT `0x07` and IN `0x87` map to distinct internal slots, but the specific OUT callback assignment and actual message parser are unproven. HAB CLOSED has not been bypassed.
+
 ## Offline reproduction
 
 Python 3.11 or newer:

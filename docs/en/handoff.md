@@ -173,3 +173,7 @@ A private 128 KiB bootloader A image matches the recorded SHA-256. [Phase 14](us
 ## Phase 16 — CDC/vendor callback provenance
 
 [Phase 16](usb-reception.md) confirms that the 512-byte limited `0x60809B28` belongs to the CDC-labelled method table at `0x60814E18`, installed at object offset `+0x578`. That object's optional `+0x0C` callback starts as NULL; the internal event path reaches a conditional wrapper at `0x60809C44`. Independently, the vendor event handler `0x60809E64` starts with inert Thumb callback `0x60809E3D`. A bulk OUT `0x07` receive parser and any route to flash writes are still **not established**. Reproduce offline with `tools/audit_usb_callback_provenance.py`; no private firmware has been committed.
+
+## Phase 17 — Vendor USB endpoint registration
+
+[Phase 17](vendor-endpoints.md) verifies two endpoint registrations through `0x60806660` and a two-entry callback table at `0x60814F24`. Endpoint address and direction determine separate internal indices: bulk OUT `0x07` → 14 and IN `0x87` → 15. **Callback assignment by direction is not yet determined** because the endpoint registration reads a runtime RAM descriptor. The true receive parser, flash-writer reachability and HAB bypass remain unproven. `tools/audit_vendor_endpoints.py` operates offline on the matching private binary with SHA-256/region checks; sanitized evidence is public.
