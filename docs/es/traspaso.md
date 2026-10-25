@@ -268,3 +268,7 @@ que sea inmutable. El análisis de política y fragmentos USB excluye el parcheo
 directo por WriteMemory de esas entradas, incluido el intento de provocar una
 vuelta aritmética mediante una longitud total enorme en esas direcciones.
 Ninguna de estas observaciones demuestra ejecución propia o Switch 2 funcional.
+
+## Revisión FillMemory — posible vía sin confirmar
+
+[Revisión de FillMemory](analisis-fillmemory.md). Tag `0x05` y handler `0x20003381` **habilitados** en el cargador firmado; `WriteMemory` tiene otra ruta de fase de datos con control de rangos. NXP documenta que FillMemory sigue sus reglas generales, pero falta verificar la implementación restringida de Stadia. Nuevo auditor de solo lectura `tools/audit_fillmemory_route.py`, pruebas sintéticas y evidencia `evidence/fillmemory-review.json`. **No hay evidencia de acceso a memoria de control ni ejecución arbitraria**. La copia exacta del cargador no está montada en este entorno, por lo que el auditor nuevo aún no ha corrido contra el binario real. No se han enviado paquetes al mando.
