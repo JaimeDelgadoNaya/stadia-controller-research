@@ -19,6 +19,8 @@ hemos demostrado ejecución de firmware propio ni una forma de eludir las firmas
 
 **[FillMemory: inicialización real de la protección dinámica](docs/es/procedencia-guard-fillmemory.md).** La PR #29 verifica los cuatro valores que una función firmada escribe en el contexto del guard de rangos. Con esos valores, el modelo confirma que un extremo de 32 bits envuelto puede superar la comprobación, pero exigiría procesar aproximadamente 3,5 GiB y **no demuestra escritura efectiva, ejecución de firmware ni recuperación**. La inicialización efectiva en el mando no se ha medido.
 
+**[FillMemory: orden de inicialización y límite virtual del backend](docs/es/arranque-primer-limite-fillmemory.md).** La PR #30 emula la rutina de llenado original en Unicorn: las longitudes envueltas entran en un bucle **byte a byte** y la CPU virtual alcanza una escritura fuera de la región declarada en `0x20020000`, sin retornar. **No es una prueba de fallo físico ni de ejecución propia.** El orden real de llamada al inicializador sigue sin verificarse.
+
 ## Prioridad actual: software del propio mando y Switch 2 directa
 
 El propietario ha descartado adaptadores y placas externas. La nueva prioridad

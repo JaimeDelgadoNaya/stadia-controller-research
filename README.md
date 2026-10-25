@@ -19,6 +19,8 @@ firmware execution or signature bypass has been demonstrated.**
 
 **[FillMemory dynamic-guard initialized bounds](docs/en/fillmemory-dynamic-guard-provenance.md).** PR #29 verifies the four constants written by the original signed initializer. With those limits, the modeled guard can miss a wrapped end address, but completing the implied ~3.5 GiB fill is unproven. No physical initialized RAM measurement, firmware execution, or safe recovery is claimed.
 
+**[FillMemory: initializer order and virtual backend stop](docs/en/fillmemory-init-order-first-boundary.md).** PR #30 executed the original low-level FillMemory Thumb code in bounded Unicorn memory. Wrapped-length cases enter a **byte-by-byte store loop** and hit the *virtual* unmapped region at `0x20020000` without returning. This is not a physical bus fault or custom execution proof. Initialization before dispatch is still not proven.
+
 ## Current priority: on-controller software and direct Switch 2
 
 The owner excludes adapters and external boards. The active goal is software
