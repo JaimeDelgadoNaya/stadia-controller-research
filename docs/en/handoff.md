@@ -140,3 +140,18 @@ The original workspace retains `outputs/bootloader-a.bin`,
 `work/`. The ZIP is a local archive, not a public release. The owner may supply
 these files to a subsequent environment for full-image analysis. No extraction
 process was left running.
+
+## Phase 12 — Automated IVT write-path audit
+
+Added the [write-path audit](write-path.md), with `tools/trace_write_path.py`
+and tests detecting changes in callsites, fixed arguments and virtual tables.
+It relies only on `evidence/bootloader-analysis.json` and verifies a
+**conditional** call path from `0x6080285C` to physical writer `0x60808E38`
+under the phase-11 constructed IVT context, with fixed offset zero and
+length `0x1000`. **No USB reachability, HAB bypass or custom-firmware
+execution is demonstrated.** Reproduce with:
+
+```sh
+python tools/trace_write_path.py
+python -m unittest discover -s tests -v
+```
