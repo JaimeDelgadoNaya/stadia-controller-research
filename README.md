@@ -100,6 +100,10 @@ Conservative tracking of 29 RAM-alias source candidates, with writes to state fi
 
 Four verified Thumb direct calls pass the global RAM object to internal routines. One initializer derives four subobject pointers. No externally reachable callback setter, USB-to-flash write path, or HAB bypass is demonstrated.
 
+- **[Phase 24 — Callee stores and pointer provenance](docs/en/callee-callback-store-audit.md)**
+
+Four callees and their auxiliary-object initialization chain were reviewed. The bounded audit records 23 store observations across 19 unique instruction sites, with no overlap with the four known callback fields. Dynamic pointer sinks at `0x60809048` and `0x608109FE` remain unresolved.
+
 ## Offline reproduction
 
 Python 3.11 or newer:
