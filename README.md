@@ -9,6 +9,12 @@ whether custom firmware can run on the original hardware.
 **Current result: secure boot is CLOSED on the tested controller. No custom
 firmware execution or signature bypass has been demonstrated.**
 
+## Current priority: real host update route or external bridge
+
+**[Bounded stop/go gate (post phase 29)](docs/en/update-execution-decision-gate.md)**: inspect the archived WebUSB host updater and its actual receiver, then the signed Bruce application; **end internal firmware-modification research after two offline packages** if no controllable, executable and recoverable path is shown. A PC XInput bridge alone does not establish Xbox-console compatibility.
+
+The supplied Bruce update file is a **signed candidate application image, not a verified complete installed-flash dump**. A candidate message handler at `0x60058B68` checks input byte `5` before calling `0x60058AA8`; it is **not yet a proven USB update command**.
+
 ## Measured progress
 
 | Item | Observed result |
