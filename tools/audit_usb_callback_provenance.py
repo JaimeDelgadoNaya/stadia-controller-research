@@ -26,6 +26,7 @@ VENDOR_CALLBACK_DEFAULT = 0x60809E3D
 # Unique anchored instructions in the examined paths. Keeping semantics
 # explicit prevents treating the results as a general whole-program audit.
 ANCHORS = {
+    0xBACE: "2500",        # MOVS r5,#0 establishes NULL CDC callback
     0xBB06: "c4f88455",      # STR.W r5, [r4,#0x584] (r5 was set to zero)
     0xBB14: "244b",          # LDR r3,[pc,#0x90] => literal at +0xBBA8
     0xBB1C: "c4f87835",      # STR.W r3,[r4,#0x578] (CDC method-table pointer)
