@@ -1,0 +1,59 @@
+{
+  "phase": 14,
+  "sample": "sample-001",
+  "bootloader_sha256": "59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0",
+  "bootloader_bytes": 131072,
+  "hardware_access_during_phase": false,
+  "matched_local_image": true,
+  "usb_device_descriptor_address": "0x6080bf78",
+  "vid": "0x18d1",
+  "pid": "0x946b",
+  "usb_configuration_address": "0x6081527c",
+  "usb_configuration_bytes": 80,
+  "interfaces": [
+    {
+      "number": 0,
+      "class": "0xff",
+      "endpoints": [
+        {
+          "address": "0x87",
+          "type": "bulk",
+          "direction": "IN",
+          "max_packet_bytes": 512
+        },
+        {
+          "address": "0x07",
+          "type": "bulk",
+          "direction": "OUT",
+          "max_packet_bytes": 512
+        }
+      ]
+    },
+    {
+      "number": 1,
+      "class": "0x03",
+      "hid_report_descriptor_bytes": 156,
+      "endpoints": [
+        {
+          "address": "0x83",
+          "type": "interrupt",
+          "direction": "IN",
+          "max_packet_bytes": 64
+        },
+        {
+          "address": "0x03",
+          "type": "interrupt",
+          "direction": "OUT",
+          "max_packet_bytes": 64
+        }
+      ]
+    }
+  ],
+  "vendor_event_handler": "0x60809e64",
+  "vendor_callback_pointer_ram": "0x20009168",
+  "vendor_callback_context_ram": "0x2000916c",
+  "default_callback": "0x60809e3d",
+  "usb_to_flash_reachable": "NOT_DEMONSTRATED",
+  "alternative_firmware_execution": "NOT_DEMONSTRATED",
+  "note": "Sanitized structural observations from user's matching bootloader. No device identifiers or binary materials."
+}

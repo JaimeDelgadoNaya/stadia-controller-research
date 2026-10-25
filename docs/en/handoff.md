@@ -161,3 +161,7 @@ python -m unittest discover -s tests -v
 [Phase 13](usb-surface.md) adds `tools/audit_usb_surface.py`: it audits the selected public instruction coverage (28 regions, 2340 of 131072 instruction bytes, 67 direct calls, 41 targets outside selected ranges, 16 indirect transfers), and offers **offline-only** descriptor/pointer/vector/heuristic callgraph triage of an owner's SHA-256-verified local bootloader image. Candidate descriptors do not demonstrate usable USB commands or external reachability. No custom firmware execution is established.
 
 Run `python tools/audit_usb_surface.py` and `python -m unittest discover -s tests -v`. With a matching private image, run `python tools/audit_usb_surface.py --bootloader local/bootloader-a.bin`. Never commit proprietary firmware.
+
+## Phase 14 — Verified USB descriptors and vendor callback
+
+A private 128 KiB bootloader A image matches the recorded SHA-256. [Phase 14](usb-callbacks.md) decodes USB `18D1:946B`: vendor interface with bulk IN `0x87` and OUT `0x07` (512-byte packets), plus HID with interrupt IN `0x83` and OUT `0x03` (64-byte packets). Vendor callback at `0x60809E64` dispatches conditionally through a RAM function pointer initialized to an inert default handler. A USB-to-flash-write path **remains unproven**. The offline `tools/audit_usb_callbacks.py` requires a locally stored SHA-matched binary; nothing proprietary is published.
