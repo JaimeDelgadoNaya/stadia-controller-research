@@ -28,6 +28,9 @@ hemos demostrado ejecución de firmware propio ni una forma de eludir las firmas
 
 **[Nueva fase: cadena USB SETUP → callback de endpoint en Bruce](docs/es/traza-ep0-bruce.md).** La PR #33 verifica, sobre la imagen original firmada, el vector OTG1, su trampolín a ITCM, la recepción de `ENDPTSETUPSTAT` y el despachador `0x600D0FB6` que llama al callback dinámico en `0x600D104E`. **Falta identificar la dirección realmente registrada para EP0 y el receptor de las consultas 0x81/0x83/0x84.** No hay ejecución propia ni modificación física.
 
+
+**[Registro de callbacks USB en Bruce — fase #34](docs/es/registro-callbacks-ep0-bruce.md).** Se verificó en el firmware OEM original la función `0x600D10B8`, que instala en una tabla de 12 bytes las parejas función/contexto para endpoints. Se localizaron dos rutas de inicialización y cuatro funciones firmadas intermediarias de clase. **No se ha establecido cuál se registra en EP0 ni el receptor de `bRequest 0x81/0x83/0x84`**. Sin ejecución propia, sin bypass HAB CLOSED y sin escrituras en el mando.
+
 ## Prioridad actual: software del propio mando y Switch 2 directa
 
 El propietario ha descartado adaptadores y placas externas. La nueva prioridad
