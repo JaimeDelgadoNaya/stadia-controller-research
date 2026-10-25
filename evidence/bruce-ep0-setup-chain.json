@@ -1,0 +1,71 @@
+{
+  "date": "2026-10-25",
+  "scope": "Read-only original signed Bruce USB OTG1 IRQ to SETUP endpoint callback",
+  "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+  "image_bytes": 1050984,
+  "source_is_installed_full_flash_dump": false,
+  "cortexm_vectors": [
+    {
+      "irq": 113,
+      "name": "USB_OTG1",
+      "image_slot": "0x204",
+      "thumb": "0x600610d1"
+    },
+    {
+      "irq": 112,
+      "name": "USB_OTG2",
+      "image_slot": "0x200",
+      "thumb": "0x60040631"
+    }
+  ],
+  "mode_2_path": {
+    "irq_handler": "0x600610d0",
+    "conditional_mode_value": 2,
+    "xip_veneer": "0x6013d1f8",
+    "veneer_literal_thumb": "0x00001111",
+    "itcm_usb_handler": "0x00001110"
+  },
+  "hardware_regs": {
+    "USBSTS": "+0x144",
+    "USBINTR": "+0x148",
+    "ENDPTSETUPSTAT": "+0x1ac",
+    "ENDPTCOMPLETE": "+0x1bc"
+  },
+  "setup": {
+    "read_status_pc": "0x000011c6",
+    "forward_pc": "0x00001258",
+    "itcm_helper_veneer": "0x0000ba68",
+    "veneer_literal_thumb": "0x600d0fb7"
+  },
+  "ep_event_dispatch": {
+    "xip_function": "0x600d0fb6",
+    "event_byte_pc": "0x600d0fca",
+    "endpoint_num_mask_pc": "0x600d1010",
+    "endpoint_limit_pc": "0x600d1014",
+    "direction_index_pc": "0x600d101a",
+    "stride": 12,
+    "slot_index_formula": "2*(endpoint&0x0f)+((endpoint>>7)&1)",
+    "callback_pair_load_pc": "0x600d104a",
+    "indirect_callback_call_pc": "0x600d104e"
+  },
+  "brequest_scan": {
+    "previous_literal_candidates": 8,
+    "direct_offset_one_match": 0,
+    "local_zero_and_one_pair_patterns": 49,
+    "with_nearby_bRequest_literals": 0,
+    "scan_exhaustive": false
+  },
+  "unknowns": [
+    "SCB.VTOR measured on device",
+    "mode value actually observed",
+    "runtime EP0 callback pointer",
+    "USB class receiver handling 0x81/0x83/0x84",
+    "custom execution",
+    "HAB CLOSED bypass",
+    "recoverability"
+  ],
+  "usb_sent": false,
+  "firmware_writes": false,
+  "hardware_connected": false,
+  "pr": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/pull/33"
+}
