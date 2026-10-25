@@ -1,0 +1,15 @@
+{
+  "loader_sha256": "c39ea8962cc3094a9167ba80634f1ea0652b747b4572d1de2802d9f2f4e144c5",
+  "loaded_only_into_ram": true,
+  "flash_erase_commands": 0,
+  "flash_program_commands": 0,
+  "fuse_write_commands": 0,
+  "hab_property_0x11": [
+    0,
+    1
+  ],
+  "mcu_type": "0x6c0000",
+  "ocotp_cfg5_direct_read": {
+    "error": "Command 0x3, response 0xa0, parameters [10200, 3]"
+  }
+}

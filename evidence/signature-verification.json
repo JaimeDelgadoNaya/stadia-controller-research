@@ -1,0 +1,110 @@
+[
+  {
+    "sha256": "c39ea8962cc3094a9167ba80634f1ea0652b747b4572d1de2802d9f2f4e144c5",
+    "signatures": [
+      {
+        "key_index": 1,
+        "certificate": "CN=CSF3_1_sha256_4096_65537_v3_usr",
+        "digest_matches": true,
+        "rsa_signature_valid": true,
+        "blocks": [
+          {
+            "file_offset": "0x17000",
+            "bytes": 80,
+            "type": "CSF commands"
+          }
+        ]
+      },
+      {
+        "key_index": 2,
+        "certificate": "CN=IMG3_1_sha256_4096_65537_v3_usr",
+        "digest_matches": true,
+        "rsa_signature_valid": true,
+        "blocks": [
+          {
+            "address": "0x20000000",
+            "bytes": 94208,
+            "file_offset": "0x0",
+            "explicit_alias": false
+          }
+        ]
+      }
+    ],
+    "scope": "CMS mathematics and content digests; fused SRK trust is not verified",
+    "file": "restricted_ivt_flashloader.bin"
+  },
+  {
+    "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+    "signatures": [
+      {
+        "key_index": 1,
+        "certificate": "CN=CSF3_1_sha256_4096_65537_v3_usr",
+        "digest_matches": true,
+        "rsa_signature_valid": true,
+        "blocks": [
+          {
+            "file_offset": "0xff030",
+            "bytes": 72,
+            "type": "CSF commands"
+          }
+        ]
+      },
+      {
+        "key_index": 2,
+        "certificate": "CN=IMG3_1_sha256_4096_65537_v3_usr",
+        "digest_matches": true,
+        "rsa_signature_valid": true,
+        "blocks": [
+          {
+            "address": "0x60040000",
+            "bytes": 1044528,
+            "file_offset": "0x0",
+            "explicit_alias": false
+          }
+        ]
+      }
+    ],
+    "scope": "CMS mathematics and content digests; fused SRK trust is not verified",
+    "file": "bruce_pvt_a_prod_signed.bin"
+  },
+  {
+    "sha256": "59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0",
+    "signatures": [
+      {
+        "key_index": 1,
+        "certificate": "CN=CSF3_1_sha256_4096_65537_v3_usr",
+        "digest_matches": true,
+        "rsa_signature_valid": true,
+        "blocks": [
+          {
+            "file_offset": "0x18000",
+            "bytes": 96,
+            "type": "CSF commands"
+          }
+        ]
+      },
+      {
+        "key_index": 2,
+        "certificate": "CN=IMG3_1_sha256_4096_65537_v3_usr",
+        "digest_matches": true,
+        "rsa_signature_valid": true,
+        "blocks": [
+          {
+            "address": "0x60001000",
+            "bytes": 4096,
+            "file_offset": "0x0",
+            "explicit_alias": true
+          },
+          {
+            "address": "0x60800000",
+            "bytes": 98304,
+            "file_offset": "0x0",
+            "explicit_alias": false
+          }
+        ]
+      }
+    ],
+    "scope": "CMS mathematics and content digests; fused SRK trust is not verified",
+    "file": "bootloader-a.bin"
+  }
+]

@@ -1,0 +1,62 @@
+[
+  {
+    "file": "bootloader-a.bin",
+    "offset": "0x0",
+    "matches": true
+  },
+  {
+    "file": "bootloader-a.bin",
+    "offset": "0x4",
+    "matches": true
+  },
+  {
+    "file": "bootloader-a.bin",
+    "offset": "0x1000",
+    "matches": true
+  },
+  {
+    "file": "bootloader-a.bin",
+    "offset": "0x1400",
+    "matches": true
+  },
+  {
+    "file": "bootloader-a.bin",
+    "offset": "0x10000",
+    "matches": true
+  },
+  {
+    "file": "bootloader-a.bin",
+    "offset": "0x1fffc",
+    "matches": true
+  },
+  {
+    "file": "bootloader-b.bin",
+    "offset": "0x0",
+    "matches": true
+  },
+  {
+    "file": "bootloader-b.bin",
+    "offset": "0x4",
+    "matches": true
+  },
+  {
+    "file": "bootloader-b.bin",
+    "offset": "0x1000",
+    "matches": true
+  },
+  {
+    "file": "bootloader-b.bin",
+    "offset": "0x1400",
+    "matches": true
+  },
+  {
+    "file": "bootloader-b.bin",
+    "offset": "0x10000",
+    "matches": true
+  },
+  {
+    "file": "bootloader-b.bin",
+    "offset": "0x1fffc",
+    "matches": true
+  }
+]

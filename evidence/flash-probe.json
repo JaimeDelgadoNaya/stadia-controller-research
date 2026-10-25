@@ -1,0 +1,11 @@
+{
+  "flash_vendor_id": "0x17c8",
+  "sample_address": "0x60800000",
+  "sample_hex": "d100204100108060000000000000000020100060001000600080816000000000000000600000000100000000ffffffff00000000000000000000000000000000",
+  "seconds": 0.21900000000005093,
+  "lut_flash_commands": [
+    "READ 0x03",
+    "RDSR 0x05"
+  ],
+  "flash_program_lut_removed": true
+}

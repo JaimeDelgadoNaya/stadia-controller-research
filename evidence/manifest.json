@@ -1,0 +1,71 @@
+{
+  "sample": "sample-001",
+  "date": "2026-10-25",
+  "application_build": 337784,
+  "bootloader_build": 169429,
+  "hab": "CLOSED",
+  "hardware_reads_during_phase_9": false,
+  "bootloader_regions": [
+    {
+      "file": "bootloader-a.bin",
+      "address": "0x60800000",
+      "bytes": 131072,
+      "sha256": "59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0",
+      "seconds": 214.71799999999985
+    },
+    {
+      "file": "bootloader-b.bin",
+      "address": "0x60820000",
+      "bytes": 131072,
+      "sha256": "b5a41c3758763bbec72769fab4a2533bf2db0b6312d93d25a695f9e4b9e02260",
+      "seconds": 211.45400000000018,
+      "classification": "all_0xFF_erased_slot"
+    }
+  ],
+  "publication": {
+    "full_firmware_binaries_included": false,
+    "device_identifiers_included": false
+  },
+  "evidence_files": [
+    {
+      "file": "bootloader-analysis.json",
+      "bytes": 50584,
+      "sha256": "d419491c0ec59415d005ff24af5ef0c64c28b4752d5178c75c73467719c07065"
+    },
+    {
+      "file": "flash-probe.json",
+      "bytes": 351,
+      "sha256": "32b5acc12d58b038662b22091b76313ad7a4a1f8a99f088fc28b38718d5bb6dc"
+    },
+    {
+      "file": "flashloader-hab.asm",
+      "bytes": 1385,
+      "sha256": "2ad90b9b707d1da78398846bfc2409bb4177d691ca6e8ea5c37308df750e3e8b"
+    },
+    {
+      "file": "hid-descriptor.json",
+      "bytes": 656,
+      "sha256": "8f3f46996cfe86b5d3c6f63d8015934af4b8169c13513b9c96f63a13292a0e60"
+    },
+    {
+      "file": "ram-diagnostic.json",
+      "bytes": 379,
+      "sha256": "1aef0b4894113ee46d5fc85387f308b61352761e259d595d4023a39eadfd8acf"
+    },
+    {
+      "file": "readback-checks.json",
+      "bytes": 1015,
+      "sha256": "371c5362641aed242458a7476ff151d268fc12b83f87fe8d5161e4293e4b8a5b"
+    },
+    {
+      "file": "rom-status.json",
+      "bytes": 583,
+      "sha256": "ebe41336ece756876a5b5b501427fec12d2a242cdb56d010c3257d37025bc91d"
+    },
+    {
+      "file": "signature-verification.json",
+      "bytes": 2936,
+      "sha256": "e88be0886064df3d727481a48f30263d9faa891242756417351a1fb0b86ffd8c"
+    }
+  ]
+}
