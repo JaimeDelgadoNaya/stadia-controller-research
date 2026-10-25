@@ -6,9 +6,13 @@ on:
       - 'tools/audit_signed_app_host_boundary.py'
       - 'tools/audit_signed_bruce_variants.py'
       - 'tools/audit_bruce_class_requests.py'
+      - 'tools/audit_bruce_ep0_setup_provenance.py'
+      - 'tools/audit_bruce_usb_irq_vector.py'
       - 'tests/test_signed_app_host_boundary.py'
       - 'tests/test_signed_bruce_variants.py'
       - 'tests/test_bruce_class_requests.py'
+      - 'tests/test_bruce_ep0_setup_provenance.py'
+      - 'tests/test_bruce_usb_irq_vector.py'
       - '.github/workflows/signed-app-host-boundary.yml'
   workflow_dispatch:
 
@@ -55,11 +59,15 @@ jobs:
             /tmp/stadia-app-offline/bruce.bin /tmp/stadia-app-offline/stage.bin \
             /tmp/stadia-app-offline/dev.bin --out /tmp/stadia-app-offline/variants.json
           python -m tools.audit_bruce_class_requests /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/class.json --preview
+          python -m tools.audit_bruce_ep0_setup_provenance /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/ep0.json --compact
+          python -m tools.audit_bruce_usb_irq_vector /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/usb-vectors.json
           python - <<'PY'
           import json
           from pathlib import Path
           x=json.loads(Path('/tmp/stadia-app-offline/report.json').read_text())
           variants=json.loads(Path('/tmp/stadia-app-offline/variants.json').read_text())
+          irq=json.loads(Path('/tmp/stadia-app-offline/usb-vectors.json').read_text())
+          ep0=json.loads(Path('/tmp/stadia-app-offline/ep0.json').read_text())
           print('Owner/public signed app SHA-identical:',x['source_identification']['matches_owner_private_sample_sha256'])
           print('Embedded RSA/CMS signature checks:',x['auth']['embedded_certificates_rsa_and_cms_checked'])
           print('Firmware signed length:',x['auth']['file_layout']['authenticated_application_block'])
@@ -69,6 +77,21 @@ jobs:
           print('Prod/stage/dev signature variants:', {k: v['embedded_rsa_cms_signatures_valid'] for k,v in variants['images'].items()})
           print('Stage/dev compared to production:',variants['comparisons_to_prod'])
           print('Archived host identity checked:',x['source_identification']['archived_host_js_exact_blob_checked'])
+          print('Signed Bruce USB IRQ vectors:',[(q['peripheral'],q['signed_image_vector'],q['vector_classification'],q['handler_source_file_offset']) for q in irq['vectors']])
+          print('USB_OTG1 handler preview:',[(i['pc'],i['m'],i['op']) for i in irq['vectors'][1]['handler_disassembly_preview'][:36]])
+          print('USB_OTG1 mode 2 candidate:',[(i['pc'],i['m'],i['op']) for i in irq['USB_OTG1_mode_dispatch']['branch_arms']['2']['code_preview'][:55]])
+          print('USB1 mode2 LDR PC actual target:',{k:v for k,v in irq['USB_OTG1_mode_dispatch']['mode_2_LDR_PC_veneer'].items() if k!='target_code_preview'})
+          print('USB1 mode2 resolved target preview:',[(i['pc'],i['m'],i['op']) for i in irq['USB_OTG1_mode_dispatch']['mode_2_LDR_PC_veneer']['target_code_preview'][:35]])
+          print('USB1 relocated IRQ endpoint registers:',[(z['pc'],z['ins']) for z in irq['USB_OTG1_mode_dispatch']['mode_2_LDR_PC_veneer']['ITCM_candidate_USB_register_accesses']])
+          print('USB1 ITCM EP0 setup path:',[(i['pc'],i['m'],i['op']) for i in irq['USB_OTG1_mode_dispatch']['mode_2_LDR_PC_veneer']['ITCM_setup_status_path_window']])
+          print('USB setup helper BA68:',irq['USB_OTG1_mode_dispatch']['EP0_SETUP_candidate']['helper_code'][:30])
+          print('USB setup helper literal:',irq['USB_OTG1_mode_dispatch']['EP0_SETUP_candidate']['helper_word_after_entry'])
+          print('USB SETUP XIP receiver 0x600d0fb6:',[(i['pc'],i['m'],i['op']) for i in irq['USB_OTG1_mode_dispatch']['EP0_SETUP_candidate']['receiver_code_preview'][:85]])
+          print('USB_OTG1 mode 3 candidate:',[(i['pc'],i['m'],i['op']) for i in irq['USB_OTG1_mode_dispatch']['branch_arms']['3']['code_preview'][:55]])
+          print('Direct bRequest offset+1 comparisons in original 8:',ep0['direct_setup_brequest_offset_1_byte_load_candidates'])
+          print('Broader potential SETUP load pairs:',ep0['broader_setup_shape_census']['same_register_ldrb_offset_0_and_1_patterns'])
+          print('Pairs with host request immediate comparisons:',ep0['broader_setup_shape_census']['with_nearby_control_value_compares'])
+          print('IRQ-to-EP0 callback not yet demonstrated.')
           print('No demonstrated custom execution, physical installed identity or recovery.')
           PY
       - name: Remove all transient OEM inputs and audit results

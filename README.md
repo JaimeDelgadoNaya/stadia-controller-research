@@ -25,6 +25,9 @@ firmware execution or signature bypass has been demonstrated.**
 
 **[Bruce normal-mode USB class receiver audit](docs/en/bruce-normal-usb-class-requests.md).** PR #32 compared OEM host's `0x81/0x83/0x84` class requests to the exact signed Bruce code. Eight raw CMP-immediate matches were cataloged, but the examined candidates operate on **buffer bytes or structure fields**, not a confirmed EP0 SETUP `bRequest`. **No host-to-custom-execution path or verified recovery.**
 
+
+**[New phase: signed Bruce USB SETUP → endpoint callback chain](docs/en/bruce-ep0-callback-chain.md).** PR #33 verifies the OTG1 vector, relocated ITCM SETUP intake, XIP dispatcher at `0x600D0FB6` and dynamic callback call `0x600D104E`. **Actual EP0 callback registration and OEM class bRequest handlers remain unresolved.** No physical memory writes or arbitrary code execution.
+
 ## Current priority: on-controller software and direct Switch 2
 
 The owner excludes adapters and external boards. The active goal is software
