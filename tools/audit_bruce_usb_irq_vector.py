@@ -90,6 +90,8 @@ def resolve_ldr_pc_veneer(image, source):
         "target_code_preview":all_code[:65],
         "ITCM_candidate_USB_register_accesses":high,
         "ITCM_candidate_disassembly_len":len(all_code),
+        "ITCM_setup_status_path_window":[row for row in all_code
+            if 0x11B4 <= int(row["pc"],16) < 0x1278],
         "runtime_executed":"UNVERIFIED",
     }
 
