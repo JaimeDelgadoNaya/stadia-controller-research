@@ -80,6 +80,8 @@ jobs:
           print('Signed Bruce USB IRQ vectors:',[(q['peripheral'],q['signed_image_vector'],q['vector_classification'],q['handler_source_file_offset']) for q in irq['vectors']])
           print('USB_OTG1 handler preview:',[(i['pc'],i['m'],i['op']) for i in irq['vectors'][1]['handler_disassembly_preview'][:36]])
           print('USB_OTG1 mode 2 candidate:',[(i['pc'],i['m'],i['op']) for i in irq['USB_OTG1_mode_dispatch']['branch_arms']['2']['code_preview'][:55]])
+          print('USB1 mode2 LDR PC actual target:',{k:v for k,v in irq['USB_OTG1_mode_dispatch']['mode_2_LDR_PC_veneer'].items() if k!='target_code_preview'})
+          print('USB1 mode2 resolved target preview:',[(i['pc'],i['m'],i['op']) for i in irq['USB_OTG1_mode_dispatch']['mode_2_LDR_PC_veneer']['target_code_preview'][:35]])
           print('USB_OTG1 mode 3 candidate:',[(i['pc'],i['m'],i['op']) for i in irq['USB_OTG1_mode_dispatch']['branch_arms']['3']['code_preview'][:55]])
           print('Direct bRequest offset+1 comparisons in original 8:',ep0['direct_setup_brequest_offset_1_byte_load_candidates'])
           print('Broader potential SETUP load pairs:',ep0['broader_setup_shape_census']['same_register_ldrb_offset_0_and_1_patterns'])
