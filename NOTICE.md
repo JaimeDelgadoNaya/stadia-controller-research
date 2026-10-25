@@ -2,6 +2,12 @@
 
 ## English
 
+Phase 32 references [danzig666/stadia-dongle-esp](https://github.com/danzig666/stadia-dongle-esp),
+derived from [Scalee/stadia-dongle](https://github.com/Scalee/stadia-dongle).
+That separately fetched bridge remains GPL-3.0; its source is not vendored or
+relicensed by this MIT research repository. The source pin and selected hashes
+are recorded in `evidence/external-bridge-source.json`.
+
 This project builds on GaryOderNichts' StadiaController research and the original
 Google controller updater preserved by ChristopherKlay and StadiaMemories.
 Protocol descriptions, original methods and constants should be credited to those

@@ -1,0 +1,18 @@
+{
+  "source": "https://github.com/danzig666/stadia-dongle-esp.git",
+  "commit": "d8392de8f838e12cf16c985b9beb8080c7acd970",
+  "license": "GPL-3.0 (upstream; fetched separately, not relicensed)",
+  "reviewed_date": "2026-10-25",
+  "scope": "Pinned source inspected only. Not built, flashed or validated with this controller or any ESP32-S3. PC Xbox 360 output is an upstream claim; Xbox console authorization is not established.",
+  "sha256": {
+    "LICENSE": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+    "README.md": "f06b8a1b3c2285c5f29e262baa929e949f1c60f7cf1bafaf83a21a5285777330",
+    "dependencies.lock": "f4369b2cd9011bed1e507c84b3a32c1153bf3c5b69bbd82391a3614ab992619a",
+    "sdkconfig.defaults": "9f6ad1cbe052dc540a71845a1737a8d985ecf6e8476f2625c48476e290dedbc4",
+    "main/idf_component.yml": "75297dc4402e04244ba6ccfe98e7365294bf1f74133410c0ba11b77625be321c",
+    "main/bridge.c": "375821e4e1b846ebab99b5e124f4399b7b06a8f0d9ce9eb6f306d82467335334",
+    "main/ble_central.c": "f9a7434c6ba268d1284572f7f5ac9de97f55bcc1a333dfd30683228c42184a4f",
+    "main/usb_xbox.c": "813e18bd150bf59231de95857b707fd6052e2697ac425c86c72d3f4da2be86c3",
+    "main/xbox_dev.c": "7c31d65b12331080a18772c8839ef2a61725db70d9e3b479a41281449c7e5782"
+  }
+}
