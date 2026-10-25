@@ -77,7 +77,7 @@ def inspect(image):
             "handler_connected_to_EP0_setup_callback":"UNVERIFIED",
         })
     return {
-        "original_br uce_sha256".replace(" ",""):IMAGE_SHA256,
+        "original_bruce_sha256":IMAGE_SHA256,
         "image_validated":True,
         "assumption":"Standard Cortex-M vector at signed image start. Running VTOR may be relocated; this is NOT a live register measurement.",
         "vectors":rows,
