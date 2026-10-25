@@ -17,6 +17,7 @@ from tools.audit_app_usb_dispatch import ITCM_SOURCE_OFFSET, ITCM_LENGTH
 IRQS={"USB_OTG2":112,"USB_OTG1":113}
 # Two direct tail branches in the hash-pinned OTG1 wrapper. Not proof that
 # either branch has been taken in a live board.
+EP0_SETUP_HELPER=0xBA68
 USB1_BRANCH_ARMS={
     2:0x6013D1F8,
     3:0x600D546A,
@@ -118,6 +119,9 @@ def inspect(image):
             "handler_connected_to_EP0_setup_callback":"UNVERIFIED",
         })
     veneer=resolve_ldr_pc_veneer(image,USB1_BRANCH_ARMS[2])
+    setup_helper_preview=disassemble_candidate(image,EP0_SETUP_HELPER|1,span=110)
+    setup_helper_raw_literal=struct.unpack_from("<I",image,
+                ITCM_SOURCE_OFFSET+EP0_SETUP_HELPER+4)[0]
     targets={}
     for state,target in USB1_BRANCH_ARMS.items():
         targets[str(state)]={
@@ -139,6 +143,15 @@ def inspect(image):
             "mode_3_branch":"0x600d546a",
             "branch_arms":targets,
             "mode_2_LDR_PC_veneer":veneer,
+            "EP0_SETUP_candidate":{
+                "callsite_in_copied_ITCM":"0x1258",
+                "callsite_direct_target":"0xba68",
+                "before_call":"USB ENDPTSETUPSTAT bit loop copies controller SETUP data",
+                "helper_code":setup_helper_preview,
+                "helper_word_after_entry":hex(setup_helper_raw_literal),
+                "handler_callback_after_helper":"UNVERIFIED",
+                "host_bRequest_0x81_0x83_0x84_effect":"UNVERIFIED",
+            },
             "condition_code":"observed CMP #2/#3 and conditional branches; no physical mode state captured",
         },
         "USB_to_EP0_proof":False,
@@ -167,6 +180,10 @@ def main():
     for ins in v["target_code_preview"][:42]:
         print("USB1_VENEER_TARGET",ins["pc"],ins["m"],ins["op"])
     print("USB1 ITCM register candidates:",v["ITCM_candidate_USB_register_accesses"])
+    helper=result["USB_OTG1_mode_dispatch"]["EP0_SETUP_candidate"]
+    print("EP0_HELPER",helper["callsite_direct_target"],"raw next word",helper["helper_word_after_entry"])
+    for ins in helper["helper_code"][:45]:
+        print("EP0_HELPER_CODE",ins["pc"],ins["m"],ins["op"])
     for state,arm in result["USB_OTG1_mode_dispatch"]["branch_arms"].items():
         print("USB1_MODE",state,"TARGET",arm["target"])
         for ins in arm["code_preview"]:
