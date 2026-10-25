@@ -97,7 +97,7 @@ class Phase31DecisionTests(unittest.TestCase):
                              for v in all_scenarios),1)
 
     def test_offline_no_device_io_in_module(self):
-        self.assertIn("no WebUSB",m.__doc__ or "")
+        self.assertIn("No WebUSB",m.__doc__ or "")
         self.assertTrue(m.decision_gate(True,False,True,False)
                         ["no_further_open_ended_pointer_phases"])
 
