@@ -150,7 +150,7 @@ def audit(image, expected_sha256=SHA256, fingerprints=REGIONS):
             "front_semantics":{
                 "head_argument":"r0; runtime address depends on caller",
                 "node_argument":"r1; runtime address depends on caller",
-                "writes":["node+4=existing next","node+8=existing previous",
+                "writes":["node+4=existing previous","node+8=existing next",
                           "existing next+4=node","existing previous+8=node",
                           "node+16=head","head+0=count+1"],
             },
