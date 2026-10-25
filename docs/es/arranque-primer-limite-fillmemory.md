@@ -98,3 +98,51 @@ python -m tools.audit_fillmemory_first_boundary local/restricted_ivt_flashloader
 
 Los comandos anteriores son exclusivamente de lectura local y exigen
 el SHA-256 original. [Ejecución de GitHub Actions sobre el original](https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40237237957).
+
+
+## C. Emulación ARM de las instrucciones originales: verificación independiente
+
+Se ejecutó la rutina real `0x20002698` del cargador firmado
+en **Unicorn 2.1.4 (ARM Thumb/M-class)**, utilizando un dispositivo
+totalmente ficticio que solo tiene mapeados:
+
+- `0x20000000..0x2001FFFF`: RAM virtual de 128 KiB;
+  incluye copia de la imagen original de 100.672 bytes.
+- `0x00001000`: página centinela de retorno, sin conectar a ningún bus.
+
+El emulador llama **directamente al backend** con argumentos
+hipotéticos. **No ejecuta el despachador de comandos, la fase de USB,
+la inicialización completa ni los filtros previos**. No se han
+enviado paquetes al mando.
+
+| Inicio | Escrituras de llenado válidas previas | Primer acceso fuera de la RAM virtual | PC en parada | ¿Retornó? |
+|---|---:|---|---|---|
+| Execute `0x200159E0` | 42.528 bytes | `0x20020000` (1 byte) | `0x20002700` | No |
+| Call `0x200159EC` | 42.516 bytes | `0x20020000` (1 byte) | `0x20002700` | No |
+
+El gancho de acceso de Unicorn notifica un intento adicional (rechazado)
+fuera de la región. La instrumentación cuenta por separado las
+escrituras del bucle `STRB` y los `PUSH` iniciales sobre la pila virtual.
+
+**Resultado observado:** `UC_ERR_WRITE_UNMAPPED` en los dos
+escenarios, con `R2 = 3757973508` bytes restantes.
+Se confirma con máquina emulada que el código ejecuta
+`STRB` byte a byte, no las ráfagas de 16 bytes, y que no
+alcanzó un retorno antes de salir de la región asignada.
+
+**Limitación indispensable:** `UC_ERR_WRITE_UNMAPPED` es un
+resultado **del mapa artificial de Unicorn**. No implica
+necesariamente un BusFault físico en el i.MX, y el emulador no
+prueba el arranque completo, el estado real de RAM o la recuperación
+del mando. Tampoco constituye una demostración de que un paquete
+`FillMemory` con tales parámetros llegue a ejecutar la rutina.
+
+[Verificación firmada en CI / Unicorn](https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40237699575).
+
+Para reproducir localmente con la copia original y las dependencias
+de emulación:
+
+```sh
+python -m pip install -r requirements-emulation.txt
+python -m tools.emulate_fillmemory_first_fault local/restricted_ivt_flashloader.bin
+```
