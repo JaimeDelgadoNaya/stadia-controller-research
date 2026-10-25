@@ -122,6 +122,9 @@ def inspect(image):
     setup_helper_preview=disassemble_candidate(image,EP0_SETUP_HELPER|1,span=110)
     setup_helper_raw_literal=struct.unpack_from("<I",image,
                 ITCM_SOURCE_OFFSET+EP0_SETUP_HELPER+4)[0]
+    if setup_helper_raw_literal != 0x600D0FB7:
+        raise ValueError("Pinned original SETUP handler veneer target differs")
+    setup_receiver_disassembly=disassemble_candidate(image,setup_helper_raw_literal,span=360)[:135]
     targets={}
     for state,target in USB1_BRANCH_ARMS.items():
         targets[str(state)]={
@@ -149,6 +152,8 @@ def inspect(image):
                 "before_call":"USB ENDPTSETUPSTAT bit loop copies controller SETUP data",
                 "helper_code":setup_helper_preview,
                 "helper_word_after_entry":hex(setup_helper_raw_literal),
+                "resolved_signed_xip_receiver":"0x600d0fb6",
+                "receiver_code_preview":setup_receiver_disassembly,
                 "handler_callback_after_helper":"UNVERIFIED",
                 "host_bRequest_0x81_0x83_0x84_effect":"UNVERIFIED",
             },
@@ -184,6 +189,9 @@ def main():
     print("EP0_HELPER",helper["callsite_direct_target"],"raw next word",helper["helper_word_after_entry"])
     for ins in helper["helper_code"][:45]:
         print("EP0_HELPER_CODE",ins["pc"],ins["m"],ins["op"])
+    print("EP0_RECEIVER",helper["resolved_signed_xip_receiver"])
+    for ins in helper["receiver_code_preview"][:70]:
+        print("EP0_RECEIVER_CODE",ins["pc"],ins["m"],ins["op"])
     for state,arm in result["USB_OTG1_mode_dispatch"]["branch_arms"].items():
         print("USB1_MODE",state,"TARGET",arm["target"])
         for ins in arm["code_preview"]:
