@@ -13,6 +13,8 @@ hemos demostrado ejecución de firmware propio ni una forma de eludir las firmas
 
 **DECISIÓN HISTÓRICA — [Fase 31: cerrar firmware interno y comenzar el puente externo](docs/es/decision-final-ejecucion.md).** El análisis offline de autenticación y recuperación ha completado el último paquete pactado. ROM HAB **CLOSED**, firmas originales válidas, sin ejecución propia autenticable ni rollback verificado. **Se detiene la investigación de modificación interna salvo nueva evidencia independiente.** Próximo paso: prototipo ESP32-S3 con BLE Stadia → gamepad Xbox 360 **para PC**, y verificación aparte de compatibilidad/autenticación de consola Xbox One/Series.
 
+**[FillMemory (PR #24): revisión de posible vía](docs/es/analisis-fillmemory.md).** El comando está habilitado y no necesita fase de datos, pero su política de memoria en el cargador Google **no se ha verificado aún**. No se ha demostrado modificación de las puertas Execute/Call, ejecución propia ni recuperación.
+
 ## Prioridad actual: software del propio mando y Switch 2 directa
 
 El propietario ha descartado adaptadores y placas externas. La nueva prioridad
