@@ -60,6 +60,10 @@ and custom-firmware execution are **not established**.
 
 Phase 13 quantifies coverage of the published bootloader disassembly and adds a **read-only** static USB triage tool for a locally SHA-verified image. No exploitable USB dispatcher or custom-firmware execution has been demonstrated.
 
+- **[Phase 14 — Bootloader vendor USB interface and callback](docs/en/usb-callbacks.md)**
+
+A SHA-256-matched private bootloader image establishes **two USB interfaces** (vendor bulk + HID) and conditional vendor event dispatch to a RAM callback pointer. No externally reachable flash-write path or custom-firmware execution has been demonstrated.
+
 ## Offline reproduction
 
 Python 3.11 or newer:
