@@ -60,6 +60,28 @@ def disassemble_candidate(image, vector, span=112):
             for i in dec.disasm(image[off:end],pc)]
 
 
+def resolve_ldr_pc_veneer(image, source):
+    """Resolve a PC-relative Thumb LDR trampoline; literal bytes are not code."""
+    from capstone import Cs, CS_ARCH_ARM, CS_MODE_THUMB, CS_MODE_MCLASS
+    pos=source-BASE
+    if pos < 0 or pos+8 > len(image):
+        raise ValueError("veneer outside original image")
+    md=Cs(CS_ARCH_ARM,CS_MODE_THUMB|CS_MODE_MCLASS)
+    ins=next(iter(md.disasm(image[pos:pos+4],source,count=1)),None)
+    if not ins or ins.mnemonic!="ldr.w" or ins.op_str.replace(" ","")!="pc,[pc,#-0x0]":
+        raise ValueError("original PC-relative veneer opcode differs")
+    literal_addr=(source+4)&~3
+    target=struct.unpack_from('<I',image,literal_addr-BASE)[0]
+    return {
+        "veneer_pc":hex(source),
+        "literal_address":hex(literal_addr),
+        "target_pointer":hex(target),
+        "target_classification":categorize(target),
+        "target_file_offset":hex(byte_offset_for_handler(target)) if byte_offset_for_handler(target) is not None else None,
+        "target_code_preview":disassemble_candidate(image,target,span=200)[:65],
+        "runtime_executed":"UNVERIFIED",
+    }
+
 def inspect(image):
     if len(image)!=IMAGE_SIZE or hashlib.sha256(image).hexdigest()!=IMAGE_SHA256:
         raise ValueError("Exact signed Bruce image size and SHA-256 required")
@@ -82,12 +104,13 @@ def inspect(image):
             "live_SCB_VTOR_matches_image_vector_table":"UNVERIFIED",
             "handler_connected_to_EP0_setup_callback":"UNVERIFIED",
         })
+    veneer=resolve_ldr_pc_veneer(image,USB1_BRANCH_ARMS[2])
     targets={}
     for state,target in USB1_BRANCH_ARMS.items():
         targets[str(state)]={
             "target":hex(target),
             "target_kind":categorize(target|1),
-            "code_preview":disassemble_candidate(image,target|1,span=208)[:65],
+            "code_preview":disassemble_candidate(image,target|1,span=208)[:65] if state!=2 else [],
             "live_reachability":"UNVERIFIED",
             "EP0_effect":"UNVERIFIED",
         }
@@ -102,6 +125,7 @@ def inspect(image):
             "mode_2_branch":"0x6013d1f8",
             "mode_3_branch":"0x600d546a",
             "branch_arms":targets,
+            "mode_2_LDR_PC_veneer":veneer,
             "condition_code":"observed CMP #2/#3 and conditional branches; no physical mode state captured",
         },
         "USB_to_EP0_proof":False,
@@ -125,6 +149,10 @@ def main():
               "file",row["handler_source_file_offset"])
         for i in row["handler_disassembly_preview"][:32]:
             print(i["pc"],i["m"],i["op"])
+    v=result["USB_OTG1_mode_dispatch"]["mode_2_LDR_PC_veneer"]
+    print("USB1_MODE_2_VENEER",v["veneer_pc"],v["literal_address"],v["target_pointer"],v["target_classification"],v["target_file_offset"])
+    for ins in v["target_code_preview"][:42]:
+        print("USB1_VENEER_TARGET",ins["pc"],ins["m"],ins["op"])
     for state,arm in result["USB_OTG1_mode_dispatch"]["branch_arms"].items():
         print("USB1_MODE",state,"TARGET",arm["target"])
         for ins in arm["code_preview"]:
