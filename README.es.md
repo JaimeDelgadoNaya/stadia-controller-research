@@ -17,6 +17,8 @@ hemos demostrado ejecución de firmware propio ni una forma de eludir las firmas
 
 **[FillMemory: desbordamiento de 32 bits y límites del backend](docs/es/desbordamiento-fillmemory.md).** El modelo fijado al cargador original demuestra que algunos extremos calculados con desbordamiento superan dos filtros estáticos; **la comprobación dinámica y la escritura efectiva no están demostradas**. El backend recorrería una longitud enorme fuera de la región declarada; no hay firmware ejecutable ni bypass HAB.
 
+**[FillMemory: inicialización real de la protección dinámica](docs/es/procedencia-guard-fillmemory.md).** La PR #29 verifica los cuatro valores que una función firmada escribe en el contexto del guard de rangos. Con esos valores, el modelo confirma que un extremo de 32 bits envuelto puede superar la comprobación, pero exigiría procesar aproximadamente 3,5 GiB y **no demuestra escritura efectiva, ejecución de firmware ni recuperación**. La inicialización efectiva en el mando no se ha medido.
+
 ## Prioridad actual: software del propio mando y Switch 2 directa
 
 El propietario ha descartado adaptadores y placas externas. La nueva prioridad
