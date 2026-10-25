@@ -77,3 +77,7 @@ La tabla también habilita FillMemory. El límite por fragmentos de WriteMemory
 no se puede aplicar a FillMemory ni a otras órdenes sin revisar sus propios
 receptores y backends. Su presencia no demuestra ejecución propia; este auditor
 no proporciona ni valida una elusión a través de ellas.
+
+## Seguimiento: FillMemory
+
+La [revisión independiente de FillMemory](analisis-fillmemory.md) comprueba la hipótesis de una política distinta a la de WriteMemory. El comando está habilitado y utiliza un patrón de 32 bits sin fase de datos, pero **no se ha ejecutado todavía la inspección nueva contra la muestra binaria original**. No hay demostración de sobrescritura de memoria de control, ejecución propia o recuperación fiable.
