@@ -245,3 +245,16 @@ and includes Switch 2. This supersedes external-bridge priority, not phase 31's
 HAB/signature/recovery results. The renewed review is offline and bounded to the
 application message receiver and USB/BLE requirements. See [direct Switch 2](direct-switch2.md).
 No controller flashing was performed.
+
+## Continuation: application USB dispatch and loader execution gate
+
+Current HID metadata declares five-byte output ID5 containing two 16-bit values;
+this agrees with the historical descriptor and the rumble-control parser. See
+[application dispatch](application-usb-dispatch.md),
+[loader execution gate](loader-execution-gate.md) and
+[live HID capabilities](../es/capacidades-hid.md).
+The loader command table resides in RAM; initially disabled entries do not make
+it immutable. The write-policy and USB-fragment trace excludes an ordinary
+WriteMemory patch of those entries, including a huge declared total used to
+seek wraparound at those addresses. None of these
+observations demonstrates custom execution or working Switch 2 compatibility.

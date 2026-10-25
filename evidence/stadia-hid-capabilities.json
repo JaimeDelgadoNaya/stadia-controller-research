@@ -1,0 +1,298 @@
+{
+    "schema_version":  1,
+    "captured_at":  "2026-10-25T19:55:55.7146457+00:00",
+    "method":  "Windows HID preparsed capabilities; CreateFile desiredAccess=0",
+    "collection_count":  1,
+    "collections":  [
+                        {
+                            "vendor_id":  "18D1",
+                            "product_id":  "9400",
+                            "device_version":  256,
+                            "usage_page":  1,
+                            "usage":  5,
+                            "input_report_bytes":  11,
+                            "output_report_bytes":  5,
+                            "feature_report_bytes":  0,
+                            "reports":  [
+                                            {
+                                                "type":  "input",
+                                                "buttons":  [
+                                                                {
+                                                                    "usage_page":  9,
+                                                                    "report_id":  3,
+                                                                    "link_collection":  0,
+                                                                    "is_range":  false,
+                                                                    "usage_min":  1,
+                                                                    "usage_max":  1
+                                                                },
+                                                                {
+                                                                    "usage_page":  9,
+                                                                    "report_id":  3,
+                                                                    "link_collection":  0,
+                                                                    "is_range":  false,
+                                                                    "usage_min":  2,
+                                                                    "usage_max":  2
+                                                                },
+                                                                {
+                                                                    "usage_page":  9,
+                                                                    "report_id":  3,
+                                                                    "link_collection":  0,
+                                                                    "is_range":  false,
+                                                                    "usage_min":  4,
+                                                                    "usage_max":  4
+                                                                },
+                                                                {
+                                                                    "usage_page":  9,
+                                                                    "report_id":  3,
+                                                                    "link_collection":  0,
+                                                                    "is_range":  false,
+                                                                    "usage_min":  5,
+                                                                    "usage_max":  5
+                                                                },
+                                                                {
+                                                                    "usage_page":  9,
+                                                                    "report_id":  3,
+                                                                    "link_collection":  0,
+                                                                    "is_range":  false,
+                                                                    "usage_min":  7,
+                                                                    "usage_max":  7
+                                                                },
+                                                                {
+                                                                    "usage_page":  9,
+                                                                    "report_id":  3,
+                                                                    "link_collection":  0,
+                                                                    "is_range":  false,
+                                                                    "usage_min":  8,
+                                                                    "usage_max":  8
+                                                                },
+                                                                {
+                                                                    "usage_page":  9,
+                                                                    "report_id":  3,
+                                                                    "link_collection":  0,
+                                                                    "is_range":  false,
+                                                                    "usage_min":  14,
+                                                                    "usage_max":  14
+                                                                },
+                                                                {
+                                                                    "usage_page":  9,
+                                                                    "report_id":  3,
+                                                                    "link_collection":  0,
+                                                                    "is_range":  false,
+                                                                    "usage_min":  15,
+                                                                    "usage_max":  15
+                                                                },
+                                                                {
+                                                                    "usage_page":  9,
+                                                                    "report_id":  3,
+                                                                    "link_collection":  0,
+                                                                    "is_range":  false,
+                                                                    "usage_min":  11,
+                                                                    "usage_max":  11
+                                                                },
+                                                                {
+                                                                    "usage_page":  9,
+                                                                    "report_id":  3,
+                                                                    "link_collection":  0,
+                                                                    "is_range":  false,
+                                                                    "usage_min":  12,
+                                                                    "usage_max":  12
+                                                                },
+                                                                {
+                                                                    "usage_page":  9,
+                                                                    "report_id":  3,
+                                                                    "link_collection":  0,
+                                                                    "is_range":  false,
+                                                                    "usage_min":  13,
+                                                                    "usage_max":  13
+                                                                },
+                                                                {
+                                                                    "usage_page":  9,
+                                                                    "report_id":  3,
+                                                                    "link_collection":  0,
+                                                                    "is_range":  false,
+                                                                    "usage_min":  19,
+                                                                    "usage_max":  19
+                                                                },
+                                                                {
+                                                                    "usage_page":  9,
+                                                                    "report_id":  3,
+                                                                    "link_collection":  0,
+                                                                    "is_range":  false,
+                                                                    "usage_min":  20,
+                                                                    "usage_max":  20
+                                                                },
+                                                                {
+                                                                    "usage_page":  9,
+                                                                    "report_id":  3,
+                                                                    "link_collection":  0,
+                                                                    "is_range":  false,
+                                                                    "usage_min":  17,
+                                                                    "usage_max":  17
+                                                                },
+                                                                {
+                                                                    "usage_page":  9,
+                                                                    "report_id":  3,
+                                                                    "link_collection":  0,
+                                                                    "is_range":  false,
+                                                                    "usage_min":  18,
+                                                                    "usage_max":  18
+                                                                },
+                                                                {
+                                                                    "usage_page":  12,
+                                                                    "report_id":  3,
+                                                                    "link_collection":  0,
+                                                                    "is_range":  false,
+                                                                    "usage_min":  234,
+                                                                    "usage_max":  234
+                                                                },
+                                                                {
+                                                                    "usage_page":  12,
+                                                                    "report_id":  3,
+                                                                    "link_collection":  0,
+                                                                    "is_range":  false,
+                                                                    "usage_min":  233,
+                                                                    "usage_max":  233
+                                                                },
+                                                                {
+                                                                    "usage_page":  12,
+                                                                    "report_id":  3,
+                                                                    "link_collection":  0,
+                                                                    "is_range":  false,
+                                                                    "usage_min":  205,
+                                                                    "usage_max":  205
+                                                                }
+                                                            ],
+                                                "values":  [
+                                                               {
+                                                                   "usage_page":  1,
+                                                                   "report_id":  3,
+                                                                   "link_collection":  0,
+                                                                   "is_range":  false,
+                                                                   "usage_min":  57,
+                                                                   "usage_max":  57,
+                                                                   "bit_size":  4,
+                                                                   "report_count":  1,
+                                                                   "logical_min":  0,
+                                                                   "logical_max":  7,
+                                                                   "absolute":  true
+                                                               },
+                                                               {
+                                                                   "usage_page":  1,
+                                                                   "report_id":  3,
+                                                                   "link_collection":  1,
+                                                                   "is_range":  false,
+                                                                   "usage_min":  49,
+                                                                   "usage_max":  49,
+                                                                   "bit_size":  8,
+                                                                   "report_count":  1,
+                                                                   "logical_min":  1,
+                                                                   "logical_max":  255,
+                                                                   "absolute":  true
+                                                               },
+                                                               {
+                                                                   "usage_page":  1,
+                                                                   "report_id":  3,
+                                                                   "link_collection":  1,
+                                                                   "is_range":  false,
+                                                                   "usage_min":  48,
+                                                                   "usage_max":  48,
+                                                                   "bit_size":  8,
+                                                                   "report_count":  1,
+                                                                   "logical_min":  1,
+                                                                   "logical_max":  255,
+                                                                   "absolute":  true
+                                                               },
+                                                               {
+                                                                   "usage_page":  1,
+                                                                   "report_id":  3,
+                                                                   "link_collection":  2,
+                                                                   "is_range":  false,
+                                                                   "usage_min":  53,
+                                                                   "usage_max":  53,
+                                                                   "bit_size":  8,
+                                                                   "report_count":  1,
+                                                                   "logical_min":  1,
+                                                                   "logical_max":  255,
+                                                                   "absolute":  true
+                                                               },
+                                                               {
+                                                                   "usage_page":  1,
+                                                                   "report_id":  3,
+                                                                   "link_collection":  2,
+                                                                   "is_range":  false,
+                                                                   "usage_min":  50,
+                                                                   "usage_max":  50,
+                                                                   "bit_size":  8,
+                                                                   "report_count":  1,
+                                                                   "logical_min":  1,
+                                                                   "logical_max":  255,
+                                                                   "absolute":  true
+                                                               },
+                                                               {
+                                                                   "usage_page":  2,
+                                                                   "report_id":  3,
+                                                                   "link_collection":  0,
+                                                                   "is_range":  false,
+                                                                   "usage_min":  196,
+                                                                   "usage_max":  196,
+                                                                   "bit_size":  8,
+                                                                   "report_count":  1,
+                                                                   "logical_min":  0,
+                                                                   "logical_max":  255,
+                                                                   "absolute":  true
+                                                               },
+                                                               {
+                                                                   "usage_page":  2,
+                                                                   "report_id":  3,
+                                                                   "link_collection":  0,
+                                                                   "is_range":  false,
+                                                                   "usage_min":  197,
+                                                                   "usage_max":  197,
+                                                                   "bit_size":  8,
+                                                                   "report_count":  1,
+                                                                   "logical_min":  0,
+                                                                   "logical_max":  255,
+                                                                   "absolute":  true
+                                                               }
+                                                           ]
+                                            },
+                                            {
+                                                "type":  "output",
+                                                "buttons":  [
+
+                                                            ],
+                                                "values":  [
+                                                               {
+                                                                   "usage_page":  15,
+                                                                   "report_id":  5,
+                                                                   "link_collection":  0,
+                                                                   "is_range":  false,
+                                                                   "usage_min":  151,
+                                                                   "usage_max":  151,
+                                                                   "bit_size":  16,
+                                                                   "report_count":  2,
+                                                                   "logical_min":  0,
+                                                                   "logical_max":  65535,
+                                                                   "absolute":  true
+                                                               }
+                                                           ]
+                                            },
+                                            {
+                                                "type":  "feature",
+                                                "buttons":  [
+
+                                                            ],
+                                                "values":  [
+
+                                                           ]
+                                            }
+                                        ]
+                        }
+                    ],
+    "limits":  [
+                   "Parsed capabilities, not the raw HID report descriptor or captured report bytes.",
+                   "No input samples, output reports, feature transfers, mode changes or firmware writes.",
+                   "A declared output report does not prove its firmware effect or rumble behavior.",
+                   "No device paths, serial numbers or instance identifiers are included."
+               ]
+}

@@ -33,6 +33,12 @@ La [revisión del receptor de mensajes](docs/es/funcion-mensaje-aplicacion.md) c
 clasifica la etiqueta 5 como control HID de dos valores, posiblemente vibración;
 no se ha demostrado que sea actualización de firmware.
 
+La continuación añade [despacho USB con reubicación de código](docs/es/despacho-usb-aplicacion.md),
+[capacidades HID medidas](docs/es/capacidades-hid.md) y
+[el bloqueo inicial de Execute/Call del cargador](docs/es/puerta-ejecucion-cargador.md).
+La consulta del mando fue solo de metadatos; no se enviaron informes de salida.
+Estos resultados no constituyen un desbloqueo.
+
 ## Avances medidos
 
 | Elemento | Resultado observado |

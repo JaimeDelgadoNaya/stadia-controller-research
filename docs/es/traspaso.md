@@ -246,3 +246,16 @@ externos, e incluye Switch 2. Esto sustituye la prioridad de puente externo,
 pero no los resultados de HAB/firma/recuperación de la fase 31. La nueva revisión
 es offline y acotada al receptor de mensajes de la aplicación y a requisitos
 USB/BLE. Ver [Switch 2 directa](switch2-directa.md). No se ha flasheado el mando.
+
+## Continuación: despacho USB y puerta de ejecución del cargador
+
+La lectura HID actual declara salida ID5 de cinco bytes, dos valores de 16 bits;
+coincide con el descriptor histórico y con el parser de control de vibración.
+Ver [capacidades medidas](capacidades-hid.md),
+[despacho de la aplicación](despacho-usb-aplicacion.md) y
+[puerta Execute/Call del cargador](puerta-ejecucion-cargador.md).
+La tabla del cargador está en RAM y sus entradas iniciales desactivadas no prueban
+que sea inmutable. El análisis de política y fragmentos USB excluye el parcheo
+directo por WriteMemory de esas entradas, incluido el intento de provocar una
+vuelta aritmética mediante una longitud total enorme en esas direcciones.
+Ninguna de estas observaciones demuestra ejecución propia o Switch 2 funcional.

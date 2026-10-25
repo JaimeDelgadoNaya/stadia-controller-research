@@ -33,6 +33,12 @@ The [message receiver review](docs/en/application-message-role.md) corrects the 
 tag 5 as two-value HID control, possibly rumble; it does not establish a
 firmware update handler.
 
+The continuation adds [USB dispatch and code relocation](docs/en/application-usb-dispatch.md),
+[live HID capabilities](docs/es/capacidades-hid.md) and the
+[loader's initial Execute/Call gate](docs/en/loader-execution-gate.md).
+The device query read metadata only; no output reports were sent. These results
+are not an unlock.
+
 ## Measured progress
 
 | Item | Observed result |
