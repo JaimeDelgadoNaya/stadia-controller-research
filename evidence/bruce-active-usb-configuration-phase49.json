@@ -1,0 +1,101 @@
+{
+  "phase": 49,
+  "date": "2026-10-26",
+  "pull_request": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/pull/51",
+  "source": {
+    "kind": "signed Bruce OEM update",
+    "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+    "live_flash_dump": false,
+    "exact_sha_verified": true
+  },
+  "signed_shared_config_writer": {
+    "constructor": "0x600550e4",
+    "R1_to_R4": "0x600550ea",
+    "global_literal_load": "0x60055104",
+    "literal_source": "0x600551a8",
+    "global_RAM": "0x20004080",
+    "store": "0x6005512e STR R4,[R5,#4]",
+    "written_pointer_RAM": "0x20004084",
+    "source": "original function R1",
+    "confirmed_called_from": "0x60060f90",
+    "runtime_executed": "UNVERIFIED"
+  },
+  "signed_config_owner": {
+    "function": "0x60060f84",
+    "input": "owner object at runtime unknown",
+    "config_pointer_arg": "0x60060f8a R1=owner+4",
+    "mode_arg": "0x60060f8e R0=byte[owner+0x10]",
+    "engine_output": "0x60060f86 R2=owner+0x98",
+    "signed_call": "0x60060f90 BL 0x600550e4",
+    "other_direct_caller": "0x6006102e",
+    "dynamic_fields": {
+      "class_record_list_pointer": "owner+4 == config+0",
+      "config_method_pointer": "owner+8 == config+4",
+      "class_record_count_byte": "owner+12 == config+8"
+    },
+    "actual_owner_contents": "UNMEASURED"
+  },
+  "original_signed_literals": [
+    [
+      "0x600551a8",
+      "0x20004080"
+    ],
+    [
+      "0x600551ac",
+      "0x200040a0"
+    ],
+    [
+      "0x600551b0",
+      "0x600d0bc9"
+    ],
+    [
+      "0x600551b4",
+      "0x60104b74"
+    ],
+    [
+      "0x600553f8",
+      "0x200063c0"
+    ],
+    [
+      "0x600553fc",
+      "0x60104bc4"
+    ],
+    [
+      "0x60104bc4",
+      "0x6005556d"
+    ]
+  ],
+  "signed_usb_engine": {
+    "initialiser": "0x60055350",
+    "constructor_call": "0x60055138",
+    "runtime_engine_base": "0x200063c0",
+    "vtable": "0x60104bc4",
+    "first_signed_method": "0x6005556d",
+    "fixed_control_callback": "0x600d0bc9",
+    "callback_store": "0x600553a0",
+    "vtable_store": "0x600553c0",
+    "engine_object_output": "0x600553c2",
+    "indirect_signed_vtable_call": "0x600553ca",
+    "physical_initialization_confirmed": false
+  },
+  "important_distinctions": {
+    "shared_USB_global_outside_signed_startup_initialized_data": true,
+    "signed_class10_boot_record_at": "0x200030f4",
+    "record_actually_in_active_usb_config": "NOT DEMONSTRATED",
+    "class10_selector_supported_by_signed_fanout": true,
+    "live_config_record_count_and_address": "UNMEASURED",
+    "host_supply_of_function_pointer": "NOT DEMONSTRATED",
+    "unsigned_code_execution": "NOT DEMONSTRATED",
+    "HAB_closed_bypass": "NOT DEMONSTRATED",
+    "Xbox_Switch2_native": "NOT DEMONSTRATED"
+  },
+  "methods": {
+    "read_only_signed_image": true,
+    "synthetic_regression_tests": true,
+    "physical_controller_connected": false,
+    "USB_transfer_sent": false,
+    "flash_written": false,
+    "efuse_written": false
+  },
+  "phase50": "Trace owner construction and who writes owner+4/owner+8/owner+12; distinguish active runtime class selectors from ROM possibilities."
+}
