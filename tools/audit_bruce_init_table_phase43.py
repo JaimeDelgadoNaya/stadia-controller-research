@@ -99,6 +99,16 @@ def audit(image):
         "table_shape":bounds,
         "neighbor_words":items,
         "boundary_reference_census":refs,
+        "candidate_start_reference_code":[
+            hex(x["pc"])+" "+x["m"]+" "+x["op"]
+            for x in __import__("tools.audit_bruce_ep0_registration",fromlist=["decode"]).decode(
+                image,0x600CDB60,0x600CDBAC
+            )
+        ],
+        "candidate_start_reference_words":[
+            {"file_offset":hex(i),"word":hex(le32(image,i))}
+            for i in range(0x8DB80,0x8DBC0,4)
+        ],
         "possible_table_iterator_near_0x60061608":[
             hex(x["pc"])+" "+x["m"]+" "+x["op"]
             for x in __import__("tools.audit_bruce_ep0_registration",fromlist=["decode"]).decode(
@@ -130,6 +140,8 @@ def main():
     print("PHASE43 POINTER TABLE WORDS",json.dumps(report["neighbor_words"]))
     print("PHASE43 POINTER TABLE REFS",json.dumps(report["boundary_reference_census"]))
     print("PHASE43 POSSIBLE TABLE ITERATOR",json.dumps(report["possible_table_iterator_near_0x60061608"]))
+    print("PHASE43 INIT ARRAY START CONTEXT",json.dumps(report["candidate_start_reference_code"]))
+    print("PHASE43 INIT ARRAY START WORDS",json.dumps(report["candidate_start_reference_words"]))
 
 if __name__=="__main__":
     main()
