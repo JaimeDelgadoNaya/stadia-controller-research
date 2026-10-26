@@ -46,6 +46,7 @@ on:
       - 'tools/audit_bruce_owner_cfg_phase52.py'
       - 'tools/audit_bruce_mode2_preconditions_phase53.py'
       - 'tools/audit_bruce_owner_writers_phase54.py'
+      - 'tools/audit_bruce_owner_holder_phase55.py'
       - 'tools/emulate_bruce_class10_callback_guard.py'
       - 'tools/emulate_bruce_class_selector.py'
       - 'tools/emulate_bruce_class_request_fragment.py'
@@ -92,6 +93,7 @@ on:
       - 'tests/test_bruce_owner_cfg_phase52.py'
       - 'tests/test_bruce_mode2_preconditions_phase53.py'
       - 'tests/test_bruce_owner_writers_phase54.py'
+      - 'tests/test_bruce_owner_holder_phase55.py'
       - 'tests/test_emulate_bruce_class10_callback_guard.py'
       - 'tests/test_emulate_bruce_class_selector.py'
       - 'tests/test_bruce_class_request_fragment.py'
@@ -274,6 +276,7 @@ jobs:
           python -m tools.audit_bruce_owner_cfg_phase52 /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/phase52-owner-cfg.json
           python -m tools.audit_bruce_mode2_preconditions_phase53 /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/phase53-mode2-guards.json
           python -m tools.audit_bruce_owner_writers_phase54 /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/phase54-writers.json
+          python -m tools.audit_bruce_owner_holder_phase55 /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/phase55-owner-holder.json
           python -m tools.emulate_bruce_class10_callback_guard /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/class10-guard-virtual.json
           python -m tools.emulate_bruce_class_selector /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/selection-synthetic.json
           python -m tools.emulate_bruce_class_request_fragment /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/synthetic-class-requests.json
