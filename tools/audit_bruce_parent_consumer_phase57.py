@@ -104,11 +104,45 @@ def signed_call_and_literal_xrefs(image):
 WINDOWS={
     "direct_state_reader_caller":(0x60074D88,0x60074DBC),
     "state_reader_argument_supplier":(0x60079C50,0x60079CDC),
+    "state_supplier_followup":(0x60079CD4,0x60079D16),
+    "constructor_after_postinit":(0x60079D98,0x60079DE0),
     "constructor_caller":(0x60079D74,0x60079DA8),
     "post_init_entry":(0x6007E784,0x6007E7CC),
     "post_init_reader_early":(0x6007E7C8,0x6007E838),
     "reader_later":(0x6007E8A0,0x6007E9BA),
 }
+
+
+def inspect_global_argument_pointers(image):
+    """Signed static reference through a getter, not observed live RAM.
+
+    PC-relative literal for 0x60079c50 points to RAM or XIP; its runtime
+    dereference is a separate unmeasured value. Output includes candidate
+    producer literals to permit explicit equality comparison later.
+    """
+    pc=0x60079C50
+    instruction=decode(image,pc,pc+2)
+    if len(instruction)!=1 or (instruction[0]["m"],instruction[0]["op"])!=(
+        "ldr","r1, [pc, #0x14]"
+    ):
+        raise ValueError("phase57 signed state-reader supplier literal drift")
+    literal=((pc+4)&~3)+0x14
+    word=struct.unpack_from("<I",image,literal-ASSUMED_XIP_BASE)[0]
+    candidates=[
+        {"site":hex(p),"literal_address":hex((p+4)&~3 | 0),
+         "raw_instruction":[{"pc":hex(x["pc"]),"m":x["m"],"op":x["op"]}
+                 for x in decode(image,p,p+4)]}
+        for p in (0x60079DBA,0x60079DBC)
+    ]
+    return {
+        "getter_call_from":"0x60074d94 BL 0x60079c50",
+        "getter_pc":hex(pc),"literal_at":hex(literal),
+        "getter_literal_value":hex(word),
+        "runtime_first_word":"UNMEASURED",
+        "getter_sink":"0x60074da4 LDR R0,[SP] -> 0x60074daa BL 0x6007e794",
+        "producer_sites_for_followup":candidates,
+        "same_as_constructor_object":"UNPROVEN",
+    }
 
 
 def verify_itcm_reader_veneer(image):
@@ -233,6 +267,7 @@ def audit(image):
     refscan=signed_call_and_literal_xrefs(image)
     pointer_table=inspect_reader_pointer_table(image,refscan)
     reader_veneer=verify_itcm_reader_veneer(image)
+    supplier=inspect_global_argument_pointers(image)
     nread=verify_pins(image,READ_PINS,[
         (0x6007E7E8,0x6007E7EE),
         (0x6007E80E,0x6007E814),
@@ -275,6 +310,8 @@ def audit(image):
         "signed_cross_references":refscan,
         "reader_pointer_table":pointer_table,
         "itcm_reader_veneer":reader_veneer,
+        "reader_global_argument_source":supplier,
+        "itcm_veneer_caller_window":itcm_rows(image,0xAA00,0x50),
         "post_init_wrapper":{
             "argument": "R0 = allocated object from saved R4 (conditional)",
             "operation":"R0 += 12, R2=27, R1 literal; tail branch 0x6010177a",
@@ -309,6 +346,8 @@ def main():
     print("PHASE57 CROSS REFERENCES",json.dumps(result["signed_cross_references"]))
     print("PHASE57 READER POINTER TABLE",json.dumps(result["reader_pointer_table"]))
     print("PHASE57 ITCM READER VENEER",json.dumps(result["itcm_reader_veneer"]))
+    print("PHASE57 READER ARGUMENT GLOBAL",json.dumps(result["reader_global_argument_source"]))
+    print("PHASE57 ITCM VENEER CALLER",json.dumps(result["itcm_veneer_caller_window"]))
     print("PHASE57 READER CANDIDATES",json.dumps(result["read_candidates"]))
     print("PHASE57 PINS",result["caller_pin_count"],result["reader_pin_count"])
     print("PHASE57 NO LIVE USB CONFIG OR EXECUTION PROOF")
