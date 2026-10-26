@@ -25,8 +25,67 @@ PROLOGUE_WINDOWS = (
     (0x60079D40, CALLSITE + 4),
     (0x60079D64, CALLSITE + 4),
     (0x60079D6C, CALLSITE + 4),
-    (0x60079D72, CALLSITE + 4),
+    (0x60079D74, CALLSITE + 4),
 )
+
+R0_ORIGIN_PINS = {
+    0x60079D74: ("movs", "r0, #0xa4"),
+    0x60079D76: ("bl", "#0x6013d378"),
+    0x60079D7A: ("mov", "r3, r5"),
+    0x60079D7C: ("ldr", "r2, [pc, #0x54]"),
+    0x60079D7E: ("mov", "r4, r0"),
+    0x60079D80: ("ldr", "r1, [pc, #0x54]"),
+    0x60079D82: ("str", "r6, [sp]"),
+    0x60079D84: ("bl", "#0x6007eb8c"),
+}
+
+
+def prove_r0_producer(image):
+    """Pin each signed instruction, then track R0 returned by direct BL.
+
+    This proves the static argument dependency. It does NOT establish
+    the allocation semantics or absolute value of the BL return.
+    """
+    rows=decode(image, 0x60079D74, 0x60079D88)
+    m={row["pc"]:(row["m"],row["op"]) for row in rows}
+    for pc,expected in R0_ORIGIN_PINS.items():
+        if m.get(pc)!=expected:
+            raise ValueError(f"phase56 OEM R0 source drift {pc:#x}: {m.get(pc)!r}")
+    # Explicitly reject unrecognized instructions inserted between the
+    # call's return PC and the second BL.
+    if set(m)!=set(R0_ORIGIN_PINS):
+        raise ValueError("phase56 unexpected caller instructions in R0 dataflow")
+    return {
+        "producer_call_pc":"0x60079d76",
+        "producer_target":"0x6013d378",
+        "producer_input_r0_immediate":0xA4,
+        "return_r0_preserved_until":"0x60079d84",
+        "return_r0_value":"UNKNOWN",
+        "owner_argument_r2":"0x2000a2a8 (phase55 literal)",
+        "base_saved_r4":"0x60079d7e MOV R4,R0",
+        "pinned_original_instructions":len(R0_ORIGIN_PINS),
+        "classification":"SIGNED_STATIC_RETURN_PROVENANCE; ALLOCATION_SEMANTICS_NOT_YET_PROVEN",
+    }
+
+
+def callee_code_preview(image):
+    """Bounded linear view of the producer; no symbolic execution."""
+    return select_original_window(image,0x6013D378,0x6013D3BC)
+
+
+def reader_focus_windows(image):
+    """Show known candidate local neighborhoods; base identity is unknown."""
+    anchors=(
+        (0x6007E980,0x6007E9B0),
+        (0x6007E7DC,0x6007E81C),
+        (0x6005B988,0x6005B9C0),
+    )
+    return [
+        {"start":hex(lo),"end":hex(hi),
+         "rows":select_original_window(image,lo,hi),
+         "known_parent_identity":False}
+        for lo,hi in anchors
+    ]
 
 
 def select_original_window(image, low, high):
@@ -125,13 +184,17 @@ def audit(image):
     if not windows[hex(0x60079D64)]["caller_instruction_present"]:
         raise ValueError("phase56 0x60079d64 original caller Thumb alignment drift")
     reads=census(image)
+    origin=prove_r0_producer(image)
     return {
         "phase":56, "original_signed_OEM_SHA_verified":True,
         "sha256":IMAGE_SHA256,
         "prior_phase55_pins_verified":previous["pins_verified"],
         "caller_R0_exploration":windows,
+        "pinned_R0_producer":origin,
+        "producer_callee_preview":callee_code_preview(image),
+        "reader_focus_windows":reader_focus_windows(image),
         "parent_plus80_reader_census":reads,
-        "proven_parent_R0": "UNRESOLVED",
+        "proven_parent_R0": "RETURN_VALUE_OF_0x6013D378; NUMERIC_VALUE_UNKNOWN",
         "known_owner_R2":hex(OWNER),
         "links_between_R0_and_readers": "UNPROVEN",
         "owner_cfg_fields_plus4_plus8_plus12": "UNMEASURED",
@@ -150,12 +213,16 @@ def main():
     res=audit(args.image.read_bytes())
     if args.out:
         args.out.write_text(json.dumps(res,indent=2)+"\n",encoding="utf-8")
+    print("PHASE56 R0 PRODUCER",json.dumps(res["pinned_R0_producer"]))
+    print("PHASE56 R0 CALLEE PREVIEW",json.dumps(res["producer_callee_preview"]))
+    for item in res["reader_focus_windows"]:
+        print("PHASE56 READER FOCUS",json.dumps(item))
     for lo,w in res["caller_R0_exploration"].items():
         print("PHASE56 R0 WINDOW",lo,json.dumps(w))
     cs=res["parent_plus80_reader_census"]
     print("PHASE56 FIELD80 READER CENSUS",json.dumps({k:v for k,v in cs.items() if k not in ("all_read_sites","other_examples")}))
     print("PHASE56 FIELD80 READER EXAMPLES",json.dumps(cs["other_examples"]))
-    print("PHASE56 R0 UNKNOWN; NO RUNTIME OR OWNER CFG WRITER CLAIM")
+    print("PHASE56 R0 IS RETURN FROM 0x6013D378; NUMERIC VALUE AND READER LINKS UNKNOWN")
 
 
 if __name__=="__main__":
