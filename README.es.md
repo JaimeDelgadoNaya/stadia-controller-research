@@ -34,6 +34,9 @@ hemos demostrado ejecución de firmware propio ni una forma de eludir las firmas
 
 **[Fase #35 — SETUP USB y función de clase](docs/es/setup-control-clase-bruce.md).** Análisis sobre la imagen original OEM Bruce firmada: se identificaron lecturas relacionadas de `bmRequestType`, `bRequest`, `wValue` y `wIndex`, la rama de solicitudes estándar 1–11 y el **reenvío condicional de `bRequest` por `0x600D0EB8` a un puntero de clase**. Se diferenciaron dos tablas distintas `0x60104BA4`/`0x60104BC4`; falta identificar el objeto EP0 activo y el receptor concreto de `0x81/0x83/0x84`. Sin IO sobre mando, bypass HAB CLOSED, firmware instalable ni soporte Xbox/Switch 2 demostrado.
 
+
+**[Fase #36 — referencias reales de tablas USB](docs/es/bruce-referencias-tablas-clase.md).** Sobre la aplicación Bruce original firmada, se verificó que el puntero cargado en `0x6005679A` apunta a una **tabla indexada distinta**, de entradas de ocho bytes, en `0x60104BDC`. El barrido PC-relativo y `MOVW/MOVT` **no ha acreditado** una instalación de `0x600D0E58` para EP0. Quedan sin identificar la clase activa y el tratamiento de `0x81/0x83/0x84`; análisis exclusivamente offline.
+
 ## Prioridad actual: software del propio mando y Switch 2 directa
 
 El propietario ha descartado adaptadores y placas externas. La nueva prioridad
