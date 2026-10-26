@@ -1,0 +1,162 @@
+{
+  "phase": 72,
+  "image_sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+  "exact_image_hash_verified": true,
+  "retained_pre_svc_state": {
+    "priority_readback_mask": "0xf0",
+    "initial_priority_byte": "0xa0",
+    "initial_basepri": "0x50",
+    "outcome": "stopped_before_svc",
+    "stop_pc": "0x600cc536",
+    "assertion_line": null,
+    "nesting_after": "0x0",
+    "virtual_basepri_after": "0x50",
+    "clock_word_from_virtual_initialized_data": 528000000,
+    "tick_reload": 527999,
+    "virtual_vtor": "0x60040000",
+    "virtual_msp": "0x2002b828",
+    "probe_reads": [
+      {
+        "pc": "0x600cc5b0",
+        "stored": "0xa0",
+        "returned": "0xa0"
+      },
+      {
+        "pc": "0x600cc5be",
+        "stored": "0xff",
+        "returned": "0xf0"
+      }
+    ],
+    "observed_original_writes": [
+      {
+        "pc": "0x600cc5bc",
+        "address": "0xe000e400",
+        "size": 1,
+        "value": "0xff"
+      },
+      {
+        "pc": "0x600cc60c",
+        "address": "0xe000e400",
+        "size": 1,
+        "value": "0xa0"
+      },
+      {
+        "pc": "0x600cc616",
+        "address": "0xe000ed20",
+        "size": 4,
+        "value": "0xf00000"
+      },
+      {
+        "pc": "0x600cc61e",
+        "address": "0xe000ed20",
+        "size": 4,
+        "value": "0xf0f00000"
+      },
+      {
+        "pc": "0x600cc57e",
+        "address": "0xe000e010",
+        "size": 4,
+        "value": "0x0"
+      },
+      {
+        "pc": "0x600cc580",
+        "address": "0xe000e018",
+        "size": 4,
+        "value": "0x0"
+      },
+      {
+        "pc": "0x600cc592",
+        "address": "0xe000e014",
+        "size": 4,
+        "value": "0x80e7f"
+      },
+      {
+        "pc": "0x600cc596",
+        "address": "0xe000e010",
+        "size": 4,
+        "value": "0x7"
+      },
+      {
+        "pc": "0x600cc624",
+        "address": "0x20003d68",
+        "size": 4,
+        "value": "0x0"
+      },
+      {
+        "pc": "0x600cc54a",
+        "address": "0xe000ed88",
+        "size": 4,
+        "value": "0xf00000"
+      },
+      {
+        "pc": "0x600cc632",
+        "address": "0xe000ef34",
+        "size": 4,
+        "value": "0xc0000000"
+      }
+    ],
+    "svc_executed": false,
+    "task_entry_executed": false,
+    "instruction_hooks": 128
+  },
+  "original_software_restore": {
+    "vector_word": "0x6004063d",
+    "manual_handler_entry": true,
+    "current_task": "0x20020278",
+    "frame_pointer": "0x20020b04",
+    "before": {
+      "basepri": "0x50",
+      "msp": "0x2002b828",
+      "psp": "0x0"
+    },
+    "stop_pc": "0x6004cb5a",
+    "after": {
+      "basepri": "0x0",
+      "msp": "0x2002b828",
+      "psp": "0x20020b28",
+      "lr": "0xfffffffd",
+      "cpu_r0": "0x0"
+    },
+    "restored_r4_through_r11": [
+      "0xa5a5a5a5",
+      "0xa5a5a5a5",
+      "0xa5a5a5a5",
+      "0xa5a5a5a5",
+      "0xa5a5a5a5",
+      "0xa5a5a5a5",
+      "0xa5a5a5a5",
+      "0xa5a5a5a5"
+    ],
+    "restored_words_match_original_frame": true,
+    "pending_hardware_frame": {
+      "stacked_r0": "0x2002014c",
+      "stacked_pc": "0x60101760",
+      "stacked_status": "0x1000000"
+    },
+    "executed_instruction_addresses": [
+      "0x6004063c",
+      "0x6004063e",
+      "0x6004cb40",
+      "0x6004cb42",
+      "0x6004cb44",
+      "0x6004cb46",
+      "0x6004cb4a",
+      "0x6004cb4e",
+      "0x6004cb52",
+      "0x6004cb56"
+    ],
+    "svc_executed": false,
+    "exception_entry_executed": false,
+    "exception_return_executed": false,
+    "task_entry_executed": false
+  },
+  "limits": [
+    "The same virtual machine is retained from the accepted phase71 port model, including CPU mask/MSP state.",
+    "Handler entry follows the virtual vector manually; SVC execution, real exception entry/stacking and NVIC delivery are omitted.",
+    "Original wrapper and software-restore instructions execute; BX LR is stopped before the exception-return mechanism.",
+    "Pending stacked R0/PC are not yet loaded as task CPU state; no task entry or work processing executes.",
+    "Priority readback, system/timer memory and prior constructor/synchronization models remain synthetic.",
+    "Clearing virtual BASEPRI does not establish physical interrupt state or complete scheduler startup.",
+    "No physical task/class10 activation, device commands, firmware/eFuse writes, custom code or HAB bypass."
+  ]
+}

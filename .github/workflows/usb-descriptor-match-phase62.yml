@@ -13,6 +13,7 @@ on:
       - 'tools/audit_task_handle_phase69.py'
       - 'tools/audit_scheduler_registration_phase70.py'
       - 'tools/audit_port_start_phase71.py'
+      - 'tools/audit_svc_restore_phase72.py'
       - 'tools/parse_usb_configuration.py'
       - 'tests/test_usb_descriptor_match_phase62.py'
       - 'tests/test_usb_provider_phase63.py'
@@ -24,6 +25,7 @@ on:
       - 'tests/test_task_handle_phase69.py'
       - 'tests/test_scheduler_registration_phase70.py'
       - 'tests/test_port_start_phase71.py'
+      - 'tests/test_svc_restore_phase72.py'
       - 'evidence/usb*phase*.json'
       - '.github/workflows/usb-descriptor-match-phase62.yml'
   workflow_dispatch:
@@ -61,6 +63,7 @@ jobs:
           STADIA_BRUCE_IMAGE="$image" python -m unittest tests.test_task_handle_phase69 -v
           STADIA_BRUCE_IMAGE="$image" python -m unittest tests.test_scheduler_registration_phase70 -v
           STADIA_BRUCE_IMAGE="$image" python -m unittest tests.test_port_start_phase71 -v
+          STADIA_BRUCE_IMAGE="$image" python -m unittest tests.test_svc_restore_phase72 -v
           python -m tools.audit_usb_descriptor_match_phase62 "$image" --emulate --out "$report"
           python - "$report" <<'PY'
           import json, sys

@@ -1,5 +1,7 @@
 # Stadia Controller Research
 
+**[Phase 72 — original SVC software restore](docs/en/svc-software-restore-phase72.md).** The retained pre-SVC virtual CPU executes the original wrapper/handler, restores saved words, sets PSP 0x20020B28 and clears BASEPRI. It stops before BX LR: SVC delivery, exception return, hardware unstacking and task entry remain unexecuted.
+
 **[Phase 71 — nesting normalization and pre-SVC stop](docs/en/critical-normalization-svc-phase71.md).** Original port-start code clears the OEM nesting sentinel with virtual priority readback mask 0xF0 and stops before SVC. BASEPRI remains 0x50 there; its later handler clear is statically identified. Exception/context switch and physical priority behavior remain unexecuted/unmeasured.
 
 **[Phase 70 — original scheduler registration and critical state](docs/en/scheduler-registration-phase70.md).** Original registration and ITCM list/critical helpers insert the prepared state in a virtual priority-1 ready list. The OEM nesting sentinel retains virtual BASEPRI 0x50; a separate zero-depth vector restores zero. No task entry/context switch or physical activation executes.
