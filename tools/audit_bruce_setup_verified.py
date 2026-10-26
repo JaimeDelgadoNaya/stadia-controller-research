@@ -132,6 +132,7 @@ def main():
     print("STANDARD SETUP request dispatch 1..11:",result["standard_interface_dispatch"]["branch_table"])
     print("CLASS bRequest TO INDIRECT CALLBACK:",result["class_request_forwarding"]["indirect_class_target"])
     print("CLASS TABLE WORD",result["control_handler_thumb_word_at_0x60104bac"])
+    print("CLASS DATA TABLE CONTEXT",json.dumps(result["static_control_handler_table_words"]))
     print("HOST REQUEST 0x81/0x83/0x84 REACHABILITY: UNVERIFIED")
     print("NO DEVICE IO, FLASH WRITES, INSTALLABLE FIRMWARE OR BYPASS.")
 
