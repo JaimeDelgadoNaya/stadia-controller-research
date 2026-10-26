@@ -29,6 +29,12 @@ FOCUS_PINS={
     0x600773B2:("movs","r3, #2"),
     0x600773B4:("str","r4, [r2, #4]"),
     0x600773B6:("str","r3, [r5, #8]"),
+    0x60077494:("bl","#0x60077744"),
+    0x6007749A:("bl","#0x60077720"),
+    0x6007749E:("str.w","r0, [r4, #0x198]"),
+    0x600774A2:("bl","#0x60077730"),
+    0x600774AA:("str","r0, [r4, #4]"),
+    0x600774AC:("b","#0x60077396"),
 }
 SUMMARY={
     "0x81":{"signed_local_operation":"derive context_object +0x190 into response-like R2+4, output tag 8 at +8",
@@ -36,6 +42,10 @@ SUMMARY={
     "0x83":{"signed_local_operation":"derive context_object +0x12c; clear [R2+8] then branch to signed common function",
             "is_incoming_arbitrary_callback_address_store":False},
     "0x84":{"signed_local_operation":"derive context_object +0x1d8 into [R2+4], write tag 2 at +8",
+            "is_incoming_arbitrary_callback_address_store":False},
+    "0x8b":{"signed_local_operation":"call fixed signed function 0x60077744 and return via common handler",
+            "is_incoming_arbitrary_callback_address_store":False},
+    "0x8c":{"signed_local_operation":"call signed 0x60077720, store return into context R4+0x198; call signed 0x60077730, store return into R4+4; share 0x81 response-output path",
             "is_incoming_arbitrary_callback_address_store":False},
 }
 
@@ -48,6 +58,7 @@ def pin_case_instructions(image):
         (0x60077392,0x6007739C),
         (0x600773A4,0x600773AE),
         (0x600773AE,0x600773BA),
+        (0x60077494,0x600774AE),
     ):
         allrows.update({x["pc"]:(x["m"],x["op"]) for x in decode(image,start,end)})
     for pc,pair in FOCUS_PINS.items():
