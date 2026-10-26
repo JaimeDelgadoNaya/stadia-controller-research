@@ -86,6 +86,8 @@ def audit(image):
         {"load":"0x60054ffa","literal":"0x60055020","value":hex(raw_word(image,0x60055020))},
         {"candidate_global_for_class1":"0x6005531c","value":hex(raw_word(image,0x6005531C))},
         {"candidate_global_for_class10":"0x6005534c","value":hex(raw_word(image,0x6005534C))},
+        {"candidate_global_for_class2":"0x60054cf4","value":hex(raw_word(image,0x60054CF4))},
+        {"candidate_global_for_class4":"0x600548c0","value":hex(raw_word(image,0x600548C0))},
     ]
     windows={name:[hex(x["pc"])+" "+x["m"]+" "+x["op"]
                    for x in decode(image,lo,hi)]
