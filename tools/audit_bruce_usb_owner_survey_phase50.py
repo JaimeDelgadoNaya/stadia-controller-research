@@ -11,6 +11,7 @@ from tools.audit_signed_app_surface import IMAGE_SHA256,IMAGE_SIZE
 from tools.audit_bruce_ep0_registration import decode
 from tools.audit_bruce_init_inbound_phase43 import find_inbound_branches
 from tools.audit_bruce_usb_config_writer_phase49 import audit as audit_writer
+from tools.audit_bruce_ep0_class_object_phase48 import raw_word
 
 SLICES={
  "owner_lifecycle_first":(0x60060B40,0x60060C80),
@@ -22,6 +23,11 @@ SLICES={
  "owner_mode_next":(0x600610A8,0x600611A0),
  "owner_post_mode":(0x600611A0,0x60061280),
  "descriptor_owner_init_candidate":(0x60060460,0x600605B0),
+ "owner_direct_caller_mode_a":(0x60064900,0x60064958),
+ "owner_direct_caller_mode_b":(0x60071400,0x60071440),
+ "owner_direct_caller_mode_c":(0x600D4E40,0x600D4EA0),
+ "owner_usb_init_earlier":(0x60060A00,0x60060B40),
+ "owner_usb_init_later":(0x60060B64,0x60060C18),
 }
 CALL_TARGETS={
  "owner_constructor":0x60060F84,
@@ -66,6 +72,8 @@ def audit(image):
         "source":"original signed Bruce OEM update; no physical RAM/flash readback",
         "writer_chain_phase49":writer["signed_owner_to_config_args"],
         "owner_code_windows":windows,
+        "owner_mode_b_signed_literals":[{"PC":hex(p),"raw_word":hex(raw_word(image,p))} for p in range(0x60071430,0x60071440,4)],
+        "owner_mode_a_signed_literals":[{"PC":hex(p),"raw_word":hex(raw_word(image,p))} for p in range(0x60064950,0x60064968,4)],
         "direct_branch_callers_candidates":callers,
         "static_boundaries":{
             "owner_address":"R0 at 0x60060FE8, R4 after 0x60060FF0",
@@ -87,6 +95,8 @@ def main():
     z=audit(a.image.read_bytes())
     if a.out:a.out.write_text(json.dumps(z,indent=2)+"\n")
     print("PHASE50 OWNER MODE",json.dumps(z["static_boundaries"]))
+    print("PHASE50 OWNER MODE B LITERALS",json.dumps(z["owner_mode_b_signed_literals"]))
+    print("PHASE50 OWNER MODE A LITERALS",json.dumps(z["owner_mode_a_signed_literals"]))
     for name,rows in z["owner_code_windows"].items():
         print("PHASE50 WINDOW",name,json.dumps(rows))
     for name,rows in z["direct_branch_callers_candidates"].items():
