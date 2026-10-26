@@ -39,6 +39,15 @@ CALLER_PINS={
     0x60079D98:("str","r3, [r4, #0x68]"),
     0x60079D9A:("bl","#0x6007e784"),
 }
+SUPPLIER_PINS={
+    0x60074D8C:("push","{r0, r1, r2, r4, r5, lr}"),
+    0x60074D92:("mov","r0, sp"),
+    0x60074D94:("bl","#0x60079c50"),
+    0x60074DA4:("ldr","r0, [sp]"),
+    0x60074DA6:("cbz","r0, #0x60074dae"),
+    0x60074DA8:("movs","r1, #1"),
+    0x60074DAA:("bl","#0x6007e794"),
+}
 READ_PINS={
     0x6007E7EA:("ldr.w","r0, [r0, #0x80]"),
     0x6007E810:("ldr.w","r0, [r4, #0x80]"),
@@ -129,7 +138,7 @@ def inspect_global_argument_pointers(image):
     literal=((pc+4)&~3)+0x14
     word=struct.unpack_from("<I",image,literal-ASSUMED_XIP_BASE)[0]
     candidates=[
-        {"site":hex(p),"literal_address":hex((p+4)&~3 | 0),
+        {"site":hex(p),"aligned_PC_base_not_a_literal_pointer":hex((p+4)&~3),
          "raw_instruction":[{"pc":hex(x["pc"]),"m":x["m"],"op":x["op"]}
                  for x in decode(image,p,p+4)]}
         for p in (0x60079DBA,0x60079DBC)
@@ -140,6 +149,7 @@ def inspect_global_argument_pointers(image):
         "getter_literal_value":hex(word),
         "runtime_first_word":"UNMEASURED",
         "getter_sink":"0x60074da4 LDR R0,[SP] -> 0x60074daa BL 0x6007e794",
+        "getter_source":"0x60074d92 MOV R0,SP then BL 0x60079c50 copies first word of a static global into SP",
         "producer_sites_for_followup":candidates,
         "same_as_constructor_object":"UNPROVEN",
     }
@@ -257,6 +267,7 @@ def audit(image):
         raise ValueError("phase57 original SHA-256-pinned signed OEM required")
     original=prove_r0_producer(image)
     ncaller=verify_pins(image,CALLER_PINS,[(0x60079D74,0x60079DA8)])
+    nsupplier=verify_pins(image,SUPPLIER_PINS,[(0x60074D8C,0x60074DAE)])
     npost=verify_pins(image,POST_INIT_WRAPPER_PINS,[(0x6007E784,0x6007E78E)])
     nentry={
         "state_dispatch":verify_pins(image,READER_ENTRIES["state_dispatch"],
@@ -304,6 +315,7 @@ def audit(image):
         "sha256":IMAGE_SHA256,
         "original_signed_image_verified":True,
         "caller_pin_count":ncaller,
+        "supplier_pin_count":nsupplier,
         "reader_pin_count":nread,
         "wrapper_pin_count":npost,
         "reader_entry_pins":nentry,
