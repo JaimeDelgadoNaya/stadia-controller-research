@@ -34,6 +34,9 @@ firmware execution or signature bypass has been demonstrated.**
 
 **[Phase #35 — USB SETUP and class callback provenance](docs/en/bruce-class-control-setup-provenance.md).** Signed original Bruce image analysis validates SETUP-like `bmRequestType`, `bRequest`, `wValue`, `wIndex` field reads, a standard-request range 1–11, and **conditional class `bRequest` forwarding via `0x600D0EB8`**. Adjacent `0x60104BA4` and `0x60104BC4` tables are not interchangeable. Live EP0 object and receiver for `0x81/0x83/0x84` remain unverified; no controller I/O, HAB bypass, installable firmware or Xbox/Switch 2 support claimed.
 
+
+**[Phase #36 — signed Bruce class-table references](docs/en/bruce-class-table-xrefs.md).** The original SHA-verified firmware shows that PC-relative load at `0x6005679A` points to a **different eight-byte-stride indirect dispatch table** at `0x60104BDC`. PC-relative and local `MOVW/MOVT` scans did not establish live EP0 registration of `0x600D0E58` or a receiver for `0x81/0x83/0x84`. Offline only; no hardware or firmware writes.
+
 ## Current priority: on-controller software and direct Switch 2
 
 The owner excludes adapters and external boards. The active goal is software
