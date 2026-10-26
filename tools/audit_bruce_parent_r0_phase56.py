@@ -131,6 +131,58 @@ def reader_focus_windows(image):
     ]
 
 
+
+ITCM_WRAPPER_PINS={
+    0xB532:("push","{r4, lr}"),
+    0xB534:("cmp","r0, #0"),
+    0xB536:("ite","ne"),
+    0xB538:("movne","r4, r0"),
+    0xB53A:("moveq","r4, #1"),
+    0xB53C:("mov","r0, r4"),
+    0xB53E:("bl","#0x8832"),
+    0xB542:("cbnz","r0, #0xb552"),
+    0xB544:("bl","#0xbbb8"),
+    0xB548:("cbnz","r0, #0xb54e"),
+    0xB54A:("bl","#0xbb90"),
+    0xB54E:("blx","r0"),
+    0xB550:("b","#0xb53c"),
+    0xB552:("pop","{r4, pc}"),
+}
+
+
+def itcm_rows(image, runtime_start, size):
+    """Decode original signed startup-copied bytes at ITCM runtime PC."""
+    from capstone import Cs,CS_ARCH_ARM,CS_MODE_THUMB,CS_MODE_MCLASS
+    if not 0<=runtime_start<ITCM_LENGTH or runtime_start+size>ITCM_LENGTH:
+        raise ValueError("ITCM range outside signed startup copy")
+    off=ITCM_SOURCE_OFFSET+runtime_start
+    d=Cs(CS_ARCH_ARM,CS_MODE_THUMB|CS_MODE_MCLASS)
+    return [
+        {"pc":hex(i.address),"m":i.mnemonic,"op":i.op_str,"ins":i.mnemonic+" "+i.op_str}
+        for i in d.disasm(image[off:off+size],runtime_start)
+    ]
+
+
+def verify_itcm_wrapper(image):
+    rows=itcm_rows(image,0xB532,0x22)
+    ins={int(q["pc"],16):(q["m"],q["op"]) for q in rows}
+    for addr,expected in ITCM_WRAPPER_PINS.items():
+        if ins.get(addr)!=expected:
+            raise ValueError(f"phase56 signed ITCM wrapper drift {addr:#x} {ins.get(addr)!r}")
+    return {
+        "pins":len(ITCM_WRAPPER_PINS),
+        "runtime_entry":"0xb532",
+        "source_file_offset":hex(ITCM_SOURCE_OFFSET+0xB532),
+        "size_argument_from_caller":164,
+        "zero_size_normalized_to":1,
+        "forward_to_ITCM":"0x8832 (BL)",
+        "successful_nonzero_return":"0xb542 CBNZ R0,#0xB552 followed by POP",
+        "fallback_on_zero":"0xb544/0xb54a/0xb54e unknown handler and retry loop",
+        "classification":"SIGNED_ALLOCATION_LIKE_WRAPPER; INNER_ROUTINE_SEMANTICS_NOT_INFERRED",
+        "inner_target_preview":itcm_rows(image,0x8832,0x70),
+    }
+
+
 def select_original_window(image, low, high):
     """Unverified bounded linear disassembly, not function boundary proof."""
     return [dict(pc=hex(x["pc"]), ins=x["m"]+" "+x["op"],
@@ -228,6 +280,7 @@ def audit(image):
         raise ValueError("phase56 0x60079d64 original caller Thumb alignment drift")
     reads=census(image)
     origin=prove_r0_producer(image)
+    wrapper=verify_itcm_wrapper(image)
     return {
         "phase":56, "original_signed_OEM_SHA_verified":True,
         "sha256":IMAGE_SHA256,
@@ -235,6 +288,7 @@ def audit(image):
         "caller_R0_exploration":windows,
         "pinned_R0_producer":origin,
         "producer_veneer":resolve_producer_veneer(image),
+        "producer_ITCM_wrapper":wrapper,
         "reader_focus_windows":reader_focus_windows(image),
         "parent_plus80_reader_census":reads,
         "proven_parent_R0": "RETURN_VALUE_OF_0x6013D378; NUMERIC_VALUE_UNKNOWN",
@@ -258,6 +312,7 @@ def main():
         args.out.write_text(json.dumps(res,indent=2)+"\n",encoding="utf-8")
     print("PHASE56 R0 PRODUCER",json.dumps(res["pinned_R0_producer"]))
     print("PHASE56 R0 VENEER",json.dumps(res["producer_veneer"]))
+    print("PHASE56 ITCM WRAPPER",json.dumps(res["producer_ITCM_wrapper"]))
     for item in res["reader_focus_windows"]:
         print("PHASE56 READER FOCUS",json.dumps(item))
     for lo,w in res["caller_R0_exploration"].items():
