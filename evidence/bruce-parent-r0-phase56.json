@@ -1,0 +1,82 @@
+{
+  "phase": 56,
+  "date": "2026-10-26",
+  "pull_request": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/pull/58",
+  "source": {
+    "kind": "original signed Bruce OEM update",
+    "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+    "installed_RAM_snapshot": false
+  },
+  "producer": {
+    "input_size_immediate": 164,
+    "pc_argument": "0x60079d74",
+    "call": "0x60079d76 BL 0x6013d378",
+    "return_base_preserved": "0x60079d7e MOV R4,R0",
+    "constructor": "0x60079d84 BL 0x6007eb8c",
+    "verified_original_pins": 8,
+    "return_pointer_numeric_value": "UNMEASURED"
+  },
+  "veneer": {
+    "pc": "0x6013d378",
+    "mnemonic": "LDR.W PC,[PC,#-0x0]",
+    "literal_pc": "0x6013d37c",
+    "raw_thumb_target": "0x0000b533",
+    "ITCM_runtime": "0x0000b532",
+    "ITCM_source_offset": "0x0000bd4e",
+    "ITCM_copy_source_offset": "0x0000081c",
+    "ITCM_copy_length": "0x0000bdf8"
+  },
+  "itcm": {
+    "wrapper": "0xb532",
+    "wrapper_pinned_instructions": 14,
+    "forwarding_pc": "0x8832",
+    "forwarding_branch": "0x8832 B.W 0x7f58",
+    "total_pins": 15,
+    "backend": "0x7f58",
+    "semantics": "allocation-like wrapper with size normalization, null checks, fallback and allocator-style size alignment",
+    "live_return": "UNMEASURED"
+  },
+  "reader_scan": {
+    "scope": "linear Thumb disassembly over XIP; no CFG/alias identity",
+    "total_candidate_reads": 32,
+    "ldrs": 29,
+    "ldrbs": 3,
+    "nearby": [
+      {
+        "pc": "0x6007e9a4",
+        "op": "ldr.w r0,[r4,#0x80]"
+      },
+      {
+        "pc": "0x6007e810",
+        "op": "ldr.w r0,[r4,#0x80]"
+      },
+      {
+        "pc": "0x6007e7ea",
+        "op": "ldr.w r0,[r0,#0x80]"
+      }
+    ],
+    "proven_same_object": false
+  },
+  "validation": {
+    "oem_CI": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40351166570",
+    "result": "SUCCESS",
+    "unittest_count": 673,
+    "Python_3_11": "SUCCESS",
+    "Python_3_12": "SUCCESS"
+  },
+  "limitations": {
+    "live_class10": "UNVERIFIED",
+    "owner_plus4_plus8_plus12": "UNMEASURED",
+    "host_controlled_code_pointer": "NOT DEMONSTRATED",
+    "unsigned_execution": "NOT DEMONSTRATED",
+    "HAB_CLOSED_bypass": "NOT DEMONSTRATED",
+    "Xbox_Switch2_support": "NOT DEMONSTRATED"
+  },
+  "safety": {
+    "USB_commands": false,
+    "live_RAM_dump": false,
+    "flash_writes": false,
+    "efuse_writes": false
+  },
+  "next": "phase57: resolve parent object identity in candidate 0x6007e9a4 and nearby readers"
+}
