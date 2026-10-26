@@ -1,0 +1,93 @@
+{
+  "phase": 48,
+  "date": "2026-10-26",
+  "PR": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/pull/50",
+  "source": {
+    "type": "exact signed Bruce OEM UPDATE binary",
+    "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+    "device_flash_readback": false
+  },
+  "signed_static": {
+    "lookup": {
+      "entry": "0x60054f7c",
+      "compare_input_with": "[0x20004080]",
+      "literal_at": "0x60054fac",
+      "returns_on_match": "0x20004080"
+    },
+    "globals": {
+      "EP0_common_USB": "0x20004080",
+      "class1": "0x200040c0",
+      "class2": "0x20004040",
+      "class4": "0x20004020",
+      "class10": "0x200040e0"
+    },
+    "class_initializers": {
+      "selector1": "0x600552f0",
+      "selector2": "0x60054c7c",
+      "selector4": "0x60054874",
+      "selector10": "0x60055320"
+    },
+    "indirect_control": {
+      "caller": "0x600d0bc8",
+      "deref_one": "0x600d0bf6 LDR R3,[R3,#4]",
+      "deref_two": "0x600d0bf8 LDR R3,[R3,#4]",
+      "call": "0x600d0bfa BLX R3",
+      "live_dynamic_method": "UNVERIFIED"
+    },
+    "EP0_event1_to_class_fanout": [
+      {
+        "set_event": "0x60054e08 MOVS R1,#1",
+        "call": "0x60054e1a BL 0x6005505c"
+      },
+      {
+        "set_event": "0x60054e5a MOVS R1,#1",
+        "call": "0x60054e6a BL 0x6005505c"
+      }
+    ],
+    "fanout": {
+      "entry": "0x6005505c",
+      "singleton_lookup": "0x60055072",
+      "ROM_method_table_literal_at": "0x600550e0",
+      "ROM_method_table_base": "0x60104b74",
+      "live_config_pointer": "[singleton+4]",
+      "runtime_records": "[config+0]",
+      "count": "config+8",
+      "record_stride": 12,
+      "class_selector": "[record+8]+4",
+      "class10_cmp": "0x600550a8 CMP R3,#0xA",
+      "ROM_class10_record": "0x60104ba4",
+      "ROM_class10_method8": "0x600d0e59",
+      "per_class_signed_method_call": "0x600550ba LDR [record+8]; 0x600550bc BLX R3"
+    },
+    "boot_class10_record": {
+      "RAM": "0x200030f4",
+      "callback": "0x600613fd",
+      "instance": "zero at signed startup",
+      "descriptor": "0x20003100"
+    },
+    "class10_runtime_initializer": {
+      "method0": "0x60055321",
+      "writes_record_pointer_to": "[0x200040e0+4]",
+      "writes_singleton_pointer_to": "[runtime_record+4]"
+    }
+  },
+  "conclusion": {
+    "physical_EP0_class10_reachability": "NOT VERIFIED",
+    "signed_conditional_EP0_event1_to_class10_dispatch": true,
+    "live_class10_config_present": "UNVERIFIED",
+    "live_class10_secondary_callback_active": "UNVERIFIED",
+    "BLX_0x600D0BFA_exact_target": "UNRESOLVED RUNTIME POINTER",
+    "host_supplied_callback_address": "NOT DEMONSTRATED",
+    "unsigned_execution": "NOT DEMONSTRATED",
+    "HAB_closed_bypass": "NOT DEMONSTRATED",
+    "Xbox_or_Switch2_native_support": "NOT DEMONSTRATED"
+  },
+  "methodology": {
+    "synthetic_unit_tests": true,
+    "firmware_checksum_enforced": true,
+    "physical_controller_used": false,
+    "usb_sent": false,
+    "flash_or_efuses_written": false
+  },
+  "next": "Trace writer for [0x20004080+4], config+4 dynamic method and runtime class records; only non-destructive passive observation."
+}
