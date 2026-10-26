@@ -23,12 +23,16 @@ SLICES={
     "usb_shared_constructor_body":(0x600550E0,0x60055170),
     "class_runtime_configuration_selector":(0x600551A0,0x60055234),
     "class_runtime_constructor":(0x60055234,0x600552D0),
+    "configuration_records_builder":(0x60055350,0x60055450),
+    "configuration_records_builder_tail":(0x60055450,0x60055530),
+    "usb_core_global_initializer":(0x600D02B0,0x600D0330),
     "usb_class_adapter_configuration":(0x600CFE00,0x600CFEC0),
     "host_usb_control_routing":(0x600D0B54,0x600D0C54),
     "usb_singleton_utility":(0x60054E98,0x6005505C),
 }
 CENSUS={
-    "shared_usb_constructor_candidate":0x600550E0,
+    "shared_usb_constructor_candidate":0x600550E4,
+    "class_array_builder":0x60055350,
     "class_runtime_configuration_selector":0x60055100,
     "class_runtime_constructor":0x60055234,
     "usb_shared_global_lookup":0x60054F7C,
@@ -39,6 +43,7 @@ EXPECTED={
     0x60054FE8:USB_CORE,
     0x60055020:USB_CORE,
     0x6005534C:CLASS10_GLOBAL,
+    0x600551A8:USB_CORE,
 }
 
 
@@ -64,6 +69,8 @@ def inspect(image):
         "pinned_sha256_verified":True,
         "source":"exact signed OEM update not actual installed flash",
         "verified_literal_rows":literal_rows,
+        "constructor_literal_pool":[{"PC":hex(pc),"original_word":hex(raw_word(image,pc))}
+                                    for pc in range(0x600551A8,0x600551B8,4)],
         "shared_USB_global_plus4":hex(USB_CORE+4),
         "runtime_config_method_from":"[ [0x20004080 + 4] + 4 ]",
         "class_record_array_from":"[ [0x20004080 + 4] + 0 ]",
@@ -91,6 +98,7 @@ def main():
     x=inspect(args.image.read_bytes())
     if args.out:args.out.write_text(json.dumps(x,indent=2)+"\n")
     print("PHASE49 VERIFIED CONFIG LITERALS",json.dumps(x["verified_literal_rows"]))
+    print("PHASE49 CONSTRUCTOR LITERAL POOL",json.dumps(x["constructor_literal_pool"]))
     for k,v in x["signed_code_windows"].items():
         print("PHASE49 SIGNED CODE WINDOW",k,json.dumps(v))
     for k,v in x["candidate_direct_branch_callers"].items():
