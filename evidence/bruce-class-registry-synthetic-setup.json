@@ -8,8 +8,19 @@
   },
   "possible_16byte_class_records": [
     {
-      "start": "0x60104b80",
+      "start": "0x60104b74",
       "selector": 1,
+      "selector_offset": 12,
+      "methods": [
+        "0x600552f1",
+        "0x600d0dfd",
+        "0x600d0c6b"
+      ]
+    },
+    {
+      "start": "0x60104b84",
+      "selector": 2,
+      "selector_offset": 12,
       "methods": [
         "0x60054c7d",
         "0x60054d09",
@@ -17,8 +28,9 @@
       ]
     },
     {
-      "start": "0x60104b90",
-      "selector": 2,
+      "start": "0x60104b94",
+      "selector": 4,
+      "selector_offset": 12,
       "methods": [
         "0x60054875",
         "0x600d0591",
@@ -26,8 +38,9 @@
       ]
     },
     {
-      "start": "0x60104ba0",
-      "selector": 4,
+      "start": "0x60104ba4",
+      "selector": 10,
+      "selector_offset": 12,
       "methods": [
         "0x60055321",
         "0x600d0ecb",
@@ -35,8 +48,9 @@
       ]
     },
     {
-      "start": "0x60104bb0",
-      "selector": 10,
+      "start": "0x60104bb4",
+      "selector": 0,
+      "selector_offset": 12,
       "methods": [
         "0x0",
         "0x0",
@@ -106,5 +120,14 @@
   "flash_or_eFuses_changed": false,
   "custom_code_execution_proven": false,
   "HAB_bypass_proven": false,
-  "console_compatibility_proven": false
+  "console_compatibility_proven": false,
+  "phase37_record_interpretation": "CORRECTED in phase38: selector at offset+12, signed ROM base 0x60104B74",
+  "corrected_by_PR": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/pull/38",
+  "original_wrong_interpretation_note": "Prior selector-first rows were inaccurate and are replaced here; request-forwarding Unicorn tests are unchanged.",
+  "class10_owns_forwarder": true,
+  "table_base_signed_original_thumb_literals": [
+    "0x60055142",
+    "0x600551cc"
+  ],
+  "exact_references_to_table_base_found": 2
 }
