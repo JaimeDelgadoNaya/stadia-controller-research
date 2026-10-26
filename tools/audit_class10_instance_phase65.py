@@ -75,7 +75,8 @@ def verify_pins(image):
 
 
 def virtual_case(image, ram, *, root, engine_present=False, engine_mode=2,
-                 class_busy=False, driver_status=0):
+                 class_busy=False, driver_status=0, execute_driver=False,
+                 mmio_word=8, start_transition=False):
     from unicorn import Uc, UC_ARCH_ARM, UC_MODE_THUMB, UC_MODE_MCLASS, UC_HOOK_CODE, UC_HOOK_MEM_WRITE
     from unicorn.arm_const import (
         UC_ARM_REG_R0, UC_ARM_REG_R1, UC_ARM_REG_R2, UC_ARM_REG_R5,
@@ -89,6 +90,9 @@ def virtual_case(image, ram, *, root, engine_present=False, engine_mode=2,
     uc.mem_map(0x20000000,0x30000)
     uc.mem_write(0x20000000,ram)
     uc.mem_map(0x10000000,0x1000)
+    if execute_driver:
+        uc.mem_map(0x402E0000,0x1000)
+        uc.mem_write(0x402E0124,struct.pack('<I',mmio_word))
     # Explicit test vectors, NOT original startup values or live measurements.
     # Also removes phase64's injected singleton/configuration handoff.
     uc.mem_write(CORE,bytes(16))
@@ -110,14 +114,16 @@ def virtual_case(image, ram, *, root, engine_present=False, engine_mode=2,
         entry = 0x60055320
     else:
         uc.reg_write(UC_ARM_REG_R0,OWNER)
-        entry = 0x60060F84
+        entry = 0x60060FE8 if start_transition else 0x60060F84
+        if start_transition:
+            uc.reg_write(UC_ARM_REG_R1,2)
     steps, calls, writes = [], [], []
     outcome = []
 
     def hook(machine,pc,size,user):
         steps.append(pc)
-        if root == 'class' and pc == 0x10000000:
-            outcome.append('class_return')
+        if pc == 0x10000000:
+            outcome.append('class_return' if root=='class' else 'transition_early_return')
             machine.emu_stop()
             return
         if root == 'owner' and pc == 0x60055196 and 0x60055320 in steps:
@@ -128,7 +134,7 @@ def virtual_case(image, ram, *, root, engine_present=False, engine_mode=2,
             outcome.append('driver_failure_before_cleanup')
             machine.emu_stop()
             return
-        if pc in (0x6013D3E0,0x600D15E8,0x6005556C):
+        if (pc in (0x6013D3E0,0x600D15E8,0x6005556C) and not (execute_driver and pc==0x6005556C)) or (start_transition and pc==0x60060C70):
             call = dict(target=hex(pc),r0=hex(machine.reg_read(UC_ARM_REG_R0)))
             if pc == 0x6013D3E0:
                 address = machine.reg_read(UC_ARM_REG_R0)
@@ -136,8 +142,8 @@ def virtual_case(image, ram, *, root, engine_present=False, engine_mode=2,
                     raise ValueError('Guard helper output outside virtual stack')
                 machine.mem_write(address,b'\0')
                 call['model']='writes zero to virtual stack status byte'
-            elif pc == 0x600D15E8:
-                call['model']='no-op guard restore'
+            elif pc in (0x600D15E8,0x60060C70):
+                call['model']='no-op transition helper; real effects not modeled' if pc==0x60060C70 else 'no-op guard restore'
             else:
                 machine.reg_write(UC_ARM_REG_R0,driver_status)
                 call.update(model='stubbed low-level USB driver return; no hardware effects',returned=driver_status)
@@ -148,13 +154,17 @@ def virtual_case(image, ram, *, root, engine_present=False, engine_mode=2,
         if root == 'owner':
             allowed |= (0x60060F84 <= pc < 0x60060FAA or 0x600550E4 <= pc < 0x600551A6 or
                         0x60055350 <= pc < 0x600553F8)
+            if execute_driver:
+                allowed |= (0x6005556C <= pc < 0x600555C4 or 0x60055400 <= pc < 0x600554A0)
+            if start_transition:
+                allowed |= 0x60060FE8 <= pc < 0x600610B8
         if not allowed:
             raise ValueError(f'Unexpected phase65 execution {pc:#x}')
 
     fields = {CORE,CORE+4,CORE+0xE,CLASS10,CLASS10+4,CLASS10+0xC,CLASS10+0xE,INSTANCE_OUT}
 
     def on_write(machine,access,address,size,value,user):
-        if address in fields:
+        if address in fields or (execute_driver and 0x402E0000 <= address < 0x402E1000):
             writes.append(dict(pc=hex(machine.reg_read(UC_ARM_REG_PC)),
                 address=hex(address),size=size,value=hex(value)))
 
@@ -164,7 +174,7 @@ def virtual_case(image, ram, *, root, engine_present=False, engine_mode=2,
     if not outcome:
         raise ValueError('Phase65 virtual case did not reach a bounded stop')
     word = lambda address: struct.unpack('<I',bytes(uc.mem_read(address,4)))[0]
-    return dict(root=root,inputs=dict(engine_present=engine_present,engine_mode=engine_mode,
+    result=dict(root=root,inputs=dict(engine_present=engine_present,engine_mode=engine_mode,
             class_busy=class_busy,requested_class_mode=2,driver_status_stub=driver_status),
         stop=outcome[0],stop_pc=hex(steps[-1]),r0_at_stop=uc.reg_read(UC_ARM_REG_R0),
         driver_error_r5_at_failure=uc.reg_read(UC_ARM_REG_R5) if outcome[0]=='driver_failure_before_cleanup' else None,
@@ -175,6 +185,16 @@ def virtual_case(image, ram, *, root, engine_present=False, engine_mode=2,
             class_marker_byte=bytes(uc.mem_read(CLASS10+0xE,1))[0],
             record_instance=hex(word(INSTANCE_OUT))),
         original_writes=writes,stubbed_calls=calls,instruction_hooks=len(steps))
+    if execute_driver:
+        result['inputs']['driver_status_stub']=None
+        result['original_driver']=dict(executed=True,mmio_model='plain virtual memory; no register side effects',
+            hardware_word=hex(mmio_word),low_five_bits=mmio_word&31,
+            engine_driver_object=hex(word(ENGINE)),driver_context=hex(word(0x20011DFC)))
+    if start_transition:
+        result['transition']=dict(executed=True,prior_mode_input=struct.unpack_from('<I',ram,OWNER+0x90-0x20000000)[0],
+            mode_at_stop=word(OWNER+0x90),requested_mode=2,
+            note='0x60060c70 is a no-op; stop precedes final mode publication')
+    return result
 
 
 def audit(image):

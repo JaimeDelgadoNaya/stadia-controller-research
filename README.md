@@ -1,5 +1,7 @@
 # Stadia Controller Research
 
+**[Phase 66 — original driver and prior-mode writer](docs/en/usb-driver-prior-mode-phase66.md).** The original driver/helper execute against virtual MMIO: low five bits of 0x402E0124 must exceed 7. An original store establishes prior mode 1 in a modeled caller path; staged transition/driver/class10 execution succeeds for virtual word 8 and blocks for 7. Pending 0x6009267C and real peripheral behavior remain unexecuted.
+
 **[Phase 65 — class10 instance gates and owner path](docs/en/class10-instance-phase65.md).** Original owner/core/class code binds the OEM record to instance 0x200040E0 when the low-level driver is stubbed to succeed; driver failure blocks it. Missing/mismatched engine returns 4 and busy class returns 2. Earlier mode-transition guards and physical activation remain unresolved.
 
 **[Phase 64 — original records include internal class 10](docs/en/original-class-records-phase64.md).** Original producer execution builds class records [10, 1, 2, 4] from signed startup data. Class10 carries callback 0x600613FD; the original selector matches method 0x60055321 before its call. Physical activation and complete engine setup remain unmeasured.

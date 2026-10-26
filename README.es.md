@@ -1,5 +1,7 @@
 # Investigación del mando Stadia
 
+**[Fase 66 — driver original y escritor de modo previo](docs/es/driver-usb-modo-previo-fase66.md).** El driver/helper originales se ejecutan con MMIO virtual: los cinco bits bajos de 0x402E0124 deben superar 7. Una escritura original establece modo previo 1 en la ruta modelada; la composición llega a clase10 con palabra virtual 8 y se bloquea con 7. Siguen pendientes 0x6009267C y los efectos reales del periférico.
+
 **[Fase 65 — guardas de instancia clase10 y ruta del owner](docs/es/instancia-clase10-fase65.md).** El código original enlaza el registro OEM con la instancia 0x200040E0 si se simula éxito del driver; su fallo bloquea la ruta. Motor ausente/modo distinto devuelve 4 y clase ocupada devuelve 2. Siguen pendientes la transición de modo previa y la activación física.
 
 **[Fase 64 — registros originales incluyen clase interna 10](docs/es/registros-clase-originales-fase64.md).** Los productores originales construyen [10, 1, 2, 4] desde los datos firmados de arranque. Clase10 lleva callback 0x600613FD y selecciona 0x60055321 antes de la llamada. La activación física y el arranque completo del motor siguen sin medirse.
