@@ -78,6 +78,16 @@ class Phase59PairReaders(unittest.TestCase):
                          ("ldrb.w","r3, [r3, #0x380]"))
         self.assertEqual(len(a.LONE_READER_PINS),4)
 
+    def test_real_handler_is_distinct_from_ITCM_veneer(self):
+        self.assertEqual(a.REAL_HANDLER_XIP,0x6007E6A0)
+        self.assertEqual(a.CALLBACK_ITCM,0xB980)
+        self.assertEqual(len(a.HANDLER_PINS),13)
+        self.assertEqual(a.HANDLER_PINS[0x6007E6CE],("ldrex","r2, [r3]"))
+
+    def test_unrelated_global_is_not_callback_pair_base(self):
+        self.assertEqual(a.OTHER_RAM_GLOBAL,0x20025CE0)
+        self.assertNotEqual(a.OTHER_RAM_GLOBAL,a.PAIR_BASE)
+
     def test_fails_closed_on_nonoriginal(self):
         with self.assertRaisesRegex(ValueError,"SHA-256"):
             a.audit(b"dummy")
