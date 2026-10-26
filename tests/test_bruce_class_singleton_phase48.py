@@ -6,9 +6,11 @@ class ClassSingleton48Tests(unittest.TestCase):
     def test_record_table_and_runtime_record_are_distinct(self):
         self.assertNotEqual(a.STATIC_TABLE_CLASS10,a.BOOT_CLASS10_RAM_RECORD)
         self.assertEqual(a.EP0_LOOKUP_GLOBAL,0x20004080)
-        self.assertEqual(a.CLASS1_GLOBAL,0x20004080)
+        self.assertEqual(a.CLASS1_GLOBAL,0x200040c0)
         self.assertEqual(a.CLASS10_GLOBAL,0x200040e0)
         self.assertNotEqual(a.CLASS1_GLOBAL,a.CLASS10_GLOBAL)
+        self.assertNotEqual(a.EP0_LOOKUP_GLOBAL,a.CLASS1_GLOBAL)
+        self.assertNotEqual(a.EP0_LOOKUP_GLOBAL,a.CLASS10_GLOBAL)
         self.assertEqual(a.PINS[0x6005530A],("str","r6, [r4, #4]"))
         self.assertEqual(a.PINS[0x6005533A],("str","r6, [r4, #4]"))
         self.assertEqual(a.PINS[0x60055340],("str","r4, [r5]"))
