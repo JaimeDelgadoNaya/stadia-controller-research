@@ -137,7 +137,7 @@ def itcm_code(image,at,size=0x130):
 
 
 PAIR_MEM_REGEXP=re.compile(
-    r"\\[(r(?:1[0-2]|[0-9])|ip|sb|sl|fp), #(0x[0-9a-f]+|\\d+)\\]"
+    r"\[(r(?:1[0-2]|[0-9])|ip|sb|sl|fp), #(0x[0-9a-f]+|\d+)\]"
 )
 PAIR_IMMEDIATES={0x37C,0x380}
 
