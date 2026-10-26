@@ -13,6 +13,7 @@ import struct
 from pathlib import Path
 
 from tools.audit_signed_app_surface import IMAGE_SIZE, IMAGE_SHA256, ASSUMED_XIP_BASE
+from tools.audit_app_usb_dispatch import DATA_SOURCE_OFFSET, DATA_DESTINATION, DATA_END
 from tools.audit_bruce_ep0_registration import decode
 from tools.audit_bruce_init_inbound_phase43 import (
     find_inbound_branches, all_byte_word_references,
@@ -172,6 +173,14 @@ def audit(image):
     writer=inspect_second_writer(image)
     caller=verify_signed_second_setter_caller(image)
     handler=audit_handler_table(image)
+    object_ram=int(caller["getter_returns_RAM_object"],16)
+    if not DATA_DESTINATION <= object_ram < DATA_END:
+        raise ValueError("Original second callback context object outside signed data copy")
+    object_file_off=DATA_SOURCE_OFFSET + object_ram - DATA_DESTINATION
+    object_words=[{"ram_address":hex(object_ram+4*i),
+                   "file_offset":hex(object_file_off+4*i),
+                   "initial_signed_copy_word":hex(struct.unpack_from("<I",image,object_file_off+4*i)[0])}
+                  for i in range(12)]
     callback=writer["callback_value_literal"]["value"]
     func=int(callback,16)&~1
     # Context larger than one basic block intentionally printed as candidate
@@ -224,6 +233,12 @@ def audit(image):
         "second_writer":writer,
         "second_writer_signed_getter_caller":caller,
         "installed_OEM_callback_handler":handler,
+        "signed_boot_data_copy_object":{
+            "destination_ram":hex(object_ram),
+            "source_file_offset":hex(object_file_off),
+            "initial_12_word_snapshot":object_words,
+            "not_a_runtime_readback":True,
+        },
         "caller_inbound_branch_candidates":find_inbound_branches(image,only_target=0x60051240),
         "caller_ptr_literal_refs":all_byte_word_references(image,0x60051241),
         "candidate_signed_object_initializer_entry":"0x60077140",
@@ -261,6 +276,7 @@ def main():
     if arg.out:arg.out.write_text(json.dumps(x,indent=2)+"\n")
     print("PHASE44 SECONDARY WRITER LITERALS",json.dumps(x["second_writer"]))
     print("PHASE44 SIGNED SECOND SETTER CALL CHAIN",json.dumps(x["second_writer_signed_getter_caller"]))
+    print("PHASE44 SIGNED OBJECT BOOT COPY",json.dumps(x["signed_boot_data_copy_object"]))
     print("PHASE44 INSTALLED OEM HANDLER DISPATCH",json.dumps(x["installed_OEM_callback_handler"]))
     print("PHASE44 SECOND SETTER WRAPPER INBOUND",json.dumps(x["caller_inbound_branch_candidates"]))
     print("PHASE44 SECONDARY WRITER PRIOR CODE",json.dumps(x["later_writer_local_decode"]))
