@@ -18,7 +18,7 @@ The OEM code loads `owner=0x2000A2A8` into **R2**, calls `0x6007EB8C`, copies R2
 0x6007EBB4 STR.W R8,[R4,#0x80]   ; [parent + 0x80] = owner (conditional)
 ```
 
-**19 original signed instruction anchors verified on the exact OEM update**, including PC-relative owner literal. R0 is not automatically owner: this **is not** a store to `owner+4/+8/+12` and does not reveal the parent object's absolute address or show that the instructions executed on physical hardware.
+**19 original signed instruction anchors verified on the exact OEM update**, including PC-relative owner literal. R0 is not automatically owner: without knowing R0, the store **cannot be attributed** to `owner+4/+8/+12`, nor can we prove it targets a different object. Its absolute address and execution on physical hardware remain unverified.
 
 The producer-first hypothesis is that an unidentified parent may hold owner through its `+0x80` field. Its consumers and relationship to the active USB configuration are **not established**.
 
