@@ -68,6 +68,27 @@ CALLER_PINS={
     0x600D0BDE:("mov","r0, r4"),
     0x600D0BE0:("bl","#0x60054f30"),
 }
+EP0_HANDLER_PINS={
+    0x60054D74:("ldr","r3, [r1, #4]"),
+    0x60054D82:("mov","r5, r0"),
+    0x60054D84:("mov","r6, r1"),
+    0x60054D86:("mov","r7, r2"),
+    0x60054D9A:("ldr","r4, [r2, #8]"),
+    0x60054DA2:("bl","#0x600d1178"),
+    0x60054DB2:("ldr","r2, [r6]"),
+    0x60054DB8:("ldrh","r3, [r2, #2]"),
+    0x60054DBC:("ldrh","r3, [r2, #4]"),
+    0x60054DC0:("ldrh","r3, [r2, #6]"),
+    0x60054DC4:("ldrb","r1, [r2, #1]"),
+    0x60054DC8:("ldrb","r2, [r2]"),
+    0x60054DCA:("tst.w","r2, #0x60"),
+    0x60054DD0:("bne","#0x60054dfc"),
+    0x60054DD4:("ldr.w","r6, [r3, r1, lsl #2]"),
+    0x60054DE4:("blx","r6"),
+    0x60054DF6:("bl","#0x600d0b60"),
+    0x60054E50:("bl","#0x600d0bc8"),
+    0x60054E8E:("bl","#0x600d0bc8"),
+}
 def validate_pins(actual):
     for pc,exp in PIN.items():
         if actual.get(pc)!=exp:
@@ -89,6 +110,11 @@ def pin_pair(image):
     callback=struct.unpack_from("<I",image,FN_LITERAL_ADDR-BASE)[0]
     endpoint_word=struct.unpack_from("<I",image,EP_LITERAL_ADDR-BASE)[0]
     addr=(endpoint_word >> 16)&0xFF
+    handler={q["pc"]:(q["m"],q["op"])
+             for q in decode(image,0x60054D74,0x60054E98)}
+    for pc,expected in EP0_HANDLER_PINS.items():
+        if handler.get(pc)!=expected:
+            raise ValueError("Original EP0 handler SETUP dispatch drift "+hex(pc))
     callers={q["pc"]:(q["m"],q["op"])
              for q in decode(image,0x600D0BC8,0x600D0BE8)}
     for pc,expected in CALLER_PINS.items():
@@ -96,7 +122,18 @@ def pin_pair(image):
             raise ValueError("Signed EP0 installer caller gate drift "+hex(pc))
     return {
         "installer":hex(INSTALLER),
-        "pinned_original_instructions":len(PIN)+len(CALLER_PINS),
+        "pinned_original_instructions":len(PIN)+len(CALLER_PINS)+len(EP0_HANDLER_PINS),
+        "ep0_original_signed_handler_entry":"0x60054d74",
+        "ep0_signed_handler_dataflow":{
+            "SETUP_like_data_pointer":"[R6] where R6 is callback input R1 (0x60054d84)",
+            "bRequest_byte":"0x60054dc4 LDRB R1,[R2,#1]",
+            "bmRequestType_byte":"0x60054dc8 LDRB R2,[R2]",
+            "request_type_bits":"0x60054dca TST.W R2,#0x60",
+            "standard_request_local_table":"0x60054dd4 LDR.W R6,[R3,R1,LSL#2] -> 0x60054de4 BLX R6",
+            "nonstandard_branches_to":"0x60054dfc; signed branches contain BL 0x600d0bc8",
+            "class_control_bridge_call_sites":["0x60054e50","0x60054e8e"],
+            "class10_selected_or_host_reachable":"UNVERIFIED",
+        },
         "caller_has_signed_configuration_guard":"0x600d0bd2 BL 0x60054f7c; if success and R5(input R1)==1, call installer",
         "first_original_callback_literal_at":hex(FN_LITERAL_ADDR),
         "signed_callback_pointer":hex(callback),
