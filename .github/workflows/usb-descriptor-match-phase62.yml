@@ -1,0 +1,45 @@
+name: OEM descriptor match and bounded selector emulation
+
+on:
+  pull_request:
+    paths:
+      - 'tools/audit_usb_descriptor_match_phase62.py'
+      - 'tools/parse_usb_configuration.py'
+      - 'tests/test_usb_descriptor_match_phase62.py'
+      - 'evidence/usb*phase6*.json'
+      - '.github/workflows/usb-descriptor-match-phase62.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  original-offline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements-emulation.txt
+      - name: Verify original OEM input and reproduce all eight synthetic paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          image="$RUNNER_TEMP/stadia-phase62-bruce.bin"
+          report="$RUNNER_TEMP/stadia-phase62-report.json"
+          trap 'rm -f "$image" "$report"' EXIT
+          curl --fail --location --silent --show-error --retry 3 --max-time 45 \
+            'https://raw.githubusercontent.com/StadiaMemories/firmware/main/bruce_pvt_a_prod_signed.bin' -o "$image"
+          echo "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3  $image" | sha256sum -c -
+          STADIA_BRUCE_IMAGE="$image" python -m unittest tests.test_usb_descriptor_match_phase62 -v
+          python -m tools.audit_usb_descriptor_match_phase62 "$image" --emulate --out "$report"
+          python - "$report" <<'PY'
+          import json, sys
+          from pathlib import Path
+          reproduced = json.loads(Path(sys.argv[1]).read_text())
+          published = json.loads(Path('evidence/usb-descriptor-oem-match-phase62.json').read_text())
+          assert reproduced == published, 'Published phase 62 evidence differs from original-image reproduction'
+          print('Exact live descriptor match and eight virtual branches reproduced; no device I/O.')
+          PY
