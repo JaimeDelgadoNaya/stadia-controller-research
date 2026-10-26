@@ -27,6 +27,11 @@ class Phase58SignedHelper(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"unaligned"):
             m.signed_word(b"invalid",m.BASE+3)
 
+    def test_thumb_function_target_regions(self):
+        self.assertEqual(m.classify_signed_thumb_code_pointer(0x600CE233),"SIGNED_XIP_CODE_CANDIDATE")
+        self.assertEqual(m.classify_signed_thumb_code_pointer(0x0000A9C5),"SIGNED_STARTUP_RELOCATED_ITCM_CODE_CANDIDATE")
+        self.assertEqual(m.classify_signed_thumb_code_pointer(0x600CE232),"NOT_THUMB_CODE_POINTER")
+
     def test_exact_hash_required(self):
         with self.assertRaisesRegex(ValueError,"SHA-256"):
             m.audit(b"invalid")
