@@ -173,6 +173,46 @@ def scan_field_offset_ops(image,span=0x1000):
     return rows
 
 
+def halfword_field_scan(image):
+    """Exhaustive *instruction-shaped* halfword scan of signed code ranges.
+
+    Unlike stream decode, restart Capstone on each possible Thumb-aligned
+    opcode. This catches the known writer even when linear disassembly
+    loses synchronization near literal tables, but includes speculative
+    non-code hits. Every hit must still be assigned a known object base.
+    """
+    md=Cs(CS_ARCH_ARM,CS_MODE_THUMB|CS_MODE_MCLASS)
+    matches=[]
+    for domain,origin,end,base,source in (
+        ("XIP",0xC800,IMAGE_XIP_LIMIT,BASE,0),
+        ("ITCM",0,ITCM_LENGTH,0,ITCM_SOURCE_OFFSET),
+    ):
+        for off in range(origin,end-3,2):
+            raw=image[source+off:source+off+4]
+            if len(raw)!=4:
+                continue
+            item=next(md.disasm(raw,base+off,count=1),None)
+            if item is None:
+                continue
+            op=item.op_str
+            if "#0x37c" not in op and "#0x380" not in op:
+                continue
+            m=PAIR_MEM_REGEXP.search(op)
+            if m is None or int(m.group(2),0) not in PAIR_IMMEDIATES:
+                continue
+            matches.append({
+                "pc":hex(item.address),"m":item.mnemonic,"op":op,
+                "region":domain,"base_reg":m.group(1),
+                "offset":hex(int(m.group(2),0)),
+                "source_file_offset":hex(source+off),
+                "classification":"THUMB_SHAPED_MAY_BE_DATA; NO_BASE_PROVEN",
+            })
+    sites={x["pc"] for x in matches}
+    if not {"0x60063878","0x6006387e"}.issubset(sites):
+        raise ValueError("phase59 halfword scan missed two known signed writer controls")
+    return matches
+
+
 def resolve_itcm_trampoline(image,entry=CALLBACK_ITCM):
     """Stop at Thumb LDR.W PC and read the following signed word as data.
 
@@ -231,6 +271,7 @@ def audit(image):
     neighborhoods=[follow_load_neighborhood(image,l) for l in loads]
     worker_veneer=resolve_itcm_trampoline(image)
     paired_offsets=scan_field_offset_ops(image)
+    halfwords=halfword_field_scan(image)
     return {
         "phase":59,"SHA256_signed_original_verified":True,
         "original_SHA256":IMAGE_SHA256,
@@ -245,6 +286,7 @@ def audit(image):
         "bounded_candidate_neighborhoods":neighborhoods,
         "relocated_ITCM_veneer":worker_veneer,
         "matching_pair_field_access_candidates":paired_offsets,
+        "complete_halfword_offset_candidates":halfwords,
         "open_questions":{
             "pair_read_and_indirect_invocation":"UNPROVEN_FROM_LITERAL_SCAN",
             "USB_host_trigger":"UNPROVEN",
@@ -272,6 +314,7 @@ def main():
         print("PHASE59 LOAD WINDOW",json.dumps(row))
     print("PHASE59 ITCM B980 VENEER",json.dumps(output["relocated_ITCM_veneer"]))
     print("PHASE59 PAIR-FIELD OFFSET CANDIDATES",json.dumps(output["matching_pair_field_access_candidates"]))
+    print("PHASE59 HALFWORD FIELD SCAN",json.dumps(output["complete_halfword_offset_candidates"]))
     print("PHASE59 NO USB HOST TRIGGER OR CUSTOM CODE EXECUTION PROOF")
 
 
