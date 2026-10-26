@@ -33,9 +33,9 @@ ITCM_TRAMPOLINE=0xB980
 THUMB_TARGETS=(REAL_HANDLER_XIP, VENEEER_XIP, ITCM_WRAPPER, ITCM_TRAMPOLINE)
 PAIR_FIELDS={PAIR_FIRST,PAIR_SECOND}
 REG=r"(?:r(?:1[0-2]|[0-9])|ip|sp|lr)"
-MEM_RE=re.compile(r"\\[("+REG+r"), #(?P<imm>0x[0-9a-f]+|\\d+)\\]")
+MEM_RE=re.compile(r"\[("+REG+r"), #(?P<imm>0x[0-9a-f]+|\d+)\]")
 MOVE_RE=re.compile(r"^("+REG+r"), ("+REG+r")$")
-ARITH_RE=re.compile(r"^("+REG+r"), ("+REG+r"), #(0x[0-9a-f]+|\\d+)$")
+ARITH_RE=re.compile(r"^("+REG+r"), ("+REG+r"), #(0x[0-9a-f]+|\d+)$")
 KILL_FIRST={"ldr","ldrb","ldrh","ldrsb","ldrsh","mov","movs","movw",
            "movt","add","addw","adds","sub","subw","subs",
            "orr","and","eor","bic","lsl","lsr","asr","uxtb","uxth","mul"}
