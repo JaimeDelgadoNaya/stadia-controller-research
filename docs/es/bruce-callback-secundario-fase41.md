@@ -19,6 +19,8 @@ El auditor `tools/audit_bruce_secondary_registry.py` exige la imagen OEM Bruce e
 | Referencias PC-relativas identificadas a ambas bases | 4 |
 | Candidatos a `STR` con desplazamientos `+0xF8/+0xFC/+0x3A38/+0x3A3C` | **24** |
 
+**Matiz del contador:** la segunda lectura original `0x60061414` (contexto `0x20009EFC`) también está fijada por las anclas de código de la fase 40, pero **no aparece en el contador de propagación** porque este borra el estado de registros tras un salto condicional. El «1» de la tabla no significa que el firmware solo lea una palabra.
+
 La dirección `0x20009EF8` está fuera de la **copia concreta de datos inicializados** conocida `0x20002740..0x20003FD8`. Esto **no** determina el valor real al arrancar, ni descarta que otra fase de inicialización escriba allí.
 
 ### Clasificación reproducible de las 24 escrituras candidatas
