@@ -100,7 +100,9 @@ def audit(image):
             "class10_method0_initialization":signed[3]["method_0"],
             "class10_method_plus4":signed[3]["method_4"],
             "class10_event_method_plus8":signed[3]["method_8"],
-            "if_global_plus4_is_class10_record":"first load gives 0x60104ba4, second gives signed method 0x600d0ecb",
+            "if_global_plus4_were_ROM_class10_record":"counterfactual only: method 0x600d0ecb; the signed class10 initializer actually uses a different RAM singleton, 0x200040e0",
+            "signed_EP0_global_0x20004080_is_distinct_from_class10_singleton":True,
+            "this_does_not_prove_EP0_class10_reachability":True,
             "global_plus4_current_value":"UNMEASURED",
         },
         "matching_USB_object_global_RAM_address":hex(raw_global_base),
@@ -146,7 +148,7 @@ def main():
         print("PHASE48 WINDOW",name,json.dumps(lines))
     for name,lines in data["direct_inbound_candidate_bl"].items():
         print("PHASE48 INBOUND",name,json.dumps(lines))
-    print("PHASE48 RUNTIME CLASS METHOD: UNVERIFIED; NO USB/FLASH")
+    print("PHASE48 RUNTIME CLASS METHOD: UNVERIFIED; EP0 GLOBAL DISTINCT FROM CLASS10 GLOBAL; NO USB/FLASH")
 
 if __name__=="__main__":
     main()
