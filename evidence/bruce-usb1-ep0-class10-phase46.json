@@ -1,0 +1,102 @@
+{
+  "phase": 46,
+  "date": "2026-10-26",
+  "PR": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/pull/48",
+  "source_kind": "original signed Bruce OEM update archive, not actual installed-flash readback",
+  "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+  "firmware_static_signed_chain": [
+    {
+      "kind": "candidate_USB1_vector",
+      "source_file_offset": "0x204",
+      "NVIC_IRQ": 113,
+      "handler_Thumb": "0x600610d1",
+      "live_VTOR": false
+    },
+    {
+      "kind": "ITCM_mode_dependent_SETUP_handoff",
+      "callsite": "0x1258",
+      "veneer": "0xba68",
+      "signed_xip_target": "0x600d0fb6",
+      "physically_executed": false
+    },
+    {
+      "kind": "endpoint_slot_dispatch",
+      "receiver": "0x600d0fb6",
+      "endpoint_field_load": "0x600d0fca",
+      "index_formula": "2*(address&0xf)+((address>>7)&1)",
+      "slot_stride": 12,
+      "slot_function_field": 12,
+      "slot_context_field": 16,
+      "indirect_call": "0x600d104e",
+      "ep0_out_index": 0,
+      "ep0_in_index": 1
+    },
+    {
+      "kind": "endpoint_slot_registrar",
+      "entry": "0x600d10b8",
+      "function_store": "0x600d10de",
+      "context_store": "0x600d10da",
+      "signed_direct_callers": [
+        "0x60054782",
+        "0x60054850"
+      ]
+    },
+    {
+      "kind": "potential_class_event_adapters",
+      "literal_callbacks": {
+        "0x600547a0": "0x600cfc71 (event 3)",
+        "0x600547a4": "0x600cfc35 (event 1)",
+        "0x600547a8": "0x600cfc53 (event 2)",
+        "0x60054870": "0x600cfc1b (event 4)"
+      }
+    },
+    {
+      "kind": "signed_class_event_TBB",
+      "entry": "0x600d0e58",
+      "subtract_internal_event_by_one": true,
+      "branch": "0x600d0e68",
+      "original_TBB_bytes": [
+        27,
+        2,
+        7,
+        18
+      ],
+      "event_targets": {
+        "1": "0x600d0ea2",
+        "2": "0x600d0e70",
+        "3": "0x600d0e7a",
+        "4": "0x600d0e90"
+      },
+      "correction": "Event1, not event4, enters SETUP-shaped bRequest parsing."
+    },
+    {
+      "kind": "conditional_external_request_conversion",
+      "signed_event1_adapter": "0x600cfc35",
+      "class_setup_handler": "0x600d0ea2",
+      "bRequest_load": "0x600d0eb8",
+      "requires_ep0_registered_adapter": true,
+      "requires_class_vtable_resolves": true,
+      "requires_valid_physical_setup_buffer": true,
+      "real_reachability": "UNVERIFIED"
+    }
+  ],
+  "open_gates": [
+    "Live SCB->VTOR vector table/mode and SETUP interrupt not measured",
+    "EP0 OUT/IN runtime 12-byte callback slot writer and installed values unknown",
+    "Conditional endpoint adapter 0x600CFC35 not proven to occupy EP0",
+    "Class object/vtable forwarding to 0x600D0E58 not proven",
+    "Physical incoming SETUP packet origin and active class10 selection not proven",
+    "No host-controlled arbitrary callback registration/unsigned-code execution/HAB CLOSED bypass",
+    "No direct Xbox or Switch 2 firmware demonstrated"
+  ],
+  "methodology": {
+    "original_SHA_enforced": true,
+    "synthetic_unit_tests": true,
+    "exact_TBB_literal_pins": true,
+    "live_usb_packets_sent": false,
+    "device_connected": false,
+    "flash_written": false,
+    "efuse_changed": false
+  },
+  "next_phase": "Recover EP0 zero/one slot writers and class object dynamic registration, verify reception event structure pointer path"
+}
