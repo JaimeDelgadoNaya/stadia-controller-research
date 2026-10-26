@@ -135,6 +135,8 @@ def branch_aware_footprints(image):
         "B_fallback_callee":(0x600D8ED4,0x600D8F20),
         "B_common_status_helper":(0x600D8E6C,0x600D8ED0),
         "B_status_helper_variant":(0x600D8F24,0x600D8F64),
+        "B_callback_pointer_reference_neighbor":(0x6006B470,0x6006B4D4),
+        "B_status_owner_neighbor":(0x6006B320,0x6006B38A),
         "queue_producer_API":(API,0x600926B2),
         "known_class10_callback":(0x600613FC,0x60061422),
     }
@@ -189,6 +191,30 @@ def aligned_original_code_pointer_refs(image,targets):
     return matches
 
 
+def find_pc_relative_load_to_signed_literal(image,literal_pc,limit=0x90):
+    """Bounded Thumb-shaped LDR PC xrefs, neither CFG nor proof of registration."""
+    if not(BASE<=literal_pc<=BASE+len(image)-4 and (literal_pc&3)==0):
+        raise ValueError("phase76 pointer-literal location invalid")
+    from re import fullmatch
+    cs=Cs(CS_ARCH_ARM,CS_MODE_THUMB|CS_MODE_MCLASS)
+    found=[]
+    for pc in range(max(BASE,literal_pc-limit)&~1,literal_pc,2):
+        off=pc-BASE
+        i=next(cs.disasm(image[off:off+4],pc,count=1),None)
+        if i is None or i.mnemonic not in ("ldr","ldr.w"):
+            continue
+        m=fullmatch(r"(r(?:1[0-2]|[0-9])), \[pc, #(0x[0-9a-f]+|\d+)\]",i.op_str)
+        if m and ((pc+4)&~3)+int(m.group(2),0)==literal_pc:
+            found.append({
+                "pc":hex(pc),
+                "instruction":i.mnemonic+" "+i.op_str,
+                "value":hex(struct.unpack_from("<I",image,literal_pc-BASE)[0]),
+                "literal_pc":hex(literal_pc),
+                "execution":"UNVERIFIED",
+            })
+    return found
+
+
 def upstream_source_analysis(image):
     targets={
         "B_worker_callback":B_ENTRY,
@@ -197,8 +223,12 @@ def upstream_source_analysis(image):
         "B_status_variant":0x600D8F24,
         "B_status_fallback":0x600D8ED4,
     }
+    literals=aligned_original_code_pointer_refs(image,targets)
+    installs=[find_pc_relative_load_to_signed_literal(image,int(row["pc_if_XIP"],16))
+              for row in literals["B_worker_callback"]]
     return {
-        "aligned_thumb_pointer_words":aligned_original_code_pointer_refs(image,targets),
+        "aligned_thumb_pointer_words":literals,
+        "B_callback_literal_PC_load_candidates":[candidate for group in installs for candidate in group],
         "direct_bl_shapes":direct_xrefs(image,targets),
         "statically_pinned_status_helper_edges":{
             "B_primary":"0x6006b294 BL 0x600d8f64",
