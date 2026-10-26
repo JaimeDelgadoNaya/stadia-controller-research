@@ -135,6 +135,7 @@ def branch_aware_footprints(image):
         "B_fallback_callee":(0x600D8ED4,0x600D8F20),
         "B_common_status_helper":(0x600D8E6C,0x600D8ED0),
         "B_status_helper_variant":(0x600D8F24,0x600D8F64),
+        "B_callback_pointer_registration":(0x6006B3F8,0x6006B450),
         "B_callback_pointer_reference_neighbor":(0x6006B470,0x6006B4D4),
         "B_status_owner_neighbor":(0x6006B320,0x6006B38A),
         "queue_producer_API":(API,0x600926B2),
@@ -226,9 +227,13 @@ def upstream_source_analysis(image):
     literals=aligned_original_code_pointer_refs(image,targets)
     installs=[find_pc_relative_load_to_signed_literal(image,int(row["pc_if_XIP"],16))
               for row in literals["B_worker_callback"]]
+    flattened=[candidate for group in installs for candidate in group]
+    if not any(item["pc"]=="0x6006b416" and item["value"]=="0x6006b291"
+               for item in flattened):
+        raise ValueError("Phase76 signed callback B pointer source loader drift")
     return {
         "aligned_thumb_pointer_words":literals,
-        "B_callback_literal_PC_load_candidates":[candidate for group in installs for candidate in group],
+        "B_callback_literal_PC_load_candidates":flattened,
         "direct_bl_shapes":direct_xrefs(image,targets),
         "statically_pinned_status_helper_edges":{
             "B_primary":"0x6006b294 BL 0x600d8f64",
