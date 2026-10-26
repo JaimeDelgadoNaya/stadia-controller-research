@@ -1,0 +1,286 @@
+{
+  "phase": 75,
+  "original_sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+  "OEM_exact_hash_verified": true,
+  "WorkQueue_object": "0x2002014c",
+  "WorkQueue_control_field": "0x200201fc",
+  "queue_literal_sites": [
+    {
+      "offset": "0x52698",
+      "value": "0x2002014c",
+      "pc": "0x60092698",
+      "domain": "XIP_OR_DATA"
+    },
+    {
+      "offset": "0x526b4",
+      "value": "0x2002014c",
+      "pc": "0x600926b4",
+      "domain": "XIP_OR_DATA"
+    },
+    {
+      "offset": "0x526cc",
+      "value": "0x2002014c",
+      "pc": "0x600926cc",
+      "domain": "XIP_OR_DATA"
+    },
+    {
+      "offset": "0x5272c",
+      "value": "0x2002014c",
+      "pc": "0x6009272c",
+      "domain": "XIP_OR_DATA"
+    }
+  ],
+  "queue_literal_loaders": [
+    {
+      "pc": "0x6009267e",
+      "instruction": "ldr r0, [pc, #0x18]",
+      "loaded_register": "r0",
+      "loaded_word": "0x2002014c",
+      "literal_pc": "0x60092698",
+      "domain": "XIP",
+      "reachable": "UNVERIFIED"
+    },
+    {
+      "pc": "0x600926a2",
+      "instruction": "ldr r0, [pc, #0x10]",
+      "loaded_register": "r0",
+      "loaded_word": "0x2002014c",
+      "literal_pc": "0x600926b4",
+      "domain": "XIP",
+      "reachable": "UNVERIFIED"
+    },
+    {
+      "pc": "0x600926ba",
+      "instruction": "ldr r0, [pc, #0x10]",
+      "loaded_register": "r0",
+      "loaded_word": "0x2002014c",
+      "literal_pc": "0x600926cc",
+      "domain": "XIP",
+      "reachable": "UNVERIFIED"
+    },
+    {
+      "pc": "0x600926d2",
+      "instruction": "ldr r4, [pc, #0x58]",
+      "loaded_register": "r4",
+      "loaded_word": "0x2002014c",
+      "literal_pc": "0x6009272c",
+      "domain": "XIP",
+      "reachable": "UNVERIFIED"
+    }
+  ],
+  "producer": {
+    "signed_anchors": 17,
+    "producer_API_entry": "0x600926a0",
+    "producer_object_literal": "0x2002014c",
+    "producer_state_guard": "0x600926a4 [WorkQueue+0x58] checked before tail branch",
+    "worker_entry": "0x600ee18a",
+    "worker_input_message": "R1 incoming, stored to [SP+8]; flag at message+8 set to 1",
+    "worker_queue_control": "R0 = [WorkQueue+0xb0]",
+    "worker_send_buffer": "R1 = SP+4; local byte [SP+4] set zero",
+    "worker_timeout": "R2 = -1 at 0x600ee19e",
+    "worker_kernel_veneer": "0x6013d0e8",
+    "kernel_veneer_raw_thumb": "0x6a75",
+    "kernel_original_ITCM_entry": "0x6a74",
+    "object_state_on_physical_hardware": "UNMEASURED",
+    "actual_enqueue_or_success": "UNVERIFIED"
+  },
+  "signed_pipeline": {
+    "signed_instruction_pins": 23,
+    "WorkQueue_API_caller_BL_sites": [
+      "0x6006228c",
+      "0x6006b2b0"
+    ],
+    "sender": "0x600926a0 -> 0x600ee18a -> 0x6013d0e8 -> ITCM 0x6a74",
+    "conditional_enqueue_copy_helper": "ITCM 0x6aee BL 0xb37c",
+    "conditional_count_increase": "0xb394 ADDS R6,#1; 0xb396 STR R6,[R4,#0x38]",
+    "receiver": "0x600ee142 -> 0x6013d268 -> ITCM 0x6d2c",
+    "stack_message_type": "0x600ee1b2 STRB zero to [SP+4]; receiver 0x600ee156 LDRB [SP+4]",
+    "stack_message_pointer": "0x600ee1aa STR incoming work pointer to [SP+8]; receiver 0x600ee15a LDRD R4,R0,[SP+8]",
+    "zero_type_branch": "0x600ee15e CBZ R6,#0x600ee164",
+    "signed_callback_assembly": "0x600ee16e LDRD R3,R0,[R4]; 0x600ee172 BLX R3",
+    "callback_input": "method pointer from [R4], argument from [R4+4]",
+    "actual_message_delivered": false,
+    "host_USB_origin": "NOT_PROVEN",
+    "callback_executed": "NOT_OBSERVED"
+  },
+  "queue_increment_helper": {
+    "count_writer_pc": "0x6cec",
+    "guarded_capacity_field": "0x3c",
+    "item_count_field": "0x38",
+    "guard_and_increment_proven_in_signed_code": true,
+    "specific_WorkQueue_instance": "NOT_ESTABLISHED_BY_FIELD_OFFSET_ALONE"
+  },
+  "direct_producer_callers": [
+    {
+      "pc": "0x60060e62",
+      "target": "0x600926b8",
+      "domain": "XIP",
+      "path_executed": "UNVERIFIED"
+    },
+    {
+      "pc": "0x6006228c",
+      "target": "0x600926a0",
+      "domain": "XIP",
+      "path_executed": "UNVERIFIED"
+    },
+    {
+      "pc": "0x60062458",
+      "target": "0x600926b8",
+      "domain": "XIP",
+      "path_executed": "UNVERIFIED"
+    },
+    {
+      "pc": "0x600624d4",
+      "target": "0x600926b8",
+      "domain": "XIP",
+      "path_executed": "UNVERIFIED"
+    },
+    {
+      "pc": "0x6006b2b0",
+      "target": "0x600926a0",
+      "domain": "XIP",
+      "path_executed": "UNVERIFIED"
+    },
+    {
+      "pc": "0x60077386",
+      "target": "0x600926b8",
+      "domain": "XIP",
+      "path_executed": "UNVERIFIED"
+    }
+  ],
+  "function_pointer_literals": [],
+  "receiver_neighbor_calls": [
+    {
+      "pc": "0x60063054",
+      "target": "0x6013d268",
+      "domain": "XIP",
+      "path_executed": "UNVERIFIED"
+    },
+    {
+      "pc": "0x60063720",
+      "target": "0x6013d268",
+      "domain": "XIP",
+      "path_executed": "UNVERIFIED"
+    },
+    {
+      "pc": "0x60064a32",
+      "target": "0x6013d268",
+      "domain": "XIP",
+      "path_executed": "UNVERIFIED"
+    },
+    {
+      "pc": "0x60064cde",
+      "target": "0x6013d268",
+      "domain": "XIP",
+      "path_executed": "UNVERIFIED"
+    },
+    {
+      "pc": "0x6006e668",
+      "target": "0x6013d268",
+      "domain": "XIP",
+      "path_executed": "UNVERIFIED"
+    },
+    {
+      "pc": "0x6006e696",
+      "target": "0x6013d268",
+      "domain": "XIP",
+      "path_executed": "UNVERIFIED"
+    },
+    {
+      "pc": "0x6006ea68",
+      "target": "0x6013d270",
+      "domain": "XIP",
+      "path_executed": "UNVERIFIED"
+    },
+    {
+      "pc": "0x6006eb2c",
+      "target": "0x6013d270",
+      "domain": "XIP",
+      "path_executed": "UNVERIFIED"
+    },
+    {
+      "pc": "0x60080bfc",
+      "target": "0x6013d268",
+      "domain": "XIP",
+      "path_executed": "UNVERIFIED"
+    },
+    {
+      "pc": "0x600924ae",
+      "target": "0x6013d270",
+      "domain": "XIP",
+      "path_executed": "UNVERIFIED"
+    },
+    {
+      "pc": "0x600c9ed8",
+      "target": "0x6013d270",
+      "domain": "XIP",
+      "path_executed": "UNVERIFIED"
+    },
+    {
+      "pc": "0x600cbece",
+      "target": "0x6013d268",
+      "domain": "XIP",
+      "path_executed": "UNVERIFIED"
+    },
+    {
+      "pc": "0x600cc07a",
+      "target": "0x6013d268",
+      "domain": "XIP",
+      "path_executed": "UNVERIFIED"
+    },
+    {
+      "pc": "0x600d58c0",
+      "target": "0x6013d268",
+      "domain": "XIP",
+      "path_executed": "UNVERIFIED"
+    },
+    {
+      "pc": "0x600d58e2",
+      "target": "0x6013d268",
+      "domain": "XIP",
+      "path_executed": "UNVERIFIED"
+    },
+    {
+      "pc": "0x600d6c50",
+      "target": "0x6013d268",
+      "domain": "XIP",
+      "path_executed": "UNVERIFIED"
+    },
+    {
+      "pc": "0x600dad4c",
+      "target": "0x6013d268",
+      "domain": "XIP",
+      "path_executed": "UNVERIFIED"
+    },
+    {
+      "pc": "0x600ee152",
+      "target": "0x6013d268",
+      "domain": "XIP",
+      "path_executed": "UNVERIFIED"
+    },
+    {
+      "pc": "0x60101826",
+      "target": "0x6013d270",
+      "domain": "XIP",
+      "path_executed": "UNVERIFIED"
+    }
+  ],
+  "count_field_candidate_count": 11,
+  "signed_veneer_count": 32,
+  "signed_veneer_bl_shape_count": 181,
+  "validation_boundary": {
+    "producer_identity": "RESEARCH_IN_PROGRESS",
+    "actual_message_in_queue": "NOT_OBSERVED",
+    "USB_event_to_enqueue": "UNPROVEN",
+    "host_controlled_callback": "UNPROVEN",
+    "custom_firmware_execution": "NOT_DEMONSTRATED",
+    "HAB_closed_bypass": "NOT_DEMONSTRATED",
+    "hardware_traffic": false,
+    "flash_or_eFuse_write": false
+  },
+  "conclusion": "Signed conditional enqueue producer and worker callback dispatch are linked to one WorkQueue object; actual enqueue, callback, physical host/USB source and unsigned execution not demonstrated.",
+  "verification": {
+    "signed_oem_ci": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40405156106",
+    "status": "passed"
+  }
+}
