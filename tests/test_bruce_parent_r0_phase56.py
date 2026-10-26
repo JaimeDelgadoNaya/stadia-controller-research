@@ -36,6 +36,11 @@ class Phase56CallerOrigin(unittest.TestCase):
         with self.assertRaises((ValueError, IndexError)):
             a.prove_r0_producer(b"synthetic")
 
+    def test_startup_relocated_itcm_mapping(self):
+        self.assertEqual(a.ITCM_SOURCE_OFFSET, 0x81C)
+        self.assertTrue(0 <= 0xB532 < a.ITCM_LENGTH)
+        self.assertEqual(a.ITCM_SOURCE_OFFSET + 0xB532, 0xBD4E)
+
     def test_initial_sha_gate(self):
         with self.assertRaisesRegex(ValueError,"SHA-256"):
             a.audit(b"synthetic")
