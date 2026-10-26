@@ -1,4 +1,4 @@
-# Fase 58 — La lectura de `owner+0x80` conduce a un registro global de función y contexto
+# Fase 58 — La lectura de `[objeto+0x80]` precede a un registro global de función y contexto
 
 **26/10/2026.** Evidencia del firmware Bruce OEM firmado original, SHA-256 `466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3`. Auditoría local de instrucciones, sin dispositivos, solicitudes USB ni escrituras de memoria física.
 
