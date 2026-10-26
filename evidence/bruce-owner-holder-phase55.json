@@ -25,7 +25,7 @@
     "store": "0x6007ebb4 STR.W R8,[R4,#0x80]",
     "address": "UNKNOWN_PARENT_BASE_PLUS_0x80",
     "stored_value": "0x2000a2a8",
-    "writer_to_owner_plus4_plus8_plus12": false,
+    "owner_target_store_attribution": "UNRESOLVED_R0_BASE",
     "runtime_executed": "UNVERIFIED"
   },
   "signed_group_getters": [
