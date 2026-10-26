@@ -43,7 +43,7 @@ def xip_literal(image, pc, operand):
     match = MEM.fullmatch(operand)
     if not match or match.group(1) != "pc":
         return None
-    offset = int(match.group(2) or 0, 0)
+    offset = int(match.group(2) or "0", 0)
     address = ((pc + 4) & ~3) + offset
     if address % 4 == 0 and BASE <= address <= BASE + len(image) - 4:
         return struct.unpack_from("<I", image, address - BASE)[0]
@@ -64,7 +64,7 @@ def known_stores(m, op, registers):
     if match is None or match.group(1) not in registers:
         return []
     base = registers[match.group(1)]
-    offset = int(match.group(2) or 0, 0)
+    offset = int(match.group(2) or "0", 0)
     return [((base + offset + 4 * idx) & 0xFFFFFFFF, src)
             for idx, src in enumerate(prefixes)]
 
