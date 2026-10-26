@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "phase": 61,
+  "captured_at": "2026-10-26T19:04:51.2890896+01:00",
+  "hub": {
+    "device": "12010102ef020140d1180094000101020301",
+    "configuration": "0902500002010080fa080b0001ff0000000904000002ff0000000705870200020007050702000200080b01010300000009040100020300000009211101000122b6000705830340000607050303400006"
+  },
+  "winusb_function_view": {
+    "device": "12010102ef020140d1180094000101020301",
+    "configuration": "0902200001010080fa0904000002ff0000000705870200020007050702000200"
+  },
+  "methods": [
+    "Hub IOCTL_USB_GET_DESCRIPTOR_FROM_NODE_CONNECTION, types 1 and 2, index 0",
+    "WinUsb_GetDescriptor, types 1 and 2, index 0"
+  ],
+  "limits": [
+    "One controller, current USB mode only; no packet capture.",
+    "Descriptor availability does not prove bulk parser, callback invocation or RAM contents.",
+    "Internal firmware class selector 10 must not be equated with bInterfaceClass 0x0A.",
+    "No string descriptors, device paths, serial values or Bluetooth addresses are recorded.",
+    "No class/vendor requests, bulk payloads, output reports, mode changes, flash or eFuse writes."
+  ]
+}

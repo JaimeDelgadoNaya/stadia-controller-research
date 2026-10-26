@@ -1,5 +1,7 @@
 # Stadia Controller Research
 
+**[Phase 61 — live USB enumeration](docs/en/usb-enumeration-phase61.md).** Parent-hub reads expose two interfaces in 80 bytes; the WinUSB function view contains only the vendor interface in 32 bytes. Bulk 0x07/0x87 and HID 0x03/0x83 are declared. No callback reachability or custom execution proven.
+
 [English](README.md) · [Español](README.es.md)
 
 Reverse-engineering notes, measured evidence and offline tools for investigating
