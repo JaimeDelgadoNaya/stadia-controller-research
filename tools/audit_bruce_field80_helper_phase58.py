@@ -20,10 +20,20 @@ from tools.audit_bruce_parent_consumer_phase57 import verify_global_chain, READ_
 BASE=ASSUMED_XIP_BASE
 HELPER=0x600D54B8
 CALLS=(0x6007E7FA,0x6007E81E)
+HELPER_PINS={
+    0x600D54B8:("sub","sp, #8"),
+    0x600D54BA:("mov","r3, sp"),
+    0x600D54BC:("stm.w","r3, {r1, r2}"),
+    0x600D54C0:("ldm.w","r3, {r0, r1}"),
+    0x600D54C4:("add","sp, #8"),
+    0x600D54C6:("b.w","#0x6006386c"),
+}
 WINDOWS={
     "caller_branch_one":(0x6007E7D6,0x6007E800),
     "caller_branch_two":(0x6007E80E,0x6007E824),
     "helper_entry":(0x600D54B8,0x600D5540),
+    "backend":(0x6006386C,0x60063910),
+    "nearby_backends":(0x6006384C,0x6006389A),
     "neighbor_helper":(0x600D54F2,0x600D5550),
     "other_related":(0x600D543C,0x600D54C0),
 }
@@ -62,10 +72,26 @@ def literal_refs(image,target=HELPER):
     return out
 
 
+def modeled_helper_forward(r0,r1,r2):
+    """The original R0 is overwritten by original R1 before tail branch."""
+    return {"backend_r0":r1,"backend_r1":r2,"backend_r2":r2,
+            "incoming_r0_forwarded_directly":False}
+
+
+def verify_helper_pins(image):
+    rows=decode(image,HELPER,0x600D54CA)
+    decoded={r["pc"]:(r["m"],r["op"]) for r in rows}
+    for pc,expect in HELPER_PINS.items():
+        if decoded.get(pc)!=expect:
+            raise ValueError(f"phase58 signed helper anchor drift {pc:#x}: {decoded.get(pc)!r}")
+    return len(HELPER_PINS)
+
+
 def audit(image):
     if len(image)!=IMAGE_SIZE or hashlib.sha256(image).hexdigest()!=IMAGE_SHA256:
         raise ValueError("phase58 requires original signed Bruce SHA-256")
     global_bridge=verify_global_chain(image)
+    pins=verify_helper_pins(image)
     reads=[]
     for pc in (0x6007E7EA,0x6007E810):
         original=pinpoint(image,pc)
@@ -84,6 +110,13 @@ def audit(image):
         "signed_global_bridge":global_bridge["same_global_RAM_address"],
         "readers":reads,
         "helper":hex(HELPER),
+        "helper_signed_pins":pins,
+        "helper_register_transfer":{
+            "from_entry_r0":"DISCARDED as direct register argument",
+            "new_r0":"old R1", "new_r1":"old R2",
+            "tail_target":"0x6006386c",
+            "note":"Original R0 could indirectly be related to other inputs; no live device read",
+        },
         "signed_callers":[hex(x) for x in CALLS],
         "candidate_all_direct_call_sites":sites,
         "aligned_pointer_literals":literal_refs(image),
@@ -105,6 +138,7 @@ def main():
     result=audit(args.image.read_bytes())
     if args.out:
         args.out.write_text(json.dumps(result,indent=2)+"\n")
+    print("PHASE58 VERIFIED ARGUMENT ADAPTER",json.dumps(result["helper_register_transfer"]))
     print("PHASE58 ORIGINAL HELPER CALLERS",json.dumps({
        "direct_sites":result["candidate_all_direct_call_sites"],
        "literals":result["aligned_pointer_literals"],
