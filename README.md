@@ -1,5 +1,7 @@
 # Stadia Controller Research
 
+**[Phase 68 — original work-queue constructor](docs/en/workqueue-constructor-phase68.md).** Signed initializer entry 43 points to 0x600926D0. Original stores clear the handle and provide auxiliary pointer 0x20020278, buffer pointer 0x2002034C and size word 0x200, replacing phase67 auxiliary fixtures. Actual task creation and physical startup remain modeled/unmeasured.
+
 **[Phase 67 — pending work-queue call and return conditions](docs/en/pending-workqueue-call-phase67.md).** Original 0x6009267C now executes to normal return or observed error. Nonzero handle field returns zero; missing auxiliary state returns 9 and the tested below-threshold size returns 3. Mode 1 is already stored even on error. Scheduler state remains synthetic and physical activation unmeasured.
 
 **[Phase 66 — original driver and prior-mode writer](docs/en/usb-driver-prior-mode-phase66.md).** The original driver/helper execute against virtual MMIO: low five bits of 0x402E0124 must exceed 7. An original store establishes prior mode 1 in a modeled caller path; staged transition/driver/class10 execution succeeds for virtual word 8 and blocks for 7. Pending 0x6009267C and real peripheral behavior remain unexecuted.
