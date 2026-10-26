@@ -184,6 +184,75 @@ def class10_callback_thumb_preview(image,lo=0x600613FC,hi=0x60061540):
     return [{"pc":hex(i.address),"ins":i.mnemonic+" "+i.op_str}
             for i in md.disasm(image[lo-BASE:hi-BASE],lo)]
 
+
+HANDLER_PINS={
+  0x600613FC:("cmp","r1, #0x7f"),
+  0x60061400:("bls","#0x60061422"),
+  0x60061402:("ldr","r0, [pc, #0x24]"),
+  0x60061404:("movw","r3, #0x3a38"),
+  0x60061408:("ldr","r4, [pc, #0x20]"),
+  0x6006140A:("ldr","r3, [r0, r3]"),
+  0x6006140C:("cmp","r3, r4"),
+  0x6006140E:("beq","#0x60061422"),
+  0x60061410:("movw","r4, #0x3a3c"),
+  0x60061414:("ldr","r0, [r0, r4]"),
+  0x60061416:("blx","r3"),
+  0x60061418:("uxtb","r0, r0"),
+  0x6006141C:("it","ne"),
+  0x60061420:("pop","{r4, pc}"),
+  0x60061422:("movs","r0, #0"),
+  0x60061424:("b","#0x60061420"),
+}
+PROVIDER_PINS={
+  0x600610FC:("ldr","r0, [pc, #0]"),
+  0x600610FE:("bx","lr"),
+  0x60061104:("ldr","r0, [pc, #0]"),
+  0x60061106:("bx","lr"),
+}
+def check_pins(decoded,expected):
+    for pc,pair in expected.items():
+        if decoded.get(pc)!=pair:
+            raise ValueError("Original signed callback semantic drift at "+hex(pc)+
+                             ": "+str(decoded.get(pc)))
+    return True
+
+def original_class10_handler_guard(image):
+    from capstone import Cs, CS_ARCH_ARM, CS_MODE_THUMB, CS_MODE_MCLASS
+    md=Cs(CS_ARCH_ARM,CS_MODE_THUMB|CS_MODE_MCLASS)
+    def window(lo,hi):
+        return {i.address:(i.mnemonic,i.op_str)
+                for i in md.disasm(image[lo-BASE:hi-BASE],lo)}
+    check_pins(window(0x600613FC,0x60061426),HANDLER_PINS)
+    check_pins(window(0x600610FC,0x6006110C),PROVIDER_PINS)
+    callback_base=le32(image,0x60061428-BASE)
+    callback_sentinel=le32(image,0x6006142C-BASE)
+    provider_words=[
+       {"source":hex(p),"value":hex(le32(image,p-BASE))}
+       for p in (0x60061100,0x60061108,0x600613F8)
+    ]
+    if any(p["value"]!="0x200030e8" for p in provider_words[:2]):
+        raise ValueError("class2/class10 group getter pointer drift")
+    if not (0x20000000<=callback_base<0x21000000):
+        raise ValueError("class10 callback registry base not RAM")
+    return {
+       "original_semantic_pins_verified":len(HANDLER_PINS)+len(PROVIDER_PINS),
+       "callback_thumb":"0x600613fd",
+       "callback_code":"0x600613fc",
+       "bRequest_unsigned_greater_than_0x7f_required":True,
+       "bRequest_0x81_0x83_0x84_passes_first_gate":True,
+       "global_base_from_pc_literal":hex(callback_base),
+       "sentinel_word_from_pc_literal":hex(callback_sentinel),
+       "registered_callback_word_address":hex(callback_base+0x3a38),
+       "registered_context_word_address":hex(callback_base+0x3a3c),
+       "callback_pointer_read_at":"0x6006140a",
+       "callback_pointer_compared_to_sentinel_at":"0x6006140c",
+       "indirect_callback_not_executed":"0x60061416 BLX R3",
+       "group_source_getter_raw_literals":provider_words[:2],
+       "unverified_extra_neighbor_word":provider_words[2],
+       "registered_callback_runtime_value":"UNMEASURED",
+       "host_can_replace_registered_callback":"NOT DEMONSTRATED"
+    }
+
 def inspect(image):
     if len(image)!=IMAGE_SIZE or hashlib.sha256(image).hexdigest()!=IMAGE_SHA256:
         raise ValueError("Exact signed Bruce original SHA-256/length required")
@@ -195,6 +264,7 @@ def inspect(image):
       "sha256_verified":True,
       "search_model":"three signed 32-bit words: signed Thumb ptr, zero-or-RAM, signed XIP-or-RAM descriptor; descriptor byte +4 inspected",
       "pinned_contiguous_boot_records":confirmed_boot_records(image),
+      "class10_handler_verified_control_gate":original_class10_handler_guard(image),
       "focused_record_pointer_refs":focused_pointer_refs(image),
       "boot_copy_words_around_class10":boot_copy_context(image),
       "class10_callback_original_thumb_preview":class10_callback_thumb_preview(image),
@@ -228,8 +298,9 @@ def main():
         print("OTHER_EXAMPLES",json.dumps(r["non_class10_examples"][:8]))
     print("PINNED CONTIGUOUS BOOT RECORDS",json.dumps(result["pinned_contiguous_boot_records"]))
     print("FOCUSED RECORD POINTER XREFS",json.dumps(result["focused_record_pointer_refs"]))
-    print("BOOT CLASS10 WORD CONTEXT",json.dumps(result["boot_copy_words_around_class10"]))
-    print("REAL CLASS10 CALLBACK THUMB",json.dumps(result["class10_callback_original_thumb_preview"]))
+    print("BOOT CLASS10 WORD CONTEXT",json.dumps(result["boot_copy_words_around_class10"][:35]))
+    print("CLASS10 INDIRECT CALLBACK GUARD",json.dumps(result["class10_handler_verified_control_gate"]))
+    print("REAL CLASS10 CALLBACK THUMB",json.dumps(result["class10_callback_original_thumb_preview"][:30]))
     print("CLASS TABLE SOURCE WORDS",json.dumps(result["literal_pointer_census"]))
     print("NO LIVE CALLBACK OR EXECUTION CLAIMS")
 
