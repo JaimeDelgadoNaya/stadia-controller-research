@@ -35,7 +35,9 @@ LDR R0,[R0,R4]      ; secondary registered callback context
 BLX R3              ; indirect invocation, NOT emulated or observed on hardware
 ```
 
-Thus requests `0x81`, `0x83`, and `0x84` **pass the first high-byte threshold**. The signed class-10 callback then delegates to a **second RAM-registered function** only if its guard passes. The second function's **runtime value, registration source, security properties and reachability are unverified**. `bRequest` is data, not a host-supplied branch address.
+Thus requests `0x81`, `0x83`, and `0x84` **pass the first high-byte threshold**. The signed class-10 callback then delegates to a **second RAM-registered function** only if its guard passes. The original signed literal words at `0x60061428` and `0x6006142C` are **`0x200064C0`** (RAM base) and **`0x600D4F05`** (guard sentinel). Thus the second function pointer is read at **`0x20009EF8`** (`base + 0x3A38`) and its context at **`0x20009EFC`** (`base + 0x3A3C`). These are verified static-address calculations, **not live SRAM readings**. A bounded Unicorn audit checks the original guards with synthetic RAM and stops before `BLX R3`.
+
+The second function's **runtime value, registration source, security properties and reachability are unverified**. `bRequest` is data, not a host-supplied branch address.
 
 The tool `tools/audit_bruce_class10_record_producer.py` verifies original SHA/length, the actual contiguous signed records, both descriptor class bytes, signed literal references and machine-code guard instructions. The original OEM binary is never committed. Regression tests use synthetic fixtures.
 
