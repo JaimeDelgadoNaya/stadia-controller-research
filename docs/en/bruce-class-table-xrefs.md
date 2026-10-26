@@ -4,7 +4,7 @@
 
 [Phase #35](bruce-class-control-setup-provenance.md) verified that `0x600D0E58` conditionally forwards an interface-directed USB SETUP `bRequest` argument into a class-object callback. A signed function pointer `0x600D0E59` is stored as **data** at `0x60104BAC`. Crucially, no live EP0 registration was established.
 
-This phase checked whether code statically references the neighboring flash range `0x60104B80..0x60104BDF` via PC-relative Thumb literal loads or local MOVW/MOVT address construction. **One** PC-relative literal load was found; **zero** local MOVW/MOVT pairs constructing an address in this range were detected.
+This phase checked whether code statically references the neighboring flash range `0x60104B80..0x60104BDF` via PC-relative Thumb literal loads, local MOVW/MOVT address construction, or ADR/PC-relative ADD expressions. **One** PC-relative literal load was found; **zero** local MOVW/MOVT pairs and **zero** ADR/PC-relative ADD expressions constructing an address in this range were detected.
 
 ## Verified new original-code finding
 
