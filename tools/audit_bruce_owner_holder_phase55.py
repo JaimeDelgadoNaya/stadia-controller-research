@@ -1,7 +1,7 @@
 """Phase 55: original-signed producer-first provenance of Bruce USB owner.
 
 A caller passes literal owner=0x2000A2A8 as R2 to a signed object
-constructor, which saves it in a distinct object's +0x80 field.
+constructor, which saves it in the +0x80 field of an unknown R0-based object.
 This is NOT a write to owner+4/+8/+12. Also pins two original signed
 getters of the boot-initialized class2/class10 record group. The
 relationship between these paths is still UNRESOLVED.
@@ -71,7 +71,7 @@ def propagate_holder(caller_r2: int | None, saved_r8: int | None = None):
     """Relevant abstract register flow, no simulated runtime execution.
 
     R2 is copied to R8 before an external BL. R8 is callee-saved on
-    ARM AAPCS. R4 is an unknown but distinct *base*, not OWNER simply
+    ARM AAPCS. R4 is an unknown *base*, not proven equal to OWNER simply
     because some input argument also points to OWNER.
     """
     if caller_r2 is None:
@@ -135,7 +135,7 @@ def audit(image: bytes) -> dict:
             "store": "0x6007ebb4 STR.W R8,[R4,#0x80]",
             "abstract_store": holder,
             "classification": "CONDITIONAL_SIGNED_CODE_POINTER_TRANSFER_TO_PARENT_FIELD",
-            "not_a_writer_to_owner_plus4_plus8_plus12": True,
+            "owner_plus4_plus8_plus12_store_attribution": "UNRESOLVED_R0_BASE",
             "parent_base": "UNKNOWN",
             "run_on_hardware": "UNVERIFIED",
         },
