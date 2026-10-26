@@ -141,11 +141,9 @@ def branch_aware_footprints(image):
 
 def direct_xrefs(image,targets):
     """Instruction-shaped BL edges only; no reachability/CFG assertion."""
-    out={}
-    for name,address in targets.items():
-        hits=xip_target_BL_shapes(image,[address])
-        out[name]=hits
-    return out
+    union=xip_target_BL_shapes(image,set(targets.values()))
+    return {name:[r for r in union if int(r["target"],16)==address]
+            for name,address in targets.items()}
 
 
 def upstream_census(image):
