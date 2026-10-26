@@ -1,0 +1,68 @@
+{
+  "phase": 43,
+  "date": "2026-10-26",
+  "source_kind": "signed Bruce OEM update archive; not installed flash readback",
+  "source_sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+  "confirmed_original_static_edges": [
+    {
+      "role": "early_startup_candidate_calls_constructor_walker",
+      "source_pc": "0x6004c742",
+      "target": "0x600cdb74",
+      "opcode": "bl",
+      "validated_signed_semantic_pins": 4
+    },
+    {
+      "role": "constructor_walker_range",
+      "function": "0x600cdb74",
+      "table_begin": "0x6013d4f0",
+      "table_end_exclusive": "0x6013d5a4",
+      "entry_count": 45,
+      "walker_load_pc": "0x600cdba2",
+      "indirect_call_pc": "0x600cdba6",
+      "validated_semantic_pins": 15
+    },
+    {
+      "role": "wrapper_table_entry",
+      "index_zero_based": 21,
+      "source_offset": "0xfd544",
+      "source_XIP": "0x6013d544",
+      "pointer_thumb": "0x600748ed"
+    },
+    {
+      "role": "wrapper_calls_global_initializer",
+      "source_pc": "0x600748f2",
+      "target": "0x60073bf0",
+      "literal_source": "0x60074904",
+      "argument": "0x200064c0"
+    },
+    {
+      "role": "global_initializer_writes_sentinel",
+      "source_pc": "0x60073cf4",
+      "target": "0x20009ef8",
+      "value_thumb": "0x600d4f05"
+    },
+    {
+      "role": "global_initializer_writes_null_context",
+      "source_pc": "0x60073cfc",
+      "target": "0x20009efc",
+      "value": "0x00000000"
+    }
+  ],
+  "method": {
+    "inbound": "every-halfword Thumb32 branch prefilter + Capstone validation, XIP and relocated ITCM",
+    "pointer_search": "all byte offsets including unaligned",
+    "walker": "signed function/loop/literal pinning",
+    "synthetic_regressions": true
+  },
+  "previous_phase_correction": "Phase42 chunk-linear scan missed original BL 0x600748f2; cannot infer no caller from that limited scan",
+  "remaining_gaps": [
+    "Actual physical device firmware identity, power-on execution and RAM contents not measured",
+    "Potential later callback writer untraced",
+    "USB EP0 host reachability and host-controlled callback replacement not proven",
+    "No unsigned/custom firmware execution, HAB CLOSED bypass, or recovery",
+    "No native Xbox/Switch 2 protocol implementation"
+  ],
+  "device_connected": false,
+  "flash_modified": false,
+  "efuse_modified": false
+}
