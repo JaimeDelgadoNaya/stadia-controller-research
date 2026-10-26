@@ -49,6 +49,13 @@ class Phase42Tests(unittest.TestCase):
         self.assertEqual(p.origin_class(None), "unknown_entry_or_predecessor")
         self.assertIsNone(p.last_writer([FakeInstruction(0x10, "mov", "r2, r3", ("r2",))], "r3"))
 
+    def test_constructor_direct_call_semantics_change_is_detected(self):
+        self.assertTrue(p.check_constructor_pins(dict(p.CONSTRUCTOR_PINS)))
+        alt=dict(p.CONSTRUCTOR_PINS)
+        alt[0x60058920] = ("mov", "r0, r7")
+        with self.assertRaisesRegex(ValueError, "drift"):
+            p.check_constructor_pins(alt)
+
     def test_wrong_original_image_rejected(self):
         with self.assertRaisesRegex(ValueError, "SHA-256"):
             p.audit(b"synthetic")
