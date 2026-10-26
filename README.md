@@ -1,5 +1,7 @@
 # Stadia Controller Research
 
+**[Phase 64 — original records include internal class 10](docs/en/original-class-records-phase64.md).** Original producer execution builds class records [10, 1, 2, 4] from signed startup data. Class10 carries callback 0x600613FD; the original selector matches method 0x60055321 before its call. Physical activation and complete engine setup remain unmeasured.
+
 **[Phase 63 — provider and initial flag writers](docs/en/usb-provider-initialization-phase63.md).** Signed initialization links owner 0x2000A2A8 to the descriptor provider and supplies initial zero stores for both flags. Bounded virtual internal-event dispatch reaches the original 80-byte selector; actual class-record contents and installed RAM remain unresolved.
 
 **[Phase 62 — exact live descriptor match in OEM](docs/en/usb-descriptor-oem-match-phase62.md).** The complete 80-byte hub descriptor matches exactly once at OEM XIP 0x6011E45A. Bounded original-code emulation verifies four conditional descriptor profiles; live flags and callback activation remain unmeasured.

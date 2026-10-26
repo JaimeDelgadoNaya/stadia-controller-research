@@ -1,0 +1,356 @@
+{
+  "phase": 64,
+  "image_sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+  "exact_image_hash_verified": true,
+  "startup_data": {
+    "source_file_offset": "0xfd5a8",
+    "destination": "0x20002740",
+    "length": 6296,
+    "sha256": "85b39fa62734059a14d13a7067330fd1e1cf1570b2ad8b61eb272df00a273806",
+    "copied_from_signed_image_not_live_ram": true
+  },
+  "sources": [
+    {
+      "object": "0x20009ef0",
+      "table": "0x60105a5c",
+      "producer": "0x600613f4",
+      "producer_return_literal": "0x600613f8",
+      "original_record": "0x200030f4",
+      "original_record_source_offset": "0xfdf5c",
+      "callback": "0x600613fd",
+      "descriptor": "0x20003100",
+      "selector": 10,
+      "selected_method_0": "0x60055321"
+    },
+    {
+      "object": "0x20009e00",
+      "table": "0x60105f30",
+      "producer": "0x6006262c",
+      "producer_return_literal": "0x60062630",
+      "original_record": "0x200031f0",
+      "original_record_source_offset": "0xfe058",
+      "callback": "0x21a1",
+      "descriptor": "0x200031c4",
+      "selector": 1,
+      "selected_method_0": "0x600552f1"
+    },
+    {
+      "object": "0x20009e84",
+      "table": "0x60105a40",
+      "producer": "0x60061104",
+      "producer_return_literal": "0x60061108",
+      "original_record": "0x200030e8",
+      "original_record_source_offset": "0xfdf50",
+      "callback": "0x60061249",
+      "descriptor": "0x200030a0",
+      "selector": 2,
+      "selected_method_0": "0x60054c7d"
+    },
+    {
+      "object": "0x20009f20",
+      "table": "0x60105f1c",
+      "producer": "0x60061e08",
+      "producer_return_literal": "0x60061e0c",
+      "original_record": "0x2000312c",
+      "original_record_source_offset": "0xfdf94",
+      "callback": "0x600624f9",
+      "descriptor": "0x20003138",
+      "selector": 4,
+      "selected_method_0": "0x60054875"
+    }
+  ],
+  "original_flow": {
+    "start": "0x60073bf0",
+    "stop": "0x60073ef4",
+    "constructor_instruction_hooks": 303,
+    "producers": [
+      {
+        "object": "0x20009ef0",
+        "table": "0x60105a5c",
+        "target": "0x600613f5",
+        "returned_original_record": "0x200030f4"
+      },
+      {
+        "object": "0x20009e00",
+        "table": "0x60105f30",
+        "target": "0x6006262d",
+        "returned_original_record": "0x200031f0"
+      },
+      {
+        "object": "0x20009e84",
+        "table": "0x60105a40",
+        "target": "0x60061105",
+        "returned_original_record": "0x200030e8"
+      },
+      {
+        "object": "0x20009f20",
+        "table": "0x60105f1c",
+        "target": "0x60061e09",
+        "returned_original_record": "0x2000312c"
+      }
+    ],
+    "copied_records": [
+      {
+        "index": 0,
+        "destination": "0x2000a274",
+        "callback": "0x600613fd",
+        "instance_before_class_init": "0x0",
+        "descriptor": "0x20003100",
+        "selector": 10,
+        "exact_signed_source_bytes": true
+      },
+      {
+        "index": 1,
+        "destination": "0x2000a280",
+        "callback": "0x21a1",
+        "instance_before_class_init": "0x0",
+        "descriptor": "0x200031c4",
+        "selector": 1,
+        "exact_signed_source_bytes": true
+      },
+      {
+        "index": 2,
+        "destination": "0x2000a28c",
+        "callback": "0x60061249",
+        "instance_before_class_init": "0x0",
+        "descriptor": "0x200030a0",
+        "selector": 2,
+        "exact_signed_source_bytes": true
+      },
+      {
+        "index": 3,
+        "destination": "0x2000a298",
+        "callback": "0x600624f9",
+        "instance_before_class_init": "0x0",
+        "descriptor": "0x20003138",
+        "selector": 4,
+        "exact_signed_source_bytes": true
+      }
+    ],
+    "original_record_stores": [
+      {
+        "pc": "0x60073e00",
+        "address": "0x2000a274",
+        "size": 4,
+        "value": "0x600613fd"
+      },
+      {
+        "pc": "0x60073e00",
+        "address": "0x2000a278",
+        "size": 4,
+        "value": "0x0"
+      },
+      {
+        "pc": "0x60073e00",
+        "address": "0x2000a27c",
+        "size": 4,
+        "value": "0x20003100"
+      },
+      {
+        "pc": "0x60073e00",
+        "address": "0x2000a280",
+        "size": 4,
+        "value": "0x21a1"
+      },
+      {
+        "pc": "0x60073e00",
+        "address": "0x2000a284",
+        "size": 4,
+        "value": "0x0"
+      },
+      {
+        "pc": "0x60073e00",
+        "address": "0x2000a288",
+        "size": 4,
+        "value": "0x200031c4"
+      },
+      {
+        "pc": "0x60073e00",
+        "address": "0x2000a28c",
+        "size": 4,
+        "value": "0x60061249"
+      },
+      {
+        "pc": "0x60073e00",
+        "address": "0x2000a290",
+        "size": 4,
+        "value": "0x0"
+      },
+      {
+        "pc": "0x60073e00",
+        "address": "0x2000a294",
+        "size": 4,
+        "value": "0x200030a0"
+      },
+      {
+        "pc": "0x60073e00",
+        "address": "0x2000a298",
+        "size": 4,
+        "value": "0x600624f9"
+      },
+      {
+        "pc": "0x60073e00",
+        "address": "0x2000a29c",
+        "size": 4,
+        "value": "0x0"
+      },
+      {
+        "pc": "0x60073e00",
+        "address": "0x2000a2a0",
+        "size": 4,
+        "value": "0x20003138"
+      }
+    ],
+    "owner_config": {
+      "array": "0x2000a274",
+      "method": "0x60060d55",
+      "count": 4
+    },
+    "selector_matches": [
+      {
+        "index": 0,
+        "selector": 10,
+        "method_thumb": "0x60055321",
+        "argument_r1": "0x2000a274",
+        "output_pointer_r2": "0x2000a278",
+        "registry_record_offset": 48,
+        "stopped_before_class_method_call": true
+      },
+      {
+        "index": 1,
+        "selector": 1,
+        "method_thumb": "0x600552f1",
+        "argument_r1": "0x2000a280",
+        "output_pointer_r2": "0x2000a284",
+        "registry_record_offset": 0,
+        "stopped_before_class_method_call": true
+      },
+      {
+        "index": 2,
+        "selector": 2,
+        "method_thumb": "0x60054c7d",
+        "argument_r1": "0x2000a28c",
+        "output_pointer_r2": "0x2000a290",
+        "registry_record_offset": 16,
+        "stopped_before_class_method_call": true
+      },
+      {
+        "index": 3,
+        "selector": 4,
+        "method_thumb": "0x60054875",
+        "argument_r1": "0x2000a298",
+        "output_pointer_r2": "0x2000a29c",
+        "registry_record_offset": 32,
+        "stopped_before_class_method_call": true
+      }
+    ],
+    "helper_calls": [
+      {
+        "target": "0x6013cf90",
+        "arguments": [
+          "0x200064c4",
+          "0x0",
+          "0x280"
+        ],
+        "model": "bounded byte fill"
+      },
+      {
+        "target": "0x600723b4",
+        "arguments": [
+          "0x20006744",
+          "0x0",
+          "0x280"
+        ],
+        "model": "no-op; unchanged R0"
+      },
+      {
+        "target": "0x600d9b6c",
+        "arguments": [
+          "0x20009e94",
+          "0x0",
+          "0x20009e10"
+        ],
+        "model": "no-op; unchanged R0"
+      },
+      {
+        "target": "0x600d9b6c",
+        "arguments": [
+          "0x20009f44",
+          "0x0",
+          "0x600d5637"
+        ],
+        "model": "no-op; unchanged R0"
+      },
+      {
+        "target": "0x6013cf90",
+        "arguments": [
+          "0x20009fe0",
+          "0x0",
+          "0x60"
+        ],
+        "model": "bounded byte fill"
+      },
+      {
+        "target": "0x6013cf90",
+        "arguments": [
+          "0x2000a040",
+          "0x0",
+          "0x200"
+        ],
+        "model": "bounded byte fill"
+      },
+      {
+        "target": "0x6013cf90",
+        "arguments": [
+          "0x2002df58",
+          "0x0",
+          "0x40"
+        ],
+        "model": "bounded byte fill"
+      },
+      {
+        "target": "0x6013d3a0",
+        "arguments": [
+          "0x2002dedc",
+          "0x2002df40",
+          "0x64"
+        ],
+        "model": "no-op; unchanged R0"
+      },
+      {
+        "target": "0x6013d3a0",
+        "arguments": [
+          "0x2000a2cc",
+          "0x2002dedc",
+          "0x64"
+        ],
+        "model": "no-op; unchanged R0"
+      }
+    ],
+    "selector_handoff": "Injected singleton+4=owner+4 and fragment registers; engine setup/checks not executed",
+    "class_methods_executed": false,
+    "callbacks_executed": false
+  },
+  "conclusions": {
+    "original_constructor_array_selectors": [
+      10,
+      1,
+      2,
+      4
+    ],
+    "class10_record_in_this_constructor": true,
+    "class10_selected_in_bounded_fragment": true,
+    "physical_class10_active": "UNMEASURED",
+    "original_class10_callback": "0x600613fd"
+  },
+  "limits": [
+    "Initialized RAM source is OEM image data; complete startup and physical RAM are not executed/measured.",
+    "R0/global base and stack are fixture inputs, matching the pinned caller argument from phase63.",
+    "One fill helper is modeled; subobject initialization, mutex initialization and metadata copy helpers are no-op stubs.",
+    "The four actual producer methods, record loads/copies and selector comparisons execute original code.",
+    "Singleton/engine handoff is injected; full class-engine setup, its success conditions and class initializers do not execute.",
+    "Inclusion of internal class10 does not imply a USB interface with bInterfaceClass 0x0A.",
+    "No physical host-to-class10 callback proof, host-chosen pointer, custom execution or HAB bypass.",
+    "No device I/O, mode changes, flash/eFuse writes or full firmware publication."
+  ]
+}
