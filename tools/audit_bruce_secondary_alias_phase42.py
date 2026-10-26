@@ -94,21 +94,24 @@ def inspect_site(image, pc):
         raise ValueError("Candidate displacement/base changed: " + hex(pc) + " " + cur.op_str)
     lo = max(BASE + 0xBDF8, pc - WINDOW_BEFORE)
     hi = min(BASE + 0xFF000, pc + WINDOW_AFTER)
-    # Try two halfword-aligned starts; require a matching site instruction.
+    # Thumb code may include inline literals. A wide window seeded at one
+    # offset can lose alignment; retry bounded even-PC seeds and disclose how
+    # far the recovered linear context extends. Never infer CFG reachability.
     candidates = []
-    for shift in (0, 2):
-        start = lo + shift
+    for start in range(lo, pc + 1, 2):
         rows = decode_raw(image, start, hi)
         try:
             block, actual = basic_window(rows, pc)
         except ValueError:
             continue
         if actual.mnemonic == cur.mnemonic and actual.op_str == cur.op_str:
-            candidates.append((start, rows, block))
+            before = [x for x in rows if x.address < pc][-26:]
+            candidates.append((start, rows, block, before))
     if not candidates:
-        raise ValueError("No consistent bounded site disassembly: " + hex(pc))
-    start, rows, block = candidates[0]
-    before = [x for x in rows if x.address < pc][-26:]
+        raise ValueError("Original store matches alone, but no local instruction boundary: " + hex(pc))
+    # Prefer greatest supported local context. Ties prefer closest starting
+    # offset. This only ranks linear disassembly, not physical reachability.
+    start, rows, block, before = max(candidates, key=lambda x: (len(x[3]), x[0]))
     following = [x for x in rows if pc < x.address < pc + WINDOW_AFTER][:12]
     origin = last_writer(block, target_base)
     return {
@@ -118,6 +121,7 @@ def inspect_site(image, pc):
         "necessary_base_for_secondary_slot": hex(next(iter(TARGETS)) - expected_disp),
         "other_slot_needs_base": hex(max(TARGETS) - expected_disp),
         "local_basic_block_before_target": len(block),
+        "selected_linear_decode_start": hex(start),
         "base_last_writer_current_basic_block": origin,
         "source_class": origin_class(origin),
         "context_before": [hex(i.address) + " " + i.mnemonic + " " + i.op_str for i in before],
