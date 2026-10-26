@@ -5,9 +5,11 @@ on:
     paths:
       - 'tools/audit_usb_descriptor_match_phase62.py'
       - 'tools/audit_usb_provider_phase63.py'
+      - 'tools/audit_usb_class_records_phase64.py'
       - 'tools/parse_usb_configuration.py'
       - 'tests/test_usb_descriptor_match_phase62.py'
       - 'tests/test_usb_provider_phase63.py'
+      - 'tests/test_usb_class_records_phase64.py'
       - 'evidence/usb*phase6*.json'
       - '.github/workflows/usb-descriptor-match-phase62.yml'
   workflow_dispatch:
@@ -37,6 +39,7 @@ jobs:
           echo "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3  $image" | sha256sum -c -
           STADIA_BRUCE_IMAGE="$image" python -m unittest tests.test_usb_descriptor_match_phase62 -v
           STADIA_BRUCE_IMAGE="$image" python -m unittest tests.test_usb_provider_phase63 -v
+          STADIA_BRUCE_IMAGE="$image" python -m unittest tests.test_usb_class_records_phase64 -v
           python -m tools.audit_usb_descriptor_match_phase62 "$image" --emulate --out "$report"
           python - "$report" <<'PY'
           import json, sys

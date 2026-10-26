@@ -1,5 +1,7 @@
 # Investigación del mando Stadia
 
+**[Fase 64 — registros originales incluyen clase interna 10](docs/es/registros-clase-originales-fase64.md).** Los productores originales construyen [10, 1, 2, 4] desde los datos firmados de arranque. Clase10 lleva callback 0x600613FD y selecciona 0x60055321 antes de la llamada. La activación física y el arranque completo del motor siguen sin medirse.
+
 **[Fase 63 — proveedor y escritores iniciales de flags](docs/es/proveedor-usb-inicializacion-fase63.md).** El inicializador firmado enlaza el owner 0x2000A2A8 con el proveedor del descriptor e inicializa ambos flags a cero. El despacho virtual del evento interno alcanza el selector de 80 bytes; siguen pendientes los registros de clase reales y la RAM instalada.
 
 **[Fase 62 — coincidencia exacta del descriptor con OEM](docs/es/coincidencia-descriptores-oem-fase62.md).** Los 80 bytes del hub coinciden una sola vez en XIP 0x6011E45A. La emulación acotada verifica cuatro perfiles condicionales; no se han medido los flags reales ni la activación de callbacks.
