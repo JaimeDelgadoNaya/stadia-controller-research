@@ -67,7 +67,15 @@ def execute_guards(uc):
             raise ValueError(f'Phase74 unexpected original receiver instruction {pc:#x}')
     ident=uc.hook_add(UC_HOOK_CODE,hook)
     try:
-        uc.emu_start(WAIT|1,0x10000002,count=50)
+        try:
+            uc.emu_start(WAIT|1,0x10000002,count=50)
+        except Exception as exc:
+            from unicorn.arm_const import UC_ARM_REG_PC
+            raise ValueError(
+                f'Phase74 virtual receive failed at PC={uc.reg_read(UC_ARM_REG_PC):#x}; '
+                f'last signed instructions={list(map(hex,pcs[-12:]))}; '
+                f'error={exc}'
+            ) from exc
     finally:
         uc.hook_del(ident)
     if not pcs or pcs[-1]!=0x6D58 or VENEER not in pcs or 0x6D2C not in pcs:
