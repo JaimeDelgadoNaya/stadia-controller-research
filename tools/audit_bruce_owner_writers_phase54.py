@@ -138,6 +138,12 @@ def trace(image, seeds=SEEDS, *, max_states=10000, max_depth=2, max_span=0x200):
             if (mnemonic.startswith("pop") and "pc" in op) or mnemonic == "bx" or mnemonic in ("udf", "svc", "bkpt"):
                 stop("return_or_indirect")
                 continue
+            if mnemonic.startswith(("pop", "ldm")):
+                for popped in re.findall(r"\\br(?:1[0-2]|[0-9])\\b", op):
+                    registers.pop(popped, None)
+                if mnemonic.startswith("pop"):
+                    follow(following)
+                    continue
             if mnemonic.startswith(("it", "tbb", "tbh")):
                 stop("unmodelled_predication_or_table")
                 continue
