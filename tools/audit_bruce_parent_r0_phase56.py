@@ -70,11 +70,11 @@ def prove_r0_producer(image):
 
 
 def resolve_producer_veneer(image):
-    """Resolve LDR.W PC literal as data, not as Thumb instructions.
+    """Resolve LDR.W PC literal as data, including startup-relocated ITCM.
 
-    Inspects an OEM signed *literal pointer*. If target lies outside
-    mapped signed XIP, do not claim local code execution or memory
-    allocation semantics. Never turn bytes of the veneer table into code.
+    The original startup copies signed bytes from ITCM_SOURCE_OFFSET to
+    runtime ITCM address zero. Decode those source bytes with the runtime
+    PC, never as flash-XIP code or as a physical device RAM observation.
     """
     entry=0x6013D378
     first=decode(image,entry,entry+4)
@@ -83,16 +83,35 @@ def resolve_producer_veneer(image):
     at=(entry+4)&~3
     off=at-BASE
     ptr=struct.unpack_from("<I",image,off)[0]
+    target=ptr&~1
     out={"veneer_entry":hex(entry),"literal_at":hex(at),
          "raw_target_word":hex(ptr),
          "thumb_bit_set":bool(ptr&1),
-         "resolved_target":hex(ptr&~1),
-         "target_in_signed_XIP":BASE<=ptr&~1<SIGNED_XIP_END,
+         "resolved_target":hex(target),
+         "target_in_signed_XIP":BASE<=target<SIGNED_XIP_END,
+         "target_in_startup_relocated_ITCM":0<=target<ITCM_LENGTH,
          "semantic_role":"UNVERIFIED"}
-    if ptr&1 and BASE<=ptr&~1<SIGNED_XIP_END:
-        out["target_code_window"]=select_original_window(image,ptr&~1,
-                              min((ptr&~1)+0x60,SIGNED_XIP_END))
+    if ptr&1 and BASE<=target<SIGNED_XIP_END:
+        out["target_source_offset"]=hex(target-BASE)
+        out["target_classification"]="signed_XIP"
+        out["target_code_window"]=select_original_window(image,target,
+                                min(target+0x60,SIGNED_XIP_END))
+    elif ptr&1 and 0<=target<ITCM_LENGTH:
+        # The signed update startup copies image[ITCM_SOURCE_OFFSET:
+        # ITCM_SOURCE_OFFSET+ITCM_LENGTH] to ITCM runtime address zero.
+        # Unlike XIP, disassembly must use the *runtime* Thumb PC.
+        from capstone import Cs,CS_ARCH_ARM,CS_MODE_THUMB,CS_MODE_MCLASS
+        md=Cs(CS_ARCH_ARM,CS_MODE_THUMB|CS_MODE_MCLASS)
+        source=ITCM_SOURCE_OFFSET+target
+        limit=min(source+0x100,ITCM_SOURCE_OFFSET+ITCM_LENGTH)
+        out["target_source_offset"]=hex(source)
+        out["target_classification"]="startup_relocated_ITCM_candidate"
+        out["target_code_window"]=[
+            {"pc":hex(i.address),"m":i.mnemonic,"op":i.op_str,"ins":i.mnemonic+" "+i.op_str}
+            for i in md.disasm(image[source:limit],target)
+        ]
     else:
+        out["target_classification"]="unknown_or_unmapped"
         out["target_code_window"]=[]
     return out
 
