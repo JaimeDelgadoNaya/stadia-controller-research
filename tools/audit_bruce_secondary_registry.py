@@ -111,7 +111,8 @@ def synthetic_walk(image: bytes, start: int, end: int, *, kind="xip"):
                     address = effective_address(op, state)
                     if m.startswith("str") and op.mem.disp in CONTEXT_OFFSETS:
                         offset_candidates.append({
-                            "pc": hex(ins.address), "base_register": ins.reg_name(op.mem.base),
+                            "pc": hex(ins.address), "instruction": ins.mnemonic + " " + ins.op_str,
+                            "base_register": ins.reg_name(op.mem.base),
                             "displacement": hex(op.mem.disp), "region": kind,
                             "base_constant_proven": address is not None,
                             "resolved_address": hex(address) if address is not None else None,
@@ -170,6 +171,26 @@ def synthetic_walk(image: bytes, start: int, end: int, *, kind="xip"):
     }
 
 
+def triage_offset_stores(rows):
+    """Priority classification, without claiming control-flow reachability."""
+    stack = [x for x in rows if x["base_register"] == "sp"]
+    other = [x for x in rows if x["base_register"] != "sp"
+             and x["resolved_address"] is not None
+             and int(x["resolved_address"], 16) not in TARGETS]
+    unresolved = [x for x in rows if x["base_register"] != "sp"
+                  and x["resolved_address"] is None]
+    exact = [x for x in rows if x["resolved_address"] is not None
+             and int(x["resolved_address"], 16) in TARGETS]
+    return {
+        "stack_based_store_shapes": len(stack),
+        "statically_resolved_other_address": len(other),
+        "unresolved_nonstack_store_shapes": len(unresolved),
+        "statically_resolved_target_store_shapes": len(exact),
+        "unresolved_nonstack_pc": [x["pc"] for x in unresolved[:RESULT_LIMIT]],
+        "only_static_prioritization": True,
+    }
+
+
 def audit(image: bytes):
     if len(image) != IMAGE_SIZE or hashlib.sha256(image).hexdigest() != IMAGE_SHA256:
         raise ValueError("Requires exact SHA-256 pinned OEM signed Bruce update image")
@@ -218,6 +239,7 @@ def audit(image: bytes):
         "aligned_literal_census": aligned_refs,
         "linear_windows": len(windows),
         "counts": dict(totals),
+        "offset_store_triage": triage_offset_stores(near_stores),
         "candidate_accesses_limited": accesses[:RESULT_LIMIT],
         "candidate_writes_limited": direct_writes[:RESULT_LIMIT],
         "related_pc_literals_limited": pc_refs[:RESULT_LIMIT],
@@ -249,6 +271,7 @@ def main():
         args.out.write_text(json.dumps(report, indent=2) + "\n")
     print("SECONDARY CLASS10 REGISTRY AUDIT", json.dumps({
         "slots": report["secondary_slot"], "counts": report["counts"],
+        "triage": report["offset_store_triage"],
         "static_direct_writes": report["candidate_writes_limited"],
         "literal_refs": report["aligned_literal_census"],
         "decoded_pc_literals": report["related_pc_literals_limited"],
