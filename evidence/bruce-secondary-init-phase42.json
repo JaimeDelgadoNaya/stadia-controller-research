@@ -1,0 +1,76 @@
+{
+  "date": "2026-10-26",
+  "phase": 42,
+  "pr": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/pull/44",
+  "oem": {
+    "sample": "signed Bruce OEM update archive (not installed flash readback)",
+    "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+    "original_CI_checked": true,
+    "physical_access": false
+  },
+  "init": {
+    "entry": "0x60073bf0",
+    "base_argument_source": "r0",
+    "proven_stores": [
+      {
+        "pc": "0x60073cf4",
+        "address_formula": "[r0+0x3a38]",
+        "value": "0x600d4f05",
+        "source_literal": "0x60073e24",
+        "signed_handler": "0x600d4f04 returns zero"
+      },
+      {
+        "pc": "0x60073cfc",
+        "address_formula": "[r0+0x3a3c]",
+        "value": "zero from r5"
+      }
+    ],
+    "conditional_if_r0_is": "0x200064c0",
+    "callback_target": "0x20009ef8",
+    "context_target": "0x20009efc",
+    "direct_XIP_BL_callers_found": 0,
+    "aligned_pointer_literals_found": 0,
+    "real_call_proven": false,
+    "actual_runtime_argument": "UNVERIFIED",
+    "live_RAM_contents": "UNMEASURED"
+  },
+  "nine_candidates": {
+    "total_verified": 9,
+    "local_base_loaded_from_indirect_struct": 5,
+    "other_base_unresolved_after_basic_block": 3,
+    "direct_constructor_case": {
+      "store_pc": "0x60058846",
+      "direct_caller": "0x60058926",
+      "caller_r0": "0x20015e74",
+      "write_destination_for_this_direct_call": "0x20015f70",
+      "overlaps_secondary": false,
+      "other_callers_not_excluded": true
+    },
+    "indirect_structure_sites": [
+      "0x600a4ff2",
+      "0x600a54f4",
+      "0x600f1c60",
+      "0x600f4e44",
+      "0x600ff9ec"
+    ],
+    "other_unresolved_sites": [
+      "0x600d574e",
+      "0x600ddb84",
+      "0x600ebd86"
+    ]
+  },
+  "limits": [
+    "Exact OEM signed code and sentinel value verified, not execution on physical device",
+    "No proven real call and input base to signed initializer",
+    "No proven host-to-secondary-callback setter",
+    "The default sentinel might be overwritten at runtime",
+    "Bounded linear XIP disassembly not complete CFG",
+    "No signed-boot bypass, custom firmware, or console interoperability"
+  ],
+  "tested_original_workflow": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40301594977",
+  "operations": {
+    "controller_connected": false,
+    "flash_modified": false,
+    "efuses_modified": false
+  }
+}
