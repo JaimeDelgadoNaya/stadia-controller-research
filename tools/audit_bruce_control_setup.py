@@ -20,6 +20,9 @@ FOCUS={
  "usb_setup_dispatch_receiver":(0x600D0FB6,0x600D1060),
  "usb_event_class_bridge":(0x600CFC8E,0x600CFD35),
  "control_wrapper_group":(0x600D4300,0x600D4410),
+ "control_bridge_literal_site":(0x600550D0,0x600551BC),
+ "class_forwarder_literal_site":(0x60104B50,0x60104BC0),
+ "control_request_dispatch":(0x600D07B0,0x600D0B70),
 }
 TARGETS={
  "setup_parser":0x600D0C3C,
@@ -122,7 +125,7 @@ def main():
         for q in result["control_byte_plus_one_loads"]
     ]))
     if a.verbose:
-        for name in ("usb_standard_setup_early","control_setup_parser","control_event_context","usb_event_class_bridge"):
+        for name in ("control_bridge_literal_site","class_forwarder_literal_site","control_request_dispatch"):
             print("WINDOW",name)
             for row in result["bounded_code_windows"][name]:
                 print(hex(row["pc"]),row["m"],row["op"])
