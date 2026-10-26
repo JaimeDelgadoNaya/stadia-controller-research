@@ -1,5 +1,7 @@
 # Investigación del mando Stadia
 
+**[Fase 67 — llamada pendiente y condiciones de retorno](docs/es/llamada-workqueue-fase67.md).** 0x6009267C se ejecuta hasta retorno normal o rama de error. Campo handle no nulo devuelve cero; falta de estructura auxiliar devuelve 9 y el tamaño probado bajo umbral devuelve 3. El modo 1 ya estaba escrito incluso al fallar. El estado de tareas sigue siendo sintético y la activación física no está medida.
+
 **[Fase 66 — driver original y escritor de modo previo](docs/es/driver-usb-modo-previo-fase66.md).** El driver/helper originales se ejecutan con MMIO virtual: los cinco bits bajos de 0x402E0124 deben superar 7. Una escritura original establece modo previo 1 en la ruta modelada; la composición llega a clase10 con palabra virtual 8 y se bloquea con 7. Siguen pendientes 0x6009267C y los efectos reales del periférico.
 
 **[Fase 65 — guardas de instancia clase10 y ruta del owner](docs/es/instancia-clase10-fase65.md).** El código original enlaza el registro OEM con la instancia 0x200040E0 si se simula éxito del driver; su fallo bloquea la ruta. Motor ausente/modo distinto devuelve 4 y clase ocupada devuelve 2. Siguen pendientes la transición de modo previa y la activación física.
