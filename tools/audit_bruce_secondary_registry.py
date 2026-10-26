@@ -184,7 +184,11 @@ def audit(image: bytes):
     totals = Counter()
     accesses, pc_refs, near_stores = [], [], []
     # Runtime ITCM uses a different PC (file offset 0x81c -> runtime 0x0).
-    windows = [(ITCM_SOURCE_OFFSET, ITCM_SOURCE_OFFSET + ITCM_LENGTH, "itcm")]
+    windows = [(ITCM_SOURCE_OFFSET, ITCM_SOURCE_OFFSET + ITCM_LENGTH, "itcm"),
+               # Function entry is independently pinned on the original bytes.
+               # A raw XIP sweep across embedded literal pools can lose Thumb
+               # instruction alignment; therefore also decode this known entry.
+               (0x213FC, 0x21426, "xip")]
     windows += [(start, min(start + 0x4000, 0xFF000), "xip")
                 for start in range(XIP_FIRST, 0xFF000, 0x4000)]
     for start, end, mode in windows:
@@ -242,6 +246,7 @@ def main():
         "slots": report["secondary_slot"], "counts": report["counts"],
         "static_direct_writes": report["candidate_writes_limited"],
         "literal_refs": report["aligned_literal_census"],
+        "decoded_pc_literals": report["related_pc_literals_limited"],
         "candidate_accesses": report["candidate_accesses_limited"],
         "near_offset_stores": report["stores_with_interesting_displacements_limited"][:12],
         "truncated": report["candidate_lists_are_truncated"],
