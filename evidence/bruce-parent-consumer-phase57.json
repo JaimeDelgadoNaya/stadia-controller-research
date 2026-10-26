@@ -1,0 +1,81 @@
+{
+  "phase": 57,
+  "date": "2026-10-26",
+  "source": {
+    "kind": "signed original Bruce OEM update",
+    "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+    "live_ram": false
+  },
+  "main_finding": {
+    "same_global_literal": "0x2001ee30",
+    "producer_literal_address": "0x60079de4",
+    "getter_literal_address": "0x60079c68",
+    "original_signed_global_chain_verified": true,
+    "constructor_argument": "heap-like allocation result saved in R4",
+    "constructor": "0x60079d84 BL 0x6007eb8c",
+    "owner_saved_in_constructed_object": "0x6007ebb4 STR.W R8,[R4,#0x80] (conditioned on execution)",
+    "publish_route": [
+      "0x60079dba MOV R1,R4",
+      "0x60079dbc LDR R0,[PC,#0x24]",
+      "0x60079dbe BL 0x60079c6c",
+      "0x60079c78 STR R1,[SP]",
+      "0x60079cd2 LDR R3,[SP]",
+      "0x60079cd8 STR R3,[R6]"
+    ],
+    "getter_route": [
+      "0x60079c50 LDR R1,[PC,#0x14]",
+      "0x60079c52 LDR R3,[R1],#4",
+      "0x60079c5a STR R3,[R0],#4",
+      "0x60074da4 LDR R0,[SP]",
+      "0x60074daa BL 0x6007e794"
+    ],
+    "live_address_content": "UNMEASURED",
+    "temporal_order_and_guard": "UNVERIFIED"
+  },
+  "reader_branches": [
+    {
+      "entry": "0x6007e794",
+      "guard": "R3==2",
+      "field_read": "0x6007e7ea LDR.W R0,[R0,#0x80]",
+      "input_pointer_identity": "SIGNED_LOCAL_ALIAS_ONLY"
+    },
+    {
+      "entry": "0x6007e794",
+      "guard": "R5==2",
+      "field_read": "0x6007e810 LDR.W R0,[R4,#0x80]",
+      "input_pointer_identity": "SIGNED_LOCAL_ALIAS_ONLY"
+    }
+  ],
+  "separate_reader": {
+    "entry": "0x6007e8ac",
+    "signed_ITCM_veneer": "0xb7c8",
+    "veneer_file_offset": "0xbfe4",
+    "target_thumb_literal": "0x6007e8ad",
+    "ITCM_direct_caller": "0xaa22",
+    "field_read": "0x6007e9a4",
+    "same_global_instance": "UNPROVEN"
+  },
+  "post_constructor_initializer": {
+    "function": "0x6007e784",
+    "field_offset": "0xc",
+    "length": 27,
+    "tail_target": "0x6010177a",
+    "reads_plus80": false
+  },
+  "CI": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40361129985",
+  "open_questions": [
+    "runtime global value",
+    "temporal ordering",
+    "live class10",
+    "owner+4/+8/+12 writer",
+    "USB-host-controlled callbacks",
+    "unsigned firmware execution",
+    "HAB CLOSED bypass"
+  ],
+  "next": "phase58: analyze 0x600d54b8 using proven conditional owner+0x80 reader inputs",
+  "safety": {
+    "usb": false,
+    "flash_writes": false,
+    "efuse_writes": false
+  }
+}
