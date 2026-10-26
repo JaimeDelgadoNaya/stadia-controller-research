@@ -41,6 +41,8 @@ def descriptor_class_byte(image, ptr):
     bounds and reads the byte +4 which is used by the selected code path.
     """
     if signed_pointer(ptr) and ptr+4<SIGNED_LIMIT:
+        if ptr-BASE+4>=len(image):
+            return None, "signed_XIP_not_mapped_in_synthetic_fixture"
         return image[ptr-BASE+4], "XIP"
     if DATA_DESTINATION <= ptr < DATA_END-4:
         origin=DATA_SOURCE_OFFSET+(ptr-DATA_DESTINATION)
@@ -232,8 +234,10 @@ def original_class10_handler_guard(image):
     ]
     if any(p["value"]!="0x200030e8" for p in provider_words[:2]):
         raise ValueError("class2/class10 group getter pointer drift")
-    if not (0x20000000<=callback_base<0x21000000):
-        raise ValueError("class10 callback registry base not RAM")
+    if callback_base!=0x200064C0:
+        raise ValueError("signed original class10 callback base literal drift")
+    if callback_sentinel!=0x600D4F05:
+        raise ValueError("signed original class10 callback sentinel literal drift")
     return {
        "original_semantic_pins_verified":len(HANDLER_PINS)+len(PROVIDER_PINS),
        "callback_thumb":"0x600613fd",
