@@ -15,6 +15,11 @@ class DedicatedEP0Pair47(unittest.TestCase):
         self.assertEqual(a.PIN[0x60054F68],("bl","#0x600d10f6"))
         self.assertEqual(a.validate_pins(dict(a.PIN)),len(a.PIN))
 
+    def test_original_caller_requires_registration_mode_one(self):
+        self.assertEqual(a.CALLER_PINS[0x600D0BD8],("cmp","r5, #1"))
+        self.assertEqual(a.CALLER_PINS[0x600D0BE0],("bl","#0x60054f30"))
+        self.assertEqual(a.CALLER_PINS[0x600D0BD2],("bl","#0x60054f7c"))
+
     def test_original_installer_mutation_rejected(self):
         mutated=dict(a.PIN)
         mutated[a.SECOND_REG]=("bl","#0x600d10f6")
