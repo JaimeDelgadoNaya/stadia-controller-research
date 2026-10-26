@@ -19,6 +19,7 @@ class DedicatedEP0Pair47(unittest.TestCase):
         self.assertEqual(a.CALLER_PINS[0x600D0BD8],("cmp","r5, #1"))
         self.assertEqual(a.CALLER_PINS[0x600D0BE0],("bl","#0x60054f30"))
         self.assertEqual(a.CALLER_PINS[0x600D0BD2],("bl","#0x60054f7c"))
+        self.assertEqual(a.CALLER_PINS[0x600D0BFA],("blx","r3"))
 
     def test_original_installer_mutation_rejected(self):
         mutated=dict(a.PIN)
