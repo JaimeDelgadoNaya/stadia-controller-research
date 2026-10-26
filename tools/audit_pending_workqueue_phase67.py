@@ -70,13 +70,18 @@ def verify_pins(image):
         raise ValueError('Phase67 original label drift')
 
 
-def queue_case(image,ram,*,name,existing=False,control=False,words=0x200):
+def queue_case(image,ram,*,name,existing=False,control=False,words=0x200,preserve_queue=False):
     from unicorn import UC_HOOK_CODE
     from unicorn.arm_const import UC_ARM_REG_R0,UC_ARM_REG_R1,UC_ARM_REG_R2,UC_ARM_REG_R5,UC_ARM_REG_R6,UC_ARM_REG_PC,UC_ARM_REG_LR
     uc=machine(image,ram)
-    uc.mem_write(QUEUE+0x58,struct.pack('<II',OPAQUE if existing else 0,CONTROL if control else 0))
-    if control:
-        uc.mem_write(CONTROL+0xCC,struct.pack('<II',1,words))
+    if preserve_queue:
+        handle,auxiliary=struct.unpack('<II',bytes(uc.mem_read(QUEUE+0x58,8)))
+        existing,control=bool(handle),bool(auxiliary)
+        words=struct.unpack('<I',bytes(uc.mem_read(auxiliary+0xD0,4)))[0] if control else 0
+    else:
+        uc.mem_write(QUEUE+0x58,struct.pack('<II',OPAQUE if existing else 0,CONTROL if control else 0))
+        if control:
+            uc.mem_write(CONTROL+0xCC,struct.pack('<II',1,words))
     uc.reg_write(UC_ARM_REG_R5,GLOBAL)
     uc.reg_write(UC_ARM_REG_R6,0x2002E010)
     steps,calls=[],[]
@@ -111,12 +116,16 @@ def queue_case(image,ram,*,name,existing=False,control=False,words=0x200):
         raise ValueError('Original pending-call case outcome differs')
     if uc.reg_read(UC_ARM_REG_R0)!=expected:
         raise ValueError('Original pending-call error status differs')
-    return dict(name=name,inputs=dict(nonzero_handle_field=existing,control_pointer_present=control,control_words=words if control else None),
+    result=dict(name=name,inputs=dict(nonzero_handle_field=existing,control_pointer_present=control,control_words=words if control else None),
         outcome=status[0],stop_pc=hex(steps[-1]),original_queue_status=expected,mode_field_after_attempt=mode,
         handle_field_after=hex(struct.unpack('<I',bytes(uc.mem_read(QUEUE+0x58,4)))[0]),
         original_pending_call_executed=True,creation_primitive_reached=0x600CA1F8 in steps,
         creator_r0_literal=hex(struct.unpack_from('<I',image,0x600CC1BC-BASE)[0]) if 0x600CA1F8 in steps else None,
-        models=calls,instruction_hooks=len(steps)),bytes(uc.mem_read(0x20000000,0x30000))
+        models=calls,instruction_hooks=len(steps))
+    if preserve_queue:
+        result['queue_fields_preserved_from_input']=True
+        result['initial_control_pointer']=hex(auxiliary)
+    return result,bytes(uc.mem_read(0x20000000,0x30000))
 
 
 def audit(image):
