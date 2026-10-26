@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 import unittest
 
-from tools.execute_queue_guards_phase74 import audit,verify_original,execute_guards,PINS
+from tools.execute_queue_guards_phase74 import audit,verify_original,execute_guards,PINS,classify_unexecuted_queue_branch
 
 ROOT=Path(__file__).resolve().parents[1]
 
@@ -18,6 +18,22 @@ class QueueReceiveGuardsTests(unittest.TestCase):
         self.assertEqual(PINS[0x6D46],('cbnz','r7, #0x6d58'))
         self.assertEqual(PINS[0x6D7C],('cbz','r5, #0x6db4'))
         self.assertEqual(len(PINS),12)
+
+    def test_projected_empty_queue_wait_is_not_execution(self):
+        fake={'control_words':['0x0']*16,
+              'queue_receive_r2_timeout':'0xffffffff'}
+        result=classify_unexecuted_queue_branch(fake)
+        self.assertEqual(result['unexecuted_branch_expectation'],
+                         'EXPECTED_EMPTY_QUEUE_THEN_WAIT_IF_STATE_UNCHANGED')
+        self.assertFalse(result['critical_sections_and_scheduler_executed'])
+        self.assertFalse(result['queue_delivery_or_callback_observed'])
+
+    def test_nonblocking_empty_queue_prediction(self):
+        fake={'control_words':['0x0']*16,
+              'queue_receive_r2_timeout':'0x0'}
+        self.assertEqual(classify_unexecuted_queue_branch(fake)
+                         ['unexecuted_branch_expectation'],
+                         'EXPECTED_EMPTY_QUEUE_NO_WAIT_IF_STATE_UNCHANGED')
 
     @unittest.skipUnless(os.environ.get('STADIA_BRUCE_IMAGE'),
                          'Original signed image optional fixture unavailable')
