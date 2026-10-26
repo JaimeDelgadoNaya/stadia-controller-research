@@ -1,0 +1,57 @@
+{
+  "date": "2026-10-26",
+  "PR": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/pull/39",
+  "source": {
+    "kind": "Google signed OEM Bruce update image, not physical flash",
+    "size_bytes": 1050984,
+    "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3"
+  },
+  "class10": {
+    "selector": 10,
+    "static_record": "0x60104ba4",
+    "initializer_thumb": "0x60055321",
+    "initializer_code": "0x60055320",
+    "setup_forwarder_code": "0x600d0e58"
+  },
+  "configuration_records": {
+    "stride_bytes": 12,
+    "original_config_arg_saved_pc": "0x6005512e",
+    "entry_base_load_pc": "0x6005517a",
+    "index_scaled_pc": "0x60055174",
+    "entry_pointer_adjust_pc": "0x60055180",
+    "descriptor_ptr_pc": "0x60055184",
+    "descriptor_class_byte_pc": "0x60055186",
+    "conditional_method_invoke_pc": "0x60055194",
+    "R1_argument": "[original_configuration_R1]+12*interface_index",
+    "offsets": {
+      "callback_possible_unverified": "+0",
+      "class_instance_output": "+4",
+      "descriptor_pointer": "+8"
+    }
+  },
+  "global": {
+    "config_state_ram": "0x20004080",
+    "class10_global_ram": "0x200040e0",
+    "class10_record_store_pc": "0x6005533a",
+    "later_callback_dereference_pc": "0x600d0eba",
+    "indirect_jump": "0x600d0ebe"
+  },
+  "original_SHA_verification": true,
+  "semantic_anchors": 32,
+  "aligned_function_pointer_ref_count": {
+    "0x600550e5": 0,
+    "0x60055321": 1,
+    "0x600d0e59": 1,
+    "0x200040e0": 1,
+    "0x20004080": 5
+  },
+  "direct_BL_callers_to_configure": 0,
+  "indirect_callers_may_exist": true,
+  "record_offset0_writer_identified": false,
+  "runtime_EP0_proven": false,
+  "original_brequest_0x81_83_84_physically_reachable": false,
+  "arbitrary_code_execution_proven": false,
+  "flash_writes": false,
+  "physical_USB_commands": false,
+  "secure_boot_bypass_proven": false
+}
