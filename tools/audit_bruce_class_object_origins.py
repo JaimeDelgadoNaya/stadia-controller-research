@@ -75,30 +75,41 @@ def pointer_literal_census(blob, targets=TARGETS):
                     "aligned_sources":[hex(x) for x in offsets[:25] if x%4==0]})
     return out
 
-def candidate_class_records(blob, start=0x60104B80, count=4):
-    """Interpret four 16-byte-shaped blocks; do not claim runtime registration."""
+def candidate_class_records(blob,start=0x60104B74,count=5):
+    """Signed data: method pointers at +0/+4/+8, selector at +12.
+
+    Corrects historical phase #37's mistaken offset-0 selector inference.
+    The base/stride/selector offset are verified by signed code in phase #38.
+    """
+    expected=[1,2,4,10,0]
     rows=[]
+    if count!=5 or start!=0x60104B74:
+        raise ValueError("signed selector table has five records from 0x60104B74")
     for n in range(count):
         pc=start+n*16
-        ident=_word(blob,pc)
-        methods=[_word(blob,pc+o) for o in (4,8,12)]
+        methods=[_word(blob,pc+o) for o in (0,4,8)]
+        selector=_word(blob,pc+12)
         rows.append({
             "source_xip_address":hex(pc),
-            "selector_word":hex(ident),
+            "selector_offset_from_record":12,
+            "selector_word":hex(selector),
             "method_thumb_pointers":[hex(x) for x in methods],
             "all_three_methods_signed_thumb":all(
                 x&1 and BASE<=(x&~1)<SIGNED_END for x in methods),
             "zero_methods":all(x==0 for x in methods),
-            "record_size_hypothesis_bytes":16,
+            "record_size_bytes":16,
             "runtime_class_selection":"NOT VERIFIED",
         })
-    if [x["selector_word"] for x in rows]!=["0x1","0x2","0x4","0xa"]:
-        raise ValueError("Unexpected class table selector layout")
-    if not all(x["all_three_methods_signed_thumb"] for x in rows[:3]):
-        raise ValueError("Signed class method candidates changed")
-    if not rows[3]["zero_methods"]:
-        raise ValueError("Expected zero method trailer not present")
+    if [int(row["selector_word"],16) for row in rows]!=expected:
+        raise ValueError("signed class selector order changed")
+    if not all(row["all_three_methods_signed_thumb"] for row in rows[:4]):
+        raise ValueError("signed method words changed")
+    if not rows[-1]["zero_methods"]:
+        raise ValueError("expected null trailing record")
+    if rows[3]["method_thumb_pointers"][-1]!="0x600d0e59":
+        raise ValueError("class10 bRequest forwarding method drift")
     return rows
+
 
 def wider_pc_literal_origin_scan(blob, lo=0x601049E0, hi=0x60104C40):
     """Raw PC-relative XIP LDR candidate references in a broader range.
