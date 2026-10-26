@@ -36,6 +36,16 @@ class Phase56CallerOrigin(unittest.TestCase):
         with self.assertRaises((ValueError, IndexError)):
             a.prove_r0_producer(b"synthetic")
 
+    def test_pinned_itcm_wrapper_guards(self):
+        self.assertEqual(a.ITCM_WRAPPER_PINS[0xB53E],("bl","#0x8832"))
+        self.assertEqual(a.ITCM_WRAPPER_PINS[0xB542],("cbnz","r0, #0xb552"))
+        self.assertEqual(a.ITCM_WRAPPER_PINS[0xB550],("b","#0xb53c"))
+        self.assertEqual(len(a.ITCM_WRAPPER_PINS),14)
+
+    def test_itcm_range_checks(self):
+        with self.assertRaises(ValueError):
+            a.itcm_rows(b"",a.ITCM_LENGTH-1,10)
+
     def test_startup_relocated_itcm_mapping(self):
         self.assertEqual(a.ITCM_SOURCE_OFFSET, 0x81C)
         self.assertTrue(0 <= 0xB532 < a.ITCM_LENGTH)
