@@ -1,16 +1,16 @@
-# Phase 55 — Signed producer-first analysis: owner pointer stored in a different parent object
+# Phase 55 — Signed producer-first analysis: owner pointer stored using an unknown R0 object base
 
 **26 October 2026 — SHA-256-pinned original signed Bruce OEM update**, `466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3`. Offline code-only audit.
 
 ## New finding: owner-pointer delegation to a separate holder
 
-The OEM code loads `owner=0x2000A2A8` into **R2**, calls `0x6007EB8C`, copies R2 into **callee-saved R8**, and stores R8 through a **different** object base taken from **R0**:
+The OEM code loads `owner=0x2000A2A8` into **R2**, calls `0x6007EB8C`, copies R2 into **callee-saved R8**, and stores R8 through an object base taken from **R0**, whose identity remains unknown:
 
 ```asm
 0x60079D7C LDR R2,[PC,#0x54]      ; literal at 0x60079DD4 = owner
 0x60079D84 BL 0x6007EB8C
 
-0x6007EB96 MOV R4,R0              ; parent object base UNKNOWN
+0x6007EB96 MOV R4,R0              ; object base R0 UNKNOWN
 0x6007EB9E MOV R8,R2              ; owner address
 ...
 0x6007EBAC BL 0x601017FC         ; R4/R8 are callee-saved
