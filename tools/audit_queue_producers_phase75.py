@@ -426,6 +426,27 @@ def main():
     a=p.parse_args()
     output=audit(a.image.read_bytes())
     if a.out:a.out.write_text(json.dumps(output,indent=2)+"\n",encoding="utf-8")
+    compact={
+        "phase":75,
+        "original_sha256":output["original_SHA256"],
+        "OEM_exact_hash_verified":output["original_SHA256_verified"],
+        "WorkQueue_object":output["work_queue_RAM_object"],
+        "WorkQueue_control_field":output["work_queue_virtual_control_pointer"],
+        "queue_literal_sites":output["queue_address_words"],
+        "queue_literal_loaders":output["signed_queue_literal_load_candidates"],
+        "producer":output["verified_WorkQueue_producer_chain"],
+        "signed_pipeline":output["signed_sender_to_receiver_callback_structure"],
+        "queue_increment_helper":output["verified_ITCM_count_increment_helper"],
+        "direct_producer_callers":output["work_queue_producer_function_xrefs"]["direct_bl_shapes"],
+        "function_pointer_literals":output["work_queue_producer_function_xrefs"]["aligned_thumb_function_literals"],
+        "receiver_neighbor_calls":output["receiver_neighbor_callers"]["direct_BL_shapes"],
+        "count_field_candidate_count":len(output["signed_ITCM_count_field_instruction_candidates"]),
+        "signed_veneer_count":len(output["signed_adjacent_veneers"]),
+        "signed_veneer_bl_shape_count":len(output["signed_XIP_BL_shapes_to_neighbor_veneers"]),
+        "validation_boundary":output["inference_boundary"],
+        "conclusion":"Signed conditional enqueue producer and worker callback dispatch are linked to one WorkQueue object; actual enqueue, callback, physical host/USB source and unsigned execution not demonstrated.",
+    }
+    print("PHASE75 COMPACT EVIDENCE",json.dumps(compact,separators=(",",":")))
     print("PHASE75 VERIFIED WORKQUEUE PRODUCER",json.dumps(output["verified_WorkQueue_producer_chain"]))
     print("PHASE75 SIGNED PRODUCER-CALLBACK PIPELINE",json.dumps(output["signed_sender_to_receiver_callback_structure"]))
     print("PHASE75 VERIFIED COUNT WRITE",json.dumps(output["verified_ITCM_count_increment_helper"]))
