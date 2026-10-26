@@ -1,0 +1,48 @@
+{
+  "date": "2026-10-26",
+  "audit": "original OEM signed Bruce update image; offline",
+  "sample_bytes": 1050984,
+  "sample_sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+  "pointer_search_window": [
+    "0x60104b80",
+    "0x60104be0"
+  ],
+  "pc_relative_reference_count": 1,
+  "pc_relative_reference": {
+    "load_pc": "0x6005679a",
+    "literal_pc": "0x600567f8",
+    "value": "0x60104bdc"
+  },
+  "local_movw_movt_constructed_references": 0,
+  "verified_nearby_indexed_table": {
+    "base": "0x60104bdc",
+    "index_scale_bytes": 8,
+    "instructions": [
+      "0x6005679a",
+      "0x600567a2",
+      "0x600567a6",
+      "0x600567aa",
+      "0x600567b6"
+    ],
+    "function_pointer_load": "base+index*8+4",
+    "indirect_call": "BLX R2"
+  },
+  "previously_identified_class_setup_forwarder": "0x600d0e58",
+  "static_class_forwarder_word": {
+    "at": "0x60104bac",
+    "value": "0x600d0e59"
+  },
+  "same_runtime_EP0_object_proven": false,
+  "host_brequest_81_83_84_receiver_proven": false,
+  "running_controller_access": false,
+  "usb_packets": false,
+  "writes": false,
+  "firmware_executed": false,
+  "interpretation_limits": [
+    "Linear disassembly not a CFG",
+    "Calculated ADR or relocated pointers may be missed",
+    "Table record boundaries not established",
+    "ADR/PC-relative ADD linear scans can miss dynamic forms"
+  ],
+  "adr_pc_relative_add_candidate_references": 0
+}
