@@ -1,0 +1,69 @@
+{
+  "phase": 73,
+  "image_sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+  "exact_image_hash_verified": true,
+  "prior_port_outcome": "stopped_before_svc",
+  "prior_software_restore": {
+    "basepri": "0x0",
+    "msp": "0x2002b828",
+    "psp": "0x20020b28",
+    "lr": "0xfffffffd",
+    "cpu_r0": "0x0"
+  },
+  "task_entry_case": {
+    "exception_return_model": {
+      "type": "explicit eight-word basic frame; no real exception mechanism",
+      "input_psp": "0x20020b28",
+      "loaded": {
+        "r0": "0x2002014c",
+        "r1": "0xa5a5a5a5",
+        "r2": "0xa5a5a5a5",
+        "r3": "0xa5a5a5a5",
+        "r12": "0xa5a5a5a5",
+        "lr": "0x600d3565",
+        "pc": "0x60101760",
+        "status": "0x1000000",
+        "psp_after": "0x20020b48"
+      },
+      "selected_psp": "0x20020b48",
+      "svc_executed": false,
+      "bx_lr_executed": false
+    },
+    "original_task_entry": "0x60101760",
+    "original_vtable": "0x60115c34",
+    "original_worker_method": "0x600ee143",
+    "stop_before_queue_call": "0x600ee152",
+    "observed_call_arguments": {
+      "r0_queue_control": "0x200201ac",
+      "r1_output_buffer": "0x20020b1c",
+      "r2_wait_value": "0xffffffff"
+    },
+    "final_virtual_sp": "0x20020b18",
+    "final_virtual_msp": "0x2002b828",
+    "original_instruction_addresses": [
+      "0x60101760",
+      "0x60101762",
+      "0x60101764",
+      "0x60101768",
+      "0x6010176a",
+      "0x600ee142",
+      "0x600ee144",
+      "0x600ee146",
+      "0x600ee148",
+      "0x600ee14c",
+      "0x600ee14e"
+    ],
+    "task_entry_executed_in_virtual_model": true,
+    "queue_call_executed": false,
+    "work_item_callback_executed": false
+  },
+  "limits": [
+    "Exception return is an explicit register/frame model, not execution of SVC/BX LR, exception entry/return or NVIC.",
+    "Only the observed basic PSP/thread frame is supported; floating/extended or alignment-padded frames are rejected.",
+    "After that bridge, original task wrapper and indirect worker method execute until their first queue call.",
+    "The queue call, blocking/scheduling, work-item dequeue and callback invocation do not execute.",
+    "The same virtual machine is retained; constructor/synchronization and system/priority/timer models remain inherited.",
+    "Virtual task-entry execution does not establish physical task/class10 activation or a USB-to-work-item path.",
+    "No device commands, firmware/eFuse changes, custom on-controller code or HAB bypass."
+  ]
+}

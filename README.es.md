@@ -1,5 +1,7 @@
 # Investigación del mando Stadia
 
+**[Fase 73 — retorno modelado y entrada original de tarea](docs/es/entrada-tarea-modelo-retorno-fase73.md).** Un puente explícito de registros carga el frame preparado; la entrada original 0x60101760 llama al worker OEM 0x600EE142 y se detiene antes de su llamada de cola. No se ejecutan retorno real de excepción, recepción, callbacks ni activación física.
+
 **[Fase 72 — restauración de software SVC original](docs/es/restauracion-svc-fase72.md).** La misma CPU virtual anterior a SVC ejecuta el wrapper/manejador original, restaura palabras, fija PSP 0x20020B28 y limpia BASEPRI. Se detiene antes de BX LR: no se ejecutan entrega SVC, retorno de excepción, desapilado de hardware ni entrada de tarea.
 
 **[Fase 71 — normalización del contador y límite SVC](docs/es/normalizacion-contador-svc-fase71.md).** El arranque original limpia el sentinela con readback virtual de prioridad 0xF0 y se detiene antes de SVC. BASEPRI conserva 0x50; se identifica estáticamente su limpieza en el manejador. No se ejecutan la excepción/cambio de contexto ni se miden los bits físicos de prioridad.
