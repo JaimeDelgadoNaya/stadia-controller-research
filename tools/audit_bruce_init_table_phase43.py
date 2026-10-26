@@ -119,6 +119,37 @@ def verify_constructor_walker(image):
     }
 
 
+
+BOOT_WALKER_CALL = 0x6004C742
+BOOT_WALKER_CALL_PINS = {
+    0x6004C736: ("ldr", "r0, [pc, #0x34]"),
+    0x6004C738: ("cmp", "r0, #0"),
+    0x6004C73A: ("beq", "#0x6004c742"),
+    0x6004C742: ("bl", "#0x600cdb74"),
+}
+
+
+def verify_early_walker_caller(image, inbound):
+    if not any(row["pc"]==hex(BOOT_WALKER_CALL)
+               for row in inbound["direct_branch_candidates"]):
+        raise ValueError("Signed early initialization BL no longer found")
+    code=decode(image,0x6004C70C,0x6004C760)
+    mapping={row["pc"]:(row["m"],row["op"]) for row in code}
+    for pc,expected in BOOT_WALKER_CALL_PINS.items():
+        if mapping.get(pc)!=expected:
+            raise ValueError("Signed early-init-to-walker instruction drift "+hex(pc))
+    return {
+        "direct_call_pc":hex(BOOT_WALKER_CALL),
+        "target_walker":hex(WALKER),
+        "signed_instruction_anchors":len(BOOT_WALKER_CALL_PINS),
+        "candidate_early_startup_preview":[
+            hex(x["pc"])+" "+x["m"]+" "+x["op"] for x in code
+        ],
+        "connected_to_hardware_reset":"NOT VERIFIED",
+        "physical_device_execution":"NOT MEASURED",
+    }
+
+
 def audit(image):
     if len(image)!=IMAGE_SIZE or hashlib.sha256(image).hexdigest()!=IMAGE_SHA256:
         raise ValueError("requires exact pinned original signed Bruce OEM update")
@@ -143,6 +174,7 @@ def audit(image):
     }
     walker=verify_constructor_walker(image)
     walker_calls=find_inbound_branches(image,only_target=WALKER)
+    early_caller=verify_early_walker_caller(image,walker_calls)
     refs={
         label:all_byte_word_references(image,addr,limit=20)
         for label,addr in {
@@ -164,6 +196,7 @@ def audit(image):
         "table_shape":bounds,
         "verified_constructor_walker":walker,
         "inbound_walker_branch_candidates":walker_calls,
+        "verified_early_init_walker_caller":early_caller,
         "walker_thumb_reference_census":all_byte_word_references(image,WALKER|1),
         "neighbor_words":items,
         "boundary_reference_census":refs,
@@ -209,6 +242,7 @@ def main():
     print("PHASE43 POINTER TABLE REFS",json.dumps(report["boundary_reference_census"]))
     print("PHASE43 VERIFIED CONSTRUCTOR WALKER",json.dumps(report["verified_constructor_walker"]))
     print("PHASE43 WALKER INBOUND",json.dumps(report["inbound_walker_branch_candidates"]))
+    print("PHASE43 VERIFIED EARLY STARTUP",json.dumps(report["verified_early_init_walker_caller"]))
     print("PHASE43 WALKER STATIC PTR",json.dumps(report["walker_thumb_reference_census"]))
     print("PHASE43 POSSIBLE TABLE ITERATOR",json.dumps(report["possible_table_iterator_near_0x60061608"]))
     print("PHASE43 INIT ARRAY START CONTEXT",json.dumps(report["candidate_start_reference_code"]))
