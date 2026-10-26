@@ -42,6 +42,20 @@ class SecondaryRegistryTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             p.synthetic_walk(fixture(), 0x100, 0x10C, kind="invalid")
 
+    def test_triage_separates_stack_other_target_and_opaque(self):
+        rows = [
+            {"pc":"0x1","base_register":"sp","resolved_address":None},
+            {"pc":"0x2","base_register":"r3","resolved_address":"0x20026160"},
+            {"pc":"0x3","base_register":"r7","resolved_address":None},
+            {"pc":"0x4","base_register":"r0","resolved_address":"0x20009ef8"},
+        ]
+        result = p.triage_offset_stores(rows)
+        self.assertEqual(result["stack_based_store_shapes"], 1)
+        self.assertEqual(result["statically_resolved_other_address"], 1)
+        self.assertEqual(result["unresolved_nonstack_store_shapes"], 1)
+        self.assertEqual(result["statically_resolved_target_store_shapes"], 1)
+        self.assertEqual(result["unresolved_nonstack_pc"], ["0x3"])
+
     def test_wrong_firmware_identity_rejected(self):
         with self.assertRaisesRegex(ValueError, "SHA-256"):
             p.audit(fixture())
