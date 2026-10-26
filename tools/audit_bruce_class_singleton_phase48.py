@@ -19,11 +19,15 @@ from tools.audit_bruce_class10_record_producer import confirmed_boot_records
 from tools.audit_bruce_ep0_class_object_phase48 import raw_word,BRIDGE_PINS,pins_match
 
 BASE=ASSUMED_XIP_BASE
-GLOBAL=0x20004080
+EP0_LOOKUP_GLOBAL=0x20004080
+CLASS10_GLOBAL=0x200040E0
+CLASS1_GLOBAL=0x20004080
 STATIC_TABLE_CLASS10=0x60104BA4
 SIGNED_CLASS10_CALLBACK=0x600613FD
 BOOT_CLASS10_RAM_RECORD=0x200030F4
 CLASS10_INIT=0x60055320
+CLASS1_INIT=0x600552F0
+CLASS1_GLOBAL_LIT=0x6005531C
 
 PINS={
     0x60055178:("ldr","r3, [r5, #4]"),
@@ -41,6 +45,12 @@ PINS={
     0x60055194:("blx","r3"),
     0x60055196:("adds","r7, #0x10"),
     0x60055198:("cmp","r7, #0x50"),
+    0x600552F0:("push","{r4, r5, r6, lr}"),
+    0x600552F2:("ldr","r4, [pc, #0x28]"),
+    0x600552F4:("mov","r6, r1"),
+    0x600552FA:("cbnz","r3, #0x60055314"),
+    0x6005530A:("str","r6, [r4, #4]"),
+    0x60055310:("str","r4, [r5]"),
     0x60055320:("push","{r4, r5, r6, lr}"),
     0x60055322:("ldr","r4, [pc, #0x28]"),
     0x60055324:("mov","r6, r1"),
@@ -49,7 +59,7 @@ PINS={
     0x6005533A:("str","r6, [r4, #4]"),
     0x60055340:("str","r4, [r5]"),
 }
-SLICES=((0x60055178,0x6005519C),(0x60055320,0x6005534C))
+SLICES=((0x60055178,0x6005519C),(0x600552F0,0x6005534C))
 GLOBAL_LIT=0x6005534C
 
 
@@ -61,7 +71,7 @@ def assert_original_pins(actual):
 
 
 def signed_12byte_record_impact(record_addr=BOOT_CLASS10_RAM_RECORD,
-                                 instance_before=0,global_base=GLOBAL):
+                                 instance_before=0,global_base=EP0_LOOKUP_GLOBAL):
     """Pure symbolic model; NEVER a claim about actual executed instructions."""
     return {
         "selected_record_pointer":hex(record_addr),
@@ -87,11 +97,13 @@ def audit(image):
     boot=confirmed_boot_records(image)
     if boot[1]["destination_boot_RAM"]!=hex(BOOT_CLASS10_RAM_RECORD) or boot[1]["callback_thumb_word"]!=hex(SIGNED_CLASS10_CALLBACK):
         raise ValueError("original signed boot class10 record changed")
-    if rom[3]["record_base"]!=hex(STATIC_TABLE_CLASS10) or rom[3]["method_0"]!="0x60055321":
+    if rom[3]["record_base"]!=hex(STATIC_TABLE_CLASS10) or rom[3]["method_0"]!="0x60055321" or rom[0]["method_0"]!="0x600552f1":
         raise ValueError("class10 ROM method0 changed")
     glob=raw_word(image,GLOBAL_LIT)
-    if glob!=GLOBAL:
-        raise ValueError("original class10 init singleton differs from EP0 lookup: "+hex(glob)+" vs "+hex(GLOBAL))
+    first=raw_word(image,CLASS1_GLOBAL_LIT)
+    lookup=raw_word(image,0x60054FAC)
+    if (glob,first,lookup)!=(CLASS10_GLOBAL,CLASS1_GLOBAL,EP0_LOOKUP_GLOBAL):
+        raise ValueError("original signed class global pointers differ from pinned values: "+str((hex(glob),hex(first),hex(lookup))))
     return {
         "phase":48,"signed_original_OEM_SHA_verified":True,
         "semantic_pins":pins,
@@ -102,6 +114,19 @@ def audit(image):
             "ROM_16byte_selected_method0":"0x6005518c LDR.W R3,[fp+r7] -> 0x60055194 BLX R3",
             "arguments":"R0=R6 USB context, R1=12-byte runtime record pointer, R2=record+4",
             "class10_signed_method0":"0x60055321",
+        },
+        "distinct_signed_class_singletons":{
+            "class_selector_1_method0":"0x600552f1",
+            "class_selector_1_initializer_global_literal":"0x6005531c",
+            "class_selector_1_singleton":hex(first),
+            "class_selector_10_method0":"0x60055321",
+            "class_selector_10_initializer_global_literal":hex(GLOBAL_LIT),
+            "class_selector_10_singleton":hex(glob),
+            "EP0_lookup_literal":"0x60054fac",
+            "EP0_lookup_singleton":hex(lookup),
+            "EP0_lookup_matches_class_selector_1_singleton":lookup==first,
+            "EP0_lookup_matches_class_selector_10_singleton":lookup==glob,
+            "runtime_selected_class":"UNVERIFIED",
         },
         "class10_initializer":{
             "entry":"0x60055320",
@@ -140,6 +165,7 @@ def main():
     if arg.out:arg.out.write_text(json.dumps(result,indent=2)+"\n")
     print("PHASE48 SIGNED CLASS SELECTOR",json.dumps(result["class_selector"]))
     print("PHASE48 SIGNED SINGLETON INIT",json.dumps(result["class10_initializer"]))
+    print("PHASE48 TWO CLASS SINGLETONS",json.dumps(result["distinct_signed_class_singletons"]))
     print("PHASE48 SIGNED METHOD RECORD VS RUNTIME RECORD",json.dumps(result["signed_ROM_class10_methods"]))
     print("PHASE48 STATIC ALIAS LIMITS",json.dumps(result["synthetic_alias_caveat"]))
     print("PHASE48 LIVE VTABLE: UNVERIFIED; NO HARDWARE ACCESS")
