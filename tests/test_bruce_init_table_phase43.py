@@ -23,6 +23,13 @@ class CandidateTableTests(unittest.TestCase):
         self.assertFalse(a.executable_thumb_value(0x600748ec))
         self.assertFalse(a.executable_thumb_value(0x20009ef8))
 
+    def test_walker_instruction_mutation_is_detected(self):
+        self.assertTrue(a.verify_walker_pins(dict(a.WALKER_PINS)))
+        rows=dict(a.WALKER_PINS)
+        rows[0x600CDBA6]=("bx","r3")
+        with self.assertRaisesRegex(ValueError,"drift"):
+            a.verify_walker_pins(rows)
+
     def test_not_accept_wrong_image(self):
         with self.assertRaisesRegex(ValueError,"pinned"):
             a.audit(b"no data")
