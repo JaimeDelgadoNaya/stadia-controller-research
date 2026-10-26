@@ -1,0 +1,78 @@
+{
+  "phase": 51,
+  "date": "2026-10-26",
+  "pr": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/pull/53",
+  "source": {
+    "type": "original signed Bruce OEM update, not live device dump",
+    "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3"
+  },
+  "original_memory_base": "0x2000a2a8",
+  "owner_fields": {
+    "class_record_pointer": "0x2000a2ac",
+    "config_method": "0x2000a2b0",
+    "class_count_byte": "0x2000a2b4"
+  },
+  "original_aligned_signed_literal_occurrences": 16,
+  "exact_PC_derived_candidates": 11,
+  "candidate_load_PCs": [
+    "0x60041e90",
+    "0x6005abf2",
+    "0x6005acc0",
+    "0x6005accc",
+    "0x6005acda",
+    "0x600610ea",
+    "0x60065446",
+    "0x60071416",
+    "0x60074af8",
+    "0x60074e56",
+    "0x60079d7c"
+  ],
+  "local_owner_4_8_12_stores_established": 0,
+  "caveat": "No local straight-line stores in audited literal-load candidates is not proof that no writers exist elsewhere, behind calls, through aliases or in runtime; linear decoder does not prove CFG reachability.",
+  "transitive_signed_code": [
+    {
+      "function": "0x600d4e64",
+      "reads": [
+        "owner+0x90",
+        "owner+0x98"
+      ],
+      "local_class_list_store": false
+    },
+    {
+      "function": "0x600d5512",
+      "reads": [
+        "owner+0x90",
+        "owner+0x104"
+      ],
+      "local_class_list_store": false
+    },
+    {
+      "function": "0x600d546a",
+      "reads": [
+        "owner+0x9c"
+      ],
+      "local_class_list_store": false
+    },
+    {
+      "function": "0x60060fe8",
+      "role": "signed mode2-gated constructor call 0x60060f84"
+    },
+    {
+      "function": "0x6007eb8c",
+      "argument_caveat": "owner base loaded into R2 at 0x60079d7c, but 0x6007eb8c writes via R0. Not attributable to owner+4."
+    }
+  ],
+  "hardware_and_security_gates": {
+    "class10_signed_record_present": true,
+    "class10_in_active_USB_configuration": "UNVERIFIED",
+    "live_owner_class_fields": "UNMEASURED",
+    "EP0_physical_class10_reachability": "UNVERIFIED",
+    "host_arbitrary_callback_write": "NOT DEMONSTRATED",
+    "unsigned_firmware_execution": "NOT DEMONSTRATED",
+    "HAB_CLOSED_bypass": "NOT DEMONSTRATED",
+    "Xbox_Switch2_native_firmware": "NOT DEMONSTRATED",
+    "physical_USB_sent": false,
+    "flash_or_efuses_changed": false
+  },
+  "next": "Interprocedural CFG of owner mode2 flow and indirect writers, or safe passive USB descriptor observations with limitations."
+}
