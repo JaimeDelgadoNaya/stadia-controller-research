@@ -16,6 +16,7 @@ class Phase54WriterSearch(unittest.TestCase):
             [(a.OWNER + 8, "r2")],
         )
         self.assertEqual(a.known_stores("str", "r2, [r4, #8]", {}), [])
+        self.assertEqual(a.known_stores("str", "r2, [r4]", {"r4": a.OWNER + 8}), [(a.OWNER + 8, "r2")])
         self.assertEqual(a.known_stores("str", "r2, [r4, r5]", {"r4": a.OWNER}), [])
 
     def test_byte_and_pair_stores(self):
