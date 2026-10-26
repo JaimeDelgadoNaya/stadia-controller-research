@@ -101,15 +101,40 @@ def candidate_class_records(blob, start=0x60104B80, count=4):
     return rows
 
 def wider_pc_literal_origin_scan(blob, lo=0x601049E0, hi=0x60104C40):
-    """Raw PC-relative literal LOAD targets in broader neighboring range.
+    """Raw PC-relative XIP LDR candidate references in a broader range.
 
-    Scans XIP instruction stream as candidates; not a validated CFG. Word
-    loads are not equivalent to creating a class object or reaching EP0.
+    This is a sequential, non-reachability-validating Thumb scan.
     """
     import re
     from capstone import Cs, CS_ARCH_ARM, CS_MODE_THUMB, CS_MODE_MCLASS
-    from tools.audit_app_usb_dispatch import ITCM_SOURCE_OFFSET,ITCM_LENGTH
-    pattern=re.compile(r'^\w+, \[pc(?:, #(-?0x[0-9a-f]+|-?\d+))?\]
+    from tools.audit_app_usb_dispatch import ITCM_SOURCE_OFFSET, ITCM_LENGTH
+    pattern=re.compile(r'^\w+, \[pc(?:, #(-?0x[0-9a-f]+|-?\d+))?\]$',re.I)
+    md=Cs(CS_ARCH_ARM,CS_MODE_THUMB|CS_MODE_MCLASS)
+    initial=(ITCM_SOURCE_OFFSET+ITCM_LENGTH+1)&~1
+    candidates=[]
+    for off in range(initial,0xFF000,0x4000):
+        for ins in md.disasm(blob[off:min(off+0x4000,0xFF000)],BASE+off):
+            if not ins.mnemonic.startswith("ldr"):
+                continue
+            m=pattern.fullmatch(ins.op_str)
+            if not m:
+                continue
+            adr=((ins.address+4)&~3)+(int(m.group(1),0) if m.group(1) else 0)
+            if not BASE<=adr<SIGNED_END or adr%4:
+                continue
+            value=_word(blob,adr)
+            if lo<=value<hi:
+                candidates.append({
+                    "pc":hex(ins.address),
+                    "load":ins.mnemonic+" "+ins.op_str,
+                    "literal_addr":hex(adr),
+                    "literal_word":hex(value),
+                    "proves_class_object_instantiation":False,
+                })
+    return candidates
+
+
+def inspect(blob):
     if len(blob)!=IMAGE_SIZE or hashlib.sha256(blob).hexdigest()!=IMAGE_SHA256:
         raise ValueError("Requires exact original OEM signed Bruce image")
     for address,value in KNOWN.items():
@@ -131,6 +156,7 @@ def wider_pc_literal_origin_scan(blob, lo=0x601049E0, hi=0x60104C40):
       ],
       "usb_used":False,"device_written":False
     }
+
 
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
