@@ -16,6 +16,8 @@ from tools.audit_signed_app_surface import (
 )
 from tools.audit_bruce_ep0_registration import decode
 from tools.audit_bruce_parent_consumer_phase57 import verify_global_chain, READ_PINS
+from tools.audit_bruce_parent_r0_phase56 import itcm_rows
+from tools.audit_app_usb_dispatch import ITCM_LENGTH
 
 BASE=ASSUMED_XIP_BASE
 HELPER=0x600D54B8
@@ -50,6 +52,35 @@ def signed_word(image,address):
     return struct.unpack_from("<I",image,off)[0]
 
 
+def classify_signed_thumb_code_pointer(value):
+    """Classification, NOT proof that stored function pointer is invoked."""
+    if not value&1:
+        return "NOT_THUMB_CODE_POINTER"
+    pc=value&~1
+    if BASE<=pc<BASE+0xFF000:
+        return "SIGNED_XIP_CODE_CANDIDATE"
+    if 0<=pc<ITCM_LENGTH:
+        return "SIGNED_STARTUP_RELOCATED_ITCM_CODE_CANDIDATE"
+    return "OUTSIDE_SIGNED_IMAGE_OR_RELOCATED_ITCM"
+
+
+def signed_function_preview(image,raw_ptr):
+    kind=classify_signed_thumb_code_pointer(raw_ptr)
+    pc=raw_ptr&~1
+    if kind=="SIGNED_XIP_CODE_CANDIDATE":
+        code=decode(image,pc,pc+0x50)
+        return {"kind":kind,"runtime_pc":hex(pc),
+                "source_file_offset":hex(pc-BASE),
+                "code":[{"pc":hex(r["pc"]),"m":r["m"],"op":r["op"]}
+                        for r in code[:22]]}
+    if kind=="SIGNED_STARTUP_RELOCATED_ITCM_CODE_CANDIDATE":
+        code=itcm_rows(image,pc,0x50)
+        return {"kind":kind,"runtime_pc":hex(pc),
+                "source_file_offset":hex(0x81C+pc),
+                "code":code[:22]}
+    return {"kind":kind,"runtime_pc":hex(pc),"code":[]}
+
+
 def backend_pair_provenance(image):
     rows=decode(image,BACKEND,0x60063886)
     result={r["pc"]:(r["m"],r["op"]) for r in rows}
@@ -71,8 +102,10 @@ def backend_pair_provenance(image):
         "backend_input_R0":"original helper R1 (literal from caller)",
         "backend_input_R1":"original helper R2 (0 or object R4 in two branches)",
         "branch_one_literal_word":hex(first),
+        "branch_one_function_preview":signed_function_preview(image,first),
         "branch_one_second_word":"0 (0x6007E7F0/0x6007E7F2)",
         "branch_two_literal_word":hex(second),
+        "branch_two_function_preview":signed_function_preview(image,second),
         "branch_two_second_word":"caller R4 object pointer (0x6007E814 STRD R3,R4)",
         "runtime_values_or_invocation":"UNMEASURED",
         "semantic_classification":"SIGNED_PAIR_GLOBAL_STORE; USB_CALLBACK_NOT_PROVEN",
