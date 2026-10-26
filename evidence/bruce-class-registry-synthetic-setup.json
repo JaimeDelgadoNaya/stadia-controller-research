@@ -1,0 +1,110 @@
+{
+  "analysis_date": "2026-10-26",
+  "PR": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/pull/37",
+  "source": {
+    "kind": "OEM signed Bruce update; NOT readback of physical installed flash",
+    "size_bytes": 1050984,
+    "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3"
+  },
+  "possible_16byte_class_records": [
+    {
+      "start": "0x60104b80",
+      "selector": 1,
+      "methods": [
+        "0x60054c7d",
+        "0x60054d09",
+        "0x60054a55"
+      ]
+    },
+    {
+      "start": "0x60104b90",
+      "selector": 2,
+      "methods": [
+        "0x60054875",
+        "0x600d0591",
+        "0x600d0333"
+      ]
+    },
+    {
+      "start": "0x60104ba0",
+      "selector": 4,
+      "methods": [
+        "0x60055321",
+        "0x600d0ecb",
+        "0x600d0e59"
+      ]
+    },
+    {
+      "start": "0x60104bb0",
+      "selector": 10,
+      "methods": [
+        "0x0",
+        "0x0",
+        "0x0"
+      ]
+    }
+  ],
+  "record_runtime_EP0_registration_confirmed": false,
+  "exact_references_to_record_start_found": 0,
+  "broad_pc_literal_candidate": {
+    "pc": "0x60058820",
+    "value": "0x60104c38",
+    "direct_record_reference": false
+  },
+  "unicorn": {
+    "version": "2.1.4",
+    "start_original_thumb": "0x600d0ea2",
+    "stops_before_indirect_callback": true,
+    "synthetic_virtual_ram": true,
+    "synthetic_callback_pointer": "0x20003001",
+    "cases": [
+      {
+        "bmRequestType": "0xa1",
+        "bRequest": "0x81",
+        "interface": 1,
+        "forwarded_before_callback": true,
+        "stop_pc": "0x600d0ebe",
+        "R1": "0x81"
+      },
+      {
+        "bmRequestType": "0x21",
+        "bRequest": "0x83",
+        "interface": 1,
+        "forwarded_before_callback": true,
+        "stop_pc": "0x600d0ebe",
+        "R1": "0x83"
+      },
+      {
+        "bmRequestType": "0xa1",
+        "bRequest": "0x84",
+        "interface": 1,
+        "forwarded_before_callback": true,
+        "stop_pc": "0x600d0ebe",
+        "R1": "0x84"
+      },
+      {
+        "bmRequestType": "0xa0",
+        "bRequest": "0x81",
+        "interface": 1,
+        "forwarded_before_callback": false,
+        "stop_pc": "0x600d0e76"
+      },
+      {
+        "bmRequestType": "0xa1",
+        "bRequest": "0x84",
+        "interface": 2,
+        "forwarded_before_callback": false,
+        "stop_pc": "0x600d0ec6"
+      }
+    ],
+    "started_after_original_event_selection": true,
+    "physical_host_reachability_tested": false,
+    "callback_executed": false
+  },
+  "hardware_connected": false,
+  "physical_USB_sent": false,
+  "flash_or_eFuses_changed": false,
+  "custom_code_execution_proven": false,
+  "HAB_bypass_proven": false,
+  "console_compatibility_proven": false
+}
