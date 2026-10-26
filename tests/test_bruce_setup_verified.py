@@ -22,7 +22,7 @@ class SignedSetupSemanticTests(unittest.TestCase):
         self.assertEqual(a.ANCHORS[0x600D0EBA],("ldr","r3, [r3]"))
 
     def test_literal_table_is_data(self):
-        blob=bytearray(0xC0000)
+        blob=bytearray(0xC4BE0)
         struct.pack_into("<I",blob,0xC4BAC,0x600D0E59)
         rows=a.literal_table(blob)
         self.assertEqual([x["word"] for x in rows if x["pc"]=="0x60104bac"],
