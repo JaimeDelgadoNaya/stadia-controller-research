@@ -115,6 +115,75 @@ def classify_caller_pointer_locations(image):
         out[hex(val)]={"count":len(offs),"source_file_offsets":[hex(o) for o in offs[:24]]}
     return out
 
+
+SIGNED_BOOT_RECORDS = (
+    (0xFDF50,0x60061249,0x200030A0,2),
+    (0xFDF5C,0x600613FD,0x20003100,10),
+)
+
+def confirmed_boot_records(image):
+    """Verify two *adjacent* 12-byte records copied by authenticated startup.
+
+    This attests bytes and class-selector byte only, NOT selection in physical
+    hardware or that the record's first word is executed as a function.
+    """
+    result=[]
+    for off, callback, descriptor, selector in SIGNED_BOOT_RECORDS:
+        raw=[le32(image,off+4*i) for i in range(3)]
+        if raw != [callback,0,descriptor]:
+            raise ValueError("signed initialized class-callback record drift "+hex(off))
+        class_byte,storage=descriptor_class_byte(image,descriptor)
+        if class_byte!=selector or storage!="initialized_RAM_image":
+            raise ValueError("signed class config descriptor guard drift")
+        result.append({
+          "source_file_offset":hex(off),
+          "destination_boot_RAM":hex(DATA_DESTINATION+off-DATA_SOURCE_OFFSET),
+          "callback_thumb_word":hex(callback),
+          "class_object_initially_zero":True,
+          "descriptor_RAM":hex(descriptor),
+          "byte_at_descriptor_plus_4":class_byte,
+          "callback_function_address":hex(callback&~1),
+          "callback_runtime_invoked":"NOT VERIFIED"
+        })
+    if SIGNED_BOOT_RECORDS[1][0] != SIGNED_BOOT_RECORDS[0][0]+12:
+        raise AssertionError("expected contiguous configuration records")
+    return result
+
+def focused_pointer_refs(image):
+    values=[
+        0x200030E8,0x200030F4,0x20003100,0x200030A0,0x2000312C,
+        0x60061249,0x600613FD,0x600624F9,
+    ]
+    refs=[]
+    for v in values:
+        raw=struct.pack("<I",v)
+        offsets=[o for o in range(0,0xFF030-3,4)
+            if image[o:o+4]==raw]
+        refs.append({"value":hex(v),"count":len(offsets),
+                     "aligned_file_offsets":[hex(x) for x in offsets[:45]],
+                     "boot_RAM_pointer_in_file": [
+                        hex(DATA_DESTINATION+x-DATA_SOURCE_OFFSET)
+                        for x in offsets if DATA_SOURCE_OFFSET<=x<DATA_SOURCE_OFFSET+DATA_LENGTH
+                     ][:25],
+                     "is_runtime_linkage_proof":False})
+    return refs
+
+def boot_copy_context(image,start=0xFDF28,stop=0xFDFA0):
+    if start%4 or stop%4 or not DATA_SOURCE_OFFSET<=start<stop<=DATA_SOURCE_OFFSET+DATA_LENGTH:
+        raise ValueError("invalid source data boundaries")
+    return [{"source":hex(o),
+             "boot_RAM":hex(DATA_DESTINATION+o-DATA_SOURCE_OFFSET),
+             "word":hex(le32(image,o))}
+            for o in range(start,stop,4)]
+
+def class10_callback_thumb_preview(image,lo=0x600613FC,hi=0x60061540):
+    from capstone import Cs, CS_ARCH_ARM, CS_MODE_THUMB, CS_MODE_MCLASS
+    if not BASE<=lo<hi<SIGNED_LIMIT:
+        raise ValueError("original signed callback preview outside XIP")
+    md=Cs(CS_ARCH_ARM,CS_MODE_THUMB|CS_MODE_MCLASS)
+    return [{"pc":hex(i.address),"ins":i.mnemonic+" "+i.op_str}
+            for i in md.disasm(image[lo-BASE:hi-BASE],lo)]
+
 def inspect(image):
     if len(image)!=IMAGE_SIZE or hashlib.sha256(image).hexdigest()!=IMAGE_SHA256:
         raise ValueError("Exact signed Bruce original SHA-256/length required")
@@ -125,6 +194,10 @@ def inspect(image):
       "sha256":IMAGE_SHA256,
       "sha256_verified":True,
       "search_model":"three signed 32-bit words: signed Thumb ptr, zero-or-RAM, signed XIP-or-RAM descriptor; descriptor byte +4 inspected",
+      "pinned_contiguous_boot_records":confirmed_boot_records(image),
+      "focused_record_pointer_refs":focused_pointer_refs(image),
+      "boot_copy_words_around_class10":boot_copy_context(image),
+      "class10_callback_original_thumb_preview":class10_callback_thumb_preview(image),
       "signed_high_XIP_candidates":scan_range(image,0xB0000,0xFD000,label="signed_XIP_static_data"),
       "boot_initialized_RAM_candidates":scan_range(
           image,DATA_SOURCE_OFFSET,DATA_SOURCE_OFFSET+DATA_LENGTH,
@@ -153,6 +226,10 @@ def main():
         print("CLASS_BYTE_DISTRIBUTION",json.dumps(r["class_byte_histogram"]))
         print("CLASS10_EXAMPLES",json.dumps(r["class10_matches"]))
         print("OTHER_EXAMPLES",json.dumps(r["non_class10_examples"][:8]))
+    print("PINNED CONTIGUOUS BOOT RECORDS",json.dumps(result["pinned_contiguous_boot_records"]))
+    print("FOCUSED RECORD POINTER XREFS",json.dumps(result["focused_record_pointer_refs"]))
+    print("BOOT CLASS10 WORD CONTEXT",json.dumps(result["boot_copy_words_around_class10"]))
+    print("REAL CLASS10 CALLBACK THUMB",json.dumps(result["class10_callback_original_thumb_preview"]))
     print("CLASS TABLE SOURCE WORDS",json.dumps(result["literal_pointer_census"]))
     print("NO LIVE CALLBACK OR EXECUTION CLAIMS")
 
