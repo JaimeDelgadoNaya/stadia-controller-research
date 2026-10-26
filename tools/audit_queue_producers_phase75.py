@@ -55,6 +55,8 @@ def signed_windows(image):
         "xip_queue_receiver_worker":(0x600EE142,0x600EE18A,False),
         "xip_queue_post_worker":(0x600EE180,0x600EE1F4,False),
         "xip_message_dispatcher":(0x600EE1BE,0x600EE210,False),
+        "xip_producer_caller_one":(0x60062268,0x600622A0,False),
+        "xip_producer_caller_two":(0x6006B290,0x6006B2CA,False),
         "xip_handler_message_type1":(0x60098668,0x600986A0,False),
         "xip_handler_message_type2":(0x600EFF9C,0x600EFFD0,False),
         "itcm_enqueue_copy_helper":(0xB37C,0xB3DE,True),
@@ -301,12 +303,85 @@ def explicit_producer_xrefs(image):
     return {"direct_bl_shapes":direct,"aligned_thumb_function_literals":literals,
             "no_dynamically_proven_USB_caller":True}
 
+WORKER_RECEIVE_PINS={
+    0x600EE14E:("ldr.w","r0, [r7, #0xb0]"),
+    0x600EE152:("bl","#0x6013d268"),
+    0x600EE156:("ldrb.w","r6, [sp, #4]"),
+    0x600EE15A:("ldrd","r4, r0, [sp, #8]"),
+    0x600EE15E:("cbz","r6, #0x600ee164"),
+    0x600EE160:("blx","r4"),
+    0x600EE16E:("ldrd","r3, r0, [r4]"),
+    0x600EE172:("blx","r3"),
+    0x600EE174:("strb.w","r0, [r4, #0x60]"),
+    0x600EE17E:("strb","r6, [r4, #8]"),
+}
+SIGNED_SEND_PINS={
+    0x6A74:("push.w","{r0, r1, r2, r3, r4, r5, r6, r7, r8, sb, sl, lr}"),
+    0x6A7A:("str","r2, [sp, #4]"),
+    0x6A7E:("mov","r4, r0"),
+    0x6ADC:("ldr","r2, [r4, #0x38]"),
+    0x6ADE:("ldr","r3, [r4, #0x3c]"),
+    0x6AE0:("cmp","r2, r3"),
+    0x6AEE:("bl","#0xb37c"),
+    0xB37C:("push","{r4, r5, r6, lr}"),
+    0xB384:("ldr","r6, [r0, #0x38]"),
+    0xB394:("adds","r6, #1"),
+    0xB396:("str","r6, [r4, #0x38]"),
+}
+PRODUCER_CALLER_PINS={
+    0x6006228C:("bl","#0x600926a0"),
+    0x6006B2B0:("bl","#0x600926a0"),
+}
+
+def verify_signed_pipeline(image):
+    """Signed conditional enqueue, message layout and worker callback site.
+
+    No physical work item, no actual send/receive and no host source
+    verified here; even original BLX instructions may not execute.
+    """
+    rows={}
+    for start,end in (
+        (0x600EE142,0x600EE188),
+        (0x6006228C,0x60062290),
+        (0x6006B2B0,0x6006B2B4),
+    ):
+        rows.update({i["pc"]:(i["m"],i["op"]) for i in decode(image,start,end)})
+    for pc,expected in {**WORKER_RECEIVE_PINS,**PRODUCER_CALLER_PINS}.items():
+        if rows.get(pc)!=expected:
+            raise ValueError(f"Phase75 OEM signed worker/caller instruction drift {pc:#x}: {rows.get(pc)}")
+    cs=Cs(CS_ARCH_ARM,CS_MODE_THUMB|CS_MODE_MCLASS)
+    itcmrows={}
+    for start,end in ((0x6A74,0x6B00),(0xB37C,0xB3A0)):
+        offset=ITCM_SOURCE_OFFSET+start
+        itcmrows.update({i.address:(i.mnemonic,i.op_str)
+                          for i in cs.disasm(image[offset:offset+end-start],start)})
+    for pc,expected in SIGNED_SEND_PINS.items():
+        if itcmrows.get(pc)!=expected:
+            raise ValueError(f"Phase75 OEM signed enqueue/copy instruction drift {pc:#x}: {itcmrows.get(pc)}")
+    return {
+        "signed_instruction_pins":len(WORKER_RECEIVE_PINS)+len(SIGNED_SEND_PINS)+len(PRODUCER_CALLER_PINS),
+        "WorkQueue_API_caller_BL_sites":["0x6006228c","0x6006b2b0"],
+        "sender":"0x600926a0 -> 0x600ee18a -> 0x6013d0e8 -> ITCM 0x6a74",
+        "conditional_enqueue_copy_helper":"ITCM 0x6aee BL 0xb37c",
+        "conditional_count_increase":"0xb394 ADDS R6,#1; 0xb396 STR R6,[R4,#0x38]",
+        "receiver":"0x600ee142 -> 0x6013d268 -> ITCM 0x6d2c",
+        "stack_message_type":"0x600ee1b2 STRB zero to [SP+4]; receiver 0x600ee156 LDRB [SP+4]",
+        "stack_message_pointer":"0x600ee1aa STR incoming work pointer to [SP+8]; receiver 0x600ee15a LDRD R4,R0,[SP+8]",
+        "zero_type_branch":"0x600ee15e CBZ R6,#0x600ee164",
+        "signed_callback_assembly":"0x600ee16e LDRD R3,R0,[R4]; 0x600ee172 BLX R3",
+        "callback_input":"method pointer from [R4], argument from [R4+4]",
+        "actual_message_delivered":False,
+        "host_USB_origin":"NOT_PROVEN",
+        "callback_executed":"NOT_OBSERVED",
+    }
+
 def audit(image):
     if len(image)!=IMAGE_SIZE or hashlib.sha256(image).hexdigest()!=IMAGE_SHA256:
         raise ValueError("Phase75 original exact SHA-pinned Bruce OEM required")
     windows=signed_windows(image)
     producer=verify_producer_chain(image)
     count=confirm_count_writer(image)
+    pipeline=verify_signed_pipeline(image)
     veneers=inspect_veneers(image)
     literal=queue_literals(image)
     loads=pc_literal_load_candidates(image,literal)
@@ -322,6 +397,7 @@ def audit(image):
         "work_queue_virtual_control_pointer":hex(CONTROL_FIELD),
         "signed_adjacent_veneers":veneers,
         "verified_WorkQueue_producer_chain":producer,
+        "signed_sender_to_receiver_callback_structure":pipeline,
         "verified_ITCM_count_increment_helper":count,
         "queue_address_words":literal,
         "signed_queue_literal_load_candidates":loads,
@@ -351,6 +427,7 @@ def main():
     output=audit(a.image.read_bytes())
     if a.out:a.out.write_text(json.dumps(output,indent=2)+"\n",encoding="utf-8")
     print("PHASE75 VERIFIED WORKQUEUE PRODUCER",json.dumps(output["verified_WorkQueue_producer_chain"]))
+    print("PHASE75 SIGNED PRODUCER-CALLBACK PIPELINE",json.dumps(output["signed_sender_to_receiver_callback_structure"]))
     print("PHASE75 VERIFIED COUNT WRITE",json.dumps(output["verified_ITCM_count_increment_helper"]))
     print("PHASE75 PRODUCER FUNCTION XREFS",json.dumps(output["work_queue_producer_function_xrefs"]))
     print("PHASE75 SIGNED QUEUE POINTER WORDS",json.dumps(output["queue_address_words"]))
