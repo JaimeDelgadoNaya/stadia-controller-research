@@ -1,0 +1,60 @@
+{
+  "phase": 53,
+  "date": "2026-10-26",
+  "source": {
+    "type": "original Bruce signed OEM update",
+    "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+    "physical_ram_capture": false
+  },
+  "original_instruction_anchors": {
+    "prior_mode_load": "0x60060fec LDR.W R3,[R0,#0x90]",
+    "abort_same_mode": "0x60060ff4 CMP R3,R1; 0x60060ff6 BEQ 0x6006107c",
+    "abort_previous_zero": "0x60060ff8 CMP R3,#0; 0x60060ffa BEQ 0x6006107c",
+    "mode2_branch": "0x60061020 CMP R5,#2; 0x6006102a BNE 0x60061080",
+    "transient_status_write": "0x6006101c MOVS R7,#1; 0x60061022 STR.W R7,[R4,#0x90]",
+    "constructor": "0x6006102e BL 0x60060f84",
+    "later_mode_write": "0x60061070 STR.W R5,[R4,#0x90]",
+    "config_method_reject_zero": "0x600550f6 LDR R3,[R1,#4]; 0x600550f8 CMP R3,#0; 0x600550fa BEQ 0x600551a2",
+    "class_config_store": "0x6005512e STR R4,[R5,#4]"
+  },
+  "necessary_not_sufficient": "request=2 && previous_mode!=0 && previous_mode!=2",
+  "previous_mode_address": "0x2000a338",
+  "example_hypotheses": [
+    {
+      "prior": 0,
+      "request": 2,
+      "passes_early_guards": false
+    },
+    {
+      "prior": 1,
+      "request": 2,
+      "passes_early_guards": true
+    },
+    {
+      "prior": 2,
+      "request": 2,
+      "passes_early_guards": false
+    },
+    {
+      "prior": 3,
+      "request": 2,
+      "passes_early_guards": true
+    }
+  ],
+  "status_writes_are": "signed code conditional paths, not live RAM",
+  "pending": {
+    "owner_config_list": "UNMEASURED",
+    "owner_method": "UNMEASURED",
+    "owner_count": "UNMEASURED",
+    "active_class10": "UNVERIFIED",
+    "custom_execution": "NOT DEMONSTRATED",
+    "HAB_CLOSED_bypass": "NOT DEMONSTRATED"
+  },
+  "safety": {
+    "USB_requests": false,
+    "flash_writes": false,
+    "efuse_writes": false
+  },
+  "verification": "Phase53 auditor pins original signed instructions in CI; synthetic tests only test guard semantics.",
+  "next": "Investigate runtime writers of owner+4/+8/+12 or passive read-only USB enumeration as indirect evidence."
+}
