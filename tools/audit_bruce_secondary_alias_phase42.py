@@ -134,6 +134,48 @@ def inspect_site(image, pc):
 
 
 
+CONSTRUCTOR_PINS = {
+    0x60058914: ("ldr", "r4, [pc, #0x12c]"),
+    0x60058920: ("mov", "r0, r4"),
+    0x60058926: ("bl", "#0x600587fc"),
+    0x60058804: ("mov", "r4, r0"),
+    0x60058846: ("strb.w", "r5, [r4, #0xfc]"),
+}
+
+def check_constructor_pins(decoded):
+    for pc, exp in CONSTRUCTOR_PINS.items():
+        if decoded.get(pc) != exp:
+            raise ValueError("Original constructor/callsite drift at " + hex(pc))
+    return True
+
+def pinned_direct_constructor_non_alias(image):
+    """Prove only one known direct caller's argument and store destination.
+
+    No claim that other indirect callers cannot pass a different object.
+    """
+    import struct
+    rows = decode_raw(image, 0x600587FC, 0x6005884A)
+    rows += decode_raw(image, 0x60058910, 0x6005892A)
+    check_constructor_pins({i.address:(i.mnemonic,i.op_str) for i in rows})
+    literal = ((0x60058914 + 4) & ~3) + 0x12C
+    if literal != 0x60058A44:
+        raise ValueError("Original constructor literal address mismatch")
+    value = struct.unpack_from("<I", image, literal-BASE)[0]
+    if value != 0x20015E74:
+        raise ValueError("Original constructor argument changed")
+    return {
+        "direct_call_pc":"0x60058926",
+        "callee":"0x600587fc",
+        "literal_source_pc":"0x60058914",
+        "argument_value_at_direct_call":hex(value),
+        "candidate_store_pc":"0x60058846",
+        "predicted_byte_destination":hex(value+0xFC),
+        "is_secondary_global_slot":value+0xFC in TARGETS,
+        "conclusion_scope":"This single original direct call only; no claim about other indirect callers.",
+        "runtime_call_executed":False
+    }
+
+
 def secondary_context_xrefs(image):
     """Bounded references to the actual global object and sentinel.
 
@@ -207,6 +249,7 @@ def audit(image):
         "phase": 42, "sample": "exact original signed OEM Bruce update, not installed readback",
         "sha256_verified": True, "candidate_count": len(rows), "candidates": rows,
         "secondary_context_xrefs": secondary_context_xrefs(image),
+        "pinned_direct_constructor_non_alias": pinned_direct_constructor_non_alias(image),
         "site_inspection_limit": "bounded Thumb linear decode, not a control-flow graph",
         "live_EP0_selection": "UNVERIFIED", "second_callback_writer": "UNVERIFIED",
         "host_control": "UNVERIFIED", "custom_execution": "NOT DEMONSTRATED",
@@ -234,6 +277,7 @@ def main():
             "after": row["context_after"],
         }))
     refs = report["secondary_context_xrefs"]
+    print("PHASE42 DIRECT CONSTRUCTOR ARGUMENT", json.dumps(report["pinned_direct_constructor_non_alias"]))
     print("PHASE42 SECOND LEVEL LITERALS", json.dumps(refs["signed_pointer_literals"]))
     print("PHASE42 POTENTIAL CALLERS", json.dumps({
         name: [{"callsite": v["callsite"], "before": v["before"][-6:]}
