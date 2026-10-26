@@ -260,7 +260,7 @@ def audit(image):
              if q["address"]==hex(CONFIG_SLOT) and q["source"]==hex(OWNER+4)
              and q["pc"]=="0x6005512e"]
     if not matches:
-        raise ValueError("signed conditional owner-to-shared-config transfer not established")
+        raise ValueError("signed conditional owner-to-shared-config transfer not established: "+json.dumps({"calls":mode2["direct_followed_calls"],"stores":mode2["conditional_store_candidates"],"reads":mode2["reads_of_owner_fields"],"termination":mode2["termination_counts"],"states":mode2["scanned_states"]}))
     if any(q["address"]==hex(CONFIG_SLOT) for q in mode1["conditional_store_candidates"]):
         raise ValueError("mode1 unexpectedly reaches phase52 mode2 config constructor")
     return {
