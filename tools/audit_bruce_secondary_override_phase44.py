@@ -85,10 +85,47 @@ def inspect_second_writer(image):
     }
 
 
+
+CALLER_PINS={
+    0x60051240:("push.w","{r4, r5, r6, r7, r8, lr}"),
+    0x60051248:("bl","#0x60077138"),
+    0x6005124C:("bl","#0x60077140"),
+}
+GETTER_PINS={
+    0x60077138:("ldr","r0, [pc, #0]"),
+    0x6007713A:("bx","lr"),
+}
+
+def verify_signed_second_setter_caller(image):
+    code=decode(image,0x60051240,0x60051258)
+    getter=decode(image,0x60077138,0x6007713C)
+    pairs={row["pc"]:(row["m"],row["op"]) for row in code+getter}
+    for pc,required in {**CALLER_PINS,**GETTER_PINS}.items():
+        if pairs.get(pc)!=required:
+            raise ValueError("Original signed second setter call/getter drift at "+hex(pc))
+    returned_object=read_u32(image,0x6007713C)
+    if not 0x20000000 <= returned_object < 0x21000000:
+        raise ValueError("Original object getter no longer returns RAM pointer")
+    return {
+        "signed_caller_pc":"0x60051240",
+        "getter_called_at":"0x60051248",
+        "getter_code":"0x60077138 LDR R0,[PC,#0]; 0x6007713A BX LR",
+        "getter_signed_literal_at":"0x6007713c",
+        "getter_returns_RAM_object":hex(returned_object),
+        "setter_called_at":"0x6005124c",
+        "setter_function":"0x60077140",
+        "R0_argument_to_setter":hex(returned_object),
+        "R4_context_written_by_setter":hex(returned_object),
+        "signed_instruction_pins":len(CALLER_PINS)+len(GETTER_PINS),
+        "actual_call_executed_on_device":"NOT MEASURED",
+        "host_controls_object_pointer":"NOT DEMONSTRATED",
+    }
+
 def audit(image):
     if len(image)!=IMAGE_SIZE or hashlib.sha256(image).hexdigest()!=IMAGE_SHA256:
         raise ValueError("exact original Bruce OEM SHA-256 required")
     writer=inspect_second_writer(image)
+    caller=verify_signed_second_setter_caller(image)
     callback=writer["callback_value_literal"]["value"]
     func=int(callback,16)&~1
     # Context larger than one basic block intentionally printed as candidate
@@ -139,6 +176,9 @@ def audit(image):
     return {
         "phase":44,"signed_oem_exact_sha_verified":True,
         "second_writer":writer,
+        "second_writer_signed_getter_caller":caller,
+        "caller_inbound_branch_candidates":find_inbound_branches(image,only_target=0x60051240),
+        "caller_ptr_literal_refs":all_byte_word_references(image,0x60051241),
         "candidate_signed_object_initializer_entry":"0x60077140",
         "candidate_r4_origin_at":"0x60077144 MOV R4,R0",
         "context_r4_source":"function input R0 at 0x60077140, preserved in R4",
@@ -173,6 +213,8 @@ def main():
     x=audit(arg.image.read_bytes())
     if arg.out:arg.out.write_text(json.dumps(x,indent=2)+"\n")
     print("PHASE44 SECONDARY WRITER LITERALS",json.dumps(x["second_writer"]))
+    print("PHASE44 SIGNED SECOND SETTER CALL CHAIN",json.dumps(x["second_writer_signed_getter_caller"]))
+    print("PHASE44 SECOND SETTER WRAPPER INBOUND",json.dumps(x["caller_inbound_branch_candidates"]))
     print("PHASE44 SECONDARY WRITER PRIOR CODE",json.dumps(x["later_writer_local_decode"]))
     print("PHASE44 SECONDARY WRITER ENTRY ANCHORED",json.dumps(x["entry_anchored_function_decode"]))
     print("PHASE44 SECONDARY WRITER INBOUND",json.dumps(x["direct_call_candidates_to_object_initializer"]))
