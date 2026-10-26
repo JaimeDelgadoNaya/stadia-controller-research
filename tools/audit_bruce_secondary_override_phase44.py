@@ -95,8 +95,19 @@ def audit(image):
     # linear decode only; do not infer path reachability or entry arguments.
     full=decode(image,0x60077140,0x6007720A)
     trusted_fn={q["pc"]:(q["m"],q["op"]) for q in full}
-    if trusted_fn.get(0x60077144)!=("mov","r4, r0"):
-        raise ValueError("Original signed candidate handler-context argument copy drift")
+    origin_pins={
+        0x60077140:("ldr","r3, [pc, #0x180]"),
+        0x60077142:("push","{r0, r1, r2, r4, r5, lr}"),
+        0x60077144:("mov","r4, r0"),
+        0x6007715A:("bne.w","#0x6007727c"),
+        0x60077168:("bne","#0x6007720a"),
+        0x600771AE:("add.w","r0, r4, #0xc"),
+        0x600771F6:("str","r1, [r3, r2]"),
+        0x600771FC:("str","r4, [r3, r2]"),
+    }
+    for pc,expected in origin_pins.items():
+        if trusted_fn.get(pc)!=expected:
+            raise ValueError("Original signed callback context origin anchor drift "+hex(pc))
     if trusted_fn.get(PC_WRITE_FUNCTION)!=("str","r1, [r3, r2]"):
         raise ValueError("Original signed setter lost sync in entry-anchored function")
     target_instruction_in_decoder=(0x600771F6 in trusted_fn and 0x600771FC in trusted_fn)
@@ -130,6 +141,11 @@ def audit(image):
         "second_writer":writer,
         "candidate_signed_object_initializer_entry":"0x60077140",
         "candidate_r4_origin_at":"0x60077144 MOV R4,R0",
+        "context_r4_source":"function input R0 at 0x60077140, preserved in R4",
+        "context_origin_semantic_pins":len(origin_pins),
+        "candidate_entry_has_early_branch_gates":["0x6007715a","0x60077168"],
+        "direct_call_candidates_to_object_initializer":find_inbound_branches(image,only_target=0x60077140),
+        "original_thumb_function_pointer_refs":all_byte_word_references(image,0x60077141),
         "entry_anchored_function_decode":[hex(q["pc"])+" "+q["m"]+" "+q["op"] for q in full],
         "potential_context_r4_origin_windows":focus,
         "later_writer_local_decode":[
@@ -159,6 +175,8 @@ def main():
     print("PHASE44 SECONDARY WRITER LITERALS",json.dumps(x["second_writer"]))
     print("PHASE44 SECONDARY WRITER PRIOR CODE",json.dumps(x["later_writer_local_decode"]))
     print("PHASE44 SECONDARY WRITER ENTRY ANCHORED",json.dumps(x["entry_anchored_function_decode"]))
+    print("PHASE44 SECONDARY WRITER INBOUND",json.dumps(x["direct_call_candidates_to_object_initializer"]))
+    print("PHASE44 SECONDARY WRITER POINTER REFS",json.dumps(x["original_thumb_function_pointer_refs"]))
     for window in x["potential_context_r4_origin_windows"]:
         print("PHASE44 SECONDARY WRITER R4 ORIGIN",json.dumps(window))
     print("PHASE44 SECONDARY WRITER CALLBACK TARGET",json.dumps(x["original_callback_target_preview"]))
