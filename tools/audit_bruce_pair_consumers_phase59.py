@@ -26,6 +26,8 @@ PAIR_BASE=0x2000F878
 PAIR_FIRST=0x2000FBF4
 PAIR_SECOND=0x2000FBF8
 CALLBACK_ITCM=0xB980
+REAL_HANDLER_XIP=0x6007E6A0
+OTHER_RAM_GLOBAL=0x20025CE0
 POINTERS=(PAIR_BASE,PAIR_FIRST,PAIR_SECOND)
 PINNED_ITCM_WRAPPER={
     0xA9C4:("b.w","#0xb980"),
@@ -305,6 +307,8 @@ def lone_reader_literal_identity(image):
     if p1!=p2 or p1!=0x600BD148:
         raise ValueError("phase59 PC-relative base arithmetic drift")
     actual=unsigned_word(image,p1-BASE)
+    if actual!=OTHER_RAM_GLOBAL:
+        raise ValueError("phase59 original unrelated global literal drift")
     return {
         "signed_pins":len(LONE_READER_PINS),
         "shared_literal_address":hex(p1),
@@ -316,6 +320,44 @@ def lone_reader_literal_identity(image):
         "known_static_alias_result":"SAME_LITERAL" if actual==PAIR_BASE
                                     else "DIFFERENT_LITERAL",
         "indirect_or_runtime_aliases":"NOT EXCLUDED",
+    }
+
+
+HANDLER_PINS={
+    0x6007E6A0:("push","{r4, lr}"),
+    0x6007E6A6:("ldrb.w","r3, [r0, #0x6c]"),
+    0x6007E6AC:("mov","r4, r0"),
+    0x6007E6B2:("cbz","r3, #0x6007e71a"),
+    0x6007E6B8:("ldr","r3, [r0, #0x70]"),
+    0x6007E6BE:("and","r3, r3, #3"),
+    0x6007E6C2:("cmp","r3, #3"),
+    0x6007E6C4:("bne","#0x6007e71a"),
+    0x6007E6CE:("ldrex","r2, [r3]"),
+    0x6007E6D4:("strex","r0, r1, [r3]"),
+    0x6007E70A:("bl","#0x60101b76"),
+    0x6007E716:("bl","#0x6013d138"),
+    0x6007E71C:("pop","{r4, pc}"),
+}
+
+
+def pin_real_handler(image,veneer):
+    if (veneer["target_thumb_PC"]!=hex(REAL_HANDLER_XIP)
+        or veneer["target_classification"]!="SIGNED_XIP_POINTER"):
+        raise ValueError("phase59 original B980 handler target drift")
+    ins={r["pc"]:(r["m"],r["op"])
+         for r in decode(image,REAL_HANDLER_XIP,0x6007E71E)}
+    for pc,expected in HANDLER_PINS.items():
+        if ins.get(pc)!=expected:
+            raise ValueError(f"phase59 original signed handler opcode drift {pc:#x}")
+    return {
+        "verified_pins":len(HANDLER_PINS),
+        "entry":hex(REAL_HANDLER_XIP),
+        "runtime_input_R0":"object/context pointer (not live RAM snapshot)",
+        "guarded_state_fields":["object+0x6c","object+0x70","object+0x74"],
+        "atomic_operation":"0x6007e6ce LDREX and 0x6007e6d4 STREX",
+        "outbound_calls":["0x60101b76","0x60101740","0x6013d138"],
+        "USB_host_trigger":"UNPROVEN",
+        "called_via_global_0x2000fbf4":"UNPROVEN",
     }
 
 
@@ -341,6 +383,7 @@ def audit(image):
     loads=recover_signed_literal_loads(image,hits)
     neighborhoods=[follow_load_neighborhood(image,l) for l in loads]
     worker_veneer=resolve_itcm_trampoline(image)
+    handler=pin_real_handler(image,worker_veneer)
     paired_offsets=scan_field_offset_ops(image)
     halfwords=halfword_field_scan(image)
     focus=focused_signed_windows(image)
@@ -359,6 +402,7 @@ def audit(image):
         "PC_relative_literal_load_candidates":loads,
         "bounded_candidate_neighborhoods":neighborhoods,
         "relocated_ITCM_veneer":worker_veneer,
+        "actual_signed_handler":handler,
         "matching_pair_field_access_candidates":paired_offsets,
         "complete_halfword_offset_candidates":halfwords,
         "direct_reader_evidence":evidence,
@@ -390,6 +434,7 @@ def main():
     for row in output["bounded_candidate_neighborhoods"]:
         print("PHASE59 LOAD WINDOW",json.dumps(row))
     print("PHASE59 ITCM B980 VENEER",json.dumps(output["relocated_ITCM_veneer"]))
+    print("PHASE59 ACTUAL HANDLER",json.dumps(output["actual_signed_handler"]))
     print("PHASE59 PAIR-FIELD OFFSET CANDIDATES",json.dumps(output["matching_pair_field_access_candidates"]))
     print("PHASE59 HALFWORD FIELD SCAN",json.dumps(output["complete_halfword_offset_candidates"]))
     print("PHASE59 DIRECT READER EVIDENCE",json.dumps(output["direct_reader_evidence"]))
