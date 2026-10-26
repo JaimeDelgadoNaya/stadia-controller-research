@@ -64,7 +64,7 @@
   },
   "validation": {
     "original_oem_CI": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40368779599",
-    "tests_status": "pending latest PR"
+    "tests_status": "SUCCESS: 708 tests each on Python 3.11 and 3.12, PR #61"
   },
   "safety": {
     "USB_requests": false,
