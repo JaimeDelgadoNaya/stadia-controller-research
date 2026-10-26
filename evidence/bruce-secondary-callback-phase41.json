@@ -13,7 +13,8 @@
     "secondary_context_slot": "0x20009efc",
     "verified_signed_read": "0x6006140a",
     "physical_ram_contents": "UNKNOWN",
-    "EP0_active": "NOT PROVEN"
+    "EP0_active": "NOT PROVEN",
+    "secondary_context_read_signed_original": "0x60061414"
   },
   "static_audit": {
     "instructions_linearly_decoded_including_focused_duplicate": 180127,
@@ -51,7 +52,8 @@
       "Interprocedural pointer aliases, runtime stores and DMA not ruled out",
       "No link from nine candidates to secondary object established",
       "No evidence of host-controlled setter or custom execution"
-    ]
+    ],
+    "context_read_excluded_from_linear_counter_by_branch_reset": true
   },
   "reproduction": {
     "auditor": "python -m tools.audit_bruce_secondary_registry local/bruce_pvt_a_prod_signed.bin",
