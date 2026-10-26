@@ -1,4 +1,4 @@
-# Fase 55 — Procedencia de productor: `owner` se registra como campo de otro objeto
+# Fase 55 — Procedencia de productor: `owner` se almacena mediante una base R0 desconocida
 
 **26/10/2026 — actualización Bruce OEM original firmada**, SHA-256 `466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3`. Auditoría exclusivamente offline.
 
@@ -20,7 +20,7 @@ Las fases 51–54 siguieron referencias directas al objeto `owner=0x2000A2A8`, s
 
 La transferencia de dirección entre los registros está **anclada a 19 instrucciones OEM exactas**, sin inventar resultados de una captura de RAM. Se verificó el valor del literal PC-relativo y el orden de instrucciones frente a la imagen firmada.
 
-**Importante:** el destino es `[R4+0x80]`, no `[owner+0x80]` ni `[owner+8]`. **R4 recibe R0, mientras que owner llega por R2.** No conocemos el valor de R0 ni la dirección absoluta del campo. Tampoco sabemos si este constructor se ejecuta en el dispositivo físico. Así se preserva la distinción que ya descartó el falso positivo de la fase 51.
+**Importante:** el destino es `[R4+0x80]` y R4 recibe R0, mientras que owner llega por R2. **Sin conocer R0 no podemos atribuir esa escritura a ningún campo de owner, ni afirmar que R0 apunte a un objeto distinto.** Tampoco sabemos si este constructor se ejecuta en el mando físico. Así se preserva la distinción que ya descartó el falso positivo de la fase 51.
 
 ## Segundo grupo: registros de clase contiguos en la imagen de arranque
 
