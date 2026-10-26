@@ -51,6 +51,17 @@ class Phase59PairReaders(unittest.TestCase):
         raw=b"\x00\xbf\x00\xbf\x00\x00\x00\x00"
         self.assertIsNone(a.pc_ldr_candidate(raw,a.BASE,0,False))
 
+    def test_signed_pair_offset_pattern_matches_literal_memory(self):
+        good=a.PAIR_MEM_REGEXP.search("r3, [r4, #0x37c]")
+        self.assertIsNotNone(good)
+        self.assertEqual(int(good.group(2),0),0x37C)
+        self.assertEqual(good.group(1),"r4")
+        self.assertIsNone(a.PAIR_MEM_REGEXP.search("r3, [r4, r2]"))
+
+    def test_trampoline_original_bytes_required(self):
+        with self.assertRaises((ValueError,IndexError)):
+            a.resolve_itcm_trampoline(b"not original")
+
     def test_itcm_range_check(self):
         with self.assertRaisesRegex(ValueError,"outside startup copy"):
             a.itcm_code(b"small",a.ITCM_LENGTH-1,100)
