@@ -103,7 +103,7 @@ def audit(image):
     # Do not cross a code/data island when attributing instruction provenance.
     if not target_instruction_in_decoder:
         raise ValueError("Original signed entry-anchored function lost setter alignment")
-        near=decode(image,0x600771D8,0x6007720A)
+    near=decode(image,0x600771D8,0x6007720A)
     focus=[
         {
             "window_start":hex(lo),
