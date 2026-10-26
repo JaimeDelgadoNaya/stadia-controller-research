@@ -24,7 +24,7 @@ class Phase58SignedHelper(unittest.TestCase):
 
     def test_original_call_pins_not_other_helpers(self):
         self.assertNotEqual(m.HELPER,0x600D54F2)
-        self.assertEqual(len(m.WINDOWS),5)
+        self.assertEqual(len(m.WINDOWS),7)
 
     def test_decode_excludes_short_buffer(self):
         with self.assertRaises((ValueError,IndexError)):
