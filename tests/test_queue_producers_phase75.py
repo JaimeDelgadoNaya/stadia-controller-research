@@ -1,6 +1,9 @@
 """Phase 75 queue producer candidate provenance and fail-closed tests."""
 import struct
 import unittest
+import json
+import os
+from pathlib import Path
 from tools import audit_queue_producers_phase75 as a
 
 class WorkQueueProducersTests(unittest.TestCase):
@@ -48,6 +51,20 @@ class WorkQueueProducersTests(unittest.TestCase):
                          ("str","r6, [r4, #0x38]"))
         self.assertEqual(len(a.WORKER_RECEIVE_PINS),10)
         self.assertEqual(len(a.SIGNED_SEND_PINS),11)
+
+    @unittest.skipUnless(os.environ.get("STADIA_BRUCE_IMAGE"),
+                         "Original signed OEM image not available")
+    def test_original_signed_producer_and_recorded_evidence(self):
+        result=a.audit(Path(os.environ["STADIA_BRUCE_IMAGE"]).read_bytes())
+        expected=json.loads((Path(__file__).resolve().parents[1]/
+                             "evidence/usb-workqueue-producers-phase75.json").read_text())
+        self.assertEqual(result["verified_WorkQueue_producer_chain"],expected["producer"])
+        self.assertEqual(result["signed_sender_to_receiver_callback_structure"],
+                         expected["signed_pipeline"])
+        self.assertEqual(result["work_queue_producer_function_xrefs"]["direct_bl_shapes"],
+                         expected["direct_producer_callers"])
+        self.assertEqual(result["verified_ITCM_count_increment_helper"],
+                         expected["queue_increment_helper"])
 
     def test_original_signed_sample_required(self):
         with self.assertRaisesRegex(ValueError,"SHA-pinned"):
