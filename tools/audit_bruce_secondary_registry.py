@@ -11,7 +11,7 @@ import argparse
 import hashlib
 import json
 import struct
-from collections import Counter
+from collections import Counter, deque
 from pathlib import Path
 
 from capstone import Cs, CS_ARCH_ARM, CS_GRP_CALL, CS_GRP_JUMP, CS_MODE_MCLASS, CS_MODE_THUMB
@@ -84,6 +84,7 @@ def synthetic_walk(image: bytes, start: int, end: int, *, kind="xip"):
     pointer_uses = []
     offset_candidates = []
     instructions = 0
+    trail = deque(maxlen=10)
     for ins in md.disasm(blob, origin + start):
         instructions += 1
         ops = ins.operands
@@ -113,6 +114,9 @@ def synthetic_walk(image: bytes, start: int, end: int, *, kind="xip"):
                             "pc": hex(ins.address), "base_register": ins.reg_name(op.mem.base),
                             "displacement": hex(op.mem.disp), "region": kind,
                             "base_constant_proven": address is not None,
+                            "resolved_address": hex(address) if address is not None else None,
+                            "base_constant": hex(state[op.mem.base]) if op.mem.base in state else None,
+                            "preceding_linear_instructions": list(trail)[-7:],
                         })
                     if address is not None:
                         size = (8 if m in ("strd", "ldrd") else
@@ -157,6 +161,7 @@ def synthetic_walk(image: bytes, start: int, end: int, *, kind="xip"):
             state.clear()
         elif candidate:
             state[candidate[0]] = candidate[1]
+        trail.append(hex(ins.address) + " " + ins.mnemonic + " " + ins.op_str)
     return {
         "instructions_linear": instructions,
         "candidate_accesses": discoveries,
@@ -248,7 +253,7 @@ def main():
         "literal_refs": report["aligned_literal_census"],
         "decoded_pc_literals": report["related_pc_literals_limited"],
         "candidate_accesses": report["candidate_accesses_limited"],
-        "near_offset_stores": report["stores_with_interesting_displacements_limited"][:12],
+        "near_offset_stores": report["stores_with_interesting_displacements_limited"],
         "truncated": report["candidate_lists_are_truncated"],
         "host_control": "UNVERIFIED", "firmware_execution": "NOT DEMONSTRATED",
     }))
