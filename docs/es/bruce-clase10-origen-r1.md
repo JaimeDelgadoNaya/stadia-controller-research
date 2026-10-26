@@ -1,5 +1,7 @@
 # Fase #39 — procedencia real del puntero R1 del inicializador de clase USB 10
 
+**Actualización fase #40:** se ha localizado en los datos OEM firmados copiados al arranque la entrada de clase 10 en `0x200030F4`. Su primera palabra es el callback Thumb `0x600613FD` (código `0x600613FC`). Por tanto, la primera palabra **ya está identificada para esta entrada estática**; la nueva incógnita es la **segunda función registrada en RAM** que consulta el callback original. Véase [resultado #40](bruce-clase10-callback-firmado.md). La incertidumbre histórica de esta fase sigue documentada abajo por trazabilidad.
+
 **26 de octubre de 2026.** Análisis **exclusivamente offline** sobre el archivo de actualización Bruce OEM original firmado: 1.050.984 bytes, SHA-256 `466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3`. No es lectura de la flash del mando real.
 
 ## Resultado

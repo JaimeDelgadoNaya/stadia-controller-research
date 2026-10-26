@@ -1,5 +1,7 @@
 # Phase #39 — class 10 callback R1 argument provenance in signed Bruce
 
+**Phase #40 update:** signed boot-initialized OEM data includes the class-10 configuration record at `0x200030F4` whose first word is Thumb callback `0x600613FD` (`0x600613FC` code). This word has now been identified for this static record. The new unresolved item is the **secondary RAM-registered callback** subsequently read by the signed function. See [phase #40](bruce-class10-signed-callback-origin.md); earlier uncertainty is retained below as historical analysis.
+
 **2026-10-26 · offline read-only.** Exact original signed Bruce **update archive**, size 1,050,984 bytes; SHA-256 `466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3`. Not a live controller flash dump or verified running SRAM.
 
 Phase #38 established that class ID **10**, not 4, has first method `0x60055320` and SETUP event method `0x600D0E58`. This phase traces the **R1 input of the first method** through the class configuration loop using **32 machine instruction semantic anchors** checked against the original signed image.

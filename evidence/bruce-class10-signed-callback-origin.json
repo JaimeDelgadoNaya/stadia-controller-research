@@ -1,0 +1,78 @@
+{
+  "date": "2026-10-26",
+  "pull_request": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/pull/40",
+  "sample": {
+    "kind": "Signed OEM Bruce update image; no physical readback",
+    "size": 1050984,
+    "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3"
+  },
+  "boot_copy": {
+    "original_image_source_offset": "0xfd5a8",
+    "RAM_destination": "0x20002740",
+    "bytes": 6296
+  },
+  "verified_adjacent_records": [
+    {
+      "image_source_offset": "0xfdf50",
+      "copied_RAM_base": "0x200030e8",
+      "selector_byte": 2,
+      "first_word_callback_thumb": "0x60061249",
+      "instance_initial": 0,
+      "descriptor_pointer": "0x200030a0"
+    },
+    {
+      "image_source_offset": "0xfdf5c",
+      "copied_RAM_base": "0x200030f4",
+      "selector_byte": 10,
+      "first_word_callback_thumb": "0x600613fd",
+      "instance_initial": 0,
+      "descriptor_pointer": "0x20003100"
+    }
+  ],
+  "static_provider_pointer_words": [
+    {
+      "file_offset": "0x21100",
+      "word": "0x200030e8"
+    },
+    {
+      "file_offset": "0x21108",
+      "word": "0x200030e8"
+    },
+    {
+      "file_offset": "0x213f8",
+      "word": "0x200030f4"
+    }
+  ],
+  "signed_handler": {
+    "code_address": "0x600613fc",
+    "guard": "R1 > 0x7F (unsigned)",
+    "bRequest_81_83_84_pass_first_guard": true,
+    "secondary_callback_read_PC": "0x6006140a",
+    "secondary_context_read_PC": "0x60061414",
+    "guard_comparison_PC": "0x6006140c",
+    "indirect_call_PC": "0x60061416",
+    "secondary_callback_live_value": "UNKNOWN",
+    "RAM_base_literal": "0x200064c0",
+    "guard_sentinel_literal": "0x600d4f05",
+    "secondary_callback_RAM_slot": "0x20009ef8",
+    "secondary_callback_context_RAM_slot": "0x20009efc",
+    "virtual_emulation": "Stops before indirect BLX, with synthetic RAM and signed original machine code",
+    "reading_live_secondary_callback": "NOT MEASURED"
+  },
+  "candidate_scan": {
+    "initialized_RAM_triplets": 73,
+    "initialized_RAM_descriptor_byte_10": 1,
+    "high_XIP_triplets": 522,
+    "high_XIP_descriptor_byte_10": 0,
+    "scan_is_bounded_and_structural": true
+  },
+  "source_writes_class10_first_word": "authenticated initialized image data",
+  "callback_0x600613FC_physically_executed": false,
+  "secondary_registered_callback_proven": false,
+  "host_controls_secondary_callback": "NOT PROVEN",
+  "HAB_closed_bypass_proven": false,
+  "firmware_custom_execution_proven": false,
+  "physical_USB_used": false,
+  "flash_written": false,
+  "console_compatibility_proven": false
+}

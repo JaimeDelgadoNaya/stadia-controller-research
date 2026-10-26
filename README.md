@@ -9,6 +9,8 @@ whether custom firmware can run on the original hardware.
 **Current result: secure boot is CLOSED on the tested controller. No custom
 firmware execution or signature bypass has been demonstrated.**
 
+**[Phase #40 — original class-10 callback located](docs/en/bruce-class10-signed-callback-origin.md).** Signed OEM Bruce boot data initializes the class-10 record at `0x200030F4` with Thumb pointer **`0x600613FD`**, initially-null object and an associated class-10 descriptor at `0x20003100`. Original code `0x600613FC` rejects `bRequest <= 0x7F`; `0x81/0x83/0x84` pass this initial check and depend on a **second callback registered in RAM**, whose live source/value is unproven. Offline-only; no own firmware execution, HAB CLOSED bypass or Xbox/Switch 2 interoperability. **Active objective: direct original-electronics compatibility without an external bridge.**
+
 **[Package A complete — archived WebHID/WebUSB host protocol](docs/en/archived-updater-host-protocol.md).** The host installs images via **ROM SDP and signed RAM flashloader**, not bootloader-A Bulk OUT `0x07`. See [sanitized evidence](evidence/archived-updater-host-protocol.json). Custom unsigned execution remains unproven; package B was completed in phase 31.
 
 **HISTORICAL DECISION — [Phase 31: stop internal firmware modification, begin external bridge](docs/en/final-execution-recovery-decision.md).** The agreed last offline work package is complete. ROM HAB **CLOSED**, signed images validate, but no authorizable custom execution or reliable rollback was established. **Stop internal modification unless independent new evidence changes the gates.** Next: reversible ESP32-S3 Stadia BLE → **PC** Xbox 360-style gamepad prototype; Xbox One/Series authentication requires separate verification.
