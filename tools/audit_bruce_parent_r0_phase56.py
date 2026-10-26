@@ -9,6 +9,7 @@ import argparse
 import hashlib
 import json
 import re
+import struct
 from pathlib import Path
 
 from tools.audit_signed_app_surface import IMAGE_SHA256, IMAGE_SIZE, ASSUMED_XIP_BASE
@@ -68,9 +69,32 @@ def prove_r0_producer(image):
     }
 
 
-def callee_code_preview(image):
-    """Bounded linear view of the producer; no symbolic execution."""
-    return select_original_window(image,0x6013D378,0x6013D3BC)
+def resolve_producer_veneer(image):
+    """Resolve LDR.W PC literal as data, not as Thumb instructions.
+
+    Inspects an OEM signed *literal pointer*. If target lies outside
+    mapped signed XIP, do not claim local code execution or memory
+    allocation semantics. Never turn bytes of the veneer table into code.
+    """
+    entry=0x6013D378
+    first=decode(image,entry,entry+4)
+    if len(first)!=1 or (first[0]["m"],first[0]["op"])!=("ldr.w","pc, [pc, #-0x0]"):
+        raise ValueError("phase56 signed producer veneer opcode drift")
+    at=(entry+4)&~3
+    off=at-BASE
+    ptr=struct.unpack_from("<I",image,off)[0]
+    out={"veneer_entry":hex(entry),"literal_at":hex(at),
+         "raw_target_word":hex(ptr),
+         "thumb_bit_set":bool(ptr&1),
+         "resolved_target":hex(ptr&~1),
+         "target_in_signed_XIP":BASE<=ptr&~1<SIGNED_XIP_END,
+         "semantic_role":"UNVERIFIED"}
+    if ptr&1 and BASE<=ptr&~1<SIGNED_XIP_END:
+        out["target_code_window"]=select_original_window(image,ptr&~1,
+                              min((ptr&~1)+0x60,SIGNED_XIP_END))
+    else:
+        out["target_code_window"]=[]
+    return out
 
 
 def reader_focus_windows(image):
@@ -191,7 +215,7 @@ def audit(image):
         "prior_phase55_pins_verified":previous["pins_verified"],
         "caller_R0_exploration":windows,
         "pinned_R0_producer":origin,
-        "producer_callee_preview":callee_code_preview(image),
+        "producer_veneer":resolve_producer_veneer(image),
         "reader_focus_windows":reader_focus_windows(image),
         "parent_plus80_reader_census":reads,
         "proven_parent_R0": "RETURN_VALUE_OF_0x6013D378; NUMERIC_VALUE_UNKNOWN",
@@ -214,7 +238,7 @@ def main():
     if args.out:
         args.out.write_text(json.dumps(res,indent=2)+"\n",encoding="utf-8")
     print("PHASE56 R0 PRODUCER",json.dumps(res["pinned_R0_producer"]))
-    print("PHASE56 R0 CALLEE PREVIEW",json.dumps(res["producer_callee_preview"]))
+    print("PHASE56 R0 VENEER",json.dumps(res["producer_veneer"]))
     for item in res["reader_focus_windows"]:
         print("PHASE56 READER FOCUS",json.dumps(item))
     for lo,w in res["caller_R0_exploration"].items():
