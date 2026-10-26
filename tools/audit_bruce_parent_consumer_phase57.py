@@ -69,7 +69,7 @@ def verify_global_chain(image):
     """
     pins=verify_pins(image,GLOBAL_CHAIN_PINS,[
         (0x60079D9E,0x60079DC2),
-        (0x60079C50,0x60079C5C),
+        (0x60079C50,0x60079C5E),
         (0x60079C6C,0x60079C7C),
         (0x60079CD2,0x60079CDA),
     ])
