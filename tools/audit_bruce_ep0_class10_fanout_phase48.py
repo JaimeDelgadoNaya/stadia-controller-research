@@ -55,7 +55,7 @@ PINS={
 def verify_pins(seen):
     for pc,expected in PINS.items():
         if seen.get(pc)!=expected:
-            raise ValueError("Signed EP0 event1 class fanout drift at "+hex(pc))
+            raise ValueError("Signed EP0 event1 class fanout drift at "+hex(pc)+": "+repr(seen.get(pc)))
     return len(PINS)
 
 
@@ -75,7 +75,7 @@ def audit(image):
         raise ValueError("requires exact original SHA-256 signed Bruce update")
     initial=audit_singletons(image)
     seen={}
-    for a,b in ((0x60054E08,0x60054E1C),(0x60054E5A,0x60054E6C),
+    for a,b in ((0x60054E08,0x60054E1E),(0x60054E5A,0x60054E6E),
                 (0x6005505C,0x600550BE),(0x600550D8,0x600550DC)):
         seen.update({x["pc"]:(x["m"],x["op"]) for x in decode(image,a,b)})
     n=verify_pins(seen)
