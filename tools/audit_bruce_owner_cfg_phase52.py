@@ -180,7 +180,7 @@ def flow(code,image,initial_mode,*,max_states=2800):
         mem=REG_MEM.match(op)
         if mem and nm.startswith(("ldr","str")):
             dst,base,imm=mem.groups()
-            base_value=regs.get(base)
+            base_value=((pc+4)&~3) if base=="pc" else regs.get(base)
             disp=int(imm,0) if imm else 0
             address=base_value+disp if base_value is not None else None
             if address in FIELDS and nm.startswith("ldr"):
