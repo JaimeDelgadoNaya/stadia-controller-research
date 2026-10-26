@@ -1,0 +1,420 @@
+{
+  "phase": 65,
+  "image_sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+  "exact_image_hash_verified": true,
+  "source_array_selectors": [
+    10,
+    1,
+    2,
+    4
+  ],
+  "class_state": "0x200040e0",
+  "isolated_class10_cases": [
+    {
+      "root": "class",
+      "inputs": {
+        "engine_present": false,
+        "engine_mode": 2,
+        "class_busy": false,
+        "requested_class_mode": 2,
+        "driver_status_stub": 0
+      },
+      "stop": "class_return",
+      "stop_pc": "0x10000000",
+      "r0_at_stop": 4,
+      "driver_error_r5_at_failure": null,
+      "class10_initializer_reached": true,
+      "snapshot": {
+        "core_engine": "0x0",
+        "core_config": "0x0",
+        "class_engine": "0x0",
+        "class_record": "0x0",
+        "class_status_byte": 0,
+        "class_marker_byte": 0,
+        "record_instance": "0x0"
+      },
+      "original_writes": [],
+      "stubbed_calls": [
+        {
+          "target": "0x6013d3e0",
+          "r0": "0x2002dfdf",
+          "model": "writes zero to virtual stack status byte"
+        },
+        {
+          "target": "0x600d15e8",
+          "r0": "0x0",
+          "model": "no-op guard restore"
+        }
+      ],
+      "instruction_hooks": 27,
+      "name": "no_engine"
+    },
+    {
+      "root": "class",
+      "inputs": {
+        "engine_present": true,
+        "engine_mode": 3,
+        "class_busy": false,
+        "requested_class_mode": 2,
+        "driver_status_stub": 0
+      },
+      "stop": "class_return",
+      "stop_pc": "0x10000000",
+      "r0_at_stop": 4,
+      "driver_error_r5_at_failure": null,
+      "class10_initializer_reached": true,
+      "snapshot": {
+        "core_engine": "0x200063c0",
+        "core_config": "0x0",
+        "class_engine": "0x0",
+        "class_record": "0x0",
+        "class_status_byte": 0,
+        "class_marker_byte": 0,
+        "record_instance": "0x0"
+      },
+      "original_writes": [],
+      "stubbed_calls": [
+        {
+          "target": "0x6013d3e0",
+          "r0": "0x2002dfdf",
+          "model": "writes zero to virtual stack status byte"
+        },
+        {
+          "target": "0x600d15e8",
+          "r0": "0x0",
+          "model": "no-op guard restore"
+        }
+      ],
+      "instruction_hooks": 30,
+      "name": "wrong_mode"
+    },
+    {
+      "root": "class",
+      "inputs": {
+        "engine_present": true,
+        "engine_mode": 2,
+        "class_busy": false,
+        "requested_class_mode": 2,
+        "driver_status_stub": 0
+      },
+      "stop": "class_return",
+      "stop_pc": "0x10000000",
+      "r0_at_stop": 0,
+      "driver_error_r5_at_failure": null,
+      "class10_initializer_reached": true,
+      "snapshot": {
+        "core_engine": "0x200063c0",
+        "core_config": "0x0",
+        "class_engine": "0x200063c0",
+        "class_record": "0x2000a274",
+        "class_status_byte": 0,
+        "class_marker_byte": 255,
+        "record_instance": "0x200040e0"
+      },
+      "original_writes": [
+        {
+          "pc": "0x60055042",
+          "address": "0x200040e0",
+          "size": 4,
+          "value": "0x200063c0"
+        },
+        {
+          "pc": "0x6005533a",
+          "address": "0x200040e4",
+          "size": 4,
+          "value": "0x2000a274"
+        },
+        {
+          "pc": "0x6005533c",
+          "address": "0x200040ec",
+          "size": 1,
+          "value": "0x0"
+        },
+        {
+          "pc": "0x6005533e",
+          "address": "0x200040ee",
+          "size": 1,
+          "value": "0xff"
+        },
+        {
+          "pc": "0x60055340",
+          "address": "0x2000a278",
+          "size": 4,
+          "value": "0x200040e0"
+        }
+      ],
+      "stubbed_calls": [
+        {
+          "target": "0x6013d3e0",
+          "r0": "0x2002dfdf",
+          "model": "writes zero to virtual stack status byte"
+        },
+        {
+          "target": "0x600d15e8",
+          "r0": "0x0",
+          "model": "no-op guard restore"
+        }
+      ],
+      "instruction_hooks": 37,
+      "name": "matching_engine"
+    },
+    {
+      "root": "class",
+      "inputs": {
+        "engine_present": true,
+        "engine_mode": 2,
+        "class_busy": true,
+        "requested_class_mode": 2,
+        "driver_status_stub": 0
+      },
+      "stop": "class_return",
+      "stop_pc": "0x10000000",
+      "r0_at_stop": 2,
+      "driver_error_r5_at_failure": null,
+      "class10_initializer_reached": true,
+      "snapshot": {
+        "core_engine": "0x200063c0",
+        "core_config": "0x0",
+        "class_engine": "0x200063c0",
+        "class_record": "0x0",
+        "class_status_byte": 0,
+        "class_marker_byte": 0,
+        "record_instance": "0x0"
+      },
+      "original_writes": [],
+      "stubbed_calls": [],
+      "instruction_hooks": 10,
+      "name": "class_busy"
+    },
+    {
+      "root": "class",
+      "inputs": {
+        "engine_present": false,
+        "engine_mode": 2,
+        "class_busy": true,
+        "requested_class_mode": 2,
+        "driver_status_stub": 0
+      },
+      "stop": "class_return",
+      "stop_pc": "0x10000000",
+      "r0_at_stop": 2,
+      "driver_error_r5_at_failure": null,
+      "class10_initializer_reached": true,
+      "snapshot": {
+        "core_engine": "0x0",
+        "core_config": "0x0",
+        "class_engine": "0x200063c0",
+        "class_record": "0x0",
+        "class_status_byte": 0,
+        "class_marker_byte": 0,
+        "record_instance": "0x0"
+      },
+      "original_writes": [],
+      "stubbed_calls": [],
+      "instruction_hooks": 10,
+      "name": "class_busy_without_engine"
+    }
+  ],
+  "owner_to_class10_cases": [
+    {
+      "root": "owner",
+      "inputs": {
+        "engine_present": false,
+        "engine_mode": 2,
+        "class_busy": false,
+        "requested_class_mode": 2,
+        "driver_status_stub": 0
+      },
+      "stop": "first_class_return_before_remaining_classes",
+      "stop_pc": "0x60055196",
+      "r0_at_stop": 0,
+      "driver_error_r5_at_failure": null,
+      "class10_initializer_reached": true,
+      "snapshot": {
+        "core_engine": "0x200063c0",
+        "core_config": "0x2000a2ac",
+        "class_engine": "0x200063c0",
+        "class_record": "0x2000a274",
+        "class_status_byte": 0,
+        "class_marker_byte": 255,
+        "record_instance": "0x200040e0"
+      },
+      "original_writes": [
+        {
+          "pc": "0x60055126",
+          "address": "0x2000408e",
+          "size": 1,
+          "value": "0x2"
+        },
+        {
+          "pc": "0x6005512e",
+          "address": "0x20004084",
+          "size": 4,
+          "value": "0x2000a2ac"
+        },
+        {
+          "pc": "0x600553c2",
+          "address": "0x20004080",
+          "size": 4,
+          "value": "0x200063c0"
+        },
+        {
+          "pc": "0x60055042",
+          "address": "0x200040e0",
+          "size": 4,
+          "value": "0x200063c0"
+        },
+        {
+          "pc": "0x6005533a",
+          "address": "0x200040e4",
+          "size": 4,
+          "value": "0x2000a274"
+        },
+        {
+          "pc": "0x6005533c",
+          "address": "0x200040ec",
+          "size": 1,
+          "value": "0x0"
+        },
+        {
+          "pc": "0x6005533e",
+          "address": "0x200040ee",
+          "size": 1,
+          "value": "0xff"
+        },
+        {
+          "pc": "0x60055340",
+          "address": "0x2000a278",
+          "size": 4,
+          "value": "0x200040e0"
+        }
+      ],
+      "stubbed_calls": [
+        {
+          "target": "0x6013d3e0",
+          "r0": "0x2002dfc7",
+          "model": "writes zero to virtual stack status byte"
+        },
+        {
+          "target": "0x600d15e8",
+          "r0": "0x0",
+          "model": "no-op guard restore"
+        },
+        {
+          "target": "0x6013d3e0",
+          "r0": "0x2002dfa7",
+          "model": "writes zero to virtual stack status byte"
+        },
+        {
+          "target": "0x600d15e8",
+          "r0": "0x0",
+          "model": "no-op guard restore"
+        },
+        {
+          "target": "0x6005556c",
+          "r0": "0x2",
+          "model": "stubbed low-level USB driver return; no hardware effects",
+          "returned": 0
+        },
+        {
+          "target": "0x6013d3e0",
+          "r0": "0x2002df9f",
+          "model": "writes zero to virtual stack status byte"
+        },
+        {
+          "target": "0x600d15e8",
+          "r0": "0x0",
+          "model": "no-op guard restore"
+        }
+      ],
+      "instruction_hooks": 258
+    },
+    {
+      "root": "owner",
+      "inputs": {
+        "engine_present": false,
+        "engine_mode": 2,
+        "class_busy": false,
+        "requested_class_mode": 2,
+        "driver_status_stub": 5
+      },
+      "stop": "driver_failure_before_cleanup",
+      "stop_pc": "0x600553d0",
+      "r0_at_stop": 5,
+      "driver_error_r5_at_failure": 5,
+      "class10_initializer_reached": false,
+      "snapshot": {
+        "core_engine": "0x200063c0",
+        "core_config": "0x2000a2ac",
+        "class_engine": "0x0",
+        "class_record": "0x0",
+        "class_status_byte": 0,
+        "class_marker_byte": 0,
+        "record_instance": "0x0"
+      },
+      "original_writes": [
+        {
+          "pc": "0x60055126",
+          "address": "0x2000408e",
+          "size": 1,
+          "value": "0x2"
+        },
+        {
+          "pc": "0x6005512e",
+          "address": "0x20004084",
+          "size": 4,
+          "value": "0x2000a2ac"
+        },
+        {
+          "pc": "0x600553c2",
+          "address": "0x20004080",
+          "size": 4,
+          "value": "0x200063c0"
+        }
+      ],
+      "stubbed_calls": [
+        {
+          "target": "0x6013d3e0",
+          "r0": "0x2002dfc7",
+          "model": "writes zero to virtual stack status byte"
+        },
+        {
+          "target": "0x600d15e8",
+          "r0": "0x0",
+          "model": "no-op guard restore"
+        },
+        {
+          "target": "0x6013d3e0",
+          "r0": "0x2002dfa7",
+          "model": "writes zero to virtual stack status byte"
+        },
+        {
+          "target": "0x600d15e8",
+          "r0": "0x0",
+          "model": "no-op guard restore"
+        },
+        {
+          "target": "0x6005556c",
+          "r0": "0x2",
+          "model": "stubbed low-level USB driver return; no hardware effects",
+          "returned": 5
+        }
+      ],
+      "instruction_hooks": 155
+    }
+  ],
+  "constructor_snapshot_previous_mode": 0,
+  "mode_transition_boundary": "Phase53 requires prior mode nonzero and different from requested 2; owner root bypasses that transition.",
+  "limits": [
+    "Original instructions execute only in virtual fragments with explicit test vectors.",
+    "The original-record RAM snapshot inherits the phase64 subobject/mutex/copy-helper models.",
+    "Core/class/engine state is reset or seeded as test vectors; these are not measured installed values.",
+    "Owner path executes the original singleton/configuration writes; phase64 singleton handoff is removed first.",
+    "Low-level driver 0x6005556c returns an injected status; no actual USB engine or peripherals are initialized.",
+    "Guard helpers are explicit status-byte/no-op models; their real implementation and concurrent effects are not executed.",
+    "Success stops after the first class initializer, before other classes and final owner registration/return.",
+    "Failure stops before cleanup; transient pointer values do not establish final cleanup state.",
+    "Mode-transition guards and actual runtime state remain outside this experiment.",
+    "No class callback executes; no physical USB reachability, custom code execution, HAB bypass or firmware modification."
+  ]
+}
