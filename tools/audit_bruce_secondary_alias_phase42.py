@@ -165,6 +165,22 @@ def secondary_context_xrefs(image):
             hex(i.address) + " " + i.mnemonic + " " + i.op_str
             for i in decode_raw(image, 0x600D4F04, 0x600D4F44)
         ],
+        "potential_global_initializer_window": [
+            hex(i.address) + " " + i.mnemonic + " " + i.op_str
+            for i in decode_raw(image, 0x60073BD0, 0x60073DE0)
+        ],
+        "init_tail_literal_words": [
+            {"address":hex(addr), "value":hex(int.from_bytes(
+                image[addr-BASE:addr-BASE+4], "little"))}
+            for addr in range(0x60073E08, 0x60073E44, 4)
+        ],
+        "constructor_root_literal": {
+            "ldr_pc":"0x60058914",
+            "literal_address": hex(((0x60058914+4)&~3)+0x12C),
+            "value":hex(int.from_bytes(
+                image[(((0x60058914+4)&~3)+0x12C)-BASE:
+                      (((0x60058914+4)&~3)+0x12C)-BASE+4], "little"))
+        },
         "sentinel_second_literal_neighborhood": [
             hex(i.address) + " " + i.mnemonic + " " + i.op_str
             for i in decode_raw(image, 0x60073D70, 0x60073E48)
@@ -227,6 +243,9 @@ def main():
     print("PHASE42 SENTINEL CODE", json.dumps(refs["handler_sentinel_disassembly"]))
     print("PHASE42 OBJECT NEIGHBOR CODE", json.dumps(refs["neighbor_object_caller_window"]))
     print("PHASE42 OTHER SENTINEL SITE", json.dumps(refs["sentinel_second_literal_neighborhood"]))
+    print("PHASE42 GLOBAL INITIALIZER", json.dumps(refs["potential_global_initializer_window"]))
+    print("PHASE42 GLOBAL LITERAL POOL", json.dumps(refs["init_tail_literal_words"]))
+    print("PHASE42 CONSTRUCTOR ROOT LITERAL", json.dumps(refs["constructor_root_literal"]))
     print("PHASE42 CONSTRUCTOR CALLER CODE", json.dumps(refs["constructor_direct_call_neighborhood"]))
 
 
