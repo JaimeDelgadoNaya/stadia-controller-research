@@ -43,6 +43,9 @@ firmware execution or signature bypass has been demonstrated.**
 
 **[Phase #38 — verified signed Bruce class selection](docs/en/bruce-class-selector-phase38.md).** Two Thumb PC literals resolve the true `0x60104B74` base and five 16-byte entries. Bounded Unicorn execution confirms class ID `4` selects `0x60054875` while ID `10` selects `0x60055321`; no class method executed. The SETUP forwarding method `0x600D0E58` belongs to ID **10**. Physical EP0 and final callback remain unverified.
 
+
+**[Phase #39 — source of class10 callback R1](docs/en/bruce-class10-r1-origin.md).** The original SHA-pinned Bruce machine code shows `0x60055320` receives a **12-byte application configuration entry**, selected as `R1=[original_config_argument]+12*interface_index`. Record `+8` points to a descriptor, `+4` receives the class instance and `+0` is a potential callback word whose writer remains unresolved. No host-chosen function pointer, arbitrary execution or native console interoperability proven.
+
 ## Current priority: on-controller software and direct Switch 2
 
 The owner excludes adapters and external boards. The active goal is software
