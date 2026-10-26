@@ -2,15 +2,15 @@
 
 **26/10/2026 — actualización Bruce OEM original firmada**, SHA-256 `466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3`. Auditoría exclusivamente offline.
 
-## Nuevo hallazgo: el propietario USB se guarda dentro de un objeto diferente
+## Nuevo hallazgo: el puntero a owner se guarda mediante un objeto base desconocido
 
-Las fases 51–54 siguieron referencias directas al objeto `owner=0x2000A2A8`, sin localizar los escritores de `owner+4/+8/+12`. La fase 55 cambia de dirección: verifica que un constructor firmado recibe el puntero a `owner` **por R2**, no por R0, y lo almacena en el desplazamiento **+0x80 de su objeto receptor**.
+Las fases 51–54 siguieron referencias directas al objeto `owner=0x2000A2A8`, sin localizar los escritores de `owner+4/+8/+12`. La fase 55 cambia de dirección: verifica que un constructor firmado recibe el puntero a `owner` **por R2**, no por R0, y lo almacena en el desplazamiento **+0x80 del objeto base recibido por R0**.
 
 ```asm
 0x60079D7C  LDR R2,[PC,#0x54]      ; literal 0x60079DD4 = 0x2000A2A8
 0x60079D84  BL 0x6007EB8C
 
-0x6007EB96  MOV R4,R0              ; R0 = base de OTRO objeto, desconocida
+0x6007EB96  MOV R4,R0              ; R0 = base de objeto desconocida
 0x6007EB9E  MOV R8,R2              ; R8 = 0x2000A2A8 (owner)
 ...
 0x6007EBAC  BL 0x601017FC         ; R8/R4 son callee-saved
@@ -38,7 +38,7 @@ El bloque inicializado y firmado que se copiaría a RAM contiene:
 | `0x200030E8` | `0x60061249` | `0x200030A0` | **2** |
 | `0x200030F4` | `0x600613FD` | `0x20003100` | **10** |
 
-Ambos registros tienen 12 bytes y están juntos. Esto **demuestra que la actualización OEM contiene un grupo firmado con las clases 2 y 10**, no que la clase 10 pertenezca a la configuración USB activa.
+Ambos registros tienen 12 bytes y están juntos. Esto **demuestra que la actualización OEM contiene un grupo de registros firmados con selectores 2 y 10**, no que la clase 10 pertenezca a la configuración USB activa.
 
 ## Grafo de procedencia: relación todavía no demostrada
 
@@ -48,7 +48,7 @@ Literal firmado 0x60079DD4
             ▼
 owner = 0x2000A2A8
             │
-            └── BL 0x6007EB8C → [OBJETO PADRE DESCONOCIDO + 0x80]
+            └── BL 0x6007EB8C → [OBJETO BASE R0 DESCONOCIDO + 0x80]
                                            │
                                            ?  consumidores no acreditados
                                            │
