@@ -169,6 +169,10 @@ def verified_initializer_caller(image, found):
     base = struct.unpack_from("<I",image,literal_pc-BASE)[0]
     return {
         "verified_signed_caller":"0x600748ec",
+        "caller_disassembly": [
+            hex(ins.address)+" "+ins.mnemonic+" "+ins.op_str
+            for ins in md.disasm(image[CALLER-BASE:CALLER-BASE+0x18],CALLER)
+        ],
         "direct_call_pc":"0x600748f2",
         "target":hex(INIT),
         "argument_loading_pc":"0x600748ee",
@@ -192,6 +196,9 @@ def audit(image: bytes):
     refs = {name:all_byte_word_references(image,value) for name,value in {
         "initializer_thumb":THUMB_TARGET,
         "initializer_even":INIT,
+        "verified_caller_thumb":CALLER | 1,
+        "verified_caller_even":CALLER,
+        "caller_bl_site_thumb":0x600748F3,
         "candidate_global_base":GLOBAL_BASE_CANDIDATE,
         "guard_sentinel":0x600D4F05,
     }.items()}
