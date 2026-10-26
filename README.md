@@ -1,5 +1,7 @@
 # Stadia Controller Research
 
+**[Phase 71 — nesting normalization and pre-SVC stop](docs/en/critical-normalization-svc-phase71.md).** Original port-start code clears the OEM nesting sentinel with virtual priority readback mask 0xF0 and stops before SVC. BASEPRI remains 0x50 there; its later handler clear is statically identified. Exception/context switch and physical priority behavior remain unexecuted/unmeasured.
+
 **[Phase 70 — original scheduler registration and critical state](docs/en/scheduler-registration-phase70.md).** Original registration and ITCM list/critical helpers insert the prepared state in a virtual priority-1 ready list. The OEM nesting sentinel retains virtual BASEPRI 0x50; a separate zero-depth vector restores zero. No task entry/context switch or physical activation executes.
 
 **[Phase 69 — original task handle and frame](docs/en/original-task-handle-phase69.md).** Original creator/state/frame code derives handle 0x20020278 and prepares PC 0x60101760 with Work Queue argument 0x2002014C. No opaque handle is injected. Scheduler registration remains stubbed and task entry/physical activation are not executed.

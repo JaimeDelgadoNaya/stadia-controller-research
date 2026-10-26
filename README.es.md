@@ -1,5 +1,7 @@
 # Investigación del mando Stadia
 
+**[Fase 71 — normalización del contador y límite SVC](docs/es/normalizacion-contador-svc-fase71.md).** El arranque original limpia el sentinela con readback virtual de prioridad 0xF0 y se detiene antes de SVC. BASEPRI conserva 0x50; se identifica estáticamente su limpieza en el manejador. No se ejecutan la excepción/cambio de contexto ni se miden los bits físicos de prioridad.
+
 **[Fase 70 — registro original y estado crítico](docs/es/registro-planificador-fase70.md).** El registro y helpers ITCM originales insertan la estructura en la lista virtual de prioridad 1. El sentinela OEM conserva BASEPRI virtual 0x50; un vector independiente con contador cero restaura cero. No se ejecutan entrada de tarea, cambio de contexto ni activación física.
 
 **[Fase 69 — handle y frame originales de tarea](docs/es/handle-tarea-original-fase69.md).** El código original obtiene handle 0x20020278 y prepara PC 0x60101760 con argumento Work Queue 0x2002014C. Ya no se inyecta un handle opaco. El registro en el planificador sigue simulado y no se ejecuta la entrada de tarea ni se demuestra activación física.

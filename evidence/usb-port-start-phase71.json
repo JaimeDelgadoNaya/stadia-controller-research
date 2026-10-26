@@ -1,0 +1,219 @@
+{
+  "phase": 71,
+  "image_sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+  "exact_image_hash_verified": true,
+  "original_port_entry": "0x600cc5ac",
+  "normalizing_store": "0x600cc624",
+  "nesting_address": "0x20003d68",
+  "prior_registration": {
+    "executed": true,
+    "stubbed": false,
+    "critical_nesting_fixture": null,
+    "task_count": 1,
+    "current_task": "0x20020278",
+    "ready_bitmap": "0x2",
+    "scheduler_running_word": 0,
+    "ready_list": "0x20027430",
+    "ready_count": 1,
+    "ready_next": "0x2002027c",
+    "ready_previous": "0x2002027c",
+    "task_node": "0x2002027c",
+    "node_container": "0x20027430",
+    "final_critical_nesting": "0xaaaaaaaa",
+    "virtual_basepri": "0x50",
+    "itcm_helpers_executed": true,
+    "virtual_icsr": "0x0",
+    "task_entry_executed": false
+  },
+  "port_start_cases": [
+    {
+      "priority_readback_mask": "0xff",
+      "initial_priority_byte": "0xa0",
+      "initial_basepri": "0x50",
+      "outcome": "assertion_call_before_normalization",
+      "stop_pc": "0x601016a2",
+      "assertion_line": 334,
+      "nesting_after": "0xaaaaaaaa",
+      "virtual_basepri_after": "0x50",
+      "clock_word_from_virtual_initialized_data": 528000000,
+      "tick_reload": 0,
+      "virtual_vtor": "0x60040000",
+      "virtual_msp": "0x2002dfe0",
+      "probe_reads": [
+        {
+          "pc": "0x600cc5b0",
+          "stored": "0xa0",
+          "returned": "0xa0"
+        },
+        {
+          "pc": "0x600cc5be",
+          "stored": "0xff",
+          "returned": "0xff"
+        }
+      ],
+      "observed_original_writes": [
+        {
+          "pc": "0x600cc5bc",
+          "address": "0xe000e400",
+          "size": 1,
+          "value": "0xff"
+        }
+      ],
+      "svc_executed": false,
+      "task_entry_executed": false,
+      "instruction_hooks": 121
+    },
+    {
+      "priority_readback_mask": "0xf0",
+      "initial_priority_byte": "0xa0",
+      "initial_basepri": "0x50",
+      "outcome": "stopped_before_svc",
+      "stop_pc": "0x600cc536",
+      "assertion_line": null,
+      "nesting_after": "0x0",
+      "virtual_basepri_after": "0x50",
+      "clock_word_from_virtual_initialized_data": 528000000,
+      "tick_reload": 527999,
+      "virtual_vtor": "0x60040000",
+      "virtual_msp": "0x2002b828",
+      "probe_reads": [
+        {
+          "pc": "0x600cc5b0",
+          "stored": "0xa0",
+          "returned": "0xa0"
+        },
+        {
+          "pc": "0x600cc5be",
+          "stored": "0xff",
+          "returned": "0xf0"
+        }
+      ],
+      "observed_original_writes": [
+        {
+          "pc": "0x600cc5bc",
+          "address": "0xe000e400",
+          "size": 1,
+          "value": "0xff"
+        },
+        {
+          "pc": "0x600cc60c",
+          "address": "0xe000e400",
+          "size": 1,
+          "value": "0xa0"
+        },
+        {
+          "pc": "0x600cc616",
+          "address": "0xe000ed20",
+          "size": 4,
+          "value": "0xf00000"
+        },
+        {
+          "pc": "0x600cc61e",
+          "address": "0xe000ed20",
+          "size": 4,
+          "value": "0xf0f00000"
+        },
+        {
+          "pc": "0x600cc57e",
+          "address": "0xe000e010",
+          "size": 4,
+          "value": "0x0"
+        },
+        {
+          "pc": "0x600cc580",
+          "address": "0xe000e018",
+          "size": 4,
+          "value": "0x0"
+        },
+        {
+          "pc": "0x600cc592",
+          "address": "0xe000e014",
+          "size": 4,
+          "value": "0x80e7f"
+        },
+        {
+          "pc": "0x600cc596",
+          "address": "0xe000e010",
+          "size": 4,
+          "value": "0x7"
+        },
+        {
+          "pc": "0x600cc624",
+          "address": "0x20003d68",
+          "size": 4,
+          "value": "0x0"
+        },
+        {
+          "pc": "0x600cc54a",
+          "address": "0xe000ed88",
+          "size": 4,
+          "value": "0xf00000"
+        },
+        {
+          "pc": "0x600cc632",
+          "address": "0xe000ef34",
+          "size": 4,
+          "value": "0xc0000000"
+        }
+      ],
+      "svc_executed": false,
+      "task_entry_executed": false,
+      "instruction_hooks": 128
+    },
+    {
+      "priority_readback_mask": "0xe0",
+      "initial_priority_byte": "0xa0",
+      "initial_basepri": "0x50",
+      "outcome": "assertion_call_before_normalization",
+      "stop_pc": "0x601016a2",
+      "assertion_line": 334,
+      "nesting_after": "0xaaaaaaaa",
+      "virtual_basepri_after": "0x50",
+      "clock_word_from_virtual_initialized_data": 528000000,
+      "tick_reload": 0,
+      "virtual_vtor": "0x60040000",
+      "virtual_msp": "0x2002dfe0",
+      "probe_reads": [
+        {
+          "pc": "0x600cc5b0",
+          "stored": "0xa0",
+          "returned": "0xa0"
+        },
+        {
+          "pc": "0x600cc5be",
+          "stored": "0xff",
+          "returned": "0xe0"
+        }
+      ],
+      "observed_original_writes": [
+        {
+          "pc": "0x600cc5bc",
+          "address": "0xe000e400",
+          "size": 1,
+          "value": "0xff"
+        }
+      ],
+      "svc_executed": false,
+      "task_entry_executed": false,
+      "instruction_hooks": 66
+    }
+  ],
+  "original_vector": {
+    "initial_msp": "0x2002b828",
+    "svc_vector_word": "0x6004063d",
+    "wrapper_literal": "0x60040744",
+    "handler_thumb": "0x6004cb41",
+    "static_mask_clear_pc": "0x6004cb56",
+    "handler_executed": false
+  },
+  "limits": [
+    "Port-start entry and virtual VTOR are explicit stage fixtures; full high-level scheduler startup is not executed.",
+    "Priority readback masks are synthetic byte models, not measured implemented priority bits.",
+    "System/timer registers are virtual memory without actual NVIC, tick, interrupts or timing.",
+    "Clock word comes from the OEM-initialized virtual snapshot, not a current physical clock measurement.",
+    "Original port instructions clear the nesting word in the accepted model; BASEPRI remains 0x50 at the pre-SVC stop.",
+    "SVC instruction, exception entry/return, first-task restoration and task entry do not execute.",
+    "Constructor/caller/synchronization models from earlier phases remain; no physical activation or complete startup is proven.",
+    "No device commands, firmware/eFuse changes, custom on-controller execution or HAB bypass."
+  ]
+}
