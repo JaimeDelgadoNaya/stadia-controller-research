@@ -43,6 +43,9 @@ hemos demostrado ejecución de firmware propio ni una forma de eludir las firmas
 
 **[Fase #38 — selección original de clase USB](docs/es/seleccion-clase-bruce-fase38.md).** Localizamos la base real `0x60104B74` en dos referencias Thumb firmadas, verificamos los cinco registros con selector `+0x0C` y emulamos la selección de identificadores `4`/`10` sin ejecutar métodos. La prueba asigna `0x600D0E58` al identificador **10**; clase activa, EP0 real y callback final siguen sin demostrar.
 
+
+**[Fase #39 — procedencia del puntero del callback de clase 10](docs/es/bruce-clase10-origen-r1.md).** En el Bruce OEM original firmado se han verificado 32 instrucciones que llevan `R1` del inicializador `0x60055320` hasta una entrada **interna de 12 bytes**: `R1=[argumento_configuración_original]+12×índice`. La entrada contiene un puntero a descriptor en `+8`, salida de objeto en `+4`, y una primera palabra `+0` cuyo escritor/callback real sigue sin identificar. No existe evidencia de que el host pueda elegir ese puntero ni de ejecución propia.
+
 ## Prioridad actual: software del propio mando y Switch 2 directa
 
 El propietario ha descartado adaptadores y placas externas. La nueva prioridad
