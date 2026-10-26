@@ -31,6 +31,7 @@ on:
       - 'tools/audit_bruce_ep0_slot_handoff_phase46.py'
       - 'tools/audit_bruce_event_to_brequest_phase46.py'
       - 'tools/audit_bruce_ep0_slot_provenance_phase47.py'
+      - 'tools/audit_bruce_ep0_pair_phase47.py'
       - 'tools/emulate_bruce_class10_callback_guard.py'
       - 'tools/emulate_bruce_class_selector.py'
       - 'tools/emulate_bruce_class_request_fragment.py'
@@ -62,6 +63,7 @@ on:
       - 'tests/test_bruce_ep0_slot_handoff_phase46.py'
       - 'tests/test_bruce_event_to_brequest_phase46.py'
       - 'tests/test_bruce_ep0_slot_provenance_phase47.py'
+      - 'tests/test_bruce_ep0_pair_phase47.py'
       - 'tests/test_emulate_bruce_class10_callback_guard.py'
       - 'tests/test_emulate_bruce_class_selector.py'
       - 'tests/test_bruce_class_request_fragment.py'
@@ -98,6 +100,7 @@ on:
       - 'tools/audit_bruce_ep0_slot_handoff_phase46.py'
       - 'tools/audit_bruce_event_to_brequest_phase46.py'
       - 'tools/audit_bruce_ep0_slot_provenance_phase47.py'
+      - 'tools/audit_bruce_ep0_pair_phase47.py'
       - 'tools/emulate_bruce_class10_callback_guard.py'
       - 'tools/emulate_bruce_class_selector.py'
       - 'tools/emulate_bruce_class_request_fragment.py'
@@ -129,6 +132,7 @@ on:
       - 'tests/test_bruce_ep0_slot_handoff_phase46.py'
       - 'tests/test_bruce_event_to_brequest_phase46.py'
       - 'tests/test_bruce_ep0_slot_provenance_phase47.py'
+      - 'tests/test_bruce_ep0_pair_phase47.py'
       - 'tests/test_emulate_bruce_class10_callback_guard.py'
       - 'tests/test_emulate_bruce_class_selector.py'
       - 'tests/test_bruce_class_request_fragment.py'
@@ -203,6 +207,7 @@ jobs:
           python -m tools.audit_bruce_ep0_slot_handoff_phase46 /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/phase46-ep0-slot.json
           python -m tools.audit_bruce_event_to_brequest_phase46 /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/phase46-event1-brequest.json
           python -m tools.audit_bruce_ep0_slot_provenance_phase47 /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/phase47-ep0-registrar.json
+          python -m tools.audit_bruce_ep0_pair_phase47 /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/phase47-ep0-pair.json
           python -m tools.emulate_bruce_class10_callback_guard /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/class10-guard-virtual.json
           python -m tools.emulate_bruce_class_selector /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/selection-synthetic.json
           python -m tools.emulate_bruce_class_request_fragment /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/synthetic-class-requests.json
