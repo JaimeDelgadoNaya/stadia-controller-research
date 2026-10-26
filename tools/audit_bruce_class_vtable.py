@@ -49,6 +49,28 @@ def literal_at(image,pc):
         raise ValueError("literal not aligned in signed XIP region")
     return struct.unpack_from("<I",image,pc-BASE)[0]
 
+def literal_references(image,words):
+    """Exact raw 32-bit reference census, including unaligned occurrences."""
+    results={}
+    for word in words:
+        raw=struct.pack("<I",word)
+        hits=[]
+        cursor=0
+        while True:
+            hit=image.find(raw,cursor,0xFF000)
+            if hit<0:
+                break
+            hits.append(hit)
+            cursor=hit+1
+        results[hex(word)]={
+            "count":len(hits),
+            "file_offsets":[hex(h) for h in hits[:35]],
+            "aligned_offsets":[hex(h) for h in hits[:35] if h%4==0],
+            "reference_is_not_execution_proof":True,
+        }
+    return results
+
+
 def audit(image):
     if len(image)!=IMAGE_SIZE or hashlib.sha256(image).hexdigest()!=IMAGE_SHA256:
         raise ValueError("Exact original signed Bruce hash/size required")
@@ -74,6 +96,7 @@ def audit(image):
         "original_sha256_verified":True,"sha256":IMAGE_SHA256,
         "semantic_pins_verified":len(ANCHORS),
         "literal_loads":literals,
+        "table_pointer_references":literal_references(image,[0x60104B88,0x60104B94,0x60104BA4,0x60104BA8,0x60104BAC,0x60104BC4,0x200063C0]),
         "upstream_direct_BL_xrefs":{
             k:[row["callsite"] for row in v] for k,v in refs.items()},
         "init_class_function":{
@@ -87,7 +110,7 @@ def audit(image):
             "loads_class_vtable_literal":"0x600553ba",
             "writes_class_vtable_pointer_to_object":"0x600553c0",
             "calls_first_vtable_method":"0x600553c6..0x600553ca",
-            "vtable_identified_from_literal":"SEE LITERAL_LOADS; NO HOST REACHABILITY"},
+            "vtable_identified_from_literal":"0x60104bc4 (distinct from candidate class router table at 0x60104ba4); no host reachability"},
         "class_setup_event":{
             "pc":"0x600d0e58",
             "forwards_bRequest_to_stored_function":"0x600d0eb8; 0x600d0eba; 0x600d0ebe",
@@ -106,6 +129,7 @@ def main():
     print("SIGNED CLASS VTABLE SEMANTIC PINS",result["semantic_pins_verified"])
     print("CLASS INITIALIZER LITERALS",json.dumps(result["literal_loads"]))
     print("CLASS CONFIGURE DIRECT BL CALLS",json.dumps(result["upstream_direct_BL_xrefs"]))
+    print("TABLE POINTER REFS",json.dumps(result["table_pointer_references"]))
     print("GLOBAL CLASS CALLBACK STORE",result["init_class_function"]["writes_callback_to_global_object"])
     print("HOST bRequest RECEIVER CODE: NOT YET CONNECTED TO CLASS-SPECIFIC FUNCTION")
     print("DEVICE IO/FIRMWARE WRITES: NONE")
