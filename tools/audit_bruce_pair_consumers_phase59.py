@@ -248,6 +248,39 @@ def resolve_itcm_trampoline(image,entry=CALLBACK_ITCM):
     }
 
 
+FOLLOWUP_WINDOWS={
+    "lone_0x380_load_context":(0x600BD100,0x600BD158),
+    "other_0x380_store_context":(0x6005BCDC,0x6005BD0E),
+    "alternate_pair_store_context":(0x60076856,0x600768A0),
+    "ITCM_callback_XIP_worker":(0x6007E6A0,0x6007E790),
+}
+
+
+def focused_signed_windows(image):
+    result={}
+    for name,(lo,hi) in FOLLOWUP_WINDOWS.items():
+        result[name]=[
+            {"pc":hex(i["pc"]),"m":i["m"],"op":i["op"]}
+            for i in decode(image,lo,hi)
+        ]
+    return result
+
+
+def classify_direct_reader_evidence(matches):
+    """Do not confuse offset match with verified global-base provenance."""
+    loads=[r for r in matches if r["m"].startswith("ldr")]
+    # This list is intentionally *not* upgraded by a guessed Rn identity.
+    return {
+        "raw_thumb_shape_matches":len(matches),
+        "direct_load_shapes":[{"pc":r["pc"],"instruction":r["m"]+" "+r["op"],
+                               "base_proven_global":False} for r in loads],
+        "literal_0x2000fbf4_or_fbf8_detected":"UNVERIFIED_BY_THIS_VALUE_ONLY",
+        "pair_function_invocation":"NOT DEMONSTRATED",
+        "negative_scope":"only one-instruction immediate offsets 0x37c/0x380",
+        "other_alias_or_indirect_offsets":"NOT EXCLUDED",
+    }
+
+
 def original_check(image):
     if len(image)!=IMAGE_SIZE or hashlib.sha256(image).hexdigest()!=IMAGE_SHA256:
         raise ValueError("phase59 exact signed Bruce OEM SHA-256 required")
@@ -272,6 +305,8 @@ def audit(image):
     worker_veneer=resolve_itcm_trampoline(image)
     paired_offsets=scan_field_offset_ops(image)
     halfwords=halfword_field_scan(image)
+    focus=focused_signed_windows(image)
+    evidence=classify_direct_reader_evidence(halfwords)
     return {
         "phase":59,"SHA256_signed_original_verified":True,
         "original_SHA256":IMAGE_SHA256,
@@ -287,6 +322,8 @@ def audit(image):
         "relocated_ITCM_veneer":worker_veneer,
         "matching_pair_field_access_candidates":paired_offsets,
         "complete_halfword_offset_candidates":halfwords,
+        "direct_reader_evidence":evidence,
+        "focused_signed_windows":focus,
         "open_questions":{
             "pair_read_and_indirect_invocation":"UNPROVEN_FROM_LITERAL_SCAN",
             "USB_host_trigger":"UNPROVEN",
@@ -315,6 +352,9 @@ def main():
     print("PHASE59 ITCM B980 VENEER",json.dumps(output["relocated_ITCM_veneer"]))
     print("PHASE59 PAIR-FIELD OFFSET CANDIDATES",json.dumps(output["matching_pair_field_access_candidates"]))
     print("PHASE59 HALFWORD FIELD SCAN",json.dumps(output["complete_halfword_offset_candidates"]))
+    print("PHASE59 DIRECT READER EVIDENCE",json.dumps(output["direct_reader_evidence"]))
+    for name,rows in output["focused_signed_windows"].items():
+        print("PHASE59 FOCUSED WINDOW",name,json.dumps(rows))
     print("PHASE59 NO USB HOST TRIGGER OR CUSTOM CODE EXECUTION PROOF")
 
 
