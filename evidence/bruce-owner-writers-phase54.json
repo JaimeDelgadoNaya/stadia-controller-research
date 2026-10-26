@@ -1,0 +1,66 @@
+{
+  "phase": 54,
+  "date": "2026-10-26",
+  "pr": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/pull/56",
+  "source": {
+    "type": "Original OEM signed Bruce update",
+    "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+    "actual_RAM_readback": false
+  },
+  "audit": {
+    "seed_verified_PC_relative_owner_loads": 11,
+    "max_states_per_root": 10000,
+    "root_0x60071416_states": 10001,
+    "budget_exhausted": true,
+    "max_depth": 2,
+    "max_bytes_per_window": 512,
+    "target_fields": {
+      "owner_plus4": {
+        "address": "0x2000a2ac",
+        "attributed_writers": 0
+      },
+      "owner_plus8": {
+        "address": "0x2000a2b0",
+        "attributed_writers": 0
+      },
+      "owner_plus12": {
+        "address": "0x2000a2b4",
+        "attributed_writers": 0
+      }
+    },
+    "positive_control": {
+      "effective_address": "0x2000a338",
+      "signed_sites": [
+        {
+          "pc": "0x60061022",
+          "source_known": "1"
+        },
+        {
+          "pc": "0x60061070",
+          "source_value": "UNKNOWN"
+        }
+      ],
+      "direct_tail_context": "0x60071416 → 0x6007141c → 0x60060fe8",
+      "original_OEM_audit_result": "SUCCESS"
+    }
+  },
+  "validation": {
+    "original_OEM_CI_url": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40344287059",
+    "condition": "exact original signed image and positive controls required"
+  },
+  "limitations": {
+    "absence_of_field_writers_proven": false,
+    "full_CFG": false,
+    "indirect_calls_followed": false,
+    "live_class10": "UNVERIFIED",
+    "runtime_fields": "UNMEASURED",
+    "unsigned_code": "NOT DEMONSTRATED",
+    "HAB_CLOSED_bypass": "NOT DEMONSTRATED"
+  },
+  "safety": {
+    "USB_requests": false,
+    "flash_writes": false,
+    "efuse_writes": false
+  },
+  "next": "Producer-first reverse dataflow for owner configuration fields or passive USB enumeration (indirect evidence only)"
+}
