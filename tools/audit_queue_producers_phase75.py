@@ -50,7 +50,12 @@ def signed_windows(image):
         "itcm_queue_lock":(0x7700,0x77A0,True),
         "itcm_queue_wait":(0x6D2C,0x6E64,True),
         "xip_original_queue_constructor":(0x600926D0,0x60092730,False),
-        "xip_queue_object_methods":(0x60092698,0x600926D0,False),
+        "xip_queue_getter_one":(0x6009269E,0x600926B4,False),
+        "xip_queue_getter_two":(0x600926B8,0x600926CC,False),
+        "xip_queue_start":(0x60092490,0x600924C4,False),
+        "xip_queue_kernel_wrapper":(0x60101810,0x6010183C,False),
+        "xip_queue_extra_caller":(0x600C9EBC,0x600C9EE4,False),
+        "xip_usb_neighbor_call":(0x6006EA4C,0x6006EA84,False),
         "itcm_adjacent_sender_candidate":(0x6E5C,0x7060,True),
     }
     windows={}
@@ -154,6 +159,35 @@ def pc_literal_load_candidates(image,literals,prior=0x100):
                              "reachable":"UNVERIFIED"})
     return cand
 
+def inspect_itcm_count_sites(image):
+    """Code-shaped +0x38 accesses around queue primitives; base unproven."""
+    cs=Cs(CS_ARCH_ARM,CS_MODE_THUMB|CS_MODE_MCLASS)
+    result=[]
+    for pc in range(0x6300,0x7100,2):
+        start=ITCM_SOURCE_OFFSET+pc
+        ins=next(cs.disasm(image[start:start+4],pc,count=1),None)
+        if ins is None:
+            continue
+        if ins.mnemonic.startswith(("ldr","str")) and "[r" in ins.op_str and "#0x38]" in ins.op_str:
+            frompc=max(0x6300,pc-0x24)
+            to=min(0x7100,pc+0x28)
+            block=cs.disasm(image[ITCM_SOURCE_OFFSET+frompc:ITCM_SOURCE_OFFSET+to],frompc)
+            result.append({
+                "pc":hex(pc),"m":ins.mnemonic,"op":ins.op_str,
+                "likely_count_field_but_base_UNPROVEN":True,
+                "context":[{"pc":hex(i.address),"m":i.mnemonic,"op":i.op_str} for i in block],
+            })
+    return result
+
+def focus_receiver_like_veneers(veneers,callers):
+    subset=("0x6013d268","0x6013d270")
+    return {
+        "candidate_veneer_records":[v for v in veneers if v["pc"] in subset],
+        "direct_BL_shapes":[x for x in callers if x["target"] in subset],
+        "not_event_reachability":"ALL CALLS ARE INSTRUCTION SHAPES, NOT RUNTIME PATHS",
+    }
+
+
 def audit(image):
     if len(image)!=IMAGE_SIZE or hashlib.sha256(image).hexdigest()!=IMAGE_SHA256:
         raise ValueError("Phase75 original exact SHA-pinned Bruce OEM required")
@@ -164,6 +198,8 @@ def audit(image):
     veneer_pcs={int(v["pc"],16) for v in veneers}
     itcm=xip_target_BL_shapes(image,veneer_pcs)
     known=signed_itcm_BL_targets(image)
+    count_sites=inspect_itcm_count_sites(image)
+    focused=focus_receiver_like_veneers(veneers,itcm)
     return {
         "phase":75,"original_SHA256_verified":True,"original_SHA256":IMAGE_SHA256,
         "work_queue_RAM_object":hex(QUEUE),
@@ -174,6 +210,8 @@ def audit(image):
         "signed_ITCM_primitive_BL_shapes":known,
         "signed_XIP_BL_shapes_to_neighbor_veneers":itcm,
         "bounded_original_windows":windows,
+        "signed_ITCM_count_field_instruction_candidates":count_sites,
+        "receiver_neighbor_callers":focused,
         "inference_boundary":{
             "producer_identity":"RESEARCH_IN_PROGRESS",
             "actual_message_in_queue":"NOT_OBSERVED",
@@ -198,6 +236,8 @@ def main():
     print("PHASE75 SIGNED QUEUE VENEERS",json.dumps(output["signed_adjacent_veneers"]))
     print("PHASE75 SIGNED ITCM PRIMITIVE CALLS",json.dumps(output["signed_ITCM_primitive_BL_shapes"]))
     print("PHASE75 SIGNED XIP VENEER CALLS",json.dumps(output["signed_XIP_BL_shapes_to_neighbor_veneers"]))
+    print("PHASE75 COUNT FIELD CANDIDATES",json.dumps(output["signed_ITCM_count_field_instruction_candidates"]))
+    print("PHASE75 RECEIVER NEIGHBOR CALLERS",json.dumps(output["receiver_neighbor_callers"]))
     for label,rows in output["bounded_original_windows"].items():
         print("PHASE75 SIGNED WINDOW",label,json.dumps(rows))
     print("PHASE75 NO PHYSICAL QUEUE OR USB SOURCE PROVEN")
