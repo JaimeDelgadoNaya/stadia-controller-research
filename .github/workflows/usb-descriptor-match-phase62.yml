@@ -81,8 +81,8 @@ jobs:
           python -m tools.execute_queue_guards_phase74 "$image" --out "$RUNNER_TEMP/phase74-guards.json"
           STADIA_BRUCE_IMAGE="$image" python -m unittest tests.test_queue_producers_phase75 -v
           python -m tools.audit_queue_producers_phase75 "$image" --out "$RUNNER_TEMP/phase75-producers.json"
-          STADIA_BRUCE_IMAGE="$image" python -m unittest tests.test_workqueue_caller_provenance_phase76 -v
           python -m tools.audit_workqueue_caller_provenance_phase76 "$image" --out "$RUNNER_TEMP/phase76-provenance.json"
+          STADIA_BRUCE_IMAGE="$image" python -m unittest tests.test_workqueue_caller_provenance_phase76 -v
           python -m tools.audit_usb_descriptor_match_phase62 "$image" --emulate --out "$report"
           python - "$report" <<'PY'
           import json, sys
