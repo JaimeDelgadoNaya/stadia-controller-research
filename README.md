@@ -1,5 +1,7 @@
 # Stadia Controller Research
 
+**[Phase 73 — explicit return model and original task entry](docs/en/modeled-return-task-entry-phase73.md).** An explicit basic-frame register bridge loads the prepared task context; original entry 0x60101760 dispatches to OEM worker 0x600EE142 and stops before its queue call. Real exception return, queue reception, callbacks and physical activation remain unexecuted/unmeasured.
+
 **[Phase 72 — original SVC software restore](docs/en/svc-software-restore-phase72.md).** The retained pre-SVC virtual CPU executes the original wrapper/handler, restores saved words, sets PSP 0x20020B28 and clears BASEPRI. It stops before BX LR: SVC delivery, exception return, hardware unstacking and task entry remain unexecuted.
 
 **[Phase 71 — nesting normalization and pre-SVC stop](docs/en/critical-normalization-svc-phase71.md).** Original port-start code clears the OEM nesting sentinel with virtual priority readback mask 0xF0 and stops before SVC. BASEPRI remains 0x50 there; its later handler clear is statically identified. Exception/context switch and physical priority behavior remain unexecuted/unmeasured.
