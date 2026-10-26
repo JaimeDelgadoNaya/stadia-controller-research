@@ -91,5 +91,7 @@ def main():
     print(json.dumps({"original_sha256_verified":res["original_sha256_verified"],
                       "pc_relative_literal_hits":res["pc_relative_literal_hits"],
                       "movw_movt_candidates":res["local_movw_movt_reference_candidates"]}))
+    for ins in Cs(CS_ARCH_ARM,CS_MODE_THUMB|CS_MODE_MCLASS).disasm(a.image.read_bytes()[0x16780:0x167D0],BASE+0x16780):
+        print("TABLE NEIGHBOR CONTEXT",hex(ins.address),ins.mnemonic,ins.op_str)
 if __name__=="__main__":
     main()
