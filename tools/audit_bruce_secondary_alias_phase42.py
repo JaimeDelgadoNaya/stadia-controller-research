@@ -12,6 +12,7 @@ from pathlib import Path
 from capstone import Cs, CS_ARCH_ARM, CS_MODE_THUMB, CS_MODE_MCLASS
 from tools.audit_signed_app_surface import IMAGE_SIZE, IMAGE_SHA256, ASSUMED_XIP_BASE
 from tools.audit_bruce_secondary_registry import TARGETS, triage_offset_stores
+from tools.audit_bruce_ep0_registration import callers_of_known
 
 BASE = ASSUMED_XIP_BASE
 WINDOW_BEFORE = 192
@@ -132,6 +133,46 @@ def inspect_site(image, pc):
     }
 
 
+
+def secondary_context_xrefs(image):
+    """Bounded references to the actual global object and sentinel.
+
+    Literal words and linear BL candidates are not a resolved call graph.
+    """
+    import struct
+    values = {
+        "secondary_object_0x20009e00": 0x20009E00,
+        "global_0x200064c0": 0x200064C0,
+        "guard_sentinel_0x600d4f05": 0x600D4F05,
+        "class10_handler_0x600613fd": 0x600613FD,
+    }
+    ref_counts = {}
+    for name, value in values.items():
+        raw = struct.pack("<I", value)
+        offsets = [i for i in range(0, 0xFF030 - 3, 4)
+                   if image[i:i+4] == raw]
+        ref_counts[name] = {"count": len(offsets),
+                            "first_offsets": [hex(x) for x in offsets[:24]]}
+    return {
+        "signed_pointer_literals": ref_counts,
+        "direct_call_candidates": callers_of_known(image, {
+            "large_struct_constructor": 0x600587FC,
+            "candidate_struct_method_d572a": 0x600D572A,
+            "class10_signed_callback": 0x600613FC,
+            "guard_sentinel_function": 0x600D4F04,
+        }, max_examples=10),
+        "handler_sentinel_disassembly": [
+            hex(i.address) + " " + i.mnemonic + " " + i.op_str
+            for i in decode_raw(image, 0x600D4F04, 0x600D4F44)
+        ],
+        "neighbor_object_caller_window": [
+            hex(i.address) + " " + i.mnemonic + " " + i.op_str
+            for i in decode_raw(image, 0x60058BC0, 0x60058C30)
+        ],
+        "runtime_execution_proven": False,
+    }
+
+
 def audit(image):
     if len(image) != IMAGE_SIZE or hashlib.sha256(image).hexdigest() != IMAGE_SHA256:
         raise ValueError("Exact SHA-256 original signed Bruce update image required")
@@ -141,6 +182,7 @@ def audit(image):
     return {
         "phase": 42, "sample": "exact original signed OEM Bruce update, not installed readback",
         "sha256_verified": True, "candidate_count": len(rows), "candidates": rows,
+        "secondary_context_xrefs": secondary_context_xrefs(image),
         "site_inspection_limit": "bounded Thumb linear decode, not a control-flow graph",
         "live_EP0_selection": "UNVERIFIED", "second_callback_writer": "UNVERIFIED",
         "host_control": "UNVERIFIED", "custom_execution": "NOT DEMONSTRATED",
@@ -167,6 +209,15 @@ def main():
             "site": row["site"], "before": row["context_before"],
             "after": row["context_after"],
         }))
+    refs = report["secondary_context_xrefs"]
+    print("PHASE42 SECOND LEVEL LITERALS", json.dumps(refs["signed_pointer_literals"]))
+    print("PHASE42 POTENTIAL CALLERS", json.dumps({
+        name: [{"callsite": v["callsite"], "before": v["before"][-6:]}
+               for v in rows]
+        for name, rows in refs["direct_call_candidates"].items()
+    }))
+    print("PHASE42 SENTINEL CODE", json.dumps(refs["handler_sentinel_disassembly"]))
+    print("PHASE42 OBJECT NEIGHBOR CODE", json.dumps(refs["neighbor_object_caller_window"]))
 
 
 if __name__ == "__main__":
