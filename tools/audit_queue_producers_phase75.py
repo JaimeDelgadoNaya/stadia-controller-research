@@ -52,7 +52,12 @@ def signed_windows(image):
         "xip_original_queue_constructor":(0x600926D0,0x60092730,False),
         "xip_queue_getter_one":(0x6009269E,0x600926B4,False),
         "xip_queue_getter_two":(0x600926B8,0x600926CC,False),
+        "xip_queue_receiver_worker":(0x600EE142,0x600EE18A,False),
         "xip_queue_post_worker":(0x600EE180,0x600EE1F4,False),
+        "xip_message_dispatcher":(0x600EE1BE,0x600EE210,False),
+        "xip_handler_message_type1":(0x60098668,0x600986A0,False),
+        "xip_handler_message_type2":(0x600EFF9C,0x600EFFD0,False),
+        "itcm_enqueue_copy_helper":(0xB37C,0xB3DE,True),
         "xip_queue_other_worker":(0x600925B8,0x6009262E,False),
         "xip_other_wrapper":(0x60101820,0x60101852,False),
         "itcm_count_inc_context":(0x6C80,0x6D2C,True),
@@ -274,6 +279,28 @@ def confirm_count_writer(image):
     }
 
 
+POTENTIAL_PRODUCER_TARGETS=(
+    0x600926A0,0x600926B8,0x600EE18A,0x600925BC,
+)
+def explicit_producer_xrefs(image):
+    """Return direct BL-shaped and aligned Thumb pointer candidates.
+
+    Neither a pointer literal nor a BL opcode shape establishes which
+    object/message is involved. Dynamic dispatch remains unresolved.
+    """
+    direct=xip_target_BL_shapes(image,POTENTIAL_PRODUCER_TARGETS)
+    target_ptrs={addr|1 for addr in POTENTIAL_PRODUCER_TARGETS}
+    literals=[]
+    for off in range(0,len(image)-3,4):
+        ptr=signed_word(image,off)
+        if ptr in target_ptrs:
+            literals.append({"file_offset":hex(off),
+                             "pc_if_XIP":hex(BASE+off),
+                             "thumb_pointer":hex(ptr),
+                             "execution":"UNVERIFIED"})
+    return {"direct_bl_shapes":direct,"aligned_thumb_function_literals":literals,
+            "no_dynamically_proven_USB_caller":True}
+
 def audit(image):
     if len(image)!=IMAGE_SIZE or hashlib.sha256(image).hexdigest()!=IMAGE_SHA256:
         raise ValueError("Phase75 original exact SHA-pinned Bruce OEM required")
@@ -288,6 +315,7 @@ def audit(image):
     known=signed_itcm_BL_targets(image)
     count_sites=inspect_itcm_count_sites(image)
     focused=focus_receiver_like_veneers(veneers,itcm)
+    xrefs=explicit_producer_xrefs(image)
     return {
         "phase":75,"original_SHA256_verified":True,"original_SHA256":IMAGE_SHA256,
         "work_queue_RAM_object":hex(QUEUE),
@@ -302,6 +330,7 @@ def audit(image):
         "bounded_original_windows":windows,
         "signed_ITCM_count_field_instruction_candidates":count_sites,
         "receiver_neighbor_callers":focused,
+        "work_queue_producer_function_xrefs":xrefs,
         "inference_boundary":{
             "producer_identity":"RESEARCH_IN_PROGRESS",
             "actual_message_in_queue":"NOT_OBSERVED",
@@ -323,6 +352,7 @@ def main():
     if a.out:a.out.write_text(json.dumps(output,indent=2)+"\n",encoding="utf-8")
     print("PHASE75 VERIFIED WORKQUEUE PRODUCER",json.dumps(output["verified_WorkQueue_producer_chain"]))
     print("PHASE75 VERIFIED COUNT WRITE",json.dumps(output["verified_ITCM_count_increment_helper"]))
+    print("PHASE75 PRODUCER FUNCTION XREFS",json.dumps(output["work_queue_producer_function_xrefs"]))
     print("PHASE75 SIGNED QUEUE POINTER WORDS",json.dumps(output["queue_address_words"]))
     print("PHASE75 SIGNED QUEUE POINTER LOADS",json.dumps(output["signed_queue_literal_load_candidates"]))
     print("PHASE75 SIGNED QUEUE VENEERS",json.dumps(output["signed_adjacent_veneers"]))
