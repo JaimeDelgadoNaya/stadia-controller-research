@@ -57,6 +57,17 @@ PIN={
 }
 
 
+CALLER_PINS={
+    0x600D0BCA:("mov","r5, r1"),
+    0x600D0BCE:("mov","r4, r0"),
+    0x600D0BD2:("bl","#0x60054f7c"),
+    0x600D0BD6:("cbnz","r0, #0x600d0bfc"),
+    0x600D0BD8:("cmp","r5, #1"),
+    0x600D0BDA:("bne","#0x600d0bee"),
+    0x600D0BDC:("ldr","r1, [sp, #4]"),
+    0x600D0BDE:("mov","r0, r4"),
+    0x600D0BE0:("bl","#0x60054f30"),
+}
 def validate_pins(actual):
     for pc,exp in PIN.items():
         if actual.get(pc)!=exp:
@@ -78,9 +89,15 @@ def pin_pair(image):
     callback=struct.unpack_from("<I",image,FN_LITERAL_ADDR-BASE)[0]
     endpoint_word=struct.unpack_from("<I",image,EP_LITERAL_ADDR-BASE)[0]
     addr=(endpoint_word >> 16)&0xFF
+    callers={q["pc"]:(q["m"],q["op"])
+             for q in decode(image,0x600D0BC8,0x600D0BE8)}
+    for pc,expected in CALLER_PINS.items():
+        if callers.get(pc)!=expected:
+            raise ValueError("Signed EP0 installer caller gate drift "+hex(pc))
     return {
         "installer":hex(INSTALLER),
-        "pinned_original_instructions":len(PIN),
+        "pinned_original_instructions":len(PIN)+len(CALLER_PINS),
+        "caller_has_signed_configuration_guard":"0x600d0bd2 BL 0x60054f7c; if success and R5(input R1)==1, call installer",
         "first_original_callback_literal_at":hex(FN_LITERAL_ADDR),
         "signed_callback_pointer":hex(callback),
         "original_endpoint_record_literal_at":hex(EP_LITERAL_ADDR),
@@ -105,9 +122,13 @@ def audit(image):
         raise ValueError("Exact signed original Bruce SHA-256 required")
     pair=pin_pair(image)
     calls=find_inbound_branches(image,only_target=INSTALLER)
+    handler_window=decode(image,0x60054D74,0x60054EA0)
+    setup_window=decode(image,0x600D0BC8,0x600D0C14)
     return {"phase":47,"signed_oem_original_sha_verified":True,
             "source":"original signed update, not installed-flash readback",
             "ep0_pair":pair,
+            "original_ep0_handler_candidate_window":[hex(q["pc"])+" "+q["m"]+" "+q["op"] for q in handler_window],
+            "original_caller_setup_window":[hex(q["pc"])+" "+q["m"]+" "+q["op"] for q in setup_window],
             "immediate_branch_callers_to_ep0_installer":calls["direct_branch_candidates"][:30],
             "live_EP0_slot_contents":"UNMEASURED",
             "live_usb_class_object":"UNVERIFIED",
@@ -125,6 +146,8 @@ def main():
     if o.out:o.out.write_text(json.dumps(result,indent=2)+"\n")
     print("PHASE47 OEM EP0 DEDICATED PAIR",json.dumps(result["ep0_pair"]))
     print("PHASE47 EP0 PAIR INSTALLER INBOUND",json.dumps(result["immediate_branch_callers_to_ep0_installer"]))
+    print("PHASE47 EP0 CALLBACK CODE",json.dumps(result["original_ep0_handler_candidate_window"]))
+    print("PHASE47 EP0 CALLER CONTROL FLOW",json.dumps(result["original_caller_setup_window"]))
     print("PHASE47 NO PHYSICAL USB/FLASH; LIVE EP0: UNVERIFIED")
 if __name__=="__main__":
     main()
