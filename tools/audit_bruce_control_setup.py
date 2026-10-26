@@ -23,6 +23,10 @@ FOCUS={
  "control_bridge_literal_site":(0x600550D0,0x600551BC),
  "class_forwarder_literal_site":(0x60104B50,0x60104BC0),
  "control_request_dispatch":(0x600D07B0,0x600D0B70),
+ "class_vtable_first_0x60055320":(0x60055320,0x60055484),
+ "class_vtable_second_0x600d0eca":(0x600D0ECA,0x600D0F16),
+ "class_vtable_nearby_0x60054d08":(0x60054D08,0x60054D90),
+ "class_vtable_nearby_0x60054a54":(0x60054A54,0x60054B20),
 }
 TARGETS={
  "setup_parser":0x600D0C3C,
@@ -125,7 +129,7 @@ def main():
         for q in result["control_byte_plus_one_loads"]
     ]))
     if a.verbose:
-        for name in ("control_bridge_literal_site","class_forwarder_literal_site","control_request_dispatch"):
+        for name in ("class_vtable_first_0x60055320","class_vtable_second_0x600d0eca","class_vtable_nearby_0x60054d08","class_vtable_nearby_0x60054a54"):
             print("WINDOW",name)
             for row in result["bounded_code_windows"][name]:
                 print(hex(row["pc"]),row["m"],row["op"])
