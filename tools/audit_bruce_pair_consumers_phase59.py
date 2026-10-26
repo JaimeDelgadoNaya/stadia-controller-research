@@ -281,6 +281,44 @@ def classify_direct_reader_evidence(matches):
     }
 
 
+LONE_READER_PINS={
+    0x600BD128:("ldr","r2, [pc, #0x1c]"),
+    0x600BD12C:("strb.w","r3, [r2, #0x380]"),
+    0x600BD136:("ldr","r3, [pc, #0x10]"),
+    0x600BD138:("ldrb.w","r3, [r3, #0x380]"),
+}
+
+
+def lone_reader_literal_identity(image):
+    """Prove or disprove same *literal* global base for the only load shape.
+
+    This does not exclude other computed pointer aliases. Inline literal
+    0x600BD148 must be treated as DATA, not the following Thumb code.
+    """
+    rows=decode(image,0x600BD128,0x600BD13C)
+    mapping={r["pc"]:(r["m"],r["op"]) for r in rows}
+    for pc,expect in LONE_READER_PINS.items():
+        if mapping.get(pc)!=expect:
+            raise ValueError(f"phase59 signed lone-load pin drift {pc:#x}")
+    p1=((0x600BD128+4)&~3)+0x1C
+    p2=((0x600BD136+4)&~3)+0x10
+    if p1!=p2 or p1!=0x600BD148:
+        raise ValueError("phase59 PC-relative base arithmetic drift")
+    actual=unsigned_word(image,p1-BASE)
+    return {
+        "signed_pins":len(LONE_READER_PINS),
+        "shared_literal_address":hex(p1),
+        "shared_source_global_base":hex(actual),
+        "target_pair_global_base":hex(PAIR_BASE),
+        "same_literal_base_as_target":actual==PAIR_BASE,
+        "load_PC":"0x600bd138",
+        "store_PC":"0x600bd12c",
+        "known_static_alias_result":"SAME_LITERAL" if actual==PAIR_BASE
+                                    else "DIFFERENT_LITERAL",
+        "indirect_or_runtime_aliases":"NOT EXCLUDED",
+    }
+
+
 def original_check(image):
     if len(image)!=IMAGE_SIZE or hashlib.sha256(image).hexdigest()!=IMAGE_SHA256:
         raise ValueError("phase59 exact signed Bruce OEM SHA-256 required")
@@ -306,6 +344,7 @@ def audit(image):
     paired_offsets=scan_field_offset_ops(image)
     halfwords=halfword_field_scan(image)
     focus=focused_signed_windows(image)
+    lone=lone_reader_literal_identity(image)
     evidence=classify_direct_reader_evidence(halfwords)
     return {
         "phase":59,"SHA256_signed_original_verified":True,
@@ -324,6 +363,7 @@ def audit(image):
         "complete_halfword_offset_candidates":halfwords,
         "direct_reader_evidence":evidence,
         "focused_signed_windows":focus,
+        "lone_load_base_identity":lone,
         "open_questions":{
             "pair_read_and_indirect_invocation":"UNPROVEN_FROM_LITERAL_SCAN",
             "USB_host_trigger":"UNPROVEN",
@@ -353,6 +393,7 @@ def main():
     print("PHASE59 PAIR-FIELD OFFSET CANDIDATES",json.dumps(output["matching_pair_field_access_candidates"]))
     print("PHASE59 HALFWORD FIELD SCAN",json.dumps(output["complete_halfword_offset_candidates"]))
     print("PHASE59 DIRECT READER EVIDENCE",json.dumps(output["direct_reader_evidence"]))
+    print("PHASE59 LONE READ BASE",json.dumps(output["lone_load_base_identity"]))
     for name,rows in output["focused_signed_windows"].items():
         print("PHASE59 FOCUSED WINDOW",name,json.dumps(rows))
     print("PHASE59 NO USB HOST TRIGGER OR CUSTOM CODE EXECUTION PROOF")
