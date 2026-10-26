@@ -1,0 +1,130 @@
+{
+  "phase": 44,
+  "date": "2026-10-26",
+  "pull_request": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/pull/46",
+  "image": {
+    "kind": "signed OEM Bruce update, not installed flash readback",
+    "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+    "original_verified": true
+  },
+  "scan": {
+    "algorithm": "Thumb MOVW instruction candidates at each halfword in signed XIP and relocated ITCM",
+    "prefiltered_opcode_halfwords": 2648,
+    "decoded_movw": 2625,
+    "exact_offset_sites": {
+      "0x3a38": [
+        "0x60061404",
+        "0x60073cea",
+        "0x600771f2"
+      ],
+      "0x3a3c": [
+        "0x60061410",
+        "0x600771f8"
+      ]
+    },
+    "is_exhaustive_all_writers": false
+  },
+  "new_signed_writer": {
+    "entry": "0x60077140",
+    "global_base_literal_source": "0x600772e4",
+    "global_base_literal": "0x200064c0",
+    "callback_value_source": "0x600772e8",
+    "callback_value_thumb": "0x600db029",
+    "callback_write_instruction": "0x600771f6",
+    "callback_RAM": "0x20009ef8",
+    "context_write_instruction": "0x600771fc",
+    "context_RAM": "0x20009efc",
+    "context_from": "r4, preserved from function r0",
+    "signed_callback_target": "0x600db028 branches to 0x60077360",
+    "real_hardware_execution": "UNVERIFIED"
+  },
+  "signed_caller": {
+    "entry": "0x60051240",
+    "getter_call": "0x60051248 -> 0x60077138",
+    "setter_call": "0x6005124c -> 0x60077140",
+    "getter_literal": "0x6007713c",
+    "getter_return_RAM": "0x20003670",
+    "direct_caller_of_0x60051240_found_in_bounded_scan": false,
+    "indirect_callers_unchecked": true
+  },
+  "object_initial_signed_copy": {
+    "ram_object": "0x20003670",
+    "source_offset": "0xfe4d8",
+    "first_word": "0x600d5637",
+    "following_11_word_values": 0,
+    "equals_live_RAM": false
+  },
+  "dispatch": {
+    "codes": "0x80..0x8c",
+    "test_after_subtract": "CMP R1,#0xC",
+    "branch_instruction": "0x60077370 TBB [PC,R1]",
+    "branches": [
+      {
+        "candidate_code": "0x80",
+        "signed_target": "0x60077382"
+      },
+      {
+        "candidate_code": "0x81",
+        "signed_target": "0x60077392"
+      },
+      {
+        "candidate_code": "0x82",
+        "signed_target": "0x6007739c"
+      },
+      {
+        "candidate_code": "0x83",
+        "signed_target": "0x600773a4"
+      },
+      {
+        "candidate_code": "0x84",
+        "signed_target": "0x600773ae"
+      },
+      {
+        "candidate_code": "0x85",
+        "signed_target": "0x600773ba"
+      },
+      {
+        "candidate_code": "0x86",
+        "signed_target": "0x600773c2"
+      },
+      {
+        "candidate_code": "0x87",
+        "signed_target": "0x600773e0"
+      },
+      {
+        "candidate_code": "0x88",
+        "signed_target": "0x60077406"
+      },
+      {
+        "candidate_code": "0x89",
+        "signed_target": "0x60077420"
+      },
+      {
+        "candidate_code": "0x8a",
+        "signed_target": "0x60077434"
+      },
+      {
+        "candidate_code": "0x8b",
+        "signed_target": "0x60077494"
+      },
+      {
+        "candidate_code": "0x8c",
+        "signed_target": "0x6007749a"
+      }
+    ],
+    "EP0_source_confirmed": false
+  },
+  "outcome": {
+    "second_signed_writer_identified": true,
+    "host_controlled_writer_identified": false,
+    "arbitrary_callback_pointer_proven": false,
+    "custom_code_execution_proven": false,
+    "HAB_CLOSED_bypass_proven": false,
+    "Xbox_compatibility_proven": false
+  },
+  "methods": {
+    "physical_controller_connected": false,
+    "flash_written": false,
+    "efuses_written": false
+  }
+}
