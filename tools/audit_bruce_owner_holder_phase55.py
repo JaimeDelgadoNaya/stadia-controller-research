@@ -26,7 +26,7 @@ GROUP = 0x200030E8
 HOLDER_FIELD_OFFSET = 0x80
 CFG_METHOD = OWNER + 8
 WINDOWS = (
-    (0x60079D60, 0x60079D88),
+    (0x60079D7C, 0x60079D88),
     (0x6007EB8C, 0x6007EBC0),
     (0x600610FC, 0x6006110A),
     (0x600550F4, 0x60055100),
@@ -109,7 +109,7 @@ def validate_original(image: bytes) -> dict:
         raise ValueError("phase55 boot class record addresses drift")
 
     context = []
-    for row in decode(image, 0x60079D60, 0x60079D88):
+    for row in decode(image, 0x60079D7C, 0x60079D88):
         context.append(hex(row["pc"]) + " " + row["m"] + " " + row["op"])
     return {"pins_verified": len(PINS), "owner_literal": hex(owner_ptr),
             "record_group_getters": group_getters, "group_records": records,
