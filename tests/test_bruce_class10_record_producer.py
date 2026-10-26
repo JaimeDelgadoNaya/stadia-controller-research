@@ -51,7 +51,7 @@ class Class10ProducerCensus(unittest.TestCase):
     def test_scanner_respects_12_byte_record_boundary(self):
         blob=bytearray(0x48)
         struct.pack_into("<III",blob,0x10,0x60055101,0,0x60104200)
-        r=p.scan_range(blob,0x0,0x18,label="test")
+        r=p.scan_range(blob,0x0,0x1c,label="test")
         self.assertEqual(r["all_shape_matches"],1)
 if __name__=="__main__":
     unittest.main()
