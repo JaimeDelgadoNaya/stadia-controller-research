@@ -12,9 +12,10 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import struct
 from pathlib import Path
 
-from tools.audit_signed_app_surface import IMAGE_SHA256, IMAGE_SIZE
+from tools.audit_signed_app_surface import IMAGE_SHA256, IMAGE_SIZE, ASSUMED_XIP_BASE, decode_thumb_bl_target
 from tools.audit_bruce_ep0_registration import decode
 from tools.audit_bruce_parent_r0_phase56 import prove_r0_producer, offset_reader
 
@@ -41,6 +42,63 @@ READ_PINS={
     0x6007E810:("ldr.w","r0, [r4, #0x80]"),
     0x6007E9A4:("ldr.w","r0, [r4, #0x80]"),
 }
+POST_INIT_WRAPPER_PINS={
+    0x6007E784:("movs","r2, #0x1b"),
+    0x6007E786:("ldr","r1, [pc, #8]"),
+    0x6007E788:("adds","r0, #0xc"),
+    0x6007E78A:("b.w","#0x6010177a"),
+}
+READER_ENTRIES={
+    "state_dispatch": {
+        0x6007E794:("ldr","r3, [r0, #0x78]"),
+        0x6007E798:("push","{r4, r5, lr}"),
+        0x6007E79A:("mov","r4, r0"),
+        0x6007E7A4:("beq","#0x6007e7e8"),
+        0x6007E7AC:("beq","#0x6007e80e"),
+    },
+    "later_dispatch":{
+        0x6007E8AC:("ldr.w","r3, [r0, #0x8c]"),
+        0x6007E8B0:("push.w","{r4, r5, r6, r7, r8, lr}"),
+        0x6007E8B8:("mov","r4, r0"),
+        0x6007E96E:("bne","#0x6007e99c"),
+        0x6007E99E:("bne","#0x6007e9ae"),
+    },
+}
+XREF_TARGETS=(0x6007E784,0x6007E794,0x6007E8AC)
+XIP_SCAN_START=0xC800
+XIP_SCAN_END=0xFF000
+
+
+def signed_call_and_literal_xrefs(image):
+    """Instruction-shape scan and aligned literal matches, NOT true callgraph.
+
+    Inline literal/table bytes may coincidentally decode to BL. Record
+    candidate locations only. Require known positive BL to wrapper.
+    """
+    targets=set(XREF_TARGETS)
+    bl={hex(t):[] for t in targets}
+    literal={hex(t):[] for t in targets}
+    for off in range(XIP_SCAN_START,XIP_SCAN_END,2):
+        try:
+            result=decode_thumb_bl_target(image,off)
+        except ValueError:
+            continue
+        if result in targets:
+            bl[hex(result)].append(hex(ASSUMED_XIP_BASE+off))
+    for off in range(0,len(image)-3,4):
+        word=struct.unpack_from("<I",image,off)[0]
+        if (word&~1) in targets and (word&1):
+            literal[hex(word&~1)].append(hex(off))
+    if hex(0x60079D9A) not in bl[hex(0x6007E784)]:
+        raise ValueError("phase57 known post-constructor BL positive xref missing")
+    return {
+        "candidate_thumb_bl_sites":bl,
+        "literal_thumb_pointer_file_offsets":literal,
+        "source":"signed OEM full-file pattern scan; not complete reachable CFG",
+        "live_function_invocation":"UNVERIFIED",
+    }
+
+
 WINDOWS={
     "constructor_caller":(0x60079D74,0x60079DA8),
     "post_init_entry":(0x6007E784,0x6007E7CC),
@@ -101,6 +159,14 @@ def audit(image):
         raise ValueError("phase57 original SHA-256-pinned signed OEM required")
     original=prove_r0_producer(image)
     ncaller=verify_pins(image,CALLER_PINS,[(0x60079D74,0x60079DA8)])
+    npost=verify_pins(image,POST_INIT_WRAPPER_PINS,[(0x6007E784,0x6007E78E)])
+    nentry={
+        "state_dispatch":verify_pins(image,READER_ENTRIES["state_dispatch"],
+              [(0x6007E794,0x6007E7B0)]),
+        "later_dispatch":verify_pins(image,READER_ENTRIES["later_dispatch"],
+              [(0x6007E8AC,0x6007E9A4)]),
+    }
+    refscan=signed_call_and_literal_xrefs(image)
     nread=verify_pins(image,READ_PINS,[
         (0x6007E7E8,0x6007E7EE),
         (0x6007E80E,0x6007E814),
@@ -129,7 +195,7 @@ def audit(image):
             "pc":hex(pc),
             "instruction":match[0]+" "+match[1],
             "base_register":check["base"],
-            "post_init_object_identity":"PENDING_INCOMING_REGISTER_PROVENANCE",
+            "post_init_object_identity":"UNKNOWN_ACROSS_DISTINCT_CALLEES",
             "claim":"SIGNED_READ_INSTRUCTION; NOT_YET_PROVEN_SAME_OBJECT",
         })
     return {
@@ -138,6 +204,15 @@ def audit(image):
         "original_signed_image_verified":True,
         "caller_pin_count":ncaller,
         "reader_pin_count":nread,
+        "wrapper_pin_count":npost,
+        "reader_entry_pins":nentry,
+        "signed_cross_references":refscan,
+        "post_init_wrapper":{
+            "argument": "R0 = allocated object from saved R4 (conditional)",
+            "operation":"R0 += 12, R2=27, R1 literal; tail branch 0x6010177a",
+            "reads_plus80":False,
+            "reader_functions_are_separate":"0x6007e794 and 0x6007e8ac",
+        },
         "phase56_producer":original,
         "post_constructor_pass":chain,
         "read_candidates":readers,
@@ -161,6 +236,9 @@ def main():
     print("PHASE57 CONSTRUCTOR-POSTINIT PASS",json.dumps(result["post_constructor_pass"]))
     for name,rows in result["instruction_windows"].items():
         print("PHASE57 ORIGINAL WINDOW",name,json.dumps(rows))
+    print("PHASE57 POST INIT WRAPPER",json.dumps(result["post_init_wrapper"]))
+    print("PHASE57 READER ENTRY PINS",json.dumps(result["reader_entry_pins"]))
+    print("PHASE57 CROSS REFERENCES",json.dumps(result["signed_cross_references"]))
     print("PHASE57 READER CANDIDATES",json.dumps(result["read_candidates"]))
     print("PHASE57 PINS",result["caller_pin_count"],result["reader_pin_count"])
     print("PHASE57 NO LIVE USB CONFIG OR EXECUTION PROOF")
