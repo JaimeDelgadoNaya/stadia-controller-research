@@ -28,6 +28,57 @@ HELPER_PINS={
     0x600D54C4:("add","sp, #8"),
     0x600D54C6:("b.w","#0x6006386c"),
 }
+BACKEND=0x6006386C
+BACKEND_PINS={
+    0x6006386C:("sub","sp, #8"),
+    0x6006386E:("add","r3, sp, #8"),
+    0x60063870:("stmdb","r3, {r0, r1}"),
+    0x60063874:("ldr","r3, [pc, #0x10]"),
+    0x60063876:("ldr","r2, [sp]"),
+    0x60063878:("str.w","r2, [r3, #0x37c]"),
+    0x6006387C:("ldr","r2, [sp, #4]"),
+    0x6006387E:("str.w","r2, [r3, #0x380]"),
+    0x60063882:("add","sp, #8"),
+    0x60063884:("bx","lr"),
+}
+
+
+def signed_word(image,address):
+    off=address-BASE
+    if address%4 or off<0 or off+4>len(image):
+        raise ValueError("phase58 unaligned/outside signed XIP literal")
+    return struct.unpack_from("<I",image,off)[0]
+
+
+def backend_pair_provenance(image):
+    rows=decode(image,BACKEND,0x60063886)
+    result={r["pc"]:(r["m"],r["op"]) for r in rows}
+    for pc,ins in BACKEND_PINS.items():
+        if result.get(pc)!=ins:
+            raise ValueError(f"phase58 original backend pin drift {pc:#x}: {result.get(pc)!r}")
+    literal_at=((0x60063874+4)&~3)+0x10
+    base=signed_word(image,literal_at)
+    if not 0x20000000<=base<0x20040000:
+        raise ValueError("phase58 backend global base not within expected SRAM")
+    first=signed_word(image,((0x6007E7E8+4)&~3)+0x38)
+    second=signed_word(image,((0x6007E80E+4)&~3)+0x18)
+    return {
+        "original_pins":len(BACKEND_PINS),
+        "global_base_literal_address":hex(literal_at),
+        "global_base":hex(base),
+        "first_word_destination":hex(base+0x37C),
+        "second_word_destination":hex(base+0x380),
+        "backend_input_R0":"original helper R1 (literal from caller)",
+        "backend_input_R1":"original helper R2 (0 or object R4 in two branches)",
+        "branch_one_literal_word":hex(first),
+        "branch_one_second_word":"0 (0x6007E7F0/0x6007E7F2)",
+        "branch_two_literal_word":hex(second),
+        "branch_two_second_word":"caller R4 object pointer (0x6007E814 STRD R3,R4)",
+        "runtime_values_or_invocation":"UNMEASURED",
+        "semantic_classification":"SIGNED_PAIR_GLOBAL_STORE; USB_CALLBACK_NOT_PROVEN",
+    }
+
+
 WINDOWS={
     "caller_branch_one":(0x6007E7D6,0x6007E800),
     "caller_branch_two":(0x6007E80E,0x6007E824),
@@ -92,6 +143,7 @@ def audit(image):
         raise ValueError("phase58 requires original signed Bruce SHA-256")
     global_bridge=verify_global_chain(image)
     pins=verify_helper_pins(image)
+    pair=backend_pair_provenance(image)
     reads=[]
     for pc in (0x6007E7EA,0x6007E810):
         original=pinpoint(image,pc)
@@ -111,6 +163,7 @@ def audit(image):
         "readers":reads,
         "helper":hex(HELPER),
         "helper_signed_pins":pins,
+        "backend_signed_pair":pair,
         "helper_register_transfer":{
             "from_entry_r0":"DISCARDED as direct register argument",
             "new_r0":"old R1", "new_r1":"old R2",
@@ -139,6 +192,7 @@ def main():
     if args.out:
         args.out.write_text(json.dumps(result,indent=2)+"\n")
     print("PHASE58 VERIFIED ARGUMENT ADAPTER",json.dumps(result["helper_register_transfer"]))
+    print("PHASE58 BACKEND SIGNED GLOBAL PAIR",json.dumps(result["backend_signed_pair"]))
     print("PHASE58 ORIGINAL HELPER CALLERS",json.dumps({
        "direct_sites":result["candidate_all_direct_call_sites"],
        "literals":result["aligned_pointer_literals"],
