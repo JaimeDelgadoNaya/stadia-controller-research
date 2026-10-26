@@ -26,6 +26,28 @@ class Class10ProducerCensus(unittest.TestCase):
         item=p.record_candidate(blob,0,label="test")
         self.assertFalse(item["matches_class10_byte"])
         self.assertIsNone(item["descriptor_byte_plus_4"])
+    def test_two_adjacent_original_layouts_in_synthetic_buffer(self):
+        blob=bytearray(p.IMAGE_SIZE)
+        import struct
+        for off,func,desc,sel in p.SIGNED_BOOT_RECORDS:
+            struct.pack_into("<III",blob,off,func,0,desc)
+            source=p.DATA_SOURCE_OFFSET+(desc-p.DATA_DESTINATION)
+            blob[source+4]=sel
+        rows=p.confirmed_boot_records(blob)
+        self.assertEqual([r["byte_at_descriptor_plus_4"] for r in rows],[2,10])
+        self.assertEqual(rows[1]["callback_function_address"],"0x600613fc")
+        self.assertEqual(rows[1]["destination_boot_RAM"],"0x200030f4")
+        blob[0xFDF5C]=0x00
+        with self.assertRaisesRegex(ValueError,"drift"):
+            p.confirmed_boot_records(blob)
+
+    def test_callback_guard_pin_drift_detected(self):
+        self.assertTrue(p.check_pins(dict(p.HANDLER_PINS),p.HANDLER_PINS))
+        altered=dict(p.HANDLER_PINS)
+        altered[0x600613FC]=("cmp","r1, #0xff")
+        with self.assertRaisesRegex(ValueError,"drift"):
+            p.check_pins(altered,p.HANDLER_PINS)
+
     def test_scanner_respects_12_byte_record_boundary(self):
         blob=bytearray(0x48)
         struct.pack_into("<III",blob,0x10,0x60055101,0,0x60104200)
