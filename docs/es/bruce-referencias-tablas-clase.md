@@ -6,7 +6,7 @@
 
 La [fase #35](setup-control-clase-bruce.md) identificó un reenvío condicional de `bRequest` mediante el manejador `0x600D0E58` y un puntero Thumb `0x600D0E59` dentro de la tabla firmada de datos en `0x60104BAC`. **¿Hay una referencia de código demostrable que instale ese manejador en el objeto activo de EP0?**
 
-La búsqueda previa de palabras de 32 bits no había encontrado un literal exacto `0x60104BA4`. En #36 se amplió a cargas Thumb PC-relativas de palabras de memoria y a parejas locales `MOVW/MOVT` para direcciones en `0x60104B80..0x60104BDF`.
+La búsqueda previa de palabras de 32 bits no había encontrado un literal exacto `0x60104BA4`. En #36 se amplió a cargas Thumb PC-relativas de palabras de memoria, parejas locales `MOVW/MOVT` y expresiones `ADR`/`ADD` relativas al PC para direcciones en `0x60104B80..0x60104BDF`.
 
 ## Hechos obtenidos del original firmado
 
@@ -15,6 +15,7 @@ La búsqueda previa de palabras de 32 bits no había encontrado un literal exact
 | Lecturas literales PC-relativas de palabras que apuntan dentro de `0x60104B80..0x60104BDF` | **Una coincidencia**, `0x6005679A: LDR R5,[PC,#0x5C]` |
 | Literal leído por esa instrucción | `0x600567F8` contiene `0x60104BDC` |
 | Pares de `MOVW/MOVT` consecutivos próximos que reconstruyen una dirección del rango | **Cero candidatos** en el barrido acotado |
+| Expresiones `ADR` o `ADD` PC-relativas que construyan una dirección dentro del rango | **Cero candidatos** en el barrido acotado |
 | Referencia a `0x60104BA4` o al puntero de función `0x600D0E59` que demuestre una instalación de EP0 | **No hallada** |
 | Callback activo en RAM, origen de las solicitudes `0x81/0x83/0x84` o ejecución de código propio | **No demostrado** |
 
