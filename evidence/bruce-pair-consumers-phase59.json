@@ -1,0 +1,76 @@
+{
+  "phase": 59,
+  "date": "2026-10-26",
+  "source": {
+    "name": "original signed Bruce OEM",
+    "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+    "physicalRAM": false
+  },
+  "target": {
+    "base": "0x2000f878",
+    "function_field": "0x2000fbf4",
+    "context_field": "0x2000fbf8",
+    "signed_writer_sites": [
+      "0x60063878",
+      "0x6006387e"
+    ]
+  },
+  "signed_literal_survey": {
+    "aligned_base_words": 8,
+    "candidate_pc_literal_ldr": 10,
+    "aligned_field_address_words": 0
+  },
+  "halfword_thumb_scan": {
+    "method": "decode one Thumb instruction at each 2-byte aligned signed XIP and copied ITCM source position; includes false positives and code/data ambiguity",
+    "total_offset_shaped": 11,
+    "signed_known_writer_controls_found": true,
+    "load_shapes": 1,
+    "load_pc": "0x600bd138",
+    "load_instruction": "LDRB.W R3,[R3,#0x380]"
+  },
+  "load_alias_check": {
+    "source_site": "0x600bd136",
+    "data_literal_site": "0x600bd148",
+    "actual_literal_base": "0x20025ce0",
+    "target_base": "0x2000f878",
+    "same_literal": false,
+    "runtime_aliases_not_excluded": true
+  },
+  "handler": {
+    "stored_thumb_raw": "0x0000a9c5",
+    "entry": "0xa9c4 B.W 0xb980",
+    "veneer": "0xb980 LDR.W PC,[PC,#-0x0]",
+    "veneer_word_file_offset": "0xc1a0",
+    "veneer_raw_thumb_target": "0x6007e6a1",
+    "resolved_XIP_function": "0x6007e6a0",
+    "real_handler_signed_pins": 13,
+    "object_offset_flag": "0x6c",
+    "object_offset_state": "0x70",
+    "atomic_object_offset": "0x74",
+    "known_direct_subcalls": [
+      "0x60101b76",
+      "0x6013d138"
+    ],
+    "host_usb_trigger": "UNPROVEN"
+  },
+  "conclusion": {
+    "same_pair_reader_proven": false,
+    "indirect_invocation_proven": false,
+    "any_path_from_host_USB": false,
+    "negative_scope": "direct immediate offsets 0x37c and 0x380 plus exact literal words; calculated aliases excluded",
+    "unsigned_execution": "NOT DEMONSTRATED",
+    "HAB_CLOSED_bypass": "NOT DEMONSTRATED",
+    "class10_active": "UNVERIFIED"
+  },
+  "validation": {
+    "original_oem_CI": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40368779599",
+    "tests_status": "SUCCESS: 708 tests each on Python 3.11 and 3.12, PR #61"
+  },
+  "safety": {
+    "USB_requests": false,
+    "installed_RAM_read": false,
+    "flash_writes": false,
+    "efuse_writes": false
+  },
+  "next": "phase60: bounded base+offset alias readers and event provenance to real handler; stop treating pair as host execution candidate without live USB evidence"
+}
