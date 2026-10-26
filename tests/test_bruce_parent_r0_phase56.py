@@ -27,6 +27,15 @@ class Phase56CallerOrigin(unittest.TestCase):
         self.assertEqual(len(result),1)
         self.assertEqual(result[0]["r0"],"UNTRUSTED_CALL_RETURN")
 
+    def test_pinned_return_producer_is_not_numeric_pointer(self):
+        self.assertEqual(a.R0_ORIGIN_PINS[0x60079D74], ("movs","r0, #0xa4"))
+        self.assertEqual(a.R0_ORIGIN_PINS[0x60079D76], ("bl","#0x6013d378"))
+        self.assertEqual(a.R0_ORIGIN_PINS[0x60079D7E], ("mov","r4, r0"))
+
+    def test_oem_provenance_requires_signed_image(self):
+        with self.assertRaises((ValueError, IndexError)):
+            a.prove_r0_producer(b"synthetic")
+
     def test_initial_sha_gate(self):
         with self.assertRaisesRegex(ValueError,"SHA-256"):
             a.audit(b"synthetic")
