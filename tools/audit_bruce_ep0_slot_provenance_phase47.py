@@ -89,7 +89,20 @@ REGISTRAR_PINS={
     0x600D10DA:REG_PINS[0x600D10DA],
     0x600D10DE:REG_PINS[0x600D10DE],
 }
-PINS={**ANCHORS_A,**ANCHORS_B,**ANCHORS_CONFIG,**REGISTRAR_PINS}
+CLEAR_PINS={
+    0x600D10F6:("push","{r0, r1, r4, r5, r6, lr}"),
+    0x600D10F8:("mov","r6, r0"),
+    0x600D110C:("and","r5, r4, #0xf"),
+    0x600D1110:("cmp","r5, #7"),
+    0x600D1114:("lsrs","r3, r4, #7"),
+    0x600D1116:("movs","r2, #0xc"),
+    0x600D1118:("orr.w","r3, r3, r5, lsl #1"),
+    0x600D111C:("mla","r3, r2, r3, r6"),
+    0x600D1120:("movs","r2, #0"),
+    0x600D1122:("strd","r2, r2, [r3, #0xc]"),
+    0x600D1126:("strb","r2, [r3, #0x14]"),
+}
+PINS={**ANCHORS_A,**ANCHORS_B,**ANCHORS_CONFIG,**REGISTRAR_PINS,**CLEAR_PINS}
 LITERALS={
     "a_default_type3":(0x600547A0,0x600CFC71),
     "a_type1":(0x600547A4,0x600CFC35),
@@ -157,7 +170,8 @@ def audit(image):
     for lo,hi in ((0x60054728,0x600547A0),
                   (0x6005480E,0x60054858),
                   (0x600CFD80,0x600CFDA2),
-                  (0x600D10B8,0x600D10E2)):
+                  (0x600D10B8,0x600D10E2),
+                  (0x600D10F6,0x600D112A)):
         decoded.update({x["pc"]:(x["m"],x["op"]) for x in decode(image,lo,hi)})
     pin_count=validate_pins(decoded)
     actual_literals={}
@@ -167,6 +181,7 @@ def audit(image):
             raise ValueError("Original signed adapter literal mismatch at "+hex(addr))
         actual_literals[name]={"literal_address":hex(addr),"thumb_pointer":hex(found)}
     inbound=find_inbound_branches(image,only_target=DESCRIPTOR_LOOP_A)
+    clear_callers=find_inbound_branches(image,only_target=0x600D10F6)
     if not any(x["pc"]==hex(CLASS_CONFIGURATION_CALL)
                for x in inbound["direct_branch_candidates"]):
         raise ValueError("Original signed class configuration BL not found")
@@ -211,6 +226,17 @@ def audit(image):
             "EP0_IN_function_offset":"0x18",
         },
         "original_signed_adapter_literals":actual_literals,
+        "signed_slot_clearer":{
+            "entry":"0x600d10f6",
+            "endpoint_address_source":"function input R1 low byte stored on stack, later loaded into R4",
+            "index_formula":"2*(address&15)+((address>>7)&1)",
+            "zero_pair_instruction":"0x600d1122 STRD R2,R2,[R3,#0x0c], R2=0",
+            "cleared_words":"callback at slot+0x0c and context at slot+0x10",
+            "extra_slot_status_zero":"0x600d1126 STRB R2,[R3,#0x14]",
+            "can_address_ep0_out_in_by_index":True,
+            "physical_device_invocation":"NOT MEASURED",
+            "direct_callsite_candidates":clear_callers["direct_branch_candidates"][:16],
+        },
         "synthetic_branch_matrix":rows,
         "direct_inbound_descriptor_loop_A":inbound["direct_branch_candidates"][:16],
         "signed_deregistrar_candidate_window":[
@@ -246,6 +272,7 @@ def main():
     }))
     print("PHASE47 ORIGINAL SIGNED ENDPOINT ADAPTERS",json.dumps(result["original_signed_adapter_literals"]))
     print("PHASE47 CONDITIONAL SLOT MATRIX",json.dumps(result["synthetic_branch_matrix"]))
+    print("PHASE47 SIGNED SLOT CLEARER",json.dumps(result["signed_slot_clearer"]))
     print("PHASE47 SLOT CLEARING CONTEXT",json.dumps(result["signed_deregistrar_candidate_window"]))
     print("PHASE47 LIVE EP0 CALLBACK: UNMEASURED; NO DEVICE IO")
 
