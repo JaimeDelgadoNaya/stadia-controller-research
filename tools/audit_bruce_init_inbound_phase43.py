@@ -139,10 +139,56 @@ def all_byte_word_references(image, value, limit=28):
             "interpretation":"word matches only, not executable pointer use"}
 
 
+CALLER = 0x600748EC
+CALLER_PINS = {
+    0x600748EC: ("push", "{r4, lr}"),
+    0x600748EE: ("ldr", "r4, [pc, #0x14]"),
+    0x600748F0: ("mov", "r0, r4"),
+    0x600748F2: ("bl", "#0x60073bf0"),
+}
+
+
+def verify_caller_instructions(rows):
+    for pc, expected in CALLER_PINS.items():
+        if rows.get(pc) != expected:
+            raise ValueError("Signed initializer direct caller anchor drift " + hex(pc))
+    return True
+
+
+def verified_initializer_caller(image, found):
+    """Exact original XIP instruction chain; caller's execution not assumed."""
+    if not any(x["pc"] == "0x600748f2" for x in found["direct_branch_candidates"]):
+        raise ValueError("Original initializer BL absent from full halfword scan")
+    md = decoder()
+    rows = {ins.address:(ins.mnemonic,ins.op_str)
+            for ins in md.disasm(image[CALLER-BASE:CALLER-BASE+12],CALLER)}
+    verify_caller_instructions(rows)
+    literal_pc = ((0x600748EE+4)&~3)+0x14
+    if literal_pc != 0x60074904:
+        raise ValueError("Unexpected original caller PC literal location")
+    base = struct.unpack_from("<I",image,literal_pc-BASE)[0]
+    return {
+        "verified_signed_caller":"0x600748ec",
+        "direct_call_pc":"0x600748f2",
+        "target":hex(INIT),
+        "argument_loading_pc":"0x600748ee",
+        "r0_assignment_pc":"0x600748f0",
+        "literal_address":hex(literal_pc),
+        "original_literal_base_value":hex(base),
+        "equals_global_base_0x200064c0":base == GLOBAL_BASE_CANDIDATE,
+        "callback_destination_if_executed":hex(base+0x3A38),
+        "context_destination_if_executed":hex(base+0x3A3C),
+        "actual_routine_invoked_on_device":"NOT VERIFIED",
+        "runtime_ram_contents":"NOT MEASURED",
+    }
+
+
 def audit(image: bytes):
     if len(image) != IMAGE_SIZE or hashlib.sha256(image).hexdigest() != IMAGE_SHA256:
         raise ValueError("Exact original signed Bruce image and SHA256 required")
     calls = find_inbound_branches(image)
+    incoming_to_caller = find_inbound_branches(image,only_target=CALLER)
+    caller = verified_initializer_caller(image,calls)
     refs = {name:all_byte_word_references(image,value) for name,value in {
         "initializer_thumb":THUMB_TARGET,
         "initializer_even":INIT,
@@ -154,9 +200,11 @@ def audit(image: bytes):
         "sample_kind":"signed OEM update, not physical readback",
         "target_initializer":hex(INIT),
         "inbound_scan":calls,
+        "pinned_initializer_direct_caller":caller,
+        "inbound_to_initializer_caller":incoming_to_caller,
         "raw_static_references":refs,
-        "initializer_r0_proven":False,
-        "base_equals_0x200064c0_proven":False,
+        "initializer_r0_static_at_verified_caller":caller["original_literal_base_value"],
+        "base_equals_0x200064c0_on_direct_caller":caller["equals_global_base_0x200064c0"],
         "runtime_reachable":False,
         "usb_host_can_rewrite_callback":"NOT DEMONSTRATED",
         "custom_firmware_execution":"NOT DEMONSTRATED",
@@ -180,6 +228,8 @@ def main():
     if args.out:
         args.out.write_text(json.dumps(out,indent=2)+"\n")
     print("PHASE43 INIT INBOUND BRANCHES",json.dumps(out["inbound_scan"]))
+    print("PHASE43 VERIFIED CALLER ARGUMENT",json.dumps(out["pinned_initializer_direct_caller"]))
+    print("PHASE43 INBOUND TO CALLER",json.dumps(out["inbound_to_initializer_caller"]))
     print("PHASE43 INIT RAW REFERENCES",json.dumps(out["raw_static_references"]))
     print("PHASE43 EXECUTION STATUS: UNVERIFIED")
 
