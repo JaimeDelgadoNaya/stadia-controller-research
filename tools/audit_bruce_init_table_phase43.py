@@ -82,6 +82,9 @@ def audit(image):
         label:all_byte_word_references(image,addr,limit=20)
         for label,addr in {
            "candidate_table_start":BASE+lo,
+           "candidate_table_start_plus4":BASE+lo+4,
+           "candidate_table_start_plus8":BASE+lo+8,
+           "candidate_table_start_minus4":BASE+lo-4,
            "candidate_table_end":BASE+hi,
            "function_pointer_slot":BASE+POINTER_FILE_OFFSET,
            "data_copy_flash_start":BASE+DATA_SOURCE_OFFSET,
@@ -96,6 +99,12 @@ def audit(image):
         "table_shape":bounds,
         "neighbor_words":items,
         "boundary_reference_census":refs,
+        "possible_table_iterator_near_0x60061608":[
+            hex(x["pc"])+" "+x["m"]+" "+x["op"]
+            for x in __import__("tools.audit_bruce_ep0_registration",fromlist=["decode"]).decode(
+                image,0x60061590,0x60061638
+            )
+        ],
         "known_startup_data_copy":{
             "file_offset":hex(DATA_SOURCE_OFFSET),
             "RAM_start":hex(DATA_DESTINATION),
@@ -120,6 +129,7 @@ def main():
     print("PHASE43 POINTER TABLE SHAPE",json.dumps(report["table_shape"]))
     print("PHASE43 POINTER TABLE WORDS",json.dumps(report["neighbor_words"]))
     print("PHASE43 POINTER TABLE REFS",json.dumps(report["boundary_reference_census"]))
+    print("PHASE43 POSSIBLE TABLE ITERATOR",json.dumps(report["possible_table_iterator_near_0x60061608"]))
 
 if __name__=="__main__":
     main()
