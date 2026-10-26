@@ -30,6 +30,9 @@ WINDOWS={
     "signed_first_class_selector":(0x60055158,0x600551A2),
     "class_record_constructor":(0x60055320,0x6005534C),
     "class10_method_four":(0x600D0ECA,0x600D0F04),
+    "class2_initializer":(0x60054C7C,0x60054D10),
+    "class4_initializer":(0x60054874,0x60054900),
+    "class_lookup_state_manager":(0x6005505C,0x600550E8),
     "singleton_initializer":(0x60055024,0x6005505C),
 }
 BRIDGE_PINS={
@@ -81,6 +84,8 @@ def audit(image):
         {"load":"0x60054f8a","literal":"0x60054fac","value":hex(raw_global_base)},
         {"load":"0x60054fbc","literal":"0x60054fe8","value":hex(raw_word(image,0x60054FE8))},
         {"load":"0x60054ffa","literal":"0x60055020","value":hex(raw_word(image,0x60055020))},
+        {"candidate_global_for_class1":"0x6005531c","value":hex(raw_word(image,0x6005531C))},
+        {"candidate_global_for_class10":"0x6005534c","value":hex(raw_word(image,0x6005534C))},
     ]
     windows={name:[hex(x["pc"])+" "+x["m"]+" "+x["op"]
                    for x in decode(image,lo,hi)]
