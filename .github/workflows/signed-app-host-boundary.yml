@@ -23,6 +23,7 @@ on:
       - 'tools/audit_bruce_class10_secondary_init_phase42.py'
       - 'tools/audit_bruce_init_inbound_phase43.py'
       - 'tools/audit_bruce_init_table_phase43.py'
+      - 'tools/audit_bruce_secondary_late_writers_phase44.py'
       - 'tools/emulate_bruce_class10_callback_guard.py'
       - 'tools/emulate_bruce_class_selector.py'
       - 'tools/emulate_bruce_class_request_fragment.py'
@@ -46,6 +47,7 @@ on:
       - 'tests/test_bruce_class10_secondary_init_phase42.py'
       - 'tests/test_bruce_init_inbound_phase43.py'
       - 'tests/test_bruce_init_table_phase43.py'
+      - 'tests/test_bruce_secondary_late_writers_phase44.py'
       - 'tests/test_emulate_bruce_class10_callback_guard.py'
       - 'tests/test_emulate_bruce_class_selector.py'
       - 'tests/test_bruce_class_request_fragment.py'
@@ -74,6 +76,7 @@ on:
       - 'tools/audit_bruce_class10_secondary_init_phase42.py'
       - 'tools/audit_bruce_init_inbound_phase43.py'
       - 'tools/audit_bruce_init_table_phase43.py'
+      - 'tools/audit_bruce_secondary_late_writers_phase44.py'
       - 'tools/emulate_bruce_class10_callback_guard.py'
       - 'tools/emulate_bruce_class_selector.py'
       - 'tools/emulate_bruce_class_request_fragment.py'
@@ -97,6 +100,7 @@ on:
       - 'tests/test_bruce_class10_secondary_init_phase42.py'
       - 'tests/test_bruce_init_inbound_phase43.py'
       - 'tests/test_bruce_init_table_phase43.py'
+      - 'tests/test_bruce_secondary_late_writers_phase44.py'
       - 'tests/test_emulate_bruce_class10_callback_guard.py'
       - 'tests/test_emulate_bruce_class_selector.py'
       - 'tests/test_bruce_class_request_fragment.py'
@@ -163,6 +167,7 @@ jobs:
           python -m tools.audit_bruce_class10_secondary_init_phase42 /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/class10-signed-initializer.json
           python -m tools.audit_bruce_init_inbound_phase43 /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/phase43-inbound.json
           python -m tools.audit_bruce_init_table_phase43 /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/phase43-table.json
+          python -m tools.audit_bruce_secondary_late_writers_phase44 /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/phase44-writers.json
           python -m tools.emulate_bruce_class10_callback_guard /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/class10-guard-virtual.json
           python -m tools.emulate_bruce_class_selector /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/selection-synthetic.json
           python -m tools.emulate_bruce_class_request_fragment /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/synthetic-class-requests.json
