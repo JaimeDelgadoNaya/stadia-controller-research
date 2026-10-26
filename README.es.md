@@ -1,5 +1,7 @@
 # Investigación del mando Stadia
 
+**[Fase 62 — coincidencia exacta del descriptor con OEM](docs/es/coincidencia-descriptores-oem-fase62.md).** Los 80 bytes del hub coinciden una sola vez en XIP 0x6011E45A. La emulación acotada verifica cuatro perfiles condicionales; no se han medido los flags reales ni la activación de callbacks.
+
 **[Fase 61 — enumeración USB física](docs/es/enumeracion-usb-fase61.md).** El hub devuelve dos interfaces en 80 bytes; la vista WinUSB solo muestra la interfaz del fabricante en 32 bytes. Se declaran bulk 0x07/0x87 y HID 0x03/0x83. Sin prueba de alcanzabilidad de callbacks ni ejecución propia.
 
 [English](README.md) · [Español](README.es.md)

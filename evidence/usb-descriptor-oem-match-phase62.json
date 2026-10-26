@@ -1,0 +1,602 @@
+{
+  "phase": 62,
+  "image_sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+  "exact_image_hash_verified": true,
+  "source": "https://raw.githubusercontent.com/StadiaMemories/firmware/main/bruce_pvt_a_prod_signed.bin",
+  "comparison_scope": "authenticated OEM application content before file offset 0xff000",
+  "live_hub_sha256": "01b299fc757c731df8c2de21a953ed8b0fc0c854f6043c178b8cc7588c26e5db",
+  "exact_full_descriptor_matches": [
+    "0xde45a"
+  ],
+  "exact_winusb_view_matches": [],
+  "selector_entry": "0x600619bc",
+  "selector_flag_addresses": [
+    "0x2000a804",
+    "0x2000a805"
+  ],
+  "selector_helper_arguments": "0x600dffe8 receives singleton_return+0x448 and 7; meaning unresolved",
+  "variants": [
+    {
+      "file_offset": "0xde45a",
+      "xip_address": "0x6011e45a",
+      "length": 80,
+      "descriptor_sha256": "01b299fc757c731df8c2de21a953ed8b0fc0c854f6043c178b8cc7588c26e5db",
+      "declared_interfaces": 2,
+      "usb_interface_classes": [
+        3,
+        255
+      ],
+      "exact_live_hub_match": true,
+      "pointer_load_pc": "0x60061a24",
+      "pointer_literal_pc": "0x60061a4c",
+      "parsed": {
+        "total_bytes": 80,
+        "configuration_value": 1,
+        "declared_interfaces": 2,
+        "interfaces": [
+          {
+            "number": 0,
+            "alternate": 0,
+            "declared_endpoints": 2,
+            "usb_class": 255,
+            "subclass": 0,
+            "protocol": 0,
+            "endpoints": [
+              {
+                "address": "0x87",
+                "direction": "IN",
+                "transfer_type": "bulk",
+                "max_packet_bytes": 512,
+                "interval": 0
+              },
+              {
+                "address": "0x07",
+                "direction": "OUT",
+                "transfer_type": "bulk",
+                "max_packet_bytes": 512,
+                "interval": 0
+              }
+            ]
+          },
+          {
+            "number": 1,
+            "alternate": 0,
+            "declared_endpoints": 2,
+            "usb_class": 3,
+            "subclass": 0,
+            "protocol": 0,
+            "endpoints": [
+              {
+                "address": "0x83",
+                "direction": "IN",
+                "transfer_type": "interrupt",
+                "max_packet_bytes": 64,
+                "interval": 6
+              },
+              {
+                "address": "0x03",
+                "direction": "OUT",
+                "transfer_type": "interrupt",
+                "max_packet_bytes": 64,
+                "interval": 6
+              }
+            ],
+            "hid_report_descriptor_bytes": 182
+          }
+        ]
+      }
+    },
+    {
+      "file_offset": "0xde4aa",
+      "xip_address": "0x6011e4aa",
+      "length": 40,
+      "descriptor_sha256": "71b43e1a253e6482f176d66262c97c7823f769650a0ba30320c5bbf69bda6a34",
+      "declared_interfaces": 1,
+      "usb_interface_classes": [
+        255
+      ],
+      "exact_live_hub_match": false,
+      "pointer_load_pc": "0x600619dc",
+      "pointer_literal_pc": "0x60061a34",
+      "parsed": {
+        "total_bytes": 40,
+        "configuration_value": 1,
+        "declared_interfaces": 1,
+        "interfaces": [
+          {
+            "number": 0,
+            "alternate": 0,
+            "declared_endpoints": 2,
+            "usb_class": 255,
+            "subclass": 0,
+            "protocol": 0,
+            "endpoints": [
+              {
+                "address": "0x87",
+                "direction": "IN",
+                "transfer_type": "bulk",
+                "max_packet_bytes": 512,
+                "interval": 0
+              },
+              {
+                "address": "0x07",
+                "direction": "OUT",
+                "transfer_type": "bulk",
+                "max_packet_bytes": 512,
+                "interval": 0
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "file_offset": "0xde4d2",
+      "xip_address": "0x6011e4d2",
+      "length": 204,
+      "descriptor_sha256": "356ec2f0c3c997e59e81d035d3df8202c602084eb703087361d77f6ebb7b9f94",
+      "declared_interfaces": 4,
+      "usb_interface_classes": [
+        1,
+        3,
+        255
+      ],
+      "exact_live_hub_match": false,
+      "pointer_load_pc": "0x60061a1c",
+      "pointer_literal_pc": "0x60061a48",
+      "parsed": {
+        "total_bytes": 204,
+        "configuration_value": 1,
+        "declared_interfaces": 4,
+        "interfaces": [
+          {
+            "number": 0,
+            "alternate": 0,
+            "declared_endpoints": 2,
+            "usb_class": 255,
+            "subclass": 0,
+            "protocol": 0,
+            "endpoints": [
+              {
+                "address": "0x87",
+                "direction": "IN",
+                "transfer_type": "bulk",
+                "max_packet_bytes": 512,
+                "interval": 0
+              },
+              {
+                "address": "0x07",
+                "direction": "OUT",
+                "transfer_type": "bulk",
+                "max_packet_bytes": 512,
+                "interval": 0
+              }
+            ]
+          },
+          {
+            "number": 1,
+            "alternate": 0,
+            "declared_endpoints": 2,
+            "usb_class": 3,
+            "subclass": 0,
+            "protocol": 0,
+            "endpoints": [
+              {
+                "address": "0x83",
+                "direction": "IN",
+                "transfer_type": "interrupt",
+                "max_packet_bytes": 64,
+                "interval": 6
+              },
+              {
+                "address": "0x03",
+                "direction": "OUT",
+                "transfer_type": "interrupt",
+                "max_packet_bytes": 64,
+                "interval": 6
+              }
+            ],
+            "hid_report_descriptor_bytes": 182
+          },
+          {
+            "number": 2,
+            "alternate": 0,
+            "declared_endpoints": 1,
+            "usb_class": 1,
+            "subclass": 1,
+            "protocol": 0,
+            "endpoints": [
+              {
+                "address": "0x04",
+                "direction": "OUT",
+                "transfer_type": "interrupt",
+                "max_packet_bytes": 64,
+                "interval": 8
+              }
+            ]
+          },
+          {
+            "number": 3,
+            "alternate": 0,
+            "declared_endpoints": 0,
+            "usb_class": 1,
+            "subclass": 2,
+            "protocol": 0,
+            "endpoints": []
+          },
+          {
+            "number": 3,
+            "alternate": 1,
+            "declared_endpoints": 2,
+            "usb_class": 1,
+            "subclass": 2,
+            "protocol": 0,
+            "endpoints": [
+              {
+                "address": "0x05",
+                "direction": "OUT",
+                "transfer_type": "isochronous",
+                "max_packet_bytes": 512,
+                "interval": 4
+              },
+              {
+                "address": "0x85",
+                "direction": "IN",
+                "transfer_type": "isochronous",
+                "max_packet_bytes": 4,
+                "interval": 13
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "file_offset": "0xde59e",
+      "xip_address": "0x6011e59e",
+      "length": 287,
+      "descriptor_sha256": "5c70c94b731f27b49dea785fb161468df51ad6d69c29c4fd4a7d2ece3e81a8db",
+      "declared_interfaces": 5,
+      "usb_interface_classes": [
+        1,
+        3,
+        255
+      ],
+      "exact_live_hub_match": false,
+      "pointer_load_pc": "0x60061a06",
+      "pointer_literal_pc": "0x60061a40",
+      "parsed": {
+        "total_bytes": 287,
+        "configuration_value": 1,
+        "declared_interfaces": 5,
+        "interfaces": [
+          {
+            "number": 0,
+            "alternate": 0,
+            "declared_endpoints": 2,
+            "usb_class": 255,
+            "subclass": 0,
+            "protocol": 0,
+            "endpoints": [
+              {
+                "address": "0x87",
+                "direction": "IN",
+                "transfer_type": "bulk",
+                "max_packet_bytes": 512,
+                "interval": 0
+              },
+              {
+                "address": "0x07",
+                "direction": "OUT",
+                "transfer_type": "bulk",
+                "max_packet_bytes": 512,
+                "interval": 0
+              }
+            ]
+          },
+          {
+            "number": 1,
+            "alternate": 0,
+            "declared_endpoints": 2,
+            "usb_class": 3,
+            "subclass": 0,
+            "protocol": 0,
+            "endpoints": [
+              {
+                "address": "0x83",
+                "direction": "IN",
+                "transfer_type": "interrupt",
+                "max_packet_bytes": 64,
+                "interval": 6
+              },
+              {
+                "address": "0x03",
+                "direction": "OUT",
+                "transfer_type": "interrupt",
+                "max_packet_bytes": 64,
+                "interval": 6
+              }
+            ],
+            "hid_report_descriptor_bytes": 182
+          },
+          {
+            "number": 2,
+            "alternate": 0,
+            "declared_endpoints": 1,
+            "usb_class": 1,
+            "subclass": 1,
+            "protocol": 0,
+            "endpoints": [
+              {
+                "address": "0x04",
+                "direction": "OUT",
+                "transfer_type": "interrupt",
+                "max_packet_bytes": 64,
+                "interval": 8
+              }
+            ]
+          },
+          {
+            "number": 3,
+            "alternate": 0,
+            "declared_endpoints": 0,
+            "usb_class": 1,
+            "subclass": 2,
+            "protocol": 0,
+            "endpoints": []
+          },
+          {
+            "number": 3,
+            "alternate": 1,
+            "declared_endpoints": 2,
+            "usb_class": 1,
+            "subclass": 2,
+            "protocol": 0,
+            "endpoints": [
+              {
+                "address": "0x05",
+                "direction": "OUT",
+                "transfer_type": "isochronous",
+                "max_packet_bytes": 512,
+                "interval": 4
+              },
+              {
+                "address": "0x85",
+                "direction": "IN",
+                "transfer_type": "isochronous",
+                "max_packet_bytes": 4,
+                "interval": 13
+              }
+            ]
+          },
+          {
+            "number": 4,
+            "alternate": 0,
+            "declared_endpoints": 0,
+            "usb_class": 1,
+            "subclass": 2,
+            "protocol": 0,
+            "endpoints": []
+          },
+          {
+            "number": 4,
+            "alternate": 1,
+            "declared_endpoints": 1,
+            "usb_class": 1,
+            "subclass": 2,
+            "protocol": 0,
+            "endpoints": [
+              {
+                "address": "0x86",
+                "direction": "IN",
+                "transfer_type": "isochronous",
+                "max_packet_bytes": 512,
+                "interval": 4
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "emulation": [
+    {
+      "synthetic_helper_result": 0,
+      "synthetic_flag_a": 0,
+      "synthetic_flag_b": 0,
+      "output_pointer": "0x6011e45a",
+      "output_length": 80,
+      "returned": true,
+      "helper_calls_stubbed": [
+        {
+          "target": "0x6005bdac",
+          "r0": "0x0",
+          "r1": "0x20018000"
+        },
+        {
+          "target": "0x600dffe8",
+          "r0": "0x20001448",
+          "r1": "0x7"
+        }
+      ]
+    },
+    {
+      "synthetic_helper_result": 0,
+      "synthetic_flag_a": 0,
+      "synthetic_flag_b": 1,
+      "output_pointer": "0x6011e45a",
+      "output_length": 80,
+      "returned": true,
+      "helper_calls_stubbed": [
+        {
+          "target": "0x6005bdac",
+          "r0": "0x0",
+          "r1": "0x20018000"
+        },
+        {
+          "target": "0x600dffe8",
+          "r0": "0x20001448",
+          "r1": "0x7"
+        }
+      ]
+    },
+    {
+      "synthetic_helper_result": 0,
+      "synthetic_flag_a": 1,
+      "synthetic_flag_b": 0,
+      "output_pointer": "0x6011e4d2",
+      "output_length": 204,
+      "returned": true,
+      "helper_calls_stubbed": [
+        {
+          "target": "0x6005bdac",
+          "r0": "0x0",
+          "r1": "0x20018000"
+        },
+        {
+          "target": "0x600dffe8",
+          "r0": "0x20001448",
+          "r1": "0x7"
+        },
+        {
+          "target": "0x6010165c",
+          "r0": "0x14",
+          "r1": "0x6011e43d"
+        }
+      ]
+    },
+    {
+      "synthetic_helper_result": 0,
+      "synthetic_flag_a": 1,
+      "synthetic_flag_b": 1,
+      "output_pointer": "0x6011e59e",
+      "output_length": 287,
+      "returned": true,
+      "helper_calls_stubbed": [
+        {
+          "target": "0x6005bdac",
+          "r0": "0x0",
+          "r1": "0x20018000"
+        },
+        {
+          "target": "0x600dffe8",
+          "r0": "0x20001448",
+          "r1": "0x7"
+        },
+        {
+          "target": "0x6010165c",
+          "r0": "0x14",
+          "r1": "0x6011e43d"
+        }
+      ]
+    },
+    {
+      "synthetic_helper_result": 1,
+      "synthetic_flag_a": 0,
+      "synthetic_flag_b": 0,
+      "output_pointer": "0x6011e4aa",
+      "output_length": 40,
+      "returned": true,
+      "helper_calls_stubbed": [
+        {
+          "target": "0x6005bdac",
+          "r0": "0x0",
+          "r1": "0x20018000"
+        },
+        {
+          "target": "0x600dffe8",
+          "r0": "0x20001448",
+          "r1": "0x7"
+        },
+        {
+          "target": "0x6010165c",
+          "r0": "0x14",
+          "r1": "0x6011e43d"
+        }
+      ]
+    },
+    {
+      "synthetic_helper_result": 1,
+      "synthetic_flag_a": 0,
+      "synthetic_flag_b": 1,
+      "output_pointer": "0x6011e4aa",
+      "output_length": 40,
+      "returned": true,
+      "helper_calls_stubbed": [
+        {
+          "target": "0x6005bdac",
+          "r0": "0x0",
+          "r1": "0x20018000"
+        },
+        {
+          "target": "0x600dffe8",
+          "r0": "0x20001448",
+          "r1": "0x7"
+        },
+        {
+          "target": "0x6010165c",
+          "r0": "0x14",
+          "r1": "0x6011e43d"
+        }
+      ]
+    },
+    {
+      "synthetic_helper_result": 1,
+      "synthetic_flag_a": 1,
+      "synthetic_flag_b": 0,
+      "output_pointer": "0x6011e4aa",
+      "output_length": 40,
+      "returned": true,
+      "helper_calls_stubbed": [
+        {
+          "target": "0x6005bdac",
+          "r0": "0x0",
+          "r1": "0x20018000"
+        },
+        {
+          "target": "0x600dffe8",
+          "r0": "0x20001448",
+          "r1": "0x7"
+        },
+        {
+          "target": "0x6010165c",
+          "r0": "0x14",
+          "r1": "0x6011e43d"
+        }
+      ]
+    },
+    {
+      "synthetic_helper_result": 1,
+      "synthetic_flag_a": 1,
+      "synthetic_flag_b": 1,
+      "output_pointer": "0x6011e4aa",
+      "output_length": 40,
+      "returned": true,
+      "helper_calls_stubbed": [
+        {
+          "target": "0x6005bdac",
+          "r0": "0x0",
+          "r1": "0x20018000"
+        },
+        {
+          "target": "0x600dffe8",
+          "r0": "0x20001448",
+          "r1": "0x7"
+        },
+        {
+          "target": "0x6010165c",
+          "r0": "0x14",
+          "r1": "0x6011e43d"
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "Exact descriptors match, not the complete installed firmware hash.",
+    "Original selector instructions are executed only in bounded synthetic emulation.",
+    "Singleton, helper and logging calls are stubbed; their effects and runtime state are unknown.",
+    "RAM flags are not measured on the physical controller and no flag setter is traced.",
+    "Internal class selector 10 activation, callback invocation and USB-to-code path remain unproven.",
+    "No device I/O, firmware writes, HAB bypass or native console interoperability."
+  ]
+}
