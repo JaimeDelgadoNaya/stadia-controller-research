@@ -193,10 +193,93 @@ def focus_receiver_like_veneers(veneers,callers):
     }
 
 
+PRODUCER_PINS={
+    0x600926A0:("mov","r1, r0"),
+    0x600926A2:("ldr","r0, [pc, #0x10]"),
+    0x600926A4:("ldr","r2, [r0, #0x58]"),
+    0x600926A6:("cbz","r2, #0x600926ac"),
+    0x600926A8:("b.w","#0x600ee18a"),
+    0x600EE18A:("push","{r0, r1, r2, r3, r4, lr}"),
+    0x600EE18C:("cbnz","r1, #0x600ee196"),
+    0x600EE196:("movs","r4, #0"),
+    0x600EE198:("movs","r3, #1"),
+    0x600EE1A2:("strb","r3, [r1, #8]"),
+    0x600EE1AA:("str","r1, [sp, #8]"),
+    0x600EE1AC:("ldr.w","r0, [r0, #0xb0]"),
+    0x600EE1B0:("add","r1, sp, #4"),
+    0x600EE1B2:("strb.w","r4, [sp, #4]"),
+    0x600EE1B6:("bl","#0x6013d0e8"),
+}
+SENDLIKE_VENEERS=(0x6013D0E8,0x6013CFD8)
+QUEUE_WRITER_COUNT_PINS={
+    0x6CDC:("ldr","r2, [r4, #0x38]"),
+    0x6CDE:("ldr","r3, [r4, #0x3c]"),
+    0x6CE0:("cmp","r3, r2"),
+    0x6CE2:("bls","#0x6d1e"),
+    0x6CE8:("adds","r2, #1"),
+    0x6CEC:("str","r2, [r4, #0x38]"),
+}
+
+def verify_producer_chain(image):
+    pins={}
+    for start,end in ((0x600926A0,0x600926B2),(0x600EE18A,0x600EE1BE)):
+        for row in decode(image,start,end):
+            pins[row["pc"]]=(row["m"],row["op"])
+    for pc,expected in PRODUCER_PINS.items():
+        if pins.get(pc)!=expected:
+            raise ValueError(f"Phase75 producer original signed instruction drift {pc:#x}: {pins.get(pc)}")
+    if signed_word(image,0x600926B4-BASE)!=QUEUE:
+        raise ValueError("Phase75 producer Work Queue object literal drift")
+    sender=one(image,0x6013D0E8)
+    target=None
+    if sender and sender.mnemonic=="ldr.w" and sender.op_str=="pc, [pc, #-0x0]":
+        target_word=signed_word(image,0x6013D0EC-BASE)
+        target=target_word&~1
+        if not target_word&1 or not 0<=target<ITCM_LENGTH:
+            raise ValueError("Phase75 sender original ITCM pointer drift")
+    else:
+        raise ValueError("Phase75 sender original veneer instruction drift")
+    return {
+        "signed_anchors":len(PRODUCER_PINS)+2,
+        "producer_API_entry":"0x600926a0",
+        "producer_object_literal":"0x2002014c",
+        "producer_state_guard":"0x600926a4 [WorkQueue+0x58] checked before tail branch",
+        "worker_entry":"0x600ee18a",
+        "worker_input_message":"R1 incoming, stored to [SP+8]; flag at message+8 set to 1",
+        "worker_queue_control":"R0 = [WorkQueue+0xb0]",
+        "worker_send_buffer":"R1 = SP+4; local byte [SP+4] set zero",
+        "worker_timeout":"R2 = -1 at 0x600ee19e",
+        "worker_kernel_veneer":"0x6013d0e8",
+        "kernel_veneer_raw_thumb":hex(target_word),
+        "kernel_original_ITCM_entry":hex(target),
+        "object_state_on_physical_hardware":"UNMEASURED",
+        "actual_enqueue_or_success":"UNVERIFIED",
+    }
+
+def confirm_count_writer(image):
+    cs=Cs(CS_ARCH_ARM,CS_MODE_THUMB|CS_MODE_MCLASS)
+    rows={}
+    start,end=0x6CD8,0x6CF0
+    for i in cs.disasm(image[ITCM_SOURCE_OFFSET+start:ITCM_SOURCE_OFFSET+end],start):
+        rows[i.address]=(i.mnemonic,i.op_str)
+    for pc,expected in QUEUE_WRITER_COUNT_PINS.items():
+        if rows.get(pc)!=expected:
+            raise ValueError(f"Phase75 signed original count writer drift {pc:#x}")
+    return {
+        "count_writer_pc":"0x6cec",
+        "guarded_capacity_field":"0x3c",
+        "item_count_field":"0x38",
+        "guard_and_increment_proven_in_signed_code":True,
+        "specific_WorkQueue_instance":"NOT_ESTABLISHED_BY_FIELD_OFFSET_ALONE",
+    }
+
+
 def audit(image):
     if len(image)!=IMAGE_SIZE or hashlib.sha256(image).hexdigest()!=IMAGE_SHA256:
         raise ValueError("Phase75 original exact SHA-pinned Bruce OEM required")
     windows=signed_windows(image)
+    producer=verify_producer_chain(image)
+    count=confirm_count_writer(image)
     veneers=inspect_veneers(image)
     literal=queue_literals(image)
     loads=pc_literal_load_candidates(image,literal)
@@ -210,6 +293,8 @@ def audit(image):
         "work_queue_RAM_object":hex(QUEUE),
         "work_queue_virtual_control_pointer":hex(CONTROL_FIELD),
         "signed_adjacent_veneers":veneers,
+        "verified_WorkQueue_producer_chain":producer,
+        "verified_ITCM_count_increment_helper":count,
         "queue_address_words":literal,
         "signed_queue_literal_load_candidates":loads,
         "signed_ITCM_primitive_BL_shapes":known,
@@ -236,6 +321,8 @@ def main():
     a=p.parse_args()
     output=audit(a.image.read_bytes())
     if a.out:a.out.write_text(json.dumps(output,indent=2)+"\n",encoding="utf-8")
+    print("PHASE75 VERIFIED WORKQUEUE PRODUCER",json.dumps(output["verified_WorkQueue_producer_chain"]))
+    print("PHASE75 VERIFIED COUNT WRITE",json.dumps(output["verified_ITCM_count_increment_helper"]))
     print("PHASE75 SIGNED QUEUE POINTER WORDS",json.dumps(output["queue_address_words"]))
     print("PHASE75 SIGNED QUEUE POINTER LOADS",json.dumps(output["signed_queue_literal_load_candidates"]))
     print("PHASE75 SIGNED QUEUE VENEERS",json.dumps(output["signed_adjacent_veneers"]))
