@@ -14,7 +14,6 @@ from pathlib import Path
 
 from tools.audit_signed_app_surface import IMAGE_SIZE, IMAGE_SHA256
 from tools.audit_bruce_ep0_registration import decode
-from tools.audit_bruce_setup_verified import ANCHORS as SETUP_ANCHORS
 from tools.audit_bruce_class_selector_verified import verified_rom_table
 from tools.audit_bruce_class10_record_producer import (
     confirmed_boot_records, original_class10_handler_guard,
@@ -180,11 +179,11 @@ def audit(image):
         "signed_dispatch_table":dispatch["dispatches"],
         "sample_symbolic_matrix":samples,
         "usb_setup_class_endpoint_proven":False,
-        "live_EP0_to_forwarder_reachable":False,
-        "class10_selected_on_original_controller":False,
-        "signed_second_callback_installed_on_real_controller":False,
-        "unsigned_callback_writes_available":False,
-        "custom_code_execution_or_HAB_bypass":False,
+        "live_EP0_to_forwarder_reachability":"UNVERIFIED",
+        "class10_selected_on_original_controller":"UNVERIFIED",
+        "signed_second_callback_installed_on_real_controller":"UNVERIFIED",
+        "host_controlled_arbitrary_callback_write":"NOT DEMONSTRATED",
+        "custom_code_execution_or_HAB_bypass":"NOT DEMONSTRATED",
         "remaining":["Connect USB1 EP0 IRQ packet ingestion to class10 forwarder",
                      "Prove class10 selected for active interface at runtime",
                      "Prove second setter's early branch predicates",
