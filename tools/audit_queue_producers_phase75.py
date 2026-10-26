@@ -52,6 +52,11 @@ def signed_windows(image):
         "xip_original_queue_constructor":(0x600926D0,0x60092730,False),
         "xip_queue_getter_one":(0x6009269E,0x600926B4,False),
         "xip_queue_getter_two":(0x600926B8,0x600926CC,False),
+        "xip_queue_post_worker":(0x600EE180,0x600EE1F4,False),
+        "xip_queue_other_worker":(0x600925B8,0x6009262E,False),
+        "xip_other_wrapper":(0x60101820,0x60101852,False),
+        "itcm_count_inc_context":(0x6C80,0x6D2C,True),
+        "itcm_possible_send_start":(0x6A6C,0x6B48,True),
         "xip_queue_start":(0x60092490,0x600924C4,False),
         "xip_queue_kernel_wrapper":(0x60101810,0x6010183C,False),
         "xip_queue_extra_caller":(0x600C9EBC,0x600C9EE4,False),
@@ -235,7 +240,8 @@ def main():
     print("PHASE75 SIGNED QUEUE POINTER LOADS",json.dumps(output["signed_queue_literal_load_candidates"]))
     print("PHASE75 SIGNED QUEUE VENEERS",json.dumps(output["signed_adjacent_veneers"]))
     print("PHASE75 SIGNED ITCM PRIMITIVE CALLS",json.dumps(output["signed_ITCM_primitive_BL_shapes"]))
-    print("PHASE75 SIGNED XIP VENEER CALLS",json.dumps(output["signed_XIP_BL_shapes_to_neighbor_veneers"]))
+    print("PHASE75 SIGNED XIP VENEER CALL COUNT",len(output["signed_XIP_BL_shapes_to_neighbor_veneers"]))
+    print("PHASE75 SIGNED XIP FOCUSED RECEIVE CALLERS",json.dumps(output["receiver_neighbor_callers"]["direct_BL_shapes"]))
     print("PHASE75 COUNT FIELD CANDIDATES",json.dumps(output["signed_ITCM_count_field_instruction_candidates"]))
     print("PHASE75 RECEIVER NEIGHBOR CALLERS",json.dumps(output["receiver_neighbor_callers"]))
     for label,rows in output["bounded_original_windows"].items():
