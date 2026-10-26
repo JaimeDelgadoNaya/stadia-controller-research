@@ -71,6 +71,13 @@ def audit(image):
         raise ValueError("Previous independently signed anchors drifted")
     bridge=decode(image,0x600D0BC8,0x600D0BFC)
     pin_count=pins_match({x["pc"]:(x["m"],x["op"]) for x in bridge})
+    original_global_addr_literal=0x60054FAC
+    raw_global_base=raw_word(image,original_global_addr_literal)
+    additional_literals=[
+        {"load":"0x60054f8a","literal":"0x60054fac","value":hex(raw_global_base)},
+        {"load":"0x60054fbc","literal":"0x60054fe8","value":hex(raw_word(image,0x60054FE8))},
+        {"load":"0x60054ffa","literal":"0x60055020","value":hex(raw_word(image,0x60055020))},
+    ]
     windows={name:[hex(x["pc"])+" "+x["m"]+" "+x["op"]
                    for x in decode(image,lo,hi)]
              for name,(lo,hi) in WINDOWS.items()}
@@ -83,6 +90,15 @@ def audit(image):
         "phase":48,
         "signed_OEM_update_sha_verified":True,
         "signed_instruction_pins":pin_count,
+        "signed_lookup_literals":additional_literals,
+        "matching_USB_object_global_RAM_address":hex(raw_global_base),
+        "lookup_proven_semantics":{
+            "input_usb_object":"R5 = caller R0 at 0x60054f7e",
+            "compare_to_stored_usb_pointer":"0x60054f90 LDR R2,[R3]; 0x60054f92 CMP R5,R2",
+            "on_match_output":"0x60054f96 STR R3,[R4], where R4 is output-pointer address",
+            "class_method_pointer_source":"on match [SP+4] = signed RAM global base, then method is *(*([base+4]+4)) at 0x600d0bf6/f8",
+            "runtime_global_RAM_values":"NOT MEASURED",
+        },
         "class_records":[{
             "selector":r["selector_at_plus_0xc"],
             "method_0":r["method_0"],"method_4":r["method_4"],"method_8":r["method_8"],
@@ -112,6 +128,7 @@ def main():
     data=audit(args.image.read_bytes())
     if args.out:args.out.write_text(json.dumps(data,indent=2)+"\n")
     print("PHASE48 BRIDGE",json.dumps(data["double_indirect_class_method"]))
+    print("PHASE48 GLOBAL LOOKUP LITERALS",json.dumps(data["signed_lookup_literals"]))
     for name,lines in data["windows"].items():
         print("PHASE48 WINDOW",name,json.dumps(lines))
     for name,lines in data["direct_inbound_candidate_bl"].items():
