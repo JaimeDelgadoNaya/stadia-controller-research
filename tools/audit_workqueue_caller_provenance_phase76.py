@@ -117,7 +117,7 @@ def signed_producer_argument_paths(image):
                 "0x600D8F64 result nonzero and equal to 2",
                 "valid R4 object assumed by signed code",
             ],
-            "object_identity":"UNRESOLVED",
+            "object_identity":"R4+0x11C contains signed OEM-initialized method; R4 owner provenance unresolved",
             "host_USB_provenance":"UNPROVEN",
             "execution":"UNVERIFIED",
         },
@@ -129,6 +129,7 @@ def branch_aware_footprints(image):
     # the start of caller A's containing function.
     regions={
         "A_previous_signed_fragment":(0x600621F0,0x60062220),
+        "A_atomic_intermediate":(0x60062220,0x60062264),
         "A_atomic_tail":(0x60062264,0x60062298),
         "B_exact_function":(B_ENTRY,0x6006B2D8),
         "B_status_callee":(0x600D8F64,0x600D8FCE),
@@ -216,6 +217,44 @@ def find_pc_relative_load_to_signed_literal(image,literal_pc,limit=0x480):
     return found
 
 
+CALL_B_INSTALL_PINS={
+    0x6006B400:("bl","#0x6009267c"),
+    0x6006B40E:("add.w","r0, r4, #0x128"),
+    0x6006B412:("bl","#0x601017fc"),
+    0x6006B416:("ldr","r3, [pc, #0x9c]"),
+    0x6006B418:("add.w","r0, r4, #8"),
+    0x6006B41C:("str.w","r4, [r4, #0x120]"),
+    0x6006B420:("str.w","r3, [r4, #0x11c]"),
+    0x6006B424:("bl","#0x6006efd4"),
+}
+B_CALLBACK_WORD_PC=0x6006B4B4
+
+def verify_B_callback_registration(image):
+    """Signed assignment to embedded B Work Queue item; NOT runtime state."""
+    ins={ (r["pc"]):(r["mnemonic"],r["operands"])
+          for r in rows(image,0x6006B400,0x6006B428)}
+    for pc,expected in CALL_B_INSTALL_PINS.items():
+        if ins.get(hex(pc))!=expected:
+            raise ValueError(f"Phase76 signed callback B registration drift {pc:#x}")
+    ptr=struct.unpack_from("<I",image,B_CALLBACK_WORD_PC-BASE)[0]
+    if ptr!=(B_ENTRY|1):
+        raise ValueError("Phase76 signed B callback target pointer drift")
+    return {
+        "original_pins":len(CALL_B_INSTALL_PINS)+1,
+        "literal_pc":hex(B_CALLBACK_WORD_PC),
+        "literal_value":hex(ptr),
+        "PC_relative_signed_load":"0x6006b416 LDR R3,[PC,#0x9C]",
+        "method_store":"0x6006b420 STR.W R3,[R4,#0x11C]",
+        "owner_context_store":"0x6006b41c STR.W R4,[R4,#0x120]",
+        "dispatch_passed_argument":"0x6006b2ac R0 = R4+0x11C",
+        "signed_callback_function":"0x6006b290",
+        "callback_origin":"SIGNED_OEM_INITIALIZER_STATICALLY_PROVEN",
+        "value_currently_in_device_RAM":"NOT_READ",
+        "ability_of_USB_to_rewrite_function_pointer":"NOT_DEMONSTRATED",
+        "callback_execution":"NOT_OBSERVED",
+    }
+
+
 def upstream_source_analysis(image):
     targets={
         "B_worker_callback":B_ENTRY,
@@ -258,6 +297,7 @@ def audit(image):
     contexts=branch_aware_footprints(image)
     xrefs=upstream_census(image)
     nested=upstream_source_analysis(image)
+    install=verify_B_callback_registration(image)
     return {
         "phase":76,
         "original_SHA256":IMAGE_SHA256,
@@ -267,6 +307,7 @@ def audit(image):
         "bounded_signed_contexts":contexts,
         "direct_code_shaped_upstream_references":xrefs,
         "B_nested_status_source_xrefs":nested,
+        "B_signed_callback_initializer":install,
         "limits":{
             "runtime_call_A_executed":False,
             "runtime_call_B_executed":False,
@@ -292,6 +333,7 @@ def main():
     print("PHASE76 ARGUMENT_PATHS",json.dumps(r["signed_producer_callsites"]))
     print("PHASE76 XREFS",json.dumps(r["direct_code_shaped_upstream_references"]))
     print("PHASE76 NESTED_STATUS_SOURCE",json.dumps(r["B_nested_status_source_xrefs"]))
+    print("PHASE76 SIGNED B CALLBACK INITIALIZATION",json.dumps(r["B_signed_callback_initializer"]))
     for label,context in r["bounded_signed_contexts"].items():
         print("PHASE76 WINDOW",label,json.dumps(context))
     print("PHASE76 COMPLETE EVIDENCE",json.dumps(r,separators=(",",":")))
