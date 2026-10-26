@@ -48,7 +48,7 @@ def decode_original_events(image):
         raise ValueError("Original event table truncated")
     dest=[EVENT_TABLE_BASE+2*x for x in vals]
     if dest[3]!=EVENT4_EXPECTED:
-        raise ValueError("Event4 does not select signed SETUP bRequest branch")
+        raise ValueError("Event4 signed table target differs: raw="+repr(list(vals))+" dest="+repr([hex(v) for v in dest]))
     return {"table_bytes":[hex(x) for x in vals],
             "destination_by_event_id":[{"internal_event":n+1,"target":hex(pc)}
                                        for n,pc in enumerate(dest)],
