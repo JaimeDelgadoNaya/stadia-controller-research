@@ -131,6 +131,12 @@ HANDLER_BRANCH_PINS={
 }
 TBB_PC=0x60077370
 TBB_BASE=TBB_PC+4
+EXPECTED_TBB=bytes((7,15,20,24,29,35,39,54,73,86,96,144,147))
+
+def validate_signed_dispatch_table(raw):
+    if raw!=EXPECTED_TBB:
+        raise ValueError("Signed original class10 dispatch entries drift")
+    return True
 
 def audit_handler_table(image):
     # TBB PC-relative byte table; Thumb target = PC+4 + 2*byte.
@@ -140,8 +146,7 @@ def audit_handler_table(image):
         if ins.get(pc)!=expected:
             raise ValueError("Original signed callback dispatch guard drift at "+hex(pc))
     raw=image[TBB_BASE-BASE:TBB_BASE-BASE+13]
-    if len(raw)!=13:
-        raise ValueError("truncated OEM handler dispatch table")
+    validate_signed_dispatch_table(raw)
     routes=[]
     for n,offset in enumerate(raw):
         dest=TBB_BASE+2*offset
@@ -163,6 +168,7 @@ def audit_handler_table(image):
         "required_r1_range_if_called":"0x80 through 0x8c inclusive",
         "out_of_range_target":"0x600774ae",
         "table_file_offset":hex(TBB_BASE-BASE),
+        "signed_original_dispatch_table_bytes_verified":True,
         "dispatches":routes,
         "external_request_origin_unverified":True,
     }
