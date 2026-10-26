@@ -50,6 +50,8 @@ def signed_windows(image):
         "itcm_queue_lock":(0x7700,0x77A0,True),
         "itcm_queue_wait":(0x6D2C,0x6E64,True),
         "xip_original_queue_constructor":(0x600926D0,0x60092730,False),
+        "xip_queue_object_methods":(0x60092698,0x600926D0,False),
+        "itcm_adjacent_sender_candidate":(0x6E5C,0x7060,True),
     }
     windows={}
     cs=Cs(CS_ARCH_ARM,CS_MODE_THUMB|CS_MODE_MCLASS)
@@ -159,8 +161,8 @@ def audit(image):
     veneers=inspect_veneers(image)
     literal=queue_literals(image)
     loads=pc_literal_load_candidates(image,literal)
-    target_codes={int(v["dest_pc"],16) for v in veneers}
-    itcm=xip_target_BL_shapes(image,target_codes)
+    veneer_pcs={int(v["pc"],16) for v in veneers}
+    itcm=xip_target_BL_shapes(image,veneer_pcs)
     known=signed_itcm_BL_targets(image)
     return {
         "phase":75,"original_SHA256_verified":True,"original_SHA256":IMAGE_SHA256,
