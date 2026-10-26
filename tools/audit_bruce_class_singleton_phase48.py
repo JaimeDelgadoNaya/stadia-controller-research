@@ -21,7 +21,7 @@ from tools.audit_bruce_ep0_class_object_phase48 import raw_word,BRIDGE_PINS,pins
 BASE=ASSUMED_XIP_BASE
 EP0_LOOKUP_GLOBAL=0x20004080
 CLASS10_GLOBAL=0x200040E0
-CLASS1_GLOBAL=0x20004080
+CLASS1_GLOBAL=0x200040C0
 STATIC_TABLE_CLASS10=0x60104BA4
 SIGNED_CLASS10_CALLBACK=0x600613FD
 BOOT_CLASS10_RAM_RECORD=0x200030F4
@@ -77,7 +77,7 @@ def signed_12byte_record_impact(record_addr=BOOT_CLASS10_RAM_RECORD,
         "selected_record_pointer":hex(record_addr),
         "class_record_callback_initial":hex(SIGNED_CLASS10_CALLBACK),
         "runtime_record_second_word_before_class_init":hex(instance_before),
-        "if_class10_initializer_receives_R1_record_address":"singleton[+4] = record_addr",
+        "if_class10_initializer_receives_R1_record_address":"class10_singleton[+4] = record_addr",
         "if_R2_was_record_plus4":"record[+4] = singleton_addr",
         "then_double_deref_value":"singleton[+4] -> record[+4] -> singleton_addr",
         "can_treat_that_as_signed_Thumb_method":False,
@@ -126,6 +126,7 @@ def audit(image):
             "EP0_lookup_singleton":hex(lookup),
             "EP0_lookup_matches_class_selector_1_singleton":lookup==first,
             "EP0_lookup_matches_class_selector_10_singleton":lookup==glob,
+            "EP0_lookup_matches_either_class1_or_class10":lookup in (first,glob),
             "runtime_selected_class":"UNVERIFIED",
         },
         "class10_initializer":{
