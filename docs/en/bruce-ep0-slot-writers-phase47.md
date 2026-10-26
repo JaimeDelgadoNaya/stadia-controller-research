@@ -2,6 +2,16 @@
 
 **26 October 2026 · PR #49 · Read-only analysis of the exact SHA-pinned original Bruce OEM signed update.**
 
+## Central finding: dedicated signed EP0 IN/OUT installer
+
+The signed Bruce image contains a **dedicated EP0 callback-pair installation function at `0x60054F30`**, independently of the generic endpoint-descriptor loops. Its signed literal at `0x60054F74` is OEM Thumb callback **`0x60054D75`**; the next original word at `0x60054F78` is `0x00800040`, with endpoint address byte `+2 = 0x80` (**EP0 IN**). The function calls registrar `0x600D10B8` at `0x60054F4A`, sets that endpoint byte to **zero** at `0x60054F52`, then calls the registrar again at **`0x60054F5C`** (**EP0 OUT**). Both registrations use the **same OEM-signed callback `0x60054D75`** and the caller-provided R1 context. If the second call fails, it requests rollback for endpoint `0x80` through **`0x60054F68: BL 0x600D10F6`**.
+
+A signed direct caller at **`0x600D0BE0`** conditionally invokes this installer after precheck `0x600D0BD2: BL 0x60054F7C` succeeds and **R5 (input R1) equals 1**. This control function uses **`0x600D0BFA: BLX R3`** to call a method obtained from two indirect pointer reads of the class object; **its runtime class-10 destination remains unknown**.
+
+The original EP0 callback body at **`0x60054D74`** loads request-like fields, including `bRequest` in `0x60054DC4` and `bmRequestType` in `0x60054DC8`. It tests `bmRequestType & 0x60` at `0x60054DCA`, then follows a standard-request branch table or alternative guarded control paths that call **`0x600D0BC8`** at `0x60054E50` and `0x60054E8E`.
+
+**This dedicated EP0 registration is separate from the generic descriptor path that can choose event-1 adapter `0x600CFC35`.** We now know the original EP0 installer and its signed callback, but not whether real hardware executes that sequence, which class object/vtable it uses or whether class10 is selected. No host-controlled arbitrary pointer replacement, HAB CLOSED bypass or custom execution is demonstrated.
+
 ## Verified result
 
 We now know **how signed code chooses a callback/function and context pair when registering an endpoint**. We do **not** know the values actually written to EP0 OUT and EP0 IN on a physical controller; the signed update file is not installed flash or live RAM readback.
