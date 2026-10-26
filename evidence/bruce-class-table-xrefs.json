@@ -41,6 +41,8 @@
   "interpretation_limits": [
     "Linear disassembly not a CFG",
     "Calculated ADR or relocated pointers may be missed",
-    "Table record boundaries not established"
-  ]
+    "Table record boundaries not established",
+    "ADR/PC-relative ADD linear scans can miss dynamic forms"
+  ],
+  "adr_pc_relative_add_candidate_references": 0
 }
