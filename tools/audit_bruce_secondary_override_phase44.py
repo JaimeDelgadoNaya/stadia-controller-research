@@ -121,11 +121,57 @@ def verify_signed_second_setter_caller(image):
         "host_controls_object_pointer":"NOT DEMONSTRATED",
     }
 
+
+HANDLER_BRANCH_PINS={
+    0x60077360:("subs","r1, #0x80"),
+    0x6007736A:("cmp","r1, #0xc"),
+    0x6007736C:("bhi.w","#0x600774ae"),
+    0x60077370:("tbb","[pc, r1]"),
+}
+TBB_PC=0x60077370
+TBB_BASE=TBB_PC+4
+
+def audit_handler_table(image):
+    # TBB PC-relative byte table; Thumb target = PC+4 + 2*byte.
+    code=decode(image,0x60077360,0x60077374)
+    ins={q["pc"]:(q["m"],q["op"]) for q in code}
+    for pc,expected in HANDLER_BRANCH_PINS.items():
+        if ins.get(pc)!=expected:
+            raise ValueError("Original signed callback dispatch guard drift at "+hex(pc))
+    raw=image[TBB_BASE-BASE:TBB_BASE-BASE+13]
+    if len(raw)!=13:
+        raise ValueError("truncated OEM handler dispatch table")
+    routes=[]
+    for n,offset in enumerate(raw):
+        dest=TBB_BASE+2*offset
+        preview=decode(image,dest,dest+0x12)
+        routes.append({
+            "r1_candidate_code":hex(0x80+n),
+            "table_index":n,
+            "raw_signed_tbb_byte":offset,
+            "branch_target":hex(dest),
+            "target_in_signed_XIP":BASE<=dest<BASE+0xFF000,
+            "linear_preview":[hex(i["pc"])+" "+i["m"]+" "+i["op"] for i in preview[:5]],
+            "EP0_request_route_proven":False,
+        })
+    return {
+        "signed_pins_verified":len(HANDLER_BRANCH_PINS),
+        "signed_callback_thumb":"0x600db029",
+        "signed_callback_branch":"0x600db028 B.W 0x60077360",
+        "handler_entry":"0x60077360",
+        "required_r1_range_if_called":"0x80 through 0x8c inclusive",
+        "out_of_range_target":"0x600774ae",
+        "table_file_offset":hex(TBB_BASE-BASE),
+        "dispatches":routes,
+        "external_request_origin_unverified":True,
+    }
+
 def audit(image):
     if len(image)!=IMAGE_SIZE or hashlib.sha256(image).hexdigest()!=IMAGE_SHA256:
         raise ValueError("exact original Bruce OEM SHA-256 required")
     writer=inspect_second_writer(image)
     caller=verify_signed_second_setter_caller(image)
+    handler=audit_handler_table(image)
     callback=writer["callback_value_literal"]["value"]
     func=int(callback,16)&~1
     # Context larger than one basic block intentionally printed as candidate
@@ -177,6 +223,7 @@ def audit(image):
         "phase":44,"signed_oem_exact_sha_verified":True,
         "second_writer":writer,
         "second_writer_signed_getter_caller":caller,
+        "installed_OEM_callback_handler":handler,
         "caller_inbound_branch_candidates":find_inbound_branches(image,only_target=0x60051240),
         "caller_ptr_literal_refs":all_byte_word_references(image,0x60051241),
         "candidate_signed_object_initializer_entry":"0x60077140",
@@ -214,6 +261,7 @@ def main():
     if arg.out:arg.out.write_text(json.dumps(x,indent=2)+"\n")
     print("PHASE44 SECONDARY WRITER LITERALS",json.dumps(x["second_writer"]))
     print("PHASE44 SIGNED SECOND SETTER CALL CHAIN",json.dumps(x["second_writer_signed_getter_caller"]))
+    print("PHASE44 INSTALLED OEM HANDLER DISPATCH",json.dumps(x["installed_OEM_callback_handler"]))
     print("PHASE44 SECOND SETTER WRAPPER INBOUND",json.dumps(x["caller_inbound_branch_candidates"]))
     print("PHASE44 SECONDARY WRITER PRIOR CODE",json.dumps(x["later_writer_local_decode"]))
     print("PHASE44 SECONDARY WRITER ENTRY ANCHORED",json.dumps(x["entry_anchored_function_decode"]))
