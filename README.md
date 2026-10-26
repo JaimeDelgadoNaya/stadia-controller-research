@@ -37,6 +37,9 @@ firmware execution or signature bypass has been demonstrated.**
 
 **[Phase #36 — signed Bruce class-table references](docs/en/bruce-class-table-xrefs.md).** The original SHA-verified firmware shows that PC-relative load at `0x6005679A` points to a **different eight-byte-stride indirect dispatch table** at `0x60104BDC`. PC-relative and local `MOVW/MOVT` scans did not establish live EP0 registration of `0x600D0E58` or a receiver for `0x81/0x83/0x84`. Offline only; no hardware or firmware writes.
 
+
+**[Phase #37 — original signed class records and synthetic SETUP execution](docs/en/bruce-class-records-synthetic-setup.md).** Three 16-byte-shaped records (selectors `1`, `2`, `4`) appear in signed Bruce; selector `4` contains `0x600D0E58`. Bounded Unicorn execution of **original signed Thumb instructions** forwards synthetic `0x81/0x83/0x84` in R1 only when recipient/interface match, stopping **before** the indirect callback. This does **not** prove real EP0 registration, host reachability, own code execution or HAB bypass.
+
 ## Current priority: on-controller software and direct Switch 2
 
 The owner excludes adapters and external boards. The active goal is software
