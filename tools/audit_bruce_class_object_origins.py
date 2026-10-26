@@ -75,6 +75,110 @@ def pointer_literal_census(blob, targets=TARGETS):
                     "aligned_sources":[hex(x) for x in offsets[:25] if x%4==0]})
     return out
 
+def candidate_class_records(blob, start=0x60104B80, count=4):
+    """Interpret four 16-byte-shaped blocks; do not claim runtime registration."""
+    rows=[]
+    for n in range(count):
+        pc=start+n*16
+        ident=_word(blob,pc)
+        methods=[_word(blob,pc+o) for o in (4,8,12)]
+        rows.append({
+            "source_xip_address":hex(pc),
+            "selector_word":hex(ident),
+            "method_thumb_pointers":[hex(x) for x in methods],
+            "all_three_methods_signed_thumb":all(
+                x&1 and BASE<=(x&~1)<SIGNED_END for x in methods),
+            "zero_methods":all(x==0 for x in methods),
+            "record_size_hypothesis_bytes":16,
+            "runtime_class_selection":"NOT VERIFIED",
+        })
+    if [x["selector_word"] for x in rows]!=["0x1","0x2","0x4","0xa"]:
+        raise ValueError("Unexpected class table selector layout")
+    if not all(x["all_three_methods_signed_thumb"] for x in rows[:3]):
+        raise ValueError("Signed class method candidates changed")
+    if not rows[3]["zero_methods"]:
+        raise ValueError("Expected zero method trailer not present")
+    return rows
+
+def wider_pc_literal_origin_scan(blob, lo=0x601049E0, hi=0x60104C40):
+    """Raw PC-relative literal LOAD targets in broader neighboring range.
+
+    Scans XIP instruction stream as candidates; not a validated CFG. Word
+    loads are not equivalent to creating a class object or reaching EP0.
+    """
+    import re
+    from capstone import Cs, CS_ARCH_ARM, CS_MODE_THUMB, CS_MODE_MCLASS
+    from tools.audit_app_usb_dispatch import ITCM_SOURCE_OFFSET,ITCM_LENGTH
+    pattern=re.compile(r'^\w+, \[pc(?:, #(-?0x[0-9a-f]+|-?\d+))?\]
+    if len(blob)!=IMAGE_SIZE or hashlib.sha256(blob).hexdigest()!=IMAGE_SHA256:
+        raise ValueError("Requires exact original OEM signed Bruce image")
+    for address,value in KNOWN.items():
+        if _word(blob,address)!=value:
+            raise ValueError("known pointer drift at "+hex(address))
+    return {
+      "sha256_verified":True,"sha256":IMAGE_SHA256,
+      "raw_neighborhood":annotate_words(blob,*WINDOWS["table_words"]),
+      "record_layout_hypotheses":candidate_class_records(blob),
+      "wider_pc_literal_refs":wider_pc_literal_origin_scan(blob),
+      "exact_table_pointer_refs":pointer_literal_census(blob),
+      "code_windows":{name:_thumb(blob,a,b)
+                      for name,(a,b) in WINDOWS.items() if name!="table_words"},
+      "interpretation_limits":[
+        "Original signed update, not installed flash",
+        "Sequential disassembly may include literal pools and non-executable data",
+        "A signed function pointer is not evidence of runtime class registration",
+        "No live EP0 object, host class request behavior or user code execution proved"
+      ],
+      "usb_used":False,"device_written":False
+    }
+
+def main():
+    ap=argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("bruce",type=Path)
+    ap.add_argument("--out",type=Path)
+    ap.add_argument("--preview",action="store_true")
+    a=ap.parse_args()
+    report=inspect(a.bruce.read_bytes())
+    if a.out:
+        a.out.write_text(json.dumps(report,indent=2)+"\n")
+    print("Original firmware verified:",report["sha256_verified"])
+    print("Raw tables:",json.dumps(report["raw_neighborhood"]))
+    print("Exact refs:",json.dumps(report["exact_table_pointer_refs"]))
+    print("Candidate signed class records:",json.dumps(report["record_layout_hypotheses"]))
+    print("Wider PC literal refs:",json.dumps(report["wider_pc_literal_refs"]))
+    if a.preview:
+        for k,rows in report["code_windows"].items():
+            print("WINDOW",k)
+            for r in rows: print(r["pc"],r["m"],r["op"])
+    print("No runtime EP0 callback or custom execution inferred.")
+
+if __name__=="__main__":
+    main()
+,re.I)
+    md=Cs(CS_ARCH_ARM,CS_MODE_THUMB|CS_MODE_MCLASS)
+    initial=(ITCM_SOURCE_OFFSET+ITCM_LENGTH+1)&~1
+    candidates=[]
+    for off in range(initial,0xFF000,0x4000):
+        for ins in md.disasm(blob[off:min(off+0x4000,0xFF000)],BASE+off):
+            if not ins.mnemonic.startswith("ldr"):
+                continue
+            m=pattern.fullmatch(ins.op_str)
+            if not m:
+                continue
+            adr=((ins.address+4)&~3)+(int(m.group(1),0) if m.group(1) else 0)
+            if not BASE<=adr<SIGNED_END or adr%4:
+                continue
+            value=_word(blob,adr)
+            if lo<=value<hi:
+                candidates.append({
+                    "pc":hex(ins.address),
+                    "load":ins.mnemonic+" "+ins.op_str,
+                    "literal_addr":hex(adr),
+                    "literal_word":hex(value),
+                    "proves_class_object_instantiation":False,
+                })
+    return candidates
+
 def inspect(blob):
     if len(blob)!=IMAGE_SIZE or hashlib.sha256(blob).hexdigest()!=IMAGE_SHA256:
         raise ValueError("Requires exact original OEM signed Bruce image")
