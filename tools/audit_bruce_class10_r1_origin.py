@@ -61,6 +61,28 @@ def origin_equation(index, base):
         raise ValueError("invalid synthetic class-interface index")
     return base + index * 12
 
+def literal_pointer_census(image):
+    """Aligned 32-bit pointer shapes; presence is NOT caller reachability."""
+    import struct
+    wanted={
+        "config_class_selector_callback":0x600550E5,
+        "class10_init_method":0x60055321,
+        "class10_event_forwarder":0x600D0E59,
+        "class10_global_ram_address":0x200040E0,
+        "class_configuration_ram_address":0x20004080,
+    }
+    results={}
+    for name,ptr in wanted.items():
+        packed=struct.pack("<I",ptr)
+        hits=[off for off in range(0,0xFF030-3,4)
+              if image[off:off+4]==packed]
+        results[name]={"pointer":hex(ptr),
+                       "aligned_source_offsets":[hex(o) for o in hits[:45]],
+                       "count":len(hits),
+                       "function_was_executed":False}
+    return results
+
+
 def audit(image, *, direct_call_samples=16):
     if len(image)!=IMAGE_SIZE or hashlib.sha256(image).hexdigest()!=IMAGE_SHA256:
         raise ValueError("Exactly pinned original signed Bruce image required")
@@ -118,6 +140,9 @@ def audit(image, *, direct_call_samples=16):
             "offset_4":"class global object pointer written by initializer",
             "offset_8":"interface descriptor pointer (verified reads)",
         },
+        "aligned_function_pointer_census":literal_pointer_census(image),
+        "known_global_RAM_base_from_selector_literal":"0x20004080",
+        "known_class10_global_RAM_from_initializer_literal":"0x200040e0",
         "direct_caller_census":{
             name:[{"callsite":x["callsite"],"preceding":x["before"]}
                   if "before" in x else x for x in examples]
@@ -140,6 +165,7 @@ def main():
         args.out.write_text(json.dumps(result,indent=2)+"\n",encoding="utf-8")
     print("R1 signed semantic anchors",result["semantic_pins_verified"])
     print("CLASS 10 RECORD POINTER FORMULA",result["record_layout_hypothesis"])
+    print("ALIGNED XIP POINTER WORDS",json.dumps(result["aligned_function_pointer_census"]))
     print("DIRECT XIP CALLER SITES",json.dumps({
       k:[entry["callsite"] for entry in v]
       for k,v in result["direct_caller_census"].items()}))
