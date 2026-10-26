@@ -136,6 +136,78 @@ def itcm_code(image,at,size=0x130):
             for i in md.disasm(image[off:off+size],at)]
 
 
+PAIR_MEM_REGEXP=re.compile(
+    r"\\[(r(?:1[0-2]|[0-9])|ip|sb|sl|fp), #(0x[0-9a-f]+|\\d+)\\]"
+)
+PAIR_IMMEDIATES={0x37C,0x380}
+
+
+def scan_field_offset_ops(image,span=0x1000):
+    """Find XIP and relocated ITCM instructions using pair-field offsets.
+
+    This is a *linear* decoder scan. It does not prove the base register
+    contains the global pointer or that a matching instruction is executable.
+    """
+    decoder=Cs(CS_ARCH_ARM,CS_MODE_THUMB|CS_MODE_MCLASS)
+    rows=[]
+    domains=[
+        ("XIP",0xC800,IMAGE_XIP_LIMIT,BASE,0),
+        ("ITCM",0,ITCM_LENGTH,0,ITCM_SOURCE_OFFSET),
+    ]
+    for name,start,end,pcbase,sourcebase in domains:
+        for begin in range(start,end,span):
+            stop=min(begin+span,end)
+            data=image[sourcebase+begin:sourcebase+stop]
+            for inst in decoder.disasm(data,pcbase+begin):
+                hit=PAIR_MEM_REGEXP.search(inst.op_str)
+                if not hit or int(hit.group(2),0) not in PAIR_IMMEDIATES:
+                    continue
+                rows.append({
+                    "pc":hex(inst.address),
+                    "source_file_offset":hex(sourcebase+begin+(inst.address-(pcbase+begin))),
+                    "m":inst.mnemonic,"op":inst.op_str,"base_reg":hit.group(1),
+                    "field_offset":hex(int(hit.group(2),0)),
+                    "domain":name,
+                    "classification":"LINEAR_OFFSET_MATCH; OBJECT_BASE_UNKNOWN",
+                })
+    return rows
+
+
+def resolve_itcm_trampoline(image,entry=CALLBACK_ITCM):
+    """Stop at Thumb LDR.W PC and read the following signed word as data.
+
+    A veneer is 4 bytes of instruction + a 4-byte literal; decoding both
+    as executable instructions produces spurious code and false conclusions.
+    """
+    ins=itcm_code(image,entry,4)
+    if len(ins)!=1 or (ins[0]["m"],ins[0]["op"])!=(
+            "ldr.w","pc, [pc, #-0x0]"):
+        raise ValueError("phase59 signed ITCM B980 veneer instruction drift")
+    src=ITCM_SOURCE_OFFSET+entry+4
+    raw=unsigned_word(image,src)
+    target=raw&~1
+    if raw&1 and BASE<=target<BASE+IMAGE_XIP_LIMIT:
+        classification="SIGNED_XIP_POINTER"
+        code=[{"pc":hex(r["pc"]),"m":r["m"],"op":r["op"]}
+              for r in decode(image,target,target+0x90)[:38]]
+    elif raw&1 and target<ITCM_LENGTH:
+        classification="STARTUP_RELOCATED_ITCM_POINTER"
+        code=itcm_code(image,target,0x90)[:38]
+    else:
+        classification="OUT_OF_KNOWN_CODE_RANGE_OR_NON_THUMB"
+        code=[]
+    return {
+        "veneer_PC":hex(entry),
+        "original_file_instruction_offset":hex(ITCM_SOURCE_OFFSET+entry),
+        "original_file_literal_offset":hex(src),
+        "raw_target_word":hex(raw),
+        "target_thumb_PC":hex(target),
+        "target_classification":classification,
+        "target_code_preview":code,
+        "physical_execution":"UNVERIFIED",
+    }
+
+
 def original_check(image):
     if len(image)!=IMAGE_SIZE or hashlib.sha256(image).hexdigest()!=IMAGE_SHA256:
         raise ValueError("phase59 exact signed Bruce OEM SHA-256 required")
@@ -157,7 +229,8 @@ def audit(image):
     hits=scan_aligned_literals(image)
     loads=recover_signed_literal_loads(image,hits)
     neighborhoods=[follow_load_neighborhood(image,l) for l in loads]
-    worker=itcm_code(image,CALLBACK_ITCM,0x140)
+    worker_veneer=resolve_itcm_trampoline(image)
+    paired_offsets=scan_field_offset_ops(image)
     return {
         "phase":59,"SHA256_signed_original_verified":True,
         "original_SHA256":IMAGE_SHA256,
@@ -170,12 +243,8 @@ def audit(image):
         "exact_aligned_RAM_literal_hits":hits,
         "PC_relative_literal_load_candidates":loads,
         "bounded_candidate_neighborhoods":neighborhoods,
-        "relocated_ITCM_worker":{
-            "target_PC":hex(CALLBACK_ITCM),
-            "source_file_offset":hex(ITCM_SOURCE_OFFSET+CALLBACK_ITCM),
-            "signed_code_rows":worker,
-            "hardware_invoked":"UNVERIFIED",
-        },
+        "relocated_ITCM_veneer":worker_veneer,
+        "matching_pair_field_access_candidates":paired_offsets,
         "open_questions":{
             "pair_read_and_indirect_invocation":"UNPROVEN_FROM_LITERAL_SCAN",
             "USB_host_trigger":"UNPROVEN",
@@ -201,7 +270,8 @@ def main():
     print("PHASE59 LOAD CANDIDATES",json.dumps(output["PC_relative_literal_load_candidates"]))
     for row in output["bounded_candidate_neighborhoods"]:
         print("PHASE59 LOAD WINDOW",json.dumps(row))
-    print("PHASE59 ITCM B980 CODE",json.dumps(output["relocated_ITCM_worker"]))
+    print("PHASE59 ITCM B980 VENEER",json.dumps(output["relocated_ITCM_veneer"]))
+    print("PHASE59 PAIR-FIELD OFFSET CANDIDATES",json.dumps(output["matching_pair_field_access_candidates"]))
     print("PHASE59 NO USB HOST TRIGGER OR CUSTOM CODE EXECUTION PROOF")
 
 
