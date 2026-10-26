@@ -4,24 +4,21 @@
 
 La [fase #35](setup-control-clase-bruce.md) identificó el reenvío condicional del campo `bRequest` hacia un callback por `0x600D0EBA → BX R3`. La [fase #36](bruce-referencias-tablas-clase.md) descartó que la referencia `0x60104BDC` a una tabla indexada de ocho bytes fuera prueba de la instalación del callback de clase `0x600D0E58`.
 
-## 1. Nueva estructura comprobada en los datos originales
+## 1. Estructura de clases — corrección posterior verificada en la fase #38
 
-La lectura en palabras de 32 bits de la imagen firmada permite agrupar el intervalo `0x60104B80..0x60104BBF` en cuatro **registros aparentes de 16 bytes**:
+**Fe de erratas (PR #38, 26/10/2026):** La identificación original de los registros de 16 bytes de esta fase era **incorrecta**. El selector se encuentra en **`registro+0x0C`**, no en `registro+0`. La base de la tabla es **`0x60104B74`** y está cargada directamente por las instrucciones OEM firmadas `0x60055142` y `0x600551CC`. Los códigos `0x60055178–0x6005519A` y `0x600551FC–0x6005521A` recorren hasta cinco registros con paso de 16 bytes.
 
-| Inicio | Selector (palabra) | Función 1 | Función 2 | Función 3 |
+| Base de entrada | Método +0 | Método +4 | Método +8 | Selector +12 |
 |---|---|---|---|---|
-| `0x60104B80` | `1` | `0x60054C7D` | `0x60054D09` | `0x60054A55` |
-| `0x60104B90` | `2` | `0x60054875` | `0x600D0591` | `0x600D0333` |
-| `0x60104BA0` | `4` | `0x60055321` | `0x600D0ECB` | **`0x600D0E59`** |
-| `0x60104BB0` | `10` | `0` | `0` | `0` |
+| `0x60104B74` | `0x600552F1` | `0x600D0DFD` | `0x600D0C6B` | 1 |
+| `0x60104B84` | `0x60054C7D` | `0x60054D09` | `0x60054A55` | 2 |
+| `0x60104B94` | `0x60054875` | `0x600D0591` | `0x600D0333` | 4 |
+| `0x60104BA4` | `0x60055321` | `0x600D0ECB` | **`0x600D0E59`** | **10** |
+| `0x60104BB4` | 0 | 0 | 0 | 0 |
 
-Las nueve funciones de los primeros tres registros son punteros Thumb dentro del código de aplicación firmado. El último registro es un **registro con funciones nulas**; su papel (fin de tabla, valor reservado, etc.) está por verificar.
+En consecuencia, **el manejador `0x600D0E58` pertenece al selector 10, NO al selector 4**. El registro con funciones nulas es el quinto (selector 0), no el cuarto. La emulación de este informe sobre la rama de `bRequest` sigue siendo válida: su RAM y objetos eran sintéticos, independientes de la asignación errónea del registro.
 
-Este patrón hace plausible la existencia de un **registro de controladores/objetos de clase** y aporta una posible frontera de registro más concreta: `0x60104BA0`, en vez de considerar `0x60104BA4` comienzo probado de tabla. Es una interpretación estructural **offline**, no evidencia de selección del registro `4` ni instalación en EP0.
-
-La búsqueda exacta de palabras que contengan las direcciones de los posibles registros (incluida la zona de código trasladada a ITCM) no encontró referencias directas a `0x60104B80`, `0x60104B90` ni `0x60104BA0`. Una búsqueda más amplia de cargas literales PC-relativas detectó un candidato en `0x60058820`, pero el literal vale `0x60104C38`: **fuera del grupo anterior**. Por tanto, tampoco demuestra su utilización.
-
-**Límite:** las direcciones pueden calcularse, pasarse indirectamente, copiarse de otra región o no utilizarse en el modo de firmware bajo estudio. Una búsqueda negativa no prueba que el código sea inalcanzable.
+La fase #38 también ha ejecutado el **selector OEM original** en Unicorn y ha verificado que, para objetos/identificadores sintéticos `4` y `10`, prepara los métodos `0x60054875` y `0x60055321`, respectivamente. No prueba que ninguno esté seleccionado en un mando físico. Consultar [análisis corregido](../es/seleccion-clase-bruce-fase38.md).
 
 ## 2. Emulación real de la rama original de clase
 
@@ -45,7 +42,7 @@ En los tres ejemplos admitidos, `R3` era el valor de función **sintético** `0x
 
 **Está demostrado para esa rama aislada, con entradas construidas artificialmente, que los códigos `0x81`, `0x83` y `0x84` no se filtran antes de reenviarse al callback** si el destinatario e índice coinciden. La rama inspeccionada verifica el destinatario pero **no autentica ni interpreta** por sí misma esos códigos. La decisión y los efectos corresponden al manejador al que se saltaría.
 
-**No está demostrado:** que esa instancia exista realmente en el mando de producción, que el código sea alcanzado por las transferencias del actualizador, qué dirección contiene la tabla real de clase, qué operaciones permitiría, ni que exista una ejecución de código modificable por el host.
+**No está demostrado:** que esa instancia exista realmente en el mando de producción, que el código sea alcanzado por las transferencias del actualizador, qué callback final está instalado en la instancia real de clase, qué operaciones permitiría, ni que exista una ejecución de código modificable por el host.
 
 El `BX R3` usa una dirección obtenida del **objeto de clase**, no un puntero enviado directamente por USB. Este trabajo **no** acredita ejecución arbitraria, bypass HAB CLOSED, código propio persistente, recuperación o compatibilidad Xbox/Switch 2.
 

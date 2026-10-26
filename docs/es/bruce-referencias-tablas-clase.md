@@ -1,5 +1,8 @@
 # Bruce: auditoría de referencias a tablas de clase (fase #36)
 
+**Corrección posterior (fase #38):** la verdadera base de la tabla de clase es `0x60104B74`, cargada por instrucciones originales en `0x60055142` y `0x600551CC`. El barrido de esta fase buscaba `0x60104B80..0x60104BDF` y **no incluía** esa base. El selector ocupa el desplazamiento `+0x0C` de cada entrada de 16 bytes; `0x600D0E58` corresponde al selector **10**, no 4. Véase [resultado verificado #38](seleccion-clase-bruce-fase38.md). La constatación del despacho vecino de ocho bytes sigue siendo válida.
+
+
 **26 de octubre de 2026 · solo lectura.** Auditoría reproducible sobre el firmware original OEM Bruce **firmado** (archivo de actualización; 1.050.984 bytes; SHA-256 `466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3`). Ninguna instrucción se ejecutó en el mando.
 
 ## Pregunta

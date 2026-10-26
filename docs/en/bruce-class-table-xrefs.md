@@ -1,5 +1,8 @@
 # Bruce signed class table cross-reference audit — phase #36
 
+**Phase #38 correction:** The real class table base is `0x60104B74`, loaded by two original XIP PC-relative instructions at `0x60055142` and `0x600551CC`. This phase's searched range `0x60104B80..0x60104BDF` **excluded** that address. The selector is at record offset `+0x0C`, and `0x600D0E58` belongs to selector **10**, not 4. See [corrected phase #38 audit](bruce-class-selector-phase38.md). The neighboring 8-byte dispatch remains a separate valid observation.
+
+
 **2026-10-26 · entirely offline.** Original signed OEM Bruce **update** image, 1,050,984 bytes, SHA-256 `466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3`. This is not a physical dump of the installed device.
 
 [Phase #35](bruce-class-control-setup-provenance.md) verified that `0x600D0E58` conditionally forwards an interface-directed USB SETUP `bRequest` argument into a class-object callback. A signed function pointer `0x600D0E59` is stored as **data** at `0x60104BAC`. Crucially, no live EP0 registration was established.

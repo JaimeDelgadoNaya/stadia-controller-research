@@ -1,0 +1,125 @@
+{
+  "date": "2026-10-26",
+  "pr": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/pull/38",
+  "sample": {
+    "kind": "OEM signed Bruce update, NOT physical flash readback",
+    "bytes": 1050984,
+    "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3"
+  },
+  "literal_provenance": [
+    {
+      "instruction": "0x60055142",
+      "source_literal": "0x600551b4",
+      "value": "0x60104b74"
+    },
+    {
+      "instruction": "0x600551cc",
+      "source_literal": "0x60055220",
+      "value": "0x60104b74"
+    }
+  ],
+  "record_length": 16,
+  "selector_offset": 12,
+  "original_selector_loops": [
+    {
+      "code": "0x60055178..0x6005519a",
+      "entry_count": 5,
+      "stride": 16,
+      "method_load": "0x6005518c +0",
+      "indirect_call": "0x60055194 BLX R3"
+    },
+    {
+      "code": "0x600551fc..0x6005521a",
+      "entry_count": 5,
+      "stride": 16,
+      "method_load": "0x60055210 +4",
+      "indirect_call": "0x60055214 BLX R2"
+    }
+  ],
+  "records": [
+    {
+      "base": "0x60104b74",
+      "id": 1,
+      "methods": [
+        "0x600552f1",
+        "0x600d0dfd",
+        "0x600d0c6b"
+      ]
+    },
+    {
+      "base": "0x60104b84",
+      "id": 2,
+      "methods": [
+        "0x60054c7d",
+        "0x60054d09",
+        "0x60054a55"
+      ]
+    },
+    {
+      "base": "0x60104b94",
+      "id": 4,
+      "methods": [
+        "0x60054875",
+        "0x600d0591",
+        "0x600d0333"
+      ]
+    },
+    {
+      "base": "0x60104ba4",
+      "id": 10,
+      "methods": [
+        "0x60055321",
+        "0x600d0ecb",
+        "0x600d0e59"
+      ]
+    },
+    {
+      "base": "0x60104bb4",
+      "id": 0,
+      "methods": [
+        "0",
+        "0",
+        "0"
+      ]
+    }
+  ],
+  "previous_phase37_record_offset0_identification": "WRONG; corrected phase37 reports and evidence",
+  "class10_bRequest_forwarder": "0x600d0e58",
+  "synthetic_unicorn_selector_cases": [
+    {
+      "synthetic_id": 4,
+      "record_id": 4,
+      "matched": true,
+      "R3": "0x60054875",
+      "stopped_before_BLX": true
+    },
+    {
+      "synthetic_id": 10,
+      "record_id": 10,
+      "matched": true,
+      "R3": "0x60055321",
+      "stopped_before_BLX": true
+    },
+    {
+      "synthetic_id": 10,
+      "record_id": 4,
+      "matched": false,
+      "stopped_before_BLX": true
+    },
+    {
+      "synthetic_id": 4,
+      "record_id": 10,
+      "matched": false,
+      "stopped_before_BLX": true
+    }
+  ],
+  "startup_data_direct_class10_pointers": 0,
+  "active_class10_installed_in_physical_device": "UNKNOWN",
+  "actual_EP0_callback": "UNKNOWN",
+  "USB_0x81_83_84_host_reachability": "UNKNOWN",
+  "physical_USB_used": false,
+  "firmware_written": false,
+  "arbitrary_execution_proven": false,
+  "HAB_bypass_proven": false,
+  "Xbox_Switch2_compatibility_proven": false
+}

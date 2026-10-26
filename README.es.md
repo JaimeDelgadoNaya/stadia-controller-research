@@ -38,7 +38,10 @@ hemos demostrado ejecución de firmware propio ni una forma de eludir las firmas
 **[Fase #36 — referencias reales de tablas USB](docs/es/bruce-referencias-tablas-clase.md).** Sobre la aplicación Bruce original firmada, se verificó que el puntero cargado en `0x6005679A` apunta a una **tabla indexada distinta**, de entradas de ocho bytes, en `0x60104BDC`. El barrido PC-relativo y `MOVW/MOVT` **no ha acreditado** una instalación de `0x600D0E58` para EP0. Quedan sin identificar la clase activa y el tratamiento de `0x81/0x83/0x84`; análisis exclusivamente offline.
 
 
-**[Fase #37 — registros de clase y emulación real de SETUP](docs/es/tabla-clase-emulacion-setup.md).** Confirmamos en Bruce firmado tres registros aparentes de 16 bytes con selectores `1`, `2` y `4`; el registro `4` incluye el manejador `0x600D0E58`. Ejecutamos en Unicorn **instrucciones OEM originales** con RAM sintética: `0x81`, `0x83`, `0x84` llegan a `R1` antes del salto al callback si destinatario e interfaz coinciden; casos de error quedan rechazados. **Emulación empieza después de seleccionar evento, para antes de BX; no demuestra EP0 real, firmware propio ni bypass HAB CLOSED.**
+**[Fase #37 — registros de clase y emulación real de SETUP](docs/es/tabla-clase-emulacion-setup.md).** **Corrección fase #38:** la base real es `0x60104B74` y hay cinco registros de 16 bytes con el selector en `+12`. El registro **`10`**, no el `4`, contiene el manejador `0x600D0E58`. Ejecutamos en Unicorn **instrucciones OEM originales** con RAM sintética: `0x81`, `0x83`, `0x84` llegan a `R1` antes del salto al callback si destinatario e interfaz coinciden; casos de error quedan rechazados. **Emulación empieza después de seleccionar evento, para antes de BX; no demuestra EP0 real, firmware propio ni bypass HAB CLOSED.**
+
+
+**[Fase #38 — selección original de clase USB](docs/es/seleccion-clase-bruce-fase38.md).** Localizamos la base real `0x60104B74` en dos referencias Thumb firmadas, verificamos los cinco registros con selector `+0x0C` y emulamos la selección de identificadores `4`/`10` sin ejecutar métodos. La prueba asigna `0x600D0E58` al identificador **10**; clase activa, EP0 real y callback final siguen sin demostrar.
 
 ## Prioridad actual: software del propio mando y Switch 2 directa
 

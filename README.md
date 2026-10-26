@@ -38,7 +38,10 @@ firmware execution or signature bypass has been demonstrated.**
 **[Phase #36 — signed Bruce class-table references](docs/en/bruce-class-table-xrefs.md).** The original SHA-verified firmware shows that PC-relative load at `0x6005679A` points to a **different eight-byte-stride indirect dispatch table** at `0x60104BDC`. PC-relative and local `MOVW/MOVT` scans did not establish live EP0 registration of `0x600D0E58` or a receiver for `0x81/0x83/0x84`. Offline only; no hardware or firmware writes.
 
 
-**[Phase #37 — original signed class records and synthetic SETUP execution](docs/en/bruce-class-records-synthetic-setup.md).** Three 16-byte-shaped records (selectors `1`, `2`, `4`) appear in signed Bruce; selector `4` contains `0x600D0E58`. Bounded Unicorn execution of **original signed Thumb instructions** forwards synthetic `0x81/0x83/0x84` in R1 only when recipient/interface match, stopping **before** the indirect callback. This does **not** prove real EP0 registration, host reachability, own code execution or HAB bypass.
+**[Phase #37 — original signed class records and synthetic SETUP execution](docs/en/bruce-class-records-synthetic-setup.md).** **Corrected in phase #38:** five 16-byte entries start at `0x60104B74`, with selector at offset `+12`; **selector `10`**, not `4`, owns `0x600D0E58`. Bounded Unicorn execution of **original signed Thumb instructions** forwards synthetic `0x81/0x83/0x84` in R1 only when recipient/interface match, stopping **before** the indirect callback. This does **not** prove real EP0 registration, host reachability, own code execution or HAB bypass.
+
+
+**[Phase #38 — verified signed Bruce class selection](docs/en/bruce-class-selector-phase38.md).** Two Thumb PC literals resolve the true `0x60104B74` base and five 16-byte entries. Bounded Unicorn execution confirms class ID `4` selects `0x60054875` while ID `10` selects `0x60055321`; no class method executed. The SETUP forwarding method `0x600D0E58` belongs to ID **10**. Physical EP0 and final callback remain unverified.
 
 ## Current priority: on-controller software and direct Switch 2
 

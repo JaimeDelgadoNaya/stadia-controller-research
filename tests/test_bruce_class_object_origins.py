@@ -23,22 +23,24 @@ class OriginTests(unittest.TestCase):
         self.assertEqual(found[0]["source_file_offsets"],["0x40"])
         self.assertEqual(found[1]["count"],0)
 
-    def test_three_16byte_records_and_placeholder(self):
+    def test_corrected_signed_16byte_methods_then_selector(self):
         fake=bytearray(0xC4C00)
-        import struct
-        for i,kind in enumerate((1,2,4,10)):
-            off=0xC4B80+i*16
-            struct.pack_into("<I",fake,off,kind)
-            if i<3:
+        for i,kind in enumerate((1,2,4,10,0)):
+            off=0xC4B74+i*16
+            struct.pack_into("<I",fake,off+12,kind)
+            if i<4:
                 for j in range(3):
-                    struct.pack_into("<I",fake,off+4+j*4,0x60050001+j*2)
+                    method=0x60050001+j*2
+                    if i==3 and j==2: method=0x600D0E59
+                    struct.pack_into("<I",fake,off+j*4,method)
         rows=a.candidate_class_records(fake)
-        self.assertEqual(len(rows),4)
+        self.assertEqual(len(rows),5)
         self.assertEqual(rows[2]["selector_word"],"0x4")
-        self.assertTrue(rows[2]["all_three_methods_signed_thumb"])
-        self.assertTrue(rows[3]["zero_methods"])
         self.assertEqual(rows[3]["selector_word"],"0xa")
-        struct.pack_into("<I",fake,0xC4B90,0x3)
+        self.assertEqual(rows[3]["method_thumb_pointers"][-1],"0x600d0e59")
+        self.assertEqual(rows[3]["selector_offset_from_record"],12)
+        self.assertTrue(rows[4]["zero_methods"])
+        struct.pack_into("<I",fake,0xC4BA0,3)
         with self.assertRaises(ValueError):
             a.candidate_class_records(fake)
 

@@ -14,6 +14,9 @@ on:
       - 'tools/audit_bruce_class_vtable.py'
       - 'tools/audit_bruce_class_table_xrefs.py'
       - 'tools/audit_bruce_class_object_origins.py'
+      - 'tools/audit_bruce_class_selector.py'
+      - 'tools/audit_bruce_class_selector_verified.py'
+      - 'tools/emulate_bruce_class_selector.py'
       - 'tools/emulate_bruce_class_request_fragment.py'
       - 'tests/test_signed_app_host_boundary.py'
       - 'tests/test_signed_bruce_variants.py'
@@ -26,6 +29,9 @@ on:
       - 'tests/test_bruce_class_vtable.py'
       - 'tests/test_bruce_class_table_xrefs.py'
       - 'tests/test_bruce_class_object_origins.py'
+      - 'tests/test_bruce_class_selector.py'
+      - 'tests/test_bruce_class_selector_verified.py'
+      - 'tests/test_emulate_bruce_class_selector.py'
       - 'tests/test_bruce_class_request_fragment.py'
       - '.github/workflows/signed-app-host-boundary.yml'
   workflow_dispatch:
@@ -81,6 +87,9 @@ jobs:
           python -m tools.audit_bruce_class_vtable /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/class-vtable.json
           python -m tools.audit_bruce_class_table_xrefs /tmp/stadia-app-offline/bruce.bin
           python -m tools.audit_bruce_class_object_origins /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/object-origins.json
+          python -m tools.audit_bruce_class_selector /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/class-selection.json
+          python -m tools.audit_bruce_class_selector_verified /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/class-selection-pinned.json
+          python -m tools.emulate_bruce_class_selector /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/selection-synthetic.json
           python -m tools.emulate_bruce_class_request_fragment /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/synthetic-class-requests.json
           python - <<'PY'
           import json
