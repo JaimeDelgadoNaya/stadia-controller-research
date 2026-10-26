@@ -30,6 +30,15 @@ class WorkQueueCallerProvenanceTests(unittest.TestCase):
         self.assertNotIn(a.CALL_B,a.USB_ANCHOR_TARGETS.values())
         self.assertEqual(a.B_ENTRY,0x6006B290)
 
+    def test_original_B_callback_and_shared_helper_expected_anchors(self):
+        self.assertEqual(a.CALL_B_INSTALL_PINS[0x6006B416],
+                         ("ldr","r3, [pc, #0x9c]"))
+        self.assertEqual(a.CALL_B_INSTALL_PINS[0x6006B41C],
+                         ("str.w","r4, [r4, #0x120]"))
+        self.assertEqual(a.CALL_B_INSTALL_PINS[0x6006B420],
+                         ("str.w","r3, [r4, #0x11c]"))
+        self.assertEqual(a.B_CALLBACK_WORD_PC,0x6006B4B4)
+
     def test_sha_fail_closed(self):
         with self.assertRaisesRegex(ValueError,"SHA-256"):
             a.audit(b"synthetic-no-signed-oem")
@@ -48,6 +57,16 @@ class WorkQueueCallerProvenanceTests(unittest.TestCase):
         self.assertEqual(len(found["signed_producer_callsites"]),2)
         self.assertEqual(found["limits"]["physical_USB_event_origin"],"UNPROVEN")
         self.assertEqual(found["limits"]["callback_BLX"],"NOT_EXECUTED")
+        self.assertEqual(found["B_signed_callback_initializer"]["literal_value"],
+                         "0x6006b291")
+        self.assertEqual(found["B_signed_callback_initializer"]["callback_origin"],
+                         "SIGNED_OEM_INITIALIZER_STATICALLY_PROVEN")
+        self.assertEqual(
+            found["phase66_phase76_shared_signed_helper"]["shared_target"],
+            "0x6009267c")
+        self.assertEqual(found["B_nested_status_source_xrefs"]
+                         ["B_callback_literal_PC_load_candidates"][0]["pc"],
+                         "0x6006b416")
 
     @unittest.skipUnless(
         os.environ.get("STADIA_BRUCE_IMAGE") and
