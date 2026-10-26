@@ -1,0 +1,74 @@
+{
+  "phase": 55,
+  "date": "2026-10-26",
+  "PR": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/pull/57",
+  "input": {
+    "type": "exact original signed Bruce OEM update",
+    "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+    "installed_RAM_read": false
+  },
+  "verification": {
+    "original_signed_machine_code_pins": 19,
+    "original_audit_CI": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40347175043",
+    "result": "success"
+  },
+  "owner_holder_transfer": {
+    "caller_owner_load": {
+      "pc": "0x60079d7c",
+      "operand": "ldr r2,[pc,#0x54]",
+      "literal_at": "0x60079dd4",
+      "value": "0x2000a2a8"
+    },
+    "direct_call": "0x60079d84 BL 0x6007eb8c",
+    "callee_parent_register": "0x6007eb96 MOV R4,R0",
+    "callee_saved_copy": "0x6007eb9e MOV R8,R2",
+    "store": "0x6007ebb4 STR.W R8,[R4,#0x80]",
+    "address": "UNKNOWN_PARENT_BASE_PLUS_0x80",
+    "stored_value": "0x2000a2a8",
+    "writer_to_owner_plus4_plus8_plus12": false,
+    "runtime_executed": "UNVERIFIED"
+  },
+  "signed_group_getters": [
+    {
+      "site": "0x600610fc",
+      "literal_address": "0x60061100",
+      "value": "0x200030e8"
+    },
+    {
+      "site": "0x60061104",
+      "literal_address": "0x60061108",
+      "value": "0x200030e8"
+    }
+  ],
+  "signed_initialized_group": [
+    {
+      "ram": "0x200030e8",
+      "selector_byte": 2,
+      "thumb_callback": "0x60061249",
+      "descriptor": "0x200030a0"
+    },
+    {
+      "ram": "0x200030f4",
+      "selector_byte": 10,
+      "thumb_callback": "0x600613fd",
+      "descriptor": "0x20003100"
+    }
+  ],
+  "undetermined": {
+    "owner_plus4": "UNMEASURED",
+    "owner_plus8": "UNMEASURED",
+    "owner_plus12": "UNMEASURED",
+    "holder_absolute_address": "UNKNOWN",
+    "link_holder_to_active_USB": "UNVERIFIED",
+    "active_class10": "UNVERIFIED",
+    "unsigned_firmware": "NOT DEMONSTRATED",
+    "HAB_CLOSED_bypass": "NOT DEMONSTRATED"
+  },
+  "safety": {
+    "usb_requests": false,
+    "hardware_RAM_or_flash_reads": false,
+    "flash_writes": false,
+    "efuse_writes": false
+  },
+  "next": "Phase56: recover R0 origin at caller 0x60079d84, trace consumers of holder+0x80, distinguish runtime-vs-static."
+}
