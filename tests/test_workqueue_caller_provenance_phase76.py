@@ -47,7 +47,7 @@ class WorkQueueCallerProvenanceTests(unittest.TestCase):
                          len(a.CALL_A_ANCHORS)+len(a.CALL_B_ANCHORS))
         self.assertEqual(len(found["signed_producer_callsites"]),2)
         self.assertEqual(found["limits"]["physical_USB_event_origin"],"UNPROVEN")
-        self.assertFalse(found["limits"]["callback_BLX"])
+        self.assertEqual(found["limits"]["callback_BLX"],"NOT_EXECUTED")
 
     @unittest.skipUnless(
         os.environ.get("STADIA_BRUCE_IMAGE") and
