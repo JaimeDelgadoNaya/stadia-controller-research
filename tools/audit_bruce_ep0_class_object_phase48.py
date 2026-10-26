@@ -27,6 +27,10 @@ WINDOWS={
     "control_to_class_call":(0x600D0BA0,0x600D0C20),
     "class_candidate_constructor":(0x600552D0,0x600553A8),
     "class_configurator":(0x600CFD20,0x600CFE18),
+    "signed_first_class_selector":(0x60055158,0x600551A2),
+    "class_record_constructor":(0x60055320,0x6005534C),
+    "class10_method_four":(0x600D0ECA,0x600D0F04),
+    "singleton_initializer":(0x60055024,0x6005505C),
 }
 BRIDGE_PINS={
     0x600D0BC8:("push","{r0, r1, r4, r5, r6, lr}"),
@@ -91,6 +95,14 @@ def audit(image):
         "signed_OEM_update_sha_verified":True,
         "signed_instruction_pins":pin_count,
         "signed_lookup_literals":additional_literals,
+        "hypothetical_signed_class10_dispatch":{
+            "class10_table_base":signed[3]["record_base"],
+            "class10_method0_initialization":signed[3]["method_0"],
+            "class10_method_plus4":signed[3]["method_4"],
+            "class10_event_method_plus8":signed[3]["method_8"],
+            "if_global_plus4_is_class10_record":"first load gives 0x60104ba4, second gives signed method 0x600d0ecb",
+            "global_plus4_current_value":"UNMEASURED",
+        },
         "matching_USB_object_global_RAM_address":hex(raw_global_base),
         "lookup_proven_semantics":{
             "input_usb_object":"R5 = caller R0 at 0x60054f7e",
@@ -129,6 +141,7 @@ def main():
     if args.out:args.out.write_text(json.dumps(data,indent=2)+"\n")
     print("PHASE48 BRIDGE",json.dumps(data["double_indirect_class_method"]))
     print("PHASE48 GLOBAL LOOKUP LITERALS",json.dumps(data["signed_lookup_literals"]))
+    print("PHASE48 CONDITIONAL CLASS10 METHOD",json.dumps(data["hypothetical_signed_class10_dispatch"]))
     for name,lines in data["windows"].items():
         print("PHASE48 WINDOW",name,json.dumps(lines))
     for name,lines in data["direct_inbound_candidate_bl"].items():
