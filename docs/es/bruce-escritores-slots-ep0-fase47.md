@@ -2,6 +2,16 @@
 
 **26 de octubre de 2026 · PR #49 · Solo análisis offline de la actualización OEM Bruce original firmada.**
 
+## Hallazgo central: instalador dedicado para EP0 OUT e IN
+
+**La imagen firmada sí contiene una rutina específica para registrar los dos slots EP0**, independiente de los bucles genéricos de endpoints: **`0x60054F30`**. Su primer literal original (`0x60054F74`) es el puntero Thumb **`0x60054D75`**; el segundo (`0x60054F78`) contiene el registro `0x00800040`, cuyo byte de dirección en `+2` es **`0x80` (EP0 IN)**. El código llama al registrador general en **`0x60054F4A`**, modifica ese byte de dirección a **`0x00`** en `0x60054F52`, y llama de nuevo al registrador en **`0x60054F5C`** para **EP0 OUT**. En ambos casos guarda la misma función firmada `0x60054D75` y el contexto original de entrada R1. Si el segundo intento falla, ejecuta `0x60054F68: BL 0x600D10F6` con dirección `0x80`, limpiando EP0 IN.
+
+Existe una llamada firmada al instalador en **`0x600D0BE0`**: se alcanza estáticamente tras `0x600D0BD2: BL 0x60054F7C`, con resultado de éxito, y la comparación **`R5 == 1`**, siendo R5 un argumento de la función de control `0x600D0BC8`. El código OEM presenta además un despacho de objeto de clase en **`0x600D0BFA: BLX R3`**, tomando el método a través de dos lecturas indirectas de punteros del objeto. Su destino de clase 10 en tiempo de ejecución **no está determinado**.
+
+La función específica de EP0 **`0x60054D74`** reconstruye bytes/campos de SETUP: carga `bRequest` en `0x60054DC4`, `bmRequestType` en `0x60054DC8`, comprueba los bits de tipo mediante `0x60054DCA: TST.W R2,#0x60` y distingue una ruta de tabla para solicitudes estándar y rutas de control adicionales que llaman a **`0x600D0BC8`** en `0x60054E50` y `0x60054E8E`.
+
+**Por tanto, el registro específico EP0 identificado no depende de que un bucle descriptor seleccione el adaptador del evento 1.** Lo que sigue sin medirse es si esa rutina se ejecuta realmente en el mando, con qué objeto/vtable y qué clase se selecciona. Ninguna de estas funciones contiene por sí sola una prueba de instalación de punteros arbitrarios aportados por USB.
+
 ## Resultado principal
 
 El firmware original dispone de una API firmada que registra en RAM un callback y su contexto para cada dirección de endpoint; además se han reconstruido las decisiones de los dos bucles que la llaman. Ahora sabemos **de dónde salen los punteros firmados y qué banderas hacen elegir cada adaptador**, en lugar de inferirlo únicamente de referencias literales.
