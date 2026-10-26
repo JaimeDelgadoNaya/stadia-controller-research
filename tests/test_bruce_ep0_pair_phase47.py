@@ -26,6 +26,12 @@ class DedicatedEP0Pair47(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"drift"):
             a.validate_pins(mutated)
 
+    def test_real_ep0_callback_distinguishes_control_request_types(self):
+        self.assertEqual(a.EP0_HANDLER_PINS[0x60054DC4],("ldrb","r1, [r2, #1]"))
+        self.assertEqual(a.EP0_HANDLER_PINS[0x60054DCA],("tst.w","r2, #0x60"))
+        self.assertEqual(a.EP0_HANDLER_PINS[0x60054E50],("bl","#0x600d0bc8"))
+        self.assertEqual(a.EP0_HANDLER_PINS[0x60054E8E],("bl","#0x600d0bc8"))
+
     def test_runtime_endpoint_indexing_examples(self):
         self.assertEqual(a.endpoint_index(0x80),1)
         self.assertEqual(a.endpoint_index(0x00),0)
