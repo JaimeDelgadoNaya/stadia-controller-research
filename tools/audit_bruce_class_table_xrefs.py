@@ -92,6 +92,34 @@ def neighbor_dispatch(image):
         "live_callback_contents":"UNVERIFIED",
     }
 
+
+def pc_arithmetic_refs(data):
+    """Bounded ADR / ADD PC candidates; no CFG or register tracking."""
+    md=Cs(CS_ARCH_ARM,CS_MODE_THUMB|CS_MODE_MCLASS)
+    hits=[]
+    begin=(ITCM_SOURCE_OFFSET+ITCM_LENGTH+1)&~1
+    for off in range(begin,0xFF000,0x2000):
+        for ins in md.disasm(data[off:min(off+0x2000,0xFF000)],BASE+off):
+            op=ins.op_str.lower()
+            if ins.mnemonic.startswith("adr"):
+                fields=op.split(",")
+                if len(fields)!=2 or not fields[1].strip().startswith("#"):
+                    continue
+                val=int(fields[1].strip()[1:],0)
+                target=((ins.address+4)&~3)+val
+            elif ins.mnemonic.startswith("add") and ", pc, #" in op:
+                fields=op.split(",")
+                if len(fields)!=3 or not fields[2].strip().startswith("#"):
+                    continue
+                val=int(fields[2].strip()[1:],0)
+                target=((ins.address+4)&~3)+val
+            else:
+                continue
+            if START<=target<END:
+                hits.append({"pc":hex(ins.address),"ins":ins.mnemonic+" "+ins.op_str,
+                             "candidate_target":hex(target),"reachable":False})
+    return hits
+
 def audit(data):
     if len(data)!=IMAGE_SIZE or hashlib.sha256(data).hexdigest()!=IMAGE_SHA256:
         raise ValueError("Requires exact original signed Bruce SHA256")
@@ -113,6 +141,7 @@ def audit(data):
     return {"original_sha256_verified":True,"table_words":words,
             "pc_relative_literal_hits":hits,
             "local_movw_movt_reference_candidates":constructed_reference_candidates(data),
+            "pc_address_arithmetic_candidates":pc_arithmetic_refs(data),
             "validated_8byte_neighbor_dispatch":neighbor_dispatch(data),
             "callback_registration_in_live_EP0":"NOT PROVEN",
             "custom_firmware_execution":"NOT PROVEN",
@@ -125,7 +154,8 @@ def main():
     res=audit(a.image.read_bytes())
     print(json.dumps({"original_sha256_verified":res["original_sha256_verified"],
                       "pc_relative_literal_hits":res["pc_relative_literal_hits"],
-                      "movw_movt_candidates":res["local_movw_movt_reference_candidates"]}))
+                      "movw_movt_candidates":res["local_movw_movt_reference_candidates"],
+                      "pc_address_arithmetic_candidates":res["pc_address_arithmetic_candidates"]}))
     print("SIGNED 8-BYTE NEIGHBOR TABLE DISPATCH",json.dumps(res["validated_8byte_neighbor_dispatch"]))
 if __name__=="__main__":
     main()
