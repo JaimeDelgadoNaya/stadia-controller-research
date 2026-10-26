@@ -23,6 +23,25 @@ class OriginTests(unittest.TestCase):
         self.assertEqual(found[0]["source_file_offsets"],["0x40"])
         self.assertEqual(found[1]["count"],0)
 
+    def test_three_16byte_records_and_placeholder(self):
+        fake=bytearray(0xC4C00)
+        import struct
+        for i,kind in enumerate((1,2,4,10)):
+            off=0xC4B80+i*16
+            struct.pack_into("<I",fake,off,kind)
+            if i<3:
+                for j in range(3):
+                    struct.pack_into("<I",fake,off+4+j*4,0x60050001+j*2)
+        rows=a.candidate_class_records(fake)
+        self.assertEqual(len(rows),4)
+        self.assertEqual(rows[2]["selector_word"],"0x4")
+        self.assertTrue(rows[2]["all_three_methods_signed_thumb"])
+        self.assertTrue(rows[3]["zero_methods"])
+        self.assertEqual(rows[3]["selector_word"],"0xa")
+        struct.pack_into("<I",fake,0xC4B90,0x3)
+        with self.assertRaises(ValueError):
+            a.candidate_class_records(fake)
+
     def test_invalid_data_range_rejected(self):
         with self.assertRaises(ValueError):
             a.annotate_words(b"",0x60104BA5,0x60104BB0)
