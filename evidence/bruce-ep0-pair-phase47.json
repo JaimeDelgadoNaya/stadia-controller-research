@@ -1,0 +1,95 @@
+{
+  "phase": 47,
+  "date": "2026-10-26",
+  "PR": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/pull/49",
+  "image": {
+    "kind": "original OEM Bruce signed UPDATE, not device installed-flash dump",
+    "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+    "exact_image_validated": true
+  },
+  "main_new_finding": "Original signed dedicated EP0 IN and OUT paired callback installer at 0x60054F30",
+  "dedicated_ep0_installer": {
+    "address": "0x60054f30",
+    "source_callback_literal_address": "0x60054f74",
+    "signed_callback_thumb": "0x60054d75",
+    "endpoint_record_literal_address": "0x60054f78",
+    "endpoint_record_word": "0x00800040",
+    "first_endpoint_byte": "0x80",
+    "first_slot_index": 1,
+    "first_registrar_call": "0x60054f4a BL 0x600d10b8",
+    "second_endpoint_set_zero": "0x60054f52 STRB.W R0,[SP,#6] after success with R0=0",
+    "second_slot_index": 0,
+    "second_registrar_call": "0x60054f5c BL 0x600d10b8",
+    "callback_for_both": "0x60054d75",
+    "shared_context": "caller input R1 copied to [SP+0x10]",
+    "failure_rollback": "0x60054f64 MOVS R1,#0x80; 0x60054f68 BL 0x600d10f6",
+    "original_semantic_pins": 25
+  },
+  "installer_entry_guards": {
+    "direct_caller": "0x600d0be0",
+    "source_function": "0x600d0bc8",
+    "prerequisite_precheck": "0x600d0bd2 BL 0x60054f7c returns zero",
+    "mode_guard": "0x600d0bd8 CMP R5,#1",
+    "R5_original_arg": "R1 from caller at 0x600d0bca",
+    "subsequent_dynamic_method": "0x600d0bfa BLX R3 via [object+4] then [+4]",
+    "runtime_class_target": "UNVERIFIED"
+  },
+  "signed_ep0_handler": {
+    "entry": "0x60054d74",
+    "SETUP_like_pointer_input": "via signed callback argument R1; 0x60054d84 -> R6; 0x60054db2 LDR R2,[R6]",
+    "bRequest_byte": "0x60054dc4 LDRB R1,[R2,#1]",
+    "bmRequestType_byte": "0x60054dc8 LDRB R2,[R2]",
+    "request_type_check": "0x60054dca TST.W R2,#0x60",
+    "standard_request_table": "0x60054dd4 LDR.W R6,[R3,R1,LSL#2]; 0x60054de4 BLX R6",
+    "nonstandard_request_control_call_candidates": [
+      "0x60054e50 BL 0x600d0bc8",
+      "0x60054e8e BL 0x600d0bc8"
+    ],
+    "interpretation_limit": "conditional original code path, not proof physical EP0 or active class10"
+  },
+  "generic_descriptor_registration": {
+    "source_caller_A": "0x60054728",
+    "signed_class_config_BL_to_A": "0x600cfd92",
+    "A_context": "input R0 retained R6 and placed at [SP+0x10]",
+    "A_endpoint_record": "4-byte array element loaded from [R5+8]",
+    "A_registrar": "0x60054782 BL 0x600d10b8",
+    "A_choice": "if (flag&0x30)==0x10 type2 0x600CFC53; else if (flag&3)==1 and endpoint IN type1 0x600CFC35; else type3 0x600CFC71",
+    "source_caller_B": "0x600547ac",
+    "B_registrar": "0x60054850 BL 0x600d10b8",
+    "B_choice": "(flag&3)==3 and endpoint IN -> type4 0x600CFC1B",
+    "important_distinction": "Dedicated EP0 installer uses 0x60054D75, not automatically the generic event1 adapter 0x600CFC35"
+  },
+  "slot_api": {
+    "registrar": "0x600d10b8",
+    "clearer": "0x600d10f6",
+    "index": "2*(endpoint&0x0f)+((endpoint>>7)&1)",
+    "stride": 12,
+    "callback_slot": "usb_obj+0x0c+index*12",
+    "context_slot": "usb_obj+0x10+index*12",
+    "callback_store_pc": "0x600d10de",
+    "context_store_pc": "0x600d10da",
+    "pair_clear_pc": "0x600d1122",
+    "clear_status_pc": "0x600d1126"
+  },
+  "static_synthetic_tested_cases": [
+    "EP0 OUT 0x00",
+    "EP0 IN 0x80",
+    "EP1 IN 0x81",
+    "EP1 OUT 0x01"
+  ],
+  "scope_caveats": [
+    "The signed update is not installed device flash or actual runtime RAM",
+    "The EP0-pair installer is gated by runtime precheck and mode==1",
+    "Runtime call to dedicated installer not measured",
+    "Class object/vtable resolved through indirect data and target class10 remains unverified",
+    "Host-controlled callback write not demonstrated",
+    "Signed callback does not imply arbitrary unsigned execution or HAB CLOSED bypass",
+    "No Xbox/Switch 2 compatibility implementation"
+  ],
+  "physical_operations": {
+    "device_connected": false,
+    "usb_command_sent": false,
+    "flash_or_efuses_written": false
+  },
+  "next_phase": "Trace original precheck 0x60054f7c and conditional class-object runtime method at 0x600d0bfa, then investigate safe passive readback if necessary."
+}
