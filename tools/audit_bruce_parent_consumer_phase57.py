@@ -39,6 +39,64 @@ CALLER_PINS={
     0x60079D98:("str","r3, [r4, #0x68]"),
     0x60079D9A:("bl","#0x6007e784"),
 }
+GLOBAL_CHAIN_PINS={
+    0x60079D9E:("tst.w","r0, #0xff"),
+    0x60079DA2:("beq","#0x60079dba"),
+    0x60079DBA:("mov","r1, r4"),
+    0x60079DBC:("ldr","r0, [pc, #0x24]"),
+    0x60079DBE:("bl","#0x60079c6c"),
+    0x60079C50:("ldr","r1, [pc, #0x14]"),
+    0x60079C52:("ldr","r3, [r1], #4"),
+    0x60079C5A:("str","r3, [r0], #4"),
+    0x60079C70:("mov","r6, r0"),
+    0x60079C74:("mov","r4, r1"),
+    0x60079C78:("str","r1, [sp]"),
+    0x60079CD2:("ldr","r3, [sp]"),
+    0x60079CD8:("str","r3, [r6]"),
+}
+GLOBAL_GETTER_LITERAL_SITE=0x60079C68
+GLOBAL_PRODUCER_LITERAL_SITE=0x60079DE4
+
+
+def verify_global_chain(image):
+    """Same signed GLOBAL address; dynamic value depends on runtime.
+
+    The writer saves incoming R1 (caller R4), then reads it from its
+    stack local into R3 and STRs it to [R6] (incoming global R0).
+    Getter later copies the first word of that same global into
+    caller-provided [R0], then the caller loads [SP] for reader R0.
+    No temporal ordering or live RAM identity is inferred.
+    """
+    pins=verify_pins(image,GLOBAL_CHAIN_PINS,[
+        (0x60079D9E,0x60079DC2),
+        (0x60079C50,0x60079C5C),
+        (0x60079C6C,0x60079C7C),
+        (0x60079CD2,0x60079CDA),
+    ])
+    source=struct.unpack_from("<I",image,
+                   GLOBAL_PRODUCER_LITERAL_SITE-ASSUMED_XIP_BASE)[0]
+    getter=struct.unpack_from("<I",image,
+                   GLOBAL_GETTER_LITERAL_SITE-ASSUMED_XIP_BASE)[0]
+    if source!=getter:
+        raise ValueError(
+          f"phase57 global holder mismatch: writer={source:#x}, getter={getter:#x}"
+        )
+    if not 0x20000000<=source<0x20040000:
+        raise ValueError("phase57 global holder not in expected SRAM range")
+    return {
+        "pinned_signed_instructions":pins,
+        "writer_literal_file_address":hex(GLOBAL_PRODUCER_LITERAL_SITE),
+        "getter_literal_file_address":hex(GLOBAL_GETTER_LITERAL_SITE),
+        "same_global_RAM_address":hex(source),
+        "producer":"0x60079dba R1=R4; 0x60079dbe BL 0x60079c6c; 0x60079cd8 STR R3,[R6]",
+        "saved_value":"R1 input (caller R4) via [SP] at 0x60079c78 and 0x60079cd2",
+        "getter":"0x60079c50 reads [GLOBAL] and writes to argument buffer",
+        "consumer":"0x60074da4 loads saved [SP], passes R0 to 0x6007e794",
+        "identity":"SAME_STATIC_GLOBAL_ADDRESS; RUNTIME_VALUE_AND_ORDER_UNMEASURED",
+        "on_hardware":"UNVERIFIED",
+    }
+
+
 SUPPLIER_PINS={
     0x60074D8C:("push","{r0, r1, r2, r4, r5, lr}"),
     0x60074D92:("mov","r0, sp"),
@@ -279,6 +337,7 @@ def audit(image):
     pointer_table=inspect_reader_pointer_table(image,refscan)
     reader_veneer=verify_itcm_reader_veneer(image)
     supplier=inspect_global_argument_pointers(image)
+    global_chain=verify_global_chain(image)
     nread=verify_pins(image,READ_PINS,[
         (0x6007E7E8,0x6007E7EE),
         (0x6007E80E,0x6007E814),
@@ -323,6 +382,7 @@ def audit(image):
         "reader_pointer_table":pointer_table,
         "itcm_reader_veneer":reader_veneer,
         "reader_global_argument_source":supplier,
+        "linked_signed_global_holder":global_chain,
         "itcm_veneer_caller_window":itcm_rows(image,0xAA00,0x50),
         "post_init_wrapper":{
             "argument": "R0 = allocated object from saved R4 (conditional)",
@@ -359,6 +419,7 @@ def main():
     print("PHASE57 READER POINTER TABLE",json.dumps(result["reader_pointer_table"]))
     print("PHASE57 ITCM READER VENEER",json.dumps(result["itcm_reader_veneer"]))
     print("PHASE57 READER ARGUMENT GLOBAL",json.dumps(result["reader_global_argument_source"]))
+    print("PHASE57 GLOBAL HOLDER CHAIN",json.dumps(result["linked_signed_global_holder"]))
     print("PHASE57 ITCM VENEER CALLER",json.dumps(result["itcm_veneer_caller_window"]))
     print("PHASE57 READER CANDIDATES",json.dumps(result["read_candidates"]))
     print("PHASE57 PINS",result["caller_pin_count"],result["reader_pin_count"])
