@@ -140,6 +140,8 @@ def branch_aware_footprints(image):
         "B_callback_pointer_reference_neighbor":(0x6006B470,0x6006B4D4),
         "B_status_owner_neighbor":(0x6006B320,0x6006B38A),
         "queue_producer_API":(API,0x600926B2),
+        "shared_queue_helper":(0x6009267C,0x600926A0),
+        "USB_mode_owner_call_to_shared_helper":(0x60060F28,0x60060F3C),
         "known_class10_callback":(0x600613FC,0x60061422),
     }
     return {name:rows(image,start,end)[:MAX_CONTEXT_ROWS]
@@ -285,6 +287,31 @@ def upstream_source_analysis(image):
     }
 
 
+def cross_check_phase66_shared_helper(image):
+    """Bounded original shared callee; shared address is NOT a USB event link."""
+    pins={
+        0x60060F2C:("str.w","r3, [r0, #0x90]"),
+        0x60060F34:("bl","#0x6009267c"),
+        0x6006B400:("bl","#0x6009267c"),
+    }
+    actual={}
+    for start,end in ((0x60060F28,0x60060F38),(0x6006B400,0x6006B404)):
+        actual.update({int(r["pc"],16):(r["mnemonic"],r["operands"])
+                       for r in rows(image,start,end)})
+    for pc,expected in pins.items():
+        if actual.get(pc)!=expected:
+            raise ValueError(f"Phase76 signed shared helper anchor drift {pc:#x}")
+    return {
+        "shared_target":"0x6009267c",
+        "phase66_prior_USB_mode_writer_caller":"0x60060f34",
+        "phase76_B_initializer_caller":"0x6006b400",
+        "two_signed_original_CALL_PCs":True,
+        "same_object_identity":"NOT_PROVEN",
+        "runtime_order_and_reachability":"NOT_PROVEN",
+        "USB_packet_to_callback_control":"NOT_PROVEN",
+    }
+
+
 def audit(image):
     if len(image)!=IMAGE_SIZE or hashlib.sha256(image).hexdigest()!=IMAGE_SHA256:
         raise ValueError("Phase76 requires original signed Bruce OEM exact SHA-256")
@@ -298,6 +325,7 @@ def audit(image):
     xrefs=upstream_census(image)
     nested=upstream_source_analysis(image)
     install=verify_B_callback_registration(image)
+    shared=cross_check_phase66_shared_helper(image)
     return {
         "phase":76,
         "original_SHA256":IMAGE_SHA256,
@@ -308,6 +336,7 @@ def audit(image):
         "direct_code_shaped_upstream_references":xrefs,
         "B_nested_status_source_xrefs":nested,
         "B_signed_callback_initializer":install,
+        "phase66_phase76_shared_signed_helper":shared,
         "limits":{
             "runtime_call_A_executed":False,
             "runtime_call_B_executed":False,
@@ -334,6 +363,7 @@ def main():
     print("PHASE76 XREFS",json.dumps(r["direct_code_shaped_upstream_references"]))
     print("PHASE76 NESTED_STATUS_SOURCE",json.dumps(r["B_nested_status_source_xrefs"]))
     print("PHASE76 SIGNED B CALLBACK INITIALIZATION",json.dumps(r["B_signed_callback_initializer"]))
+    print("PHASE76 SHARED PHASE66 HELPER",json.dumps(r["phase66_phase76_shared_signed_helper"]))
     for label,context in r["bounded_signed_contexts"].items():
         print("PHASE76 WINDOW",label,json.dumps(context))
     print("PHASE76 COMPLETE EVIDENCE",json.dumps(r,separators=(",",":")))
