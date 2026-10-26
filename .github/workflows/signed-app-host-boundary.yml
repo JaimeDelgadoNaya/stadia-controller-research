@@ -68,7 +68,7 @@ jobs:
           python -m tools.audit_bruce_ep0_setup_provenance /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/ep0.json --compact
           python -m tools.audit_bruce_usb_irq_vector /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/usb-vectors.json
           python -m tools.audit_bruce_ep0_registration /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/registration.json
-          python -m tools.audit_bruce_control_setup /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/setup-control.json
+          python -m tools.audit_bruce_control_setup /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/setup-control.json --verbose
           python -m tools.audit_bruce_setup_verified /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/setup-verified.json
           python - <<'PY'
           import json
