@@ -16,7 +16,8 @@ from tools.audit_signed_app_surface import IMAGE_SIZE, IMAGE_SHA256, ASSUMED_XIP
 from tools.audit_app_usb_dispatch import (
     ITCM_LENGTH, DATA_SOURCE_OFFSET, DATA_DESTINATION, DATA_END
 )
-from tools.audit_bruce_init_inbound_phase43 import CALLER, all_byte_word_references
+from tools.audit_bruce_init_inbound_phase43 import CALLER, all_byte_word_references, find_inbound_branches
+from tools.audit_bruce_ep0_registration import decode
 
 BASE=ASSUMED_XIP_BASE
 POINTER_FILE_OFFSET=0xFD544
@@ -56,6 +57,68 @@ def neighbor_candidate_range(image,center=POINTER_FILE_OFFSET,max_entries=MAX_NE
     return lo,hi+4
 
 
+
+WALKER = 0x600CDB74
+WALKER_PINS = {
+    0x600CDB74: ("push", "{r4, r5, r6, lr}"),
+    0x600CDB76: ("ldr", "r6, [pc, #0x34]"),
+    0x600CDB78: ("ldr", "r4, [pc, #0x34]"),
+    0x600CDB7A: ("subs", "r4, r4, r6"),
+    0x600CDB7C: ("asrs", "r4, r4, #2"),
+    0x600CDB84: ("ldr", "r6, [pc, #0x2c]"),
+    0x600CDB86: ("ldr", "r4, [pc, #0x30]"),
+    0x600CDB8C: ("subs", "r4, r4, r6"),
+    0x600CDB8E: ("asrs", "r4, r4, #2"),
+    0x600CDB92: ("cmp", "r5, r4"),
+    0x600CDB94: ("bne", "#0x600cdba2"),
+    0x600CDBA2: ("ldr.w", "r3, [r6, r5, lsl #2]"),
+    0x600CDBA6: ("blx", "r3"),
+    0x600CDBA8: ("adds", "r5, #1"),
+    0x600CDBAA: ("b", "#0x600cdb92"),
+}
+
+
+def verify_walker_pins(decoded):
+    for pc,expected in WALKER_PINS.items():
+        if decoded.get(pc)!=expected:
+            raise ValueError("Original signed startup walker drift at "+hex(pc))
+    return True
+
+
+def verify_constructor_walker(image):
+    # Validate signed bytes, table bounds and dynamic call index.
+    rows=decode(image,WALKER,0x600CDBAC)
+    verify_walker_pins({row["pc"]:(row["m"],row["op"]) for row in rows})
+    lo_pre=le32(image,0x8DBAC)
+    hi_pre=le32(image,0x8DBB0)
+    start=le32(image,0x8DBB4)
+    end=le32(image,0x8DBB8)
+    if (lo_pre,hi_pre,start,end)!=(0x6013D4F0,0x6013D4F0,
+                                    0x6013D4F0,0x6013D5A4):
+        raise ValueError("Signed constructor bounds drift")
+    if (end-start)%4 or not start<=BASE+POINTER_FILE_OFFSET<end:
+        raise ValueError("Wrapper pointer not in constructor range")
+    idx=(BASE+POINTER_FILE_OFFSET-start)//4
+    if idx!=21 or le32(image,start-BASE+4*idx)!=POINTER_VALUE:
+        raise ValueError("Wrapper table index drift")
+    count=(end-start)//4
+    if count!=45:
+        raise ValueError("Signed constructor count drift")
+    return {
+        "walker_function":hex(WALKER),
+        "semantic_instruction_anchors":len(WALKER_PINS),
+        "preinit_range":[hex(lo_pre),hex(hi_pre)],
+        "init_array_range":[hex(start),hex(end)],
+        "init_array_entry_count":count,
+        "wrapper_index_zero_based":idx,
+        "wrapper_pointer":hex(POINTER_VALUE),
+        "load_at":"0x600cdba2",
+        "indirect_blx_at":"0x600cdba6",
+        "invoked_if_walker_runs_and_iteration_completes":True,
+        "runtime_walker_executed":"NOT VERIFIED",
+    }
+
+
 def audit(image):
     if len(image)!=IMAGE_SIZE or hashlib.sha256(image).hexdigest()!=IMAGE_SHA256:
         raise ValueError("requires exact pinned original signed Bruce OEM update")
@@ -78,6 +141,8 @@ def audit(image):
         "contains_verified_wrapper":lo<=POINTER_FILE_OFFSET<hi,
         "identified_as_real_startup_init_array":False,
     }
+    walker=verify_constructor_walker(image)
+    walker_calls=find_inbound_branches(image,only_target=WALKER)
     refs={
         label:all_byte_word_references(image,addr,limit=20)
         for label,addr in {
@@ -97,6 +162,9 @@ def audit(image):
                  "flash_address":hex(BASE+POINTER_FILE_OFFSET),
                  "signed_function_pointer":hex(POINTER_VALUE)},
         "table_shape":bounds,
+        "verified_constructor_walker":walker,
+        "inbound_walker_branch_candidates":walker_calls,
+        "walker_thumb_reference_census":all_byte_word_references(image,WALKER|1),
         "neighbor_words":items,
         "boundary_reference_census":refs,
         "candidate_start_reference_code":[
@@ -139,6 +207,9 @@ def main():
     print("PHASE43 POINTER TABLE SHAPE",json.dumps(report["table_shape"]))
     print("PHASE43 POINTER TABLE WORDS",json.dumps(report["neighbor_words"]))
     print("PHASE43 POINTER TABLE REFS",json.dumps(report["boundary_reference_census"]))
+    print("PHASE43 VERIFIED CONSTRUCTOR WALKER",json.dumps(report["verified_constructor_walker"]))
+    print("PHASE43 WALKER INBOUND",json.dumps(report["inbound_walker_branch_candidates"]))
+    print("PHASE43 WALKER STATIC PTR",json.dumps(report["walker_thumb_reference_census"]))
     print("PHASE43 POSSIBLE TABLE ITERATOR",json.dumps(report["possible_table_iterator_near_0x60061608"]))
     print("PHASE43 INIT ARRAY START CONTEXT",json.dumps(report["candidate_start_reference_code"]))
     print("PHASE43 INIT ARRAY START WORDS",json.dumps(report["candidate_start_reference_words"]))
