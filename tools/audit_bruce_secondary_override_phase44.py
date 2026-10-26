@@ -93,7 +93,17 @@ def audit(image):
     func=int(callback,16)&~1
     # Context larger than one basic block intentionally printed as candidate
     # linear decode only; do not infer path reachability or entry arguments.
-    near=decode(image,0x600771D8,0x6007720A)
+    full=decode(image,0x60077140,0x6007720A)
+    trusted_fn={q["pc"]:(q["m"],q["op"]) for q in full}
+    if trusted_fn.get(0x60077144)!=("mov","r4, r0"):
+        raise ValueError("Original signed candidate handler-context argument copy drift")
+    if trusted_fn.get(PC_WRITE_FUNCTION)!=("str","r1, [r3, r2]"):
+        raise ValueError("Original signed setter lost sync in entry-anchored function")
+    target_instruction_in_decoder=(0x600771F6 in trusted_fn and 0x600771FC in trusted_fn)
+    # Do not cross a code/data island when attributing instruction provenance.
+    if not target_instruction_in_decoder:
+        raise ValueError("Original signed entry-anchored function lost setter alignment")
+        near=decode(image,0x600771D8,0x6007720A)
     focus=[
         {
             "window_start":hex(lo),
@@ -118,6 +128,9 @@ def audit(image):
     return {
         "phase":44,"signed_oem_exact_sha_verified":True,
         "second_writer":writer,
+        "candidate_signed_object_initializer_entry":"0x60077140",
+        "candidate_r4_origin_at":"0x60077144 MOV R4,R0",
+        "entry_anchored_function_decode":[hex(q["pc"])+" "+q["m"]+" "+q["op"] for q in full],
         "potential_context_r4_origin_windows":focus,
         "later_writer_local_decode":[
             hex(x["pc"])+" "+x["m"]+" "+x["op"] for x in near
@@ -145,6 +158,7 @@ def main():
     if arg.out:arg.out.write_text(json.dumps(x,indent=2)+"\n")
     print("PHASE44 SECONDARY WRITER LITERALS",json.dumps(x["second_writer"]))
     print("PHASE44 SECONDARY WRITER PRIOR CODE",json.dumps(x["later_writer_local_decode"]))
+    print("PHASE44 SECONDARY WRITER ENTRY ANCHORED",json.dumps(x["entry_anchored_function_decode"]))
     for window in x["potential_context_r4_origin_windows"]:
         print("PHASE44 SECONDARY WRITER R4 ORIGIN",json.dumps(window))
     print("PHASE44 SECONDARY WRITER CALLBACK TARGET",json.dumps(x["original_callback_target_preview"]))
