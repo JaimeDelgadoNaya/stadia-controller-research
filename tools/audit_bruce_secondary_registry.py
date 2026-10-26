@@ -233,6 +233,8 @@ def audit(image: bytes):
         "sample": "OEM signed update image; not installed flash readback",
         "secondary_slot": {k: hex(a) for a, k in TARGETS.items()},
         "secondary_guard_verified_at": guard["callback_pointer_read_at"],
+        "secondary_context_read_signed_pin_at": "0x60061414",
+        "secondary_context_read_omitted_by_conservative_branch_reset": True,
         "startup_initialized_data_span": [hex(DATA_DESTINATION), hex(DATA_END)],
         "secondary_slots_outside_known_initialized_copy": all(
             not DATA_DESTINATION <= x < DATA_END for x in TARGETS),
