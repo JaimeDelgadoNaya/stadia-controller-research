@@ -165,6 +165,14 @@ def secondary_context_xrefs(image):
             hex(i.address) + " " + i.mnemonic + " " + i.op_str
             for i in decode_raw(image, 0x600D4F04, 0x600D4F44)
         ],
+        "sentinel_second_literal_neighborhood": [
+            hex(i.address) + " " + i.mnemonic + " " + i.op_str
+            for i in decode_raw(image, 0x60073D70, 0x60073E48)
+        ],
+        "constructor_direct_call_neighborhood": [
+            hex(i.address) + " " + i.mnemonic + " " + i.op_str
+            for i in decode_raw(image, 0x600588E0, 0x60058950)
+        ],
         "neighbor_object_caller_window": [
             hex(i.address) + " " + i.mnemonic + " " + i.op_str
             for i in decode_raw(image, 0x60058BC0, 0x60058C30)
@@ -218,6 +226,8 @@ def main():
     }))
     print("PHASE42 SENTINEL CODE", json.dumps(refs["handler_sentinel_disassembly"]))
     print("PHASE42 OBJECT NEIGHBOR CODE", json.dumps(refs["neighbor_object_caller_window"]))
+    print("PHASE42 OTHER SENTINEL SITE", json.dumps(refs["sentinel_second_literal_neighborhood"]))
+    print("PHASE42 CONSTRUCTOR CALLER CODE", json.dumps(refs["constructor_direct_call_neighborhood"]))
 
 
 if __name__ == "__main__":
