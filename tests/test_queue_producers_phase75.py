@@ -37,6 +37,18 @@ class WorkQueueProducersTests(unittest.TestCase):
                             x["loaded_word"]==hex(a.QUEUE) for x in hits))
         self.assertTrue(all(x["reachable"]=="UNVERIFIED" for x in hits))
 
+    def test_signed_enqueue_callback_pipeline_anchor_shape(self):
+        self.assertEqual(a.PRODUCER_CALLER_PINS[0x6006228C],
+                         ("bl","#0x600926a0"))
+        self.assertEqual(a.PRODUCER_CALLER_PINS[0x6006B2B0],
+                         ("bl","#0x600926a0"))
+        self.assertEqual(a.WORKER_RECEIVE_PINS[0x600EE172],
+                         ("blx","r3"))
+        self.assertEqual(a.SIGNED_SEND_PINS[0xB396],
+                         ("str","r6, [r4, #0x38]"))
+        self.assertEqual(len(a.WORKER_RECEIVE_PINS),10)
+        self.assertEqual(len(a.SIGNED_SEND_PINS),11)
+
     def test_original_signed_sample_required(self):
         with self.assertRaisesRegex(ValueError,"SHA-pinned"):
             a.audit(b"invalid unsigned bytes")
