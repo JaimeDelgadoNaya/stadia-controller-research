@@ -169,8 +169,11 @@ def verify_itcm_wrapper(image):
     for addr,expected in ITCM_WRAPPER_PINS.items():
         if ins.get(addr)!=expected:
             raise ValueError(f"phase56 signed ITCM wrapper drift {addr:#x} {ins.get(addr)!r}")
+    inner=itcm_rows(image,0x8832,4)
+    if len(inner)!=1 or (inner[0]["m"],inner[0]["op"])!=("b.w","#0x7f58"):
+        raise ValueError("phase56 signed ITCM allocator forwarding drift")
     return {
-        "pins":len(ITCM_WRAPPER_PINS),
+        "pins":len(ITCM_WRAPPER_PINS)+1,
         "runtime_entry":"0xb532",
         "source_file_offset":hex(ITCM_SOURCE_OFFSET+0xB532),
         "size_argument_from_caller":164,
@@ -179,7 +182,9 @@ def verify_itcm_wrapper(image):
         "successful_nonzero_return":"0xb542 CBNZ R0,#0xB552 followed by POP",
         "fallback_on_zero":"0xb544/0xb54a/0xb54e unknown handler and retry loop",
         "classification":"SIGNED_ALLOCATION_LIKE_WRAPPER; INNER_ROUTINE_SEMANTICS_NOT_INFERRED",
-        "inner_target_preview":itcm_rows(image,0x8832,0x70),
+        "inner_target_preview":itcm_rows(image,0x8832,0x20),
+        "inner_direct_branch":"0x8832 B.W 0x7F58",
+        "allocation_backend_preview":itcm_rows(image,0x7F58,0xA0),
     }
 
 
