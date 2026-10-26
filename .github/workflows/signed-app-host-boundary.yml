@@ -40,6 +40,7 @@ on:
       - 'tools/audit_bruce_usb_owner_survey_phase50.py'
       - 'tools/audit_bruce_usb_owner_pointer_phase50.py'
       - 'tools/audit_bruce_owner_xrefs_phase50.py'
+      - 'tools/audit_bruce_owner_alias_writers_phase51.py'
       - 'tools/emulate_bruce_class10_callback_guard.py'
       - 'tools/emulate_bruce_class_selector.py'
       - 'tools/emulate_bruce_class_request_fragment.py'
@@ -80,6 +81,7 @@ on:
       - 'tests/test_bruce_usb_owner_survey_phase50.py'
       - 'tests/test_bruce_usb_owner_pointer_phase50.py'
       - 'tests/test_bruce_owner_xrefs_phase50.py'
+      - 'tests/test_bruce_owner_alias_writers_phase51.py'
       - 'tests/test_emulate_bruce_class10_callback_guard.py'
       - 'tests/test_emulate_bruce_class_selector.py'
       - 'tests/test_bruce_class_request_fragment.py'
@@ -125,6 +127,7 @@ on:
       - 'tools/audit_bruce_usb_owner_survey_phase50.py'
       - 'tools/audit_bruce_usb_owner_pointer_phase50.py'
       - 'tools/audit_bruce_owner_xrefs_phase50.py'
+      - 'tools/audit_bruce_owner_alias_writers_phase51.py'
       - 'tools/emulate_bruce_class10_callback_guard.py'
       - 'tools/emulate_bruce_class_selector.py'
       - 'tools/emulate_bruce_class_request_fragment.py'
@@ -165,6 +168,7 @@ on:
       - 'tests/test_bruce_usb_owner_survey_phase50.py'
       - 'tests/test_bruce_usb_owner_pointer_phase50.py'
       - 'tests/test_bruce_owner_xrefs_phase50.py'
+      - 'tests/test_bruce_owner_alias_writers_phase51.py'
       - 'tests/test_emulate_bruce_class10_callback_guard.py'
       - 'tests/test_emulate_bruce_class_selector.py'
       - 'tests/test_bruce_class_request_fragment.py'
@@ -248,6 +252,7 @@ jobs:
           python -m tools.audit_bruce_usb_owner_survey_phase50 /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/phase50-owner-survey.json
           python -m tools.audit_bruce_usb_owner_pointer_phase50 /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/phase50-owner-pointer.json
           python -m tools.audit_bruce_owner_xrefs_phase50 /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/phase50-owner-xrefs.json
+          python -m tools.audit_bruce_owner_alias_writers_phase51 /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/phase51-owner-aliases.json
           python -m tools.emulate_bruce_class10_callback_guard /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/class10-guard-virtual.json
           python -m tools.emulate_bruce_class_selector /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/selection-synthetic.json
           python -m tools.emulate_bruce_class_request_fragment /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/synthetic-class-requests.json
