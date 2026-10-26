@@ -70,7 +70,7 @@ def verify_pins(image):
         raise ValueError('Phase67 original label drift')
 
 
-def queue_case(image,ram,*,name,existing=False,control=False,words=0x200,preserve_queue=False):
+def queue_case(image,ram,*,name,existing=False,control=False,words=0x200,preserve_queue=False,execute_creator=False):
     from unicorn import UC_HOOK_CODE
     from unicorn.arm_const import UC_ARM_REG_R0,UC_ARM_REG_R1,UC_ARM_REG_R2,UC_ARM_REG_R5,UC_ARM_REG_R6,UC_ARM_REG_PC,UC_ARM_REG_LR
     uc=machine(image,ram)
@@ -93,16 +93,30 @@ def queue_case(image,ram,*,name,existing=False,control=False,words=0x200,preserv
             status.append('mode_function_returned_to_caller' if pc==0x600747B6 else 'mode_function_error_branch_before_logging')
             m.emu_stop()
             return
-        if pc in (0x6006581C,0x60071580,0x600D5494,0x600D54A6,0x6013D2D0,0x6013D0E0,0x600CA1F8):
+        helper=pc in (0x6006581C,0x60071580,0x600D5494,0x600D54A6,0x6013D2D0,0x6013D0E0,0x600CA1F8)
+        helper=helper and not (execute_creator and pc==0x600CA1F8)
+        helper=helper or (execute_creator and pc in (0x6013CF90,0x600C9FD8))
+        if helper:
             values=[m.reg_read(r) for r in (UC_ARM_REG_R0,UC_ARM_REG_R1,UC_ARM_REG_R2)]
-            calls.append(dict(target=hex(pc),arguments=[hex(v) for v in values],
-                model='opaque modeled creation return; scheduler not executed' if pc==0x600CA1F8 else 'no-op returning zero'))
-            m.reg_write(UC_ARM_REG_R0,OPAQUE if pc==0x600CA1F8 else 0)
+            model='opaque modeled creation return; scheduler not executed' if pc==0x600CA1F8 else 'no-op returning zero'
+            if pc==0x6013CF90:
+                if not 0x20000000<=values[0]<=0x20030000-values[2] or values[2]>0x1000:
+                    raise ValueError('Task fill outside bounded virtual SRAM')
+                m.mem_write(values[0],bytes([values[1]&255])*values[2])
+                model='bounded virtual byte fill; R0 unchanged'
+            elif pc==0x600C9FD8:
+                model='no-op scheduler registration; R0 unchanged; task not scheduled'
+            else:
+                m.reg_write(UC_ARM_REG_R0,OPAQUE if pc==0x600CA1F8 else 0)
+            calls.append(dict(target=hex(pc),arguments=[hex(v) for v in values],model=model))
             m.reg_write(UC_ARM_REG_PC,m.reg_read(UC_ARM_REG_LR))
             return
         allowed=(0x60074772<=pc<0x600747B6 or 0x60060F28<=pc<0x60060F7A or
                  0x6009267C<=pc<0x60092698 or 0x6010177A<=pc<0x6010179A or
                  0x600CC178<=pc<0x600CC1BA)
+        if execute_creator:
+            allowed |= (0x600CA1F8<=pc<0x600CA274 or 0x600CA0FC<=pc<0x600CA1A6 or
+                        0x601007B6<=pc<0x601007BC or 0x600CC554<=pc<0x600CC572)
         if not allowed:
             raise ValueError(f'Unexpected pending-call execution {pc:#x}')
 
@@ -125,6 +139,17 @@ def queue_case(image,ram,*,name,existing=False,control=False,words=0x200,preserv
     if preserve_queue:
         result['queue_fields_preserved_from_input']=True
         result['initial_control_pointer']=hex(auxiliary)
+    if execute_creator:
+        handle=struct.unpack('<I',bytes(uc.mem_read(QUEUE+0x58,4)))[0]
+        if not handle:
+            raise ValueError('Original creator did not publish a handle')
+        frame=struct.unpack('<I',bytes(uc.mem_read(handle,4)))[0]
+        word=lambda address:struct.unpack('<I',bytes(uc.mem_read(address,4)))[0]
+        result['original_creator']=dict(executed=True,opaque_return_injected=False,handle=hex(handle),
+            stack_buffer=hex(word(handle+0x30)),frame_pointer=hex(frame),priority_word=word(handle+0x2C),
+            prepared_pc=hex(word(frame+0x3C)),prepared_r0=hex(word(frame+0x24)),
+            prepared_status=hex(word(frame+0x40)),prepared_exception_return=hex(word(frame+0x20)),
+            task_entry_executed=0x60101760 in steps,registration_stubbed=0x600C9FD8 in steps)
     return result,bytes(uc.mem_read(0x20000000,0x30000))
 
 

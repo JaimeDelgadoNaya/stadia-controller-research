@@ -1,0 +1,317 @@
+{
+  "phase": 69,
+  "image_sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+  "exact_image_hash_verified": true,
+  "constructor_fields": {
+    "handle": "0x0",
+    "control": "0x20020278",
+    "control_stack_pointer": "0x2002034c",
+    "control_words": 512
+  },
+  "original_creation_and_handle": {
+    "name": "original_preallocated_handle",
+    "inputs": {
+      "nonzero_handle_field": false,
+      "control_pointer_present": true,
+      "control_words": 512
+    },
+    "outcome": "mode_function_returned_to_caller",
+    "stop_pc": "0x600747b6",
+    "original_queue_status": 0,
+    "mode_field_after_attempt": 1,
+    "handle_field_after": "0x20020278",
+    "original_pending_call_executed": true,
+    "creation_primitive_reached": true,
+    "creator_r0_literal": "0x60101761",
+    "models": [
+      {
+        "target": "0x6006581c",
+        "arguments": [
+          "0x2000cfd0",
+          "0x0",
+          "0x0"
+        ],
+        "model": "no-op returning zero"
+      },
+      {
+        "target": "0x60071580",
+        "arguments": [
+          "0x0",
+          "0x601233b5",
+          "0x0"
+        ],
+        "model": "no-op returning zero"
+      },
+      {
+        "target": "0x600d5494",
+        "arguments": [
+          "0x2000a2a8",
+          "0x600d99d9",
+          "0x60070321"
+        ],
+        "model": "no-op returning zero"
+      },
+      {
+        "target": "0x600d54a6",
+        "arguments": [
+          "0x2000a2a8",
+          "0x600d99df",
+          "0x60070425"
+        ],
+        "model": "no-op returning zero"
+      },
+      {
+        "target": "0x6013d2d0",
+        "arguments": [
+          "0x2002014c",
+          "0x6012f592",
+          "0x1"
+        ],
+        "model": "no-op returning zero"
+      },
+      {
+        "target": "0x6013cf90",
+        "arguments": [
+          "0x2002034c",
+          "0xa5",
+          "0x800"
+        ],
+        "model": "bounded virtual byte fill; R0 unchanged"
+      },
+      {
+        "target": "0x6013cf90",
+        "arguments": [
+          "0x200202dc",
+          "0x0",
+          "0x60"
+        ],
+        "model": "bounded virtual byte fill; R0 unchanged"
+      },
+      {
+        "target": "0x600c9fd8",
+        "arguments": [
+          "0x20020278",
+          "0x60101760",
+          "0x2002014c"
+        ],
+        "model": "no-op scheduler registration; R0 unchanged; task not scheduled"
+      },
+      {
+        "target": "0x6013d0e0",
+        "arguments": [
+          "0x0",
+          "0x60101760",
+          "0x2002014c"
+        ],
+        "model": "no-op returning zero"
+      }
+    ],
+    "instruction_hooks": 291,
+    "queue_fields_preserved_from_input": true,
+    "initial_control_pointer": "0x20020278",
+    "original_creator": {
+      "executed": true,
+      "opaque_return_injected": false,
+      "handle": "0x20020278",
+      "stack_buffer": "0x2002034c",
+      "frame_pointer": "0x20020b04",
+      "priority_word": 1,
+      "prepared_pc": "0x60101760",
+      "prepared_r0": "0x2002014c",
+      "prepared_status": "0x1000000",
+      "prepared_exception_return": "0xfffffffd",
+      "task_entry_executed": false,
+      "registration_stubbed": true
+    }
+  },
+  "post_return_class10_chain": {
+    "root": "owner",
+    "inputs": {
+      "engine_present": false,
+      "engine_mode": 2,
+      "class_busy": false,
+      "requested_class_mode": 2,
+      "driver_status_stub": null
+    },
+    "stop": "first_class_return_before_remaining_classes",
+    "stop_pc": "0x60055196",
+    "r0_at_stop": 0,
+    "driver_error_r5_at_failure": null,
+    "class10_initializer_reached": true,
+    "snapshot": {
+      "core_engine": "0x200063c0",
+      "core_config": "0x2000a2ac",
+      "class_engine": "0x200063c0",
+      "class_record": "0x2000a274",
+      "class_status_byte": 0,
+      "class_marker_byte": 255,
+      "record_instance": "0x200040e0"
+    },
+    "original_writes": [
+      {
+        "pc": "0x60055126",
+        "address": "0x2000408e",
+        "size": 1,
+        "value": "0x2"
+      },
+      {
+        "pc": "0x6005512e",
+        "address": "0x20004084",
+        "size": 4,
+        "value": "0x2000a2ac"
+      },
+      {
+        "pc": "0x600553c2",
+        "address": "0x20004080",
+        "size": 4,
+        "value": "0x200063c0"
+      },
+      {
+        "pc": "0x600555a2",
+        "address": "0x402e01a8",
+        "size": 4,
+        "value": "0x0"
+      },
+      {
+        "pc": "0x600555ae",
+        "address": "0x402e01a8",
+        "size": 4,
+        "value": "0x2"
+      },
+      {
+        "pc": "0x6005543e",
+        "address": "0x402e0140",
+        "size": 4,
+        "value": "0x0"
+      },
+      {
+        "pc": "0x60055446",
+        "address": "0x402e0140",
+        "size": 4,
+        "value": "0x0"
+      },
+      {
+        "pc": "0x60055452",
+        "address": "0x402e01a8",
+        "size": 4,
+        "value": "0xa"
+      },
+      {
+        "pc": "0x6005545e",
+        "address": "0x402e01a8",
+        "size": 4,
+        "value": "0xa"
+      },
+      {
+        "pc": "0x6005548e",
+        "address": "0x402e0158",
+        "size": 4,
+        "value": "0x20001000"
+      },
+      {
+        "pc": "0x60055492",
+        "address": "0x402e0154",
+        "size": 4,
+        "value": "0x0"
+      },
+      {
+        "pc": "0x60055496",
+        "address": "0x402e0148",
+        "size": 4,
+        "value": "0x10047"
+      },
+      {
+        "pc": "0x60055042",
+        "address": "0x200040e0",
+        "size": 4,
+        "value": "0x200063c0"
+      },
+      {
+        "pc": "0x6005533a",
+        "address": "0x200040e4",
+        "size": 4,
+        "value": "0x2000a274"
+      },
+      {
+        "pc": "0x6005533c",
+        "address": "0x200040ec",
+        "size": 1,
+        "value": "0x0"
+      },
+      {
+        "pc": "0x6005533e",
+        "address": "0x200040ee",
+        "size": 1,
+        "value": "0xff"
+      },
+      {
+        "pc": "0x60055340",
+        "address": "0x2000a278",
+        "size": 4,
+        "value": "0x200040e0"
+      }
+    ],
+    "stubbed_calls": [
+      {
+        "target": "0x60060c70",
+        "r0": "0x2000a2bc",
+        "model": "no-op transition helper; real effects not modeled"
+      },
+      {
+        "target": "0x6013d3e0",
+        "r0": "0x2002dfaf",
+        "model": "writes zero to virtual stack status byte"
+      },
+      {
+        "target": "0x600d15e8",
+        "r0": "0x0",
+        "model": "no-op guard restore"
+      },
+      {
+        "target": "0x6013d3e0",
+        "r0": "0x2002df8f",
+        "model": "writes zero to virtual stack status byte"
+      },
+      {
+        "target": "0x600d15e8",
+        "r0": "0x0",
+        "model": "no-op guard restore"
+      },
+      {
+        "target": "0x6013d3e0",
+        "r0": "0x2002df87",
+        "model": "writes zero to virtual stack status byte"
+      },
+      {
+        "target": "0x600d15e8",
+        "r0": "0x0",
+        "model": "no-op guard restore"
+      }
+    ],
+    "instruction_hooks": 611,
+    "original_driver": {
+      "executed": true,
+      "mmio_model": "plain virtual memory; no register side effects",
+      "hardware_word": "0x8",
+      "low_five_bits": 8,
+      "engine_driver_object": "0x20011dfc",
+      "driver_context": "0x200063c0"
+    },
+    "transition": {
+      "executed": true,
+      "prior_mode_input": 1,
+      "mode_at_stop": 1,
+      "requested_mode": 2,
+      "note": "0x60060c70 is a no-op; stop precedes final mode publication"
+    }
+  },
+  "limits": [
+    "Original task creator, state preparation and stack-frame writes execute, but no task entry or callback executes.",
+    "0x600c9fd8 scheduler registration is a no-op with unchanged R0; no scheduling/context switch is reproduced.",
+    "Byte fill is bounded virtual memory modeling; actual kernel synchronization and prior helper effects remain modeled.",
+    "Handle value is derived by original stores from the constructor-provided preallocated structure, not injected opaque data.",
+    "Original priority/frame fields are virtual construction results, not installed task state.",
+    "Stage joins and virtual-MMIO word 8 are inherited; final mode publication and complete startup remain unexecuted.",
+    "No physical tasks, class10 activation, USB commands, custom device code, firmware/eFuse changes or HAB bypass demonstrated."
+  ]
+}

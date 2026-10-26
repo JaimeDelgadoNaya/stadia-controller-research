@@ -1,5 +1,7 @@
 # Investigación del mando Stadia
 
+**[Fase 69 — handle y frame originales de tarea](docs/es/handle-tarea-original-fase69.md).** El código original obtiene handle 0x20020278 y prepara PC 0x60101760 con argumento Work Queue 0x2002014C. Ya no se inyecta un handle opaco. El registro en el planificador sigue simulado y no se ejecuta la entrada de tarea ni se demuestra activación física.
+
 **[Fase 68 — constructor original de Work Queue](docs/es/constructor-workqueue-fase68.md).** La entrada 43 del inicializador firmado apunta a 0x600926D0. Sus escrituras borran el handle y establecen auxiliar 0x20020278, buffer 0x2002034C y tamaño 0x200, sustituyendo los fixtures auxiliares de fase67. La creación real de tareas y el arranque físico siguen sin reproducirse/medirse.
 
 **[Fase 67 — llamada pendiente y condiciones de retorno](docs/es/llamada-workqueue-fase67.md).** 0x6009267C se ejecuta hasta retorno normal o rama de error. Campo handle no nulo devuelve cero; falta de estructura auxiliar devuelve 9 y el tamaño probado bajo umbral devuelve 3. El modo 1 ya estaba escrito incluso al fallar. El estado de tareas sigue siendo sintético y la activación física no está medida.

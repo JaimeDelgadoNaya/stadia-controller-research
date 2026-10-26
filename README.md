@@ -1,5 +1,7 @@
 # Stadia Controller Research
 
+**[Phase 69 — original task handle and frame](docs/en/original-task-handle-phase69.md).** Original creator/state/frame code derives handle 0x20020278 and prepares PC 0x60101760 with Work Queue argument 0x2002014C. No opaque handle is injected. Scheduler registration remains stubbed and task entry/physical activation are not executed.
+
 **[Phase 68 — original work-queue constructor](docs/en/workqueue-constructor-phase68.md).** Signed initializer entry 43 points to 0x600926D0. Original stores clear the handle and provide auxiliary pointer 0x20020278, buffer pointer 0x2002034C and size word 0x200, replacing phase67 auxiliary fixtures. Actual task creation and physical startup remain modeled/unmeasured.
 
 **[Phase 67 — pending work-queue call and return conditions](docs/en/pending-workqueue-call-phase67.md).** Original 0x6009267C now executes to normal return or observed error. Nonzero handle field returns zero; missing auxiliary state returns 9 and the tested below-threshold size returns 3. Mode 1 is already stored even on error. Scheduler state remains synthetic and physical activation unmeasured.
