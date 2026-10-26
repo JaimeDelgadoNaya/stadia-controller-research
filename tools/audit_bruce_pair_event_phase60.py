@@ -172,6 +172,29 @@ def audit(image):
     loaders=recover_signed_literal_loads(image,scan_aligned_literals(image))
     base_loaders=[r for r in loaders if int(r["loaded_value"],16)==PAIR_BASE]
     local=[run_local_alias(image,seed) for seed in base_loaders]
+    if len(base_loaders)!=10:
+        raise ValueError("phase60 signed base-reference loader count drift")
+    proven_writes={
+        (item["pc"],item["absolute_address"])
+        for row in local for item in row["bounded_alias_pair_accesses"]
+        if not item["read"]
+    }
+    required_writes={
+        ("0x60063878",hex(PAIR_FIRST)),
+        ("0x6006387e",hex(PAIR_SECOND)),
+    }
+    if not required_writes.issubset(proven_writes):
+        raise ValueError("phase60 signed pair writer positive controls missing")
+    pointers=scan_target_pointer_literals(image)
+    direct=scan_direct_bl_shapes(image)
+    ptr_counts={}
+    for item in pointers:
+        v=item["word"]
+        ptr_counts[v]=ptr_counts.get(v,0)+1
+    if ptr_counts.get(hex(REAL_HANDLER_XIP|1),0)!=1 or (
+        ptr_counts.get(hex(ITCM_WRAPPER|1),0)!=1
+    ):
+        raise ValueError("phase60 signed callback-target literals drift")
     return {
         "phase":60,
         "original_signed_SHA256_verified":True,
@@ -186,8 +209,18 @@ def audit(image):
             len([x for x in r["bounded_alias_pair_accesses"] if x["read"]])
             for r in local
         ),
-        "handler_pointer_literals":scan_target_pointer_literals(image),
-        "direct_BL_shape_hits":scan_direct_bl_shapes(image),
+        "signed_pair_writer_positive_controls":sorted([{"pc":pc,"address":dest}
+                         for pc,dest in proven_writes if (pc,dest) in required_writes],
+                         key=lambda r:r["pc"]),
+        "handler_pointer_literals":pointers,
+        "handler_literal_value_counts":ptr_counts,
+        "direct_BL_shape_hits":direct,
+        "decision":{
+            "pair_is_actionable_host_execution_candidate":False,
+            "basis":"no proven pair reader/invocation, no signed direct BL to studied entries, no USB host provenance in bounded audit",
+            "status":"DEPRIORITIZE_THIS_HYPOTHESIS; NOT A PROOF OF IMPOSSIBILITY",
+            "follow_up":"Prefer passive hardware USB descriptor capture or investigate other control paths without flash/eFuse writes",
+        },
         "limits":{
             "calculated_aliases_across_calls":"NOT COVERED",
             "branch_path_merges":"NOT COVERED",
@@ -215,6 +248,8 @@ def main():
     print("PHASE60 SIGNED BASE LOADER ALIASES",json.dumps(results["local_alias_seed_analyses"]))
     print("PHASE60 SIGNED FUNCTION LITERALS",json.dumps(results["handler_pointer_literals"]))
     print("PHASE60 DIRECT BL SHAPES",json.dumps(results["direct_BL_shape_hits"]))
+    print("PHASE60 VALUE COUNTS",json.dumps(results["handler_literal_value_counts"]))
+    print("PHASE60 DECISION",json.dumps(results["decision"]))
     print("PHASE60 RUNTIME USB LINK UNPROVEN; NO HARDWARE WRITES")
 
 
