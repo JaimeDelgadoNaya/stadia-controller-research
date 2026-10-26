@@ -1,5 +1,7 @@
 # Stadia Controller Research
 
+**[Phase 70 — original scheduler registration and critical state](docs/en/scheduler-registration-phase70.md).** Original registration and ITCM list/critical helpers insert the prepared state in a virtual priority-1 ready list. The OEM nesting sentinel retains virtual BASEPRI 0x50; a separate zero-depth vector restores zero. No task entry/context switch or physical activation executes.
+
 **[Phase 69 — original task handle and frame](docs/en/original-task-handle-phase69.md).** Original creator/state/frame code derives handle 0x20020278 and prepares PC 0x60101760 with Work Queue argument 0x2002014C. No opaque handle is injected. Scheduler registration remains stubbed and task entry/physical activation are not executed.
 
 **[Phase 68 — original work-queue constructor](docs/en/workqueue-constructor-phase68.md).** Signed initializer entry 43 points to 0x600926D0. Original stores clear the handle and provide auxiliary pointer 0x20020278, buffer pointer 0x2002034C and size word 0x200, replacing phase67 auxiliary fixtures. Actual task creation and physical startup remain modeled/unmeasured.

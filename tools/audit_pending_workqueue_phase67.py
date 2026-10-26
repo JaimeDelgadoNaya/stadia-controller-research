@@ -70,10 +70,20 @@ def verify_pins(image):
         raise ValueError('Phase67 original label drift')
 
 
-def queue_case(image,ram,*,name,existing=False,control=False,words=0x200,preserve_queue=False,execute_creator=False):
+def queue_case(image,ram,*,name,existing=False,control=False,words=0x200,preserve_queue=False,execute_creator=False,
+               execute_registration=False,critical_nesting=None):
     from unicorn import UC_HOOK_CODE
     from unicorn.arm_const import UC_ARM_REG_R0,UC_ARM_REG_R1,UC_ARM_REG_R2,UC_ARM_REG_R5,UC_ARM_REG_R6,UC_ARM_REG_PC,UC_ARM_REG_LR
     uc=machine(image,ram)
+    if execute_registration:
+        if not execute_creator:
+            raise ValueError('Original registration requires original creator')
+        from tools.audit_app_usb_dispatch import ITCM_SOURCE_OFFSET,ITCM_LENGTH
+        uc.mem_map(0,0x10000)
+        uc.mem_write(0,image[ITCM_SOURCE_OFFSET:ITCM_SOURCE_OFFSET+ITCM_LENGTH])
+        uc.mem_map(0xE000E000,0x1000)
+        if critical_nesting is not None:
+            uc.mem_write(0x20003D68,struct.pack('<I',critical_nesting))
     if preserve_queue:
         handle,auxiliary=struct.unpack('<II',bytes(uc.mem_read(QUEUE+0x58,8)))
         existing,control=bool(handle),bool(auxiliary)
@@ -95,7 +105,7 @@ def queue_case(image,ram,*,name,existing=False,control=False,words=0x200,preserv
             return
         helper=pc in (0x6006581C,0x60071580,0x600D5494,0x600D54A6,0x6013D2D0,0x6013D0E0,0x600CA1F8)
         helper=helper and not (execute_creator and pc==0x600CA1F8)
-        helper=helper or (execute_creator and pc in (0x6013CF90,0x600C9FD8))
+        helper=helper or (execute_creator and pc==0x6013CF90) or (execute_creator and not execute_registration and pc==0x600C9FD8)
         if helper:
             values=[m.reg_read(r) for r in (UC_ARM_REG_R0,UC_ARM_REG_R1,UC_ARM_REG_R2)]
             model='opaque modeled creation return; scheduler not executed' if pc==0x600CA1F8 else 'no-op returning zero'
@@ -117,11 +127,15 @@ def queue_case(image,ram,*,name,existing=False,control=False,words=0x200,preserv
         if execute_creator:
             allowed |= (0x600CA1F8<=pc<0x600CA274 or 0x600CA0FC<=pc<0x600CA1A6 or
                         0x601007B6<=pc<0x601007BC or 0x600CC554<=pc<0x600CC572)
+        if execute_registration:
+            allowed |= (0x600C9FD8<=pc<0x600CA09E or
+                        any(a<=pc<a+4 for a in (0x6013D360,0x6013D060,0x6013D188,0x6013D000)) or
+                        0x7D64<=pc<0x7D9C or 0x7DAC<=pc<0x7DCE or 0xB2E8<=pc<0xB316)
         if not allowed:
             raise ValueError(f'Unexpected pending-call execution {pc:#x}')
 
     uc.hook_add(UC_HOOK_CODE,hook)
-    uc.emu_start(0x60074773,0x10000002,count=600)
+    uc.emu_start(0x60074773,0x10000002,count=3000 if execute_registration else 600)
     if not status or 0x6009267C not in steps:
         raise ValueError('Pending original call was not executed')
     mode=struct.unpack('<I',bytes(uc.mem_read(OWNER+0x90,4)))[0]
@@ -149,7 +163,20 @@ def queue_case(image,ram,*,name,existing=False,control=False,words=0x200,preserv
             stack_buffer=hex(word(handle+0x30)),frame_pointer=hex(frame),priority_word=word(handle+0x2C),
             prepared_pc=hex(word(frame+0x3C)),prepared_r0=hex(word(frame+0x24)),
             prepared_status=hex(word(frame+0x40)),prepared_exception_return=hex(word(frame+0x20)),
-            task_entry_executed=0x60101760 in steps,registration_stubbed=0x600C9FD8 in steps)
+            task_entry_executed=0x60101760 in steps,registration_stubbed=0x600C9FD8 in steps and not execute_registration)
+    if execute_registration:
+        from unicorn.arm_const import UC_ARM_REG_BASEPRI
+        head=0x2002741C+20*word(handle+0x2C)
+        node=handle+4
+        result['original_registration']=dict(executed=True,stubbed=False,
+            critical_nesting_fixture=critical_nesting,
+            task_count=word(0x200276A0),current_task=hex(word(0x20027410)),
+            ready_bitmap=hex(word(0x200276B4)),scheduler_running_word=word(0x20027700),
+            ready_list=hex(head),ready_count=word(head),ready_next=hex(word(head+0xC)),ready_previous=hex(word(head+0x10)),
+            task_node=hex(node),node_container=hex(word(node+0x10)),
+            final_critical_nesting=hex(word(0x20003D68)),virtual_basepri=hex(uc.reg_read(UC_ARM_REG_BASEPRI)),
+            itcm_helpers_executed=all(p in steps for p in (0x7D64,0x7DAC,0xB2E8,0xB2FE)),
+            virtual_icsr=hex(word(0xE000ED04)),task_entry_executed=0x60101760 in steps)
     return result,bytes(uc.mem_read(0x20000000,0x30000))
 
 
