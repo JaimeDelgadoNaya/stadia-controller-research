@@ -191,7 +191,7 @@ def aligned_original_code_pointer_refs(image,targets):
     return matches
 
 
-def find_pc_relative_load_to_signed_literal(image,literal_pc,limit=0x90):
+def find_pc_relative_load_to_signed_literal(image,literal_pc,limit=0x480):
     """Bounded Thumb-shaped LDR PC xrefs, neither CFG nor proof of registration."""
     if not(BASE<=literal_pc<=BASE+len(image)-4 and (literal_pc&3)==0):
         raise ValueError("phase76 pointer-literal location invalid")
