@@ -31,6 +31,9 @@ hemos demostrado ejecución de firmware propio ni una forma de eludir las firmas
 
 **[Registro de callbacks USB en Bruce — fase #34](docs/es/registro-callbacks-ep0-bruce.md).** Se verificó en el firmware OEM original la función `0x600D10B8`, que instala en una tabla de 12 bytes las parejas función/contexto para endpoints. Se localizaron dos rutas de inicialización y cuatro funciones firmadas intermediarias de clase. **No se ha establecido cuál se registra en EP0 ni el receptor de `bRequest 0x81/0x83/0x84`**. Sin ejecución propia, sin bypass HAB CLOSED y sin escrituras en el mando.
 
+
+**[Fase #35 — SETUP USB y función de clase](docs/es/setup-control-clase-bruce.md).** Análisis sobre la imagen original OEM Bruce firmada: se identificaron lecturas relacionadas de `bmRequestType`, `bRequest`, `wValue` y `wIndex`, la rama de solicitudes estándar 1–11 y el **reenvío condicional de `bRequest` por `0x600D0EB8` a un puntero de clase**. Se diferenciaron dos tablas distintas `0x60104BA4`/`0x60104BC4`; falta identificar el objeto EP0 activo y el receptor concreto de `0x81/0x83/0x84`. Sin IO sobre mando, bypass HAB CLOSED, firmware instalable ni soporte Xbox/Switch 2 demostrado.
+
 ## Prioridad actual: software del propio mando y Switch 2 directa
 
 El propietario ha descartado adaptadores y placas externas. La nueva prioridad

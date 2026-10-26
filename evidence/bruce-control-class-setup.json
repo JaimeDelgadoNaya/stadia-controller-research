@@ -1,0 +1,45 @@
+{
+  "date": "2026-10-26",
+  "PR": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/pull/35",
+  "image": {
+    "kind": "OEM signed Bruce update archive; not installed firmware dump",
+    "size": 1050984,
+    "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3"
+  },
+  "source_semantics": {
+    "setup_field_reads": [
+      "0x600d090e byte+1",
+      "0x600d091a byte+0",
+      "0x600d0922 word+2",
+      "0x600d0958 word+4"
+    ],
+    "standard_recipient_interface_router": "0x600d0d3c..0x600d0d58",
+    "standard_case_ids": "1..11 only",
+    "class_request_router": "0x600d0ea2..0x600d0ebe",
+    "class_dispatch_recipient": "interface",
+    "class_dispatch_interface_byte_guard": "0x600d0eae..0x600d0eb4",
+    "host_brequest_into_r1": "0x600d0eb8",
+    "indirect_jump": "0x600d0ebe",
+    "host_supplied_pointer_not_demonstrated": true
+  },
+  "table": {
+    "class_router_thumb": "0x600d0e59",
+    "at": "0x60104bac",
+    "near_candidate_entry_point": "0x60104ba4",
+    "other_distinct_table": "0x60104bc4",
+    "initializer_literal_read_at": "0x600553fc",
+    "initializer_literal_value": "0x60104bc4",
+    "initialized_RAM_literal": "0x200063c0",
+    "initializer_callback_store": "0x6005533a",
+    "class_table_direct_pointer_literal_hits": 0,
+    "other_table_direct_pointer_literal_hits": 1
+  },
+  "physical_EP0_reachability_proven": false,
+  "exact_active_object_unresolved": true,
+  "host_81_83_84_behavior_unresolved": true,
+  "arbitrary_execution_proven": false,
+  "HAB_bypass_proven": false,
+  "firmware_install_proven": false,
+  "physical_USB_used": false,
+  "device_writes": false
+}

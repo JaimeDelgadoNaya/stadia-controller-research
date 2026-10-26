@@ -31,6 +31,9 @@ firmware execution or signature bypass has been demonstrated.**
 
 **[Signed Bruce endpoint callback registration — phase #34](docs/en/bruce-ep0-registration.md).** The original OEM image verifies `0x600D10B8` as the 12-byte endpoint callback registrar, two descriptor-loop callers and four signed class-event forwarders. **The actual EP0 slot and host `bRequest 0x81/0x83/0x84` receiver remain unidentified.** No custom code execution, HAB bypass, physical USB commands or device modifications.
 
+
+**[Phase #35 — USB SETUP and class callback provenance](docs/en/bruce-class-control-setup-provenance.md).** Signed original Bruce image analysis validates SETUP-like `bmRequestType`, `bRequest`, `wValue`, `wIndex` field reads, a standard-request range 1–11, and **conditional class `bRequest` forwarding via `0x600D0EB8`**. Adjacent `0x60104BA4` and `0x60104BC4` tables are not interchangeable. Live EP0 object and receiver for `0x81/0x83/0x84` remain unverified; no controller I/O, HAB bypass, installable firmware or Xbox/Switch 2 support claimed.
+
 ## Current priority: on-controller software and direct Switch 2
 
 The owner excludes adapters and external boards. The active goal is software
