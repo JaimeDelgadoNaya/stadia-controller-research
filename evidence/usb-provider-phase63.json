@@ -1,0 +1,138 @@
+{
+  "phase": 63,
+  "image_sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+  "exact_image_hash_verified": true,
+  "caller_argument": {
+    "call_pc": "0x600748f2",
+    "target": "0x60073bf0",
+    "argument_r0": "0x200064c0",
+    "literal": "0x60074904",
+    "saved_as_r4": "0x60073bf4"
+  },
+  "owner": "0x2000a2a8",
+  "class_array": "0x2000a274",
+  "provider_object": "0x2000a2a4",
+  "provider_slot": "0x2000a334",
+  "provider_table": "0x60105b88",
+  "internal_event_12_target": "0x60060db2",
+  "flag_store_sites": {
+    "0x6007409a": "0x2000a804",
+    "0x6007409c": "0x2000a805"
+  },
+  "synthetic_chain": {
+    "synthetic_record_count": 4,
+    "metadata_words": {
+      "0x2000a2a4": "0x60105b88",
+      "0x2000a2ac": "0x2000a274",
+      "0x2000a2b0": "0x60060d55",
+      "0x2000a334": "0x2000a2a4"
+    },
+    "class_count_byte": 4,
+    "flag_initial_bytes": "a55a",
+    "flag_final_bytes": "0000",
+    "observed_original_writes": [
+      {
+        "stage": "metadata",
+        "pc": "0x60073e4e",
+        "address": "0x2000a2a4",
+        "size": 4,
+        "value": "0x60105b88"
+      },
+      {
+        "stage": "metadata",
+        "pc": "0x60073eac",
+        "address": "0x2000a2b0",
+        "size": 4,
+        "value": "0x60060d55"
+      },
+      {
+        "stage": "metadata",
+        "pc": "0x60073eb2",
+        "address": "0x2000a2ac",
+        "size": 4,
+        "value": "0x2000a274"
+      },
+      {
+        "stage": "metadata",
+        "pc": "0x60073eb6",
+        "address": "0x2000a2b4",
+        "size": 1,
+        "value": "0x4"
+      },
+      {
+        "stage": "metadata",
+        "pc": "0x60073ef0",
+        "address": "0x2000a334",
+        "size": 4,
+        "value": "0x2000a2a4"
+      },
+      {
+        "stage": "flags",
+        "pc": "0x6007409a",
+        "address": "0x2000a804",
+        "size": 1,
+        "value": "0x0"
+      },
+      {
+        "stage": "flags",
+        "pc": "0x6007409c",
+        "address": "0x2000a805",
+        "size": 1,
+        "value": "0x0"
+      }
+    ],
+    "internal_event": 12,
+    "original_indirect_selector_reached": true,
+    "descriptor_pointer": "0x6011e45a",
+    "descriptor_bytes": 80,
+    "returned_zero": true,
+    "stubbed_calls": [
+      {
+        "stage": "metadata",
+        "target": "0x6013cf90",
+        "r0": "0x2002e090",
+        "r1": "0x0"
+      },
+      {
+        "stage": "metadata",
+        "target": "0x6013d3a0",
+        "r0": "0x2002e014",
+        "r1": "0x2002e078"
+      },
+      {
+        "stage": "metadata",
+        "target": "0x6013d3a0",
+        "r0": "0x2000a2cc",
+        "r1": "0x2002e014"
+      },
+      {
+        "stage": "dispatch",
+        "target": "0x6005bdac",
+        "r0": "0x2000a2a4",
+        "r1": "0x20022000"
+      },
+      {
+        "stage": "dispatch",
+        "target": "0x600dffe8",
+        "r0": "0x20010448",
+        "r1": "0x7"
+      }
+    ],
+    "limits": [
+      "Loop exit/R4/SL/R7 inputs are synthetic, not an execution of the complete initializer.",
+      "The four class records are synthetic zero bytes; actual record identities remain unresolved.",
+      "Init clear/copy helpers are no-op stubs with unchanged R0; their writes/effects are not modeled.",
+      "Flag-writer fragment is separate; intervening code is not executed. R5 zero is carried from the metadata fragment.",
+      "Dispatch event 12 is supplied internally in emulation, not sent to the physical USB device.",
+      "The selector helper returns zero by stub, not a measured physical state."
+    ]
+  },
+  "limits": [
+    "Signed static path and bounded virtual fragment execution only; no installed RAM measurements.",
+    "Four internal class records do not mean four advertised USB interfaces.",
+    "Internal selector 10 activation and actual class array contents remain unverified.",
+    "No exhaustive writer census; later flag updates, aliases, wide writes and bulk initialization are not excluded.",
+    "No physical host-to-callback proof, unsigned execution, HAB bypass or native console compatibility.",
+    "No device I/O, flash writes, eFuse writes, mode changes or full firmware published."
+  ]
+}

@@ -1,5 +1,7 @@
 # Stadia Controller Research
 
+**[Phase 63 — provider and initial flag writers](docs/en/usb-provider-initialization-phase63.md).** Signed initialization links owner 0x2000A2A8 to the descriptor provider and supplies initial zero stores for both flags. Bounded virtual internal-event dispatch reaches the original 80-byte selector; actual class-record contents and installed RAM remain unresolved.
+
 **[Phase 62 — exact live descriptor match in OEM](docs/en/usb-descriptor-oem-match-phase62.md).** The complete 80-byte hub descriptor matches exactly once at OEM XIP 0x6011E45A. Bounded original-code emulation verifies four conditional descriptor profiles; live flags and callback activation remain unmeasured.
 
 **[Phase 61 — live USB enumeration](docs/en/usb-enumeration-phase61.md).** Parent-hub reads expose two interfaces in 80 bytes; the WinUSB function view contains only the vendor interface in 32 bytes. Bulk 0x07/0x87 and HID 0x03/0x83 are declared. No callback reachability or custom execution proven.
