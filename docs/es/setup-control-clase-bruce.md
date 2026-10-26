@@ -1,5 +1,8 @@
 # Bruce: procedencia de peticiones SETUP y salto al callback de clase
 
+**Actualización fase #38:** los punteros de método listados a partir de `0x60104BA4` pertenecen al registro de clase **selector 10**, cuya base es `0x60104BA4`. La tabla completa comienza en `0x60104B74` y el selector está en `+12`. La ruta de `bRequest` en `0x600D0E58` pertenece por tanto a la clase 10, no a la clase 4. [Informe verificado #38](seleccion-clase-bruce-fase38.md).
+
+
 **Fase #35 · 26 de octubre de 2026 · investigación exclusivamente offline.**
 
 ## Origen de la muestra
