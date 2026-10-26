@@ -14,11 +14,15 @@ from tools.audit_app_usb_dispatch import ITCM_SOURCE_OFFSET,ITCM_LENGTH,DATA_SOU
 
 BASE=ASSUMED_XIP_BASE
 REGION_LIMIT=BASE+0xFF000
-RECORD_START=0x60104B80
-SEL4=0x60104BA0
-RECORDS=[(1,[0x60054c7d,0x60054d09,0x60054a55]),
-         (2,[0x60054875,0x600d0591,0x600d0333]),
-         (4,[0x60055321,0x600d0ecb,0x600d0e59])]
+RECORD_START=0x60104B74
+SEL4=0x60104B94
+RECORDS=[
+ (1,[0x600552f1,0x600d0dfd,0x600d0c6b]),
+ (2,[0x60054c7d,0x60054d09,0x60054a55]),
+ (4,[0x60054875,0x600d0591,0x600d0333]),
+ (10,[0x60055321,0x600d0ecb,0x600d0e59]),
+ (0,[0,0,0]),
+]
 WINDOWS={
  "class_registry_selection":(0x600551E0,0x60055320),
  "class_selector_upstream":(0x600550C0,0x600551F4),
@@ -70,6 +74,7 @@ def startup_copy_targets(image):
         raise ValueError("startup data copy missing")
     record={}
     for sel,ptrs in RECORDS:
+        if sel==0: continue
         matches={}
         for val in [sel,*ptrs,RECORD_START,SEL4]:
             packed=struct.pack("<I",val)
@@ -90,10 +95,10 @@ def audit(image):
     for i,(selector,methods) in enumerate(RECORDS):
         at=RECORD_START+i*16
         current=[word(image,at+offset) for offset in (0,4,8,12)]
-        if current!=[selector,*methods]:
+        if current!=[*methods,selector]:
             raise ValueError("signed selector record drift at "+hex(at))
-        rec.append({"start":hex(at),"selector":selector,
-                    "thumb_methods":[hex(x) for x in methods]})
+        rec.append({"record_base":hex(at),"selector_at_plus_0xc":selector,
+                    "thumb_methods_at_0_4_8":[hex(x) for x in methods]})
     x={
       "source":"Original OEM signed update; not live flash",
       "sha256_verified":True,"sha256":IMAGE_SHA256,
