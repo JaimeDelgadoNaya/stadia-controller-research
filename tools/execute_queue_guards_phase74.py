@@ -12,6 +12,7 @@ from pathlib import Path
 
 from tools.audit_signed_app_surface import IMAGE_SIZE,IMAGE_SHA256
 from tools.audit_task_entry_phase73 import WAIT
+from tools.audit_app_usb_dispatch import ITCM_SOURCE_OFFSET,ITCM_LENGTH
 from tools.audit_queue_receive_phase74 import (
     prepare_phase73_state,receiver_code,queue_snapshot,code_window,itcm_code,
     VENEER,word
@@ -46,12 +47,16 @@ def verify_original(image):
             raise ValueError(f'Phase74 signed original receiver instruction drift {pc:#x}')
     return len(PINS)+1
 
-def execute_guards(uc):
+def execute_guards(uc,image):
     from unicorn import UC_HOOK_CODE
     from unicorn.arm_const import (
         UC_ARM_REG_R0,UC_ARM_REG_R1,UC_ARM_REG_R2,UC_ARM_REG_R4,
         UC_ARM_REG_R7,UC_ARM_REG_SP
     )
+    # The phase73 retained machine executes from XIP only. Mapping signed
+    # startup-copied ITCM here is a modeling action, not a physical read.
+    uc.mem_map(0,0x10000)
+    uc.mem_write(0,image[ITCM_SOURCE_OFFSET:ITCM_SOURCE_OFFSET+ITCM_LENGTH])
     read=lambda a:struct.unpack('<I',bytes(uc.mem_read(a,4)))[0]
     orig=dict(r0=uc.reg_read(UC_ARM_REG_R0),r1=uc.reg_read(UC_ARM_REG_R1),
               r2=uc.reg_read(UC_ARM_REG_R2))
@@ -113,7 +118,7 @@ def audit(image):
         raise ValueError('Phase74 signed veneer resolution drift')
     uc,entry=prepare_phase73_state(image)
     queue=queue_snapshot(uc)
-    executed=execute_guards(uc)
+    executed=execute_guards(uc,image)
     return dict(
         phase=74,
         original_oem_SHA256=IMAGE_SHA256,
