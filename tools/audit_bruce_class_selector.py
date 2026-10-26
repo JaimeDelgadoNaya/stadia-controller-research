@@ -21,6 +21,7 @@ RECORDS=[(1,[0x60054c7d,0x60054d09,0x60054a55]),
          (4,[0x60055321,0x600d0ecb,0x600d0e59])]
 WINDOWS={
  "class_registry_selection":(0x600551E0,0x60055320),
+ "class_selector_upstream":(0x600550C0,0x600551F4),
  "class_global_registrar":(0x60055320,0x60055350),
  "other_class_selector":(0x600549D0,0x60054A90),
  "class_startup_dispatch":(0x600D0A90,0x600D0C10),
@@ -118,7 +119,7 @@ def main():
     print("Verified signed records:",json.dumps(report["verified_record_candidates"]))
     print("Startup-copy pointer matches:",json.dumps(report["startup_copy_data_refs"]))
     print("Class-shaped candidate count:",report["selection_shapes"]["total_candidates"])
-    print("Class-shaped candidate examples:",json.dumps(report["selection_shapes"]["examples"][:15]))
+    print("Class-shaped candidate context count:",report["selection_shapes"]["total_candidates"])
     if a.preview:
         for name,rows in report["specific_windows"].items():
             print("WINDOW",name)
