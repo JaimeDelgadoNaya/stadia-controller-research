@@ -58,6 +58,11 @@ class Phase59PairReaders(unittest.TestCase):
         self.assertEqual(good.group(1),"r4")
         self.assertIsNone(a.PAIR_MEM_REGEXP.search("r3, [r4, r2]"))
 
+    def test_signed_writers_are_required_positive_controls(self):
+        # The full original OEM run must find both 0x60063878 and
+        # 0x6006387E: a linear stream scan alone missed both.
+        self.assertEqual(a.PAIR_IMMEDIATES,{0x37C,0x380})
+
     def test_trampoline_original_bytes_required(self):
         with self.assertRaises((ValueError,IndexError)):
             a.resolve_itcm_trampoline(b"not original")
