@@ -18,6 +18,7 @@ from pathlib import Path
 from tools.audit_signed_app_surface import IMAGE_SHA256, IMAGE_SIZE, ASSUMED_XIP_BASE, decode_thumb_bl_target
 from tools.audit_bruce_ep0_registration import decode
 from tools.audit_bruce_parent_r0_phase56 import prove_r0_producer, offset_reader
+from tools.audit_app_usb_dispatch import ITCM_SOURCE_OFFSET, ITCM_LENGTH
 
 CALLER_START=0x60079D74
 CTOR_CALL=0x60079D84
@@ -100,11 +101,37 @@ def signed_call_and_literal_xrefs(image):
 
 
 WINDOWS={
+    "direct_state_reader_caller":(0x60074D64,0x60074DBC),
     "constructor_caller":(0x60079D74,0x60079DA8),
     "post_init_entry":(0x6007E784,0x6007E7CC),
     "post_init_reader_early":(0x6007E7C8,0x6007E838),
     "reader_later":(0x6007E8A0,0x6007E9BA),
 }
+
+
+def inspect_reader_pointer_table(image, refscan):
+    """Inspect a Thumb pointer located *within signed ITCM-copy bytes*.
+
+    Does not imply table is loaded or executed on a real controller.
+    """
+    sites=refscan["literal_thumb_pointer_file_offsets"][hex(0x6007E8AC)]
+    out=[]
+    for addr in sites:
+        off=int(addr,16)
+        info={
+            "file_offset":hex(off),
+            "pointer":hex(struct.unpack_from("<I",image,off)[0]),
+            "lies_in_startup_ITCM_copy":ITCM_SOURCE_OFFSET<=off<ITCM_SOURCE_OFFSET+ITCM_LENGTH,
+            "itcm_runtime_address":hex(off-ITCM_SOURCE_OFFSET) if
+                                  ITCM_SOURCE_OFFSET<=off<ITCM_SOURCE_OFFSET+ITCM_LENGTH else None,
+            "aligned_words_around":[
+                {"file_offset":hex(i),"word":hex(struct.unpack_from("<I",image,i)[0])}
+                for i in range(off-16,off+20,4)
+            ],
+            "runtime_reader_link":"UNPROVEN",
+        }
+        out.append(info)
+    return out
 
 
 def bounded_decode(image, start, end):
@@ -167,6 +194,7 @@ def audit(image):
               [(0x6007E8AC,0x6007E9A4)]),
     }
     refscan=signed_call_and_literal_xrefs(image)
+    pointer_table=inspect_reader_pointer_table(image,refscan)
     nread=verify_pins(image,READ_PINS,[
         (0x6007E7E8,0x6007E7EE),
         (0x6007E80E,0x6007E814),
@@ -207,6 +235,7 @@ def audit(image):
         "wrapper_pin_count":npost,
         "reader_entry_pins":nentry,
         "signed_cross_references":refscan,
+        "reader_pointer_table":pointer_table,
         "post_init_wrapper":{
             "argument": "R0 = allocated object from saved R4 (conditional)",
             "operation":"R0 += 12, R2=27, R1 literal; tail branch 0x6010177a",
@@ -239,6 +268,7 @@ def main():
     print("PHASE57 POST INIT WRAPPER",json.dumps(result["post_init_wrapper"]))
     print("PHASE57 READER ENTRY PINS",json.dumps(result["reader_entry_pins"]))
     print("PHASE57 CROSS REFERENCES",json.dumps(result["signed_cross_references"]))
+    print("PHASE57 READER POINTER TABLE",json.dumps(result["reader_pointer_table"]))
     print("PHASE57 READER CANDIDATES",json.dumps(result["read_candidates"]))
     print("PHASE57 PINS",result["caller_pin_count"],result["reader_pin_count"])
     print("PHASE57 NO LIVE USB CONFIG OR EXECUTION PROOF")
