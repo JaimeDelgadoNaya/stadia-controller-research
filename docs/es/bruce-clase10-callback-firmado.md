@@ -47,6 +47,8 @@ La desensambladura de la imagen original muestra las instrucciones siguientes, s
 
 Por tanto los códigos de solicitud sintéticos **`0x81,0x83,0x84` superan el filtro inicial** porque son mayores que `0x7F`. La función **no ofrece por sí misma un intérprete arbitrario de esos códigos**. Consulta una **segunda función registrada en RAM**, comprueba su valor frente a una referencia y solo entonces puede delegar el trabajo.
 
+Las palabras literales del firmware en `0x60061428` y `0x6006142C` valen **`0x200064C0`** y **`0x600D4F05`**, respectivamente. Así, la lectura del segundo callback se realiza en **`0x20009EF8`** (`0x200064C0 + 0x3A38`) y la de su contexto en **`0x20009EFC`** (`+0x3A3C`). La comparación comprueba el puntero contra **`0x600D4F05`**, una palabra de control firmada. Estas direcciones son estáticas; sus contenidos efectivos en RAM siguen sin conocerse. Una emulación acotada del código OEM comprueba las guardas con registros sintéticos y se detiene siempre antes del salto `BLX R3`.
+
 Esta **segunda dirección y su contexto durante la ejecución física** siguen sin medirse. No está demostrado que el host pueda sobrescribirla, que el manejador esté activo en EP0 o que ese salto permita ejecutar instrucciones no firmadas.
 
 ## Alcance y calidad de las pruebas
