@@ -30,6 +30,11 @@ class CandidateTableTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"drift"):
             a.verify_walker_pins(rows)
 
+    def test_early_startup_call_pin_targets_walker(self):
+        self.assertEqual(a.BOOT_WALKER_CALL, 0x6004C742)
+        self.assertEqual(a.BOOT_WALKER_CALL_PINS[0x6004C742],
+                         ("bl", "#0x600cdb74"))
+
     def test_not_accept_wrong_image(self):
         with self.assertRaisesRegex(ValueError,"pinned"):
             a.audit(b"no data")
