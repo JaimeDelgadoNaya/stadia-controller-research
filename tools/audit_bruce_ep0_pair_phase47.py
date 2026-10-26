@@ -67,6 +67,12 @@ CALLER_PINS={
     0x600D0BDC:("ldr","r1, [sp, #4]"),
     0x600D0BDE:("mov","r0, r4"),
     0x600D0BE0:("bl","#0x60054f30"),
+    0x600D0BEE:("ldr","r3, [sp, #4]"),
+    0x600D0BF2:("mov","r1, r5"),
+    0x600D0BF4:("mov","r0, r4"),
+    0x600D0BF6:("ldr","r3, [r3, #4]"),
+    0x600D0BF8:("ldr","r3, [r3, #4]"),
+    0x600D0BFA:("blx","r3"),
 }
 EP0_HANDLER_PINS={
     0x60054D74:("ldr","r3, [r1, #4]"),
@@ -116,7 +122,7 @@ def pin_pair(image):
         if handler.get(pc)!=expected:
             raise ValueError("Original EP0 handler SETUP dispatch drift "+hex(pc))
     callers={q["pc"]:(q["m"],q["op"])
-             for q in decode(image,0x600D0BC8,0x600D0BE8)}
+             for q in decode(image,0x600D0BC8,0x600D0BFC)}
     for pc,expected in CALLER_PINS.items():
         if callers.get(pc)!=expected:
             raise ValueError("Signed EP0 installer caller gate drift "+hex(pc))
@@ -135,6 +141,14 @@ def pin_pair(image):
             "class10_selected_or_host_reachable":"UNVERIFIED",
         },
         "caller_has_signed_configuration_guard":"0x600d0bd2 BL 0x60054f7c; if success and R5(input R1)==1, call installer",
+        "signed_class_control_event_tail_dispatch":{
+            "event_entry":"0x600d0bc8",
+            "class_object_source":"0x600d0bee LDR R3,[SP,#4], obtained via 0x60054f7c",
+            "first_method_pointer_deref":"0x600d0bf6 LDR R3,[R3,#4]",
+            "second_method_pointer_deref":"0x600d0bf8 LDR R3,[R3,#4]",
+            "call":"0x600d0bfa BLX R3",
+            "class10_specific_target":"NOT STATICALLY VERIFIED",
+        },
         "first_original_callback_literal_at":hex(FN_LITERAL_ADDR),
         "signed_callback_pointer":hex(callback),
         "original_endpoint_record_literal_at":hex(EP_LITERAL_ADDR),
