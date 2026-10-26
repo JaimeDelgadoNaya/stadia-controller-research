@@ -67,6 +67,25 @@ En la imagen estática existe un puntero Thumb **`0x600D0E59`** en la dirección
 
 En `0x600CFCDA`, el puntero de origen procede del **array de descriptores de endpoint**, y enseguida `0x600CFCDC` aplica `&0x30` al byte `+1`. Su contexto es la **configuración de endpoints**, no la recepción demostrada de un control SETUP.
 
+## Continuación: tabla de callbacks e inicializadores `0x60055320/0x60055350`
+
+En el mismo bloque de datos firmado `0x60104B88–0x60104BE0` encontramos varias direcciones Thumb contiguas:
+
+| Palabra de datos XIP | Contenido en imagen original |
+|---|---|
+| `0x60104BA4` | `0x60055321` (función `0x60055320`) |
+| `0x60104BA8` | `0x600D0ECB` (función `0x600D0ECA`) |
+| `0x60104BAC` | `0x600D0E59` (función `0x600D0E58`) |
+| `0x60104BC4` | `0x6005556D` (otra tabla posterior) |
+
+La función `0x60055320` pasa el argumento entrante `R1` a `R6` en `0x60055324` y lo almacena con `STR R6,[R4,#4]` en `0x6005533A`, dentro de un objeto global localizado/creado por `0x60055024`. Esta instrucción evidencia un **mecanismo para instalar un puntero de callback aportado por código inicializador**. **No demuestra** que el host USB pueda escogerlo, ni que sea el mismo objeto que el utilizado en el camino `0x600D0E58`.
+
+**Diferenciación crucial de tablas:** la función `0x60055350`, en `0x600553BA`, carga un literal almacenado en `0x600553FC`; ese literal vale **`0x60104BC4`**, **no** `0x60104BA4`. En `0x600553C0` se copia esa dirección a `[R4,#4]` y luego se invoca el primer método indirecto del nuevo objeto. Sería incorrecto atribuir esa inicialización a la tabla con `0x600D0E59` solo por proximidad.
+
+Una búsqueda de palabras literales de 32 bits sobre la imagen firmada encontró **una** referencia a `0x60104BC4` (offset `0x153FC`), y **ninguna** a `0x60104BA4` en el barrido realizado. Es un resultado negativo acotado: podría haber referencias calculadas, tablas copiadas, constantes formadas por varias instrucciones o punteros no representados como palabras literales.
+
+El auditor `tools/audit_bruce_class_vtable.py` comprueba estas diferencias directamente sobre el SHA original. Por ahora **no sabemos cuál es el callback de clase específico finalmente instalado**, ni si `0x81/0x83/0x84` llegan a ese objeto concreto.
+
 ## Evidencia y límites
 
 El auditor `tools/audit_bruce_setup_verified.py` fija las instrucciones y comprueba SHA-256, además de interpretar los literales como palabras de datos. El auditor `tools/audit_bruce_control_setup.py` conserva censos y ventanas acotadas sin confundir una coincidencia lineal con un camino ejecutable. En conjunto, distinguen:
@@ -77,12 +96,13 @@ El auditor `tools/audit_bruce_setup_verified.py` fija las instrucciones y compru
 
 ## Próximo paso acotado
 
-Seguir hacia atrás el **puntero de la tabla de callback de clase** utilizado por `0x600D0EB6–0x600D0EBE`. El objetivo es encontrar el inicializador firmado que establece `[R0,#4]` y su función de primer nivel; después analizar sus comparaciones de `bRequest` y límites de longitud. Sin conectar el mando ni experimentar con comandos capaces de modificarlo.
+Seguir hacia atrás el **puntero de la tabla de callback de clase** utilizado por `0x600D0EB6–0x600D0EBE`. El objetivo es encontrar el inicializador firmado que establece `[R0,#4]` y su función de primer nivel; después analizar sus comparaciones de `bRequest` y límites de longitud. La separación comprobada entre las tablas `0x60104BA4` y `0x60104BC4` impide asignar erróneamente ese inicializador a la clase. Sin conectar el mando ni experimentar con comandos capaces de modificarlo.
 
 ```bash
 python -m unittest tests.test_bruce_setup_verified tests.test_bruce_control_setup -v
 python -m tools.audit_bruce_setup_verified local/bruce_pvt_a_prod_signed.bin --out local/setup-verified.json
 python -m tools.audit_bruce_control_setup local/bruce_pvt_a_prod_signed.bin --out local/setup-census.json
+python -m tools.audit_bruce_class_vtable local/bruce_pvt_a_prod_signed.bin --out local/vtable-provenance.json
 ```
 
 El workflow temporal `.github/workflows/signed-app-host-boundary.yml` verifica el SHA-256 del original público, ejecuta ambos auditores y elimina los binarios temporales. Nunca se publica la imagen en el repositorio ni se efectúan escrituras sobre el dispositivo.
