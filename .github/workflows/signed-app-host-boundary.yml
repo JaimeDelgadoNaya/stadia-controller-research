@@ -13,6 +13,7 @@ on:
       - 'tools/audit_bruce_setup_verified.py'
       - 'tools/audit_bruce_class_vtable.py'
       - 'tools/audit_bruce_class_table_xrefs.py'
+      - 'tools/audit_bruce_class_object_origins.py'
       - 'tests/test_signed_app_host_boundary.py'
       - 'tests/test_signed_bruce_variants.py'
       - 'tests/test_bruce_class_requests.py'
@@ -23,6 +24,7 @@ on:
       - 'tests/test_bruce_setup_verified.py'
       - 'tests/test_bruce_class_vtable.py'
       - 'tests/test_bruce_class_table_xrefs.py'
+      - 'tests/test_bruce_class_object_origins.py'
       - '.github/workflows/signed-app-host-boundary.yml'
   workflow_dispatch:
 
@@ -76,6 +78,7 @@ jobs:
           python -m tools.audit_bruce_setup_verified /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/setup-verified.json
           python -m tools.audit_bruce_class_vtable /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/class-vtable.json
           python -m tools.audit_bruce_class_table_xrefs /tmp/stadia-app-offline/bruce.bin
+          python -m tools.audit_bruce_class_object_origins /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/object-origins.json --preview
           python - <<'PY'
           import json
           from pathlib import Path
