@@ -32,6 +32,10 @@ class Phase58SignedHelper(unittest.TestCase):
         self.assertEqual(m.classify_signed_thumb_code_pointer(0x0000A9C5),"SIGNED_STARTUP_RELOCATED_ITCM_CODE_CANDIDATE")
         self.assertEqual(m.classify_signed_thumb_code_pointer(0x600CE232),"NOT_THUMB_CODE_POINTER")
 
+    def test_reject_altered_callback_like_pointers(self):
+        with self.assertRaisesRegex(ValueError,"literal drift"):
+            m.verify_signed_callback_entries(b"not original",0x600CE231,0xA9C5)
+
     def test_exact_hash_required(self):
         with self.assertRaisesRegex(ValueError,"SHA-256"):
             m.audit(b"invalid")
