@@ -18,6 +18,15 @@ class Phase58SignedHelper(unittest.TestCase):
         self.assertEqual(len(m.HELPER_PINS),6)
         self.assertEqual(m.HELPER_PINS[0x600D54C6],("b.w","#0x6006386c"))
 
+    def test_backend_pair_stores_are_distinct_offsets(self):
+        self.assertEqual(m.BACKEND_PINS[0x60063878],("str.w","r2, [r3, #0x37c]"))
+        self.assertEqual(m.BACKEND_PINS[0x6006387E],("str.w","r2, [r3, #0x380]"))
+        self.assertEqual(len(m.BACKEND_PINS),10)
+
+    def test_reject_unaligned_literal(self):
+        with self.assertRaisesRegex(ValueError,"unaligned"):
+            m.signed_word(b"invalid",m.BASE+3)
+
     def test_exact_hash_required(self):
         with self.assertRaisesRegex(ValueError,"SHA-256"):
             m.audit(b"invalid")
