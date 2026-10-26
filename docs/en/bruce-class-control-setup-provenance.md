@@ -1,5 +1,8 @@
 # Signed Bruce USB SETUP / class request provenance (#35)
 
+**Phase #38 correction:** The `0x60104BA4` three-method record belongs to **class selector 10** (selector word at `0x60104BB0`), and the complete signed table starts at `0x60104B74`. The forwarding method `0x600D0E58` belongs to class 10, not class 4. [Verified audit](bruce-class-selector-phase38.md).
+
+
 **2026-10-26. Offline only.** Sample: signed OEM Bruce **update image**, exactly 1,050,984 bytes, SHA-256 `466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3`. Not a physical flash dump or measured active runtime VTOR.
 
 ## Results verified against actual signed ARM Thumb bytes
