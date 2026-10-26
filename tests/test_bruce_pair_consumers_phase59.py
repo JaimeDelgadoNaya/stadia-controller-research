@@ -71,6 +71,13 @@ class Phase59PairReaders(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"outside startup copy"):
             a.itcm_code(b"small",a.ITCM_LENGTH-1,100)
 
+    def test_lone_read_pc_relative_base_has_two_loads(self):
+        self.assertEqual(a.LONE_READER_PINS[0x600BD136],
+                         ("ldr","r3, [pc, #0x10]"))
+        self.assertEqual(a.LONE_READER_PINS[0x600BD138],
+                         ("ldrb.w","r3, [r3, #0x380]"))
+        self.assertEqual(len(a.LONE_READER_PINS),4)
+
     def test_fails_closed_on_nonoriginal(self):
         with self.assertRaisesRegex(ValueError,"SHA-256"):
             a.audit(b"dummy")
