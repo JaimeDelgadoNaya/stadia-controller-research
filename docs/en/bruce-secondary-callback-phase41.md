@@ -19,6 +19,8 @@ Phase 40 established that signed function `0x600613FC` reads a secondary callbac
 | Recognized PC-relative literal loads of those bases | 4 |
 | Offset-shaped stores (`+0xF8/+0xFC/+0x3A38/+0x3A3C`) | 24 |
 
+**Counting caveat:** original code at `0x60061414` also reads the context slot `0x20009EFC` (already pinned in phase 40), but the new linear constant-propagation counter **does not include it** because register state is invalidated after a conditional jump. The single counted read does not mean there is only one real read.
+
 The known boot-time initialized-data copy is `0x20002740..0x20003FD8`. The two secondary slots lie **outside that particular copy**; their actual runtime initialization and values remain unknown.
 
 Of the 24 offset-shaped stores, **12** use SP as base, **3** resolve to the unrelated address `0x20026160`, and **9** have unresolved non-stack base registers. These nine instruction PCs are `0x60058846`, `0x600A4FF2`, `0x600A54F4`, `0x600D574E`, `0x600DDB84`, `0x600EBD86`, `0x600F1C60`, `0x600F4E44`, `0x600FF9EC`.
