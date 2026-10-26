@@ -33,7 +33,6 @@ def word(image, pc):
     return struct.unpack_from("<I",image,pc-BASE)[0]
 
 def decode(image,start,end):
-    decoder=Cs(CS_ARCH_ARM,CS_MODE_THUMB,CS_MODE_MCLASS)
     # Actual runtime uses combined mode, initialize separately to avoid conflation.
     md=Cs(CS_ARCH_ARM,CS_MODE_THUMB|CS_MODE_MCLASS)
     return [{"pc":hex(i.address),"m":i.mnemonic,"op":i.op_str}
