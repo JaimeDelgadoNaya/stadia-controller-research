@@ -19,6 +19,7 @@ from tools.audit_signed_app_surface import IMAGE_SHA256, IMAGE_SIZE, ASSUMED_XIP
 from tools.audit_bruce_ep0_registration import decode
 from tools.audit_bruce_parent_r0_phase56 import prove_r0_producer, offset_reader
 from tools.audit_app_usb_dispatch import ITCM_SOURCE_OFFSET, ITCM_LENGTH
+from tools.audit_bruce_parent_r0_phase56 import itcm_rows
 
 CALLER_START=0x60079D74
 CTOR_CALL=0x60079D84
@@ -101,12 +102,48 @@ def signed_call_and_literal_xrefs(image):
 
 
 WINDOWS={
-    "direct_state_reader_caller":(0x60074D64,0x60074DBC),
+    "direct_state_reader_caller":(0x60074D88,0x60074DBC),
+    "state_reader_argument_supplier":(0x60079C50,0x60079CDC),
     "constructor_caller":(0x60079D74,0x60079DA8),
     "post_init_entry":(0x6007E784,0x6007E7CC),
     "post_init_reader_early":(0x6007E7C8,0x6007E838),
     "reader_later":(0x6007E8A0,0x6007E9BA),
 }
+
+
+def verify_itcm_reader_veneer(image):
+    """Original Thumb veneer at ITCM 0xB7C8 -> signed XIP 0x6007E8AC.
+
+    The linked method is only a static signed-code branch target. Search
+    direct BL sites in relocated ITCM using runtime PC, not image XIP.
+    """
+    address=0xB7C8
+    rows=itcm_rows(image,address,4)
+    if len(rows)!=1 or (rows[0]["m"],rows[0]["op"])!=(
+        "ldr.w","pc, [pc, #-0x0]"
+    ):
+        raise ValueError("phase57 original ITCM reader veneer drift")
+    word=struct.unpack_from("<I",image,ITCM_SOURCE_OFFSET+address+4)[0]
+    if word!=0x6007E8AD:
+        raise ValueError("phase57 original ITCM reader target literal drift")
+    callers=[]
+    for off in range(ITCM_SOURCE_OFFSET,
+                     ITCM_SOURCE_OFFSET+ITCM_LENGTH-3,2):
+        try:
+            target=decode_thumb_bl_target(image,off,base=-ITCM_SOURCE_OFFSET)
+        except ValueError:
+            continue
+        if target==address:
+            callers.append(hex(off-ITCM_SOURCE_OFFSET))
+    return {
+        "veneer_runtime_pc":hex(address),
+        "veneer_original_image_offset":hex(ITCM_SOURCE_OFFSET+address),
+        "literal_file_offset":hex(ITCM_SOURCE_OFFSET+address+4),
+        "thumb_destination":hex(word),
+        "destination_XIP_entry":hex(word&~1),
+        "possible_relocated_ITCM_BL_callers":callers,
+        "executed_on_hardware":"UNVERIFIED",
+    }
 
 
 def inspect_reader_pointer_table(image, refscan):
@@ -195,6 +232,7 @@ def audit(image):
     }
     refscan=signed_call_and_literal_xrefs(image)
     pointer_table=inspect_reader_pointer_table(image,refscan)
+    reader_veneer=verify_itcm_reader_veneer(image)
     nread=verify_pins(image,READ_PINS,[
         (0x6007E7E8,0x6007E7EE),
         (0x6007E80E,0x6007E814),
@@ -236,6 +274,7 @@ def audit(image):
         "reader_entry_pins":nentry,
         "signed_cross_references":refscan,
         "reader_pointer_table":pointer_table,
+        "itcm_reader_veneer":reader_veneer,
         "post_init_wrapper":{
             "argument": "R0 = allocated object from saved R4 (conditional)",
             "operation":"R0 += 12, R2=27, R1 literal; tail branch 0x6010177a",
@@ -269,6 +308,7 @@ def main():
     print("PHASE57 READER ENTRY PINS",json.dumps(result["reader_entry_pins"]))
     print("PHASE57 CROSS REFERENCES",json.dumps(result["signed_cross_references"]))
     print("PHASE57 READER POINTER TABLE",json.dumps(result["reader_pointer_table"]))
+    print("PHASE57 ITCM READER VENEER",json.dumps(result["itcm_reader_veneer"]))
     print("PHASE57 READER CANDIDATES",json.dumps(result["read_candidates"]))
     print("PHASE57 PINS",result["caller_pin_count"],result["reader_pin_count"])
     print("PHASE57 NO LIVE USB CONFIG OR EXECUTION PROOF")
