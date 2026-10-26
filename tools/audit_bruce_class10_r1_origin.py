@@ -70,7 +70,7 @@ def audit(image, *, direct_call_samples=16):
                 (0x60055170,0x60055196),
                 (0x60055320,0x60055342),
                 (0x600D0EB6,0x600D0EC0)]:
-        rows.update({int(ins["pc"],16):(ins["m"],ins["op"]) for ins in decode(image,a,b)})
+        rows.update({ins["pc"]:(ins["m"],ins["op"]) for ins in decode(image,a,b)})
     check_r1_pins(rows)
     rom=verified_rom_table(image)
     assert rom[3]["selector_at_plus_0xc"]==10
