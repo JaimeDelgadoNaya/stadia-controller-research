@@ -1,5 +1,7 @@
 # Investigación del mando Stadia
 
+**[Fase 65 — guardas de instancia clase10 y ruta del owner](docs/es/instancia-clase10-fase65.md).** El código original enlaza el registro OEM con la instancia 0x200040E0 si se simula éxito del driver; su fallo bloquea la ruta. Motor ausente/modo distinto devuelve 4 y clase ocupada devuelve 2. Siguen pendientes la transición de modo previa y la activación física.
+
 **[Fase 64 — registros originales incluyen clase interna 10](docs/es/registros-clase-originales-fase64.md).** Los productores originales construyen [10, 1, 2, 4] desde los datos firmados de arranque. Clase10 lleva callback 0x600613FD y selecciona 0x60055321 antes de la llamada. La activación física y el arranque completo del motor siguen sin medirse.
 
 **[Fase 63 — proveedor y escritores iniciales de flags](docs/es/proveedor-usb-inicializacion-fase63.md).** El inicializador firmado enlaza el owner 0x2000A2A8 con el proveedor del descriptor e inicializa ambos flags a cero. El despacho virtual del evento interno alcanza el selector de 80 bytes; siguen pendientes los registros de clase reales y la RAM instalada.

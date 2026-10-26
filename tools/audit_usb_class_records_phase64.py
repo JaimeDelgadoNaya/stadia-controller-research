@@ -58,7 +58,7 @@ def verify_sources(image):
     return rows
 
 
-def emulate(image, sources):
+def emulate(image, sources, *, return_ram=False):
     from unicorn import Uc, UC_ARCH_ARM, UC_MODE_THUMB, UC_MODE_MCLASS, UC_HOOK_CODE, UC_HOOK_MEM_WRITE
     from unicorn.arm_const import (
         UC_ARM_REG_PC, UC_ARM_REG_LR, UC_ARM_REG_SP, UC_ARM_REG_R0, UC_ARM_REG_R1,
@@ -171,12 +171,15 @@ def emulate(image, sources):
             method_thumb=hex(uc.reg_read(UC_ARM_REG_R3)), argument_r1=hex(pointer),
             output_pointer_r2=hex(pointer+4), registry_record_offset=uc.reg_read(UC_ARM_REG_R7),
             stopped_before_class_method_call=True))
-    return dict(start='0x60073bf0', stop='0x60073ef4', constructor_instruction_hooks=original_steps,
+    result = dict(start='0x60073bf0', stop='0x60073ef4', constructor_instruction_hooks=original_steps,
         producers=produced, copied_records=copied, original_record_stores=stores,
         owner_config=dict(array=hex(owner_words[0]), method=hex(owner_words[1]), count=4),
         selector_matches=selections, helper_calls=calls,
         selector_handoff='Injected singleton+4=owner+4 and fragment registers; engine setup/checks not executed',
         class_methods_executed=False, callbacks_executed=False)
+    if return_ram:
+        return result, bytes(uc.mem_read(0x20000000, 0x30000))
+    return result
 
 
 def audit(image):
