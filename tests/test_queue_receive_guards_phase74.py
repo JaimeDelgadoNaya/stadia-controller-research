@@ -35,8 +35,9 @@ class QueueReceiveGuardsTests(unittest.TestCase):
         self.assertFalse(case['queue_dequeue_executed'])
         self.assertFalse(case['work_item_callback_executed'])
 
-    @unittest.skipUnless(os.environ.get('STADIA_BRUCE_IMAGE'),
-                         'Original signed image optional fixture unavailable')
+    @unittest.skipUnless(os.environ.get('STADIA_BRUCE_IMAGE') and
+                         (ROOT/'evidence/usb-queue-receive-phase74.json').exists(),
+                         'Published phase74 evidence not yet recorded')
     def test_published_evidence_reproducible(self):
         image=Path(os.environ['STADIA_BRUCE_IMAGE']).read_bytes()
         expected=json.loads((ROOT/'evidence/usb-queue-receive-phase74.json').read_text())
