@@ -48,7 +48,7 @@ def itcm_code(image,pc,length):
             for i in cs.disasm(data,pc)]
 
 def receiver_code(image):
-    veneer=code_window(image,VENEER,VENEER+8)
+    veneer=code_window(image,VENEER,VENEER+4)
     literals=[{'pc':hex(i),'word':hex(word(image,i))}
               for i in (VENEER+4,)]
     target=word(image,VENEER+4)
