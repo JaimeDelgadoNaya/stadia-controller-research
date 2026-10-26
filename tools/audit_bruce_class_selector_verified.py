@@ -50,6 +50,32 @@ def verify_pins(rows):
             raise ValueError("Signed class-loop semantic anchor drift "+hex(pc)+
                              " actual "+str(rows.get(pc)))
     return True
+
+ROM_TABLE_BASE=0x60104B74
+ROM_TABLE_EXPECTED=[
+    (1, (0x600552F1,0x600D0DFD,0x600D0C6B)),
+    (2, (0x60054C7D,0x60054D09,0x60054A55)),
+    (4, (0x60054875,0x600D0591,0x600D0333)),
+    (10,(0x60055321,0x600D0ECB,0x600D0E59)),
+    (0, (0,0,0)),
+]
+def verified_rom_table(image):
+    """Five 16-byte records: function at +0/+4/+8 and ID at +0x0c."""
+    rows=[]
+    for i,(id_word,methods) in enumerate(ROM_TABLE_EXPECTED):
+        pc=ROM_TABLE_BASE+i*0x10
+        actual=[raw_word(image,pc+x) for x in (0,4,8,12)]
+        expected=[*methods,id_word]
+        if actual!=expected:
+            raise ValueError("Signed original class table record mismatch "+hex(pc))
+        rows.append({"record_base":hex(pc),"method_0":hex(actual[0]),
+                     "method_4":hex(actual[1]),
+                     "method_8":hex(actual[2]),
+                     "selector_at_plus_0xc":id_word,
+                     "record_length":16,
+                     "host_reachable":False})
+    return rows
+
 def audit(data):
     if len(data)!=IMAGE_SIZE or hashlib.sha256(data).hexdigest()!=IMAGE_SHA256:
         raise ValueError("Requires exact original SHA-pinned signed Bruce image")
@@ -58,6 +84,7 @@ def audit(data):
                 (0x600552D0,0x600552E2),(0x600552F0,0x6005533C)]:
         rows.update({i["pc"]:(i["m"],i["op"]) for i in decode(data,a,b)})
     verify_pins(rows)
+    table=verified_rom_table(data)
     pool=[]
     for pc,imm in LDR_LITERALS.items():
         adr=literal_address(pc,imm)
@@ -69,6 +96,10 @@ def audit(data):
     return {
         "sha256_verified":True,
         "literal_loads":pool,
+        "signed_class_records":table,
+        "class_table_base_verified":hex(ROM_TABLE_BASE),
+        "class10_request_forwarder":"0x600d0e58",
+        "class4_request_forwarder":"0x600d0332 (distinct)",
         "selector_shape":{
             "first":"0x60055178-0x6005519a",
             "first_table_base_source":"0x60055142 LDR FP PC-relative",
@@ -98,6 +129,7 @@ def main():
     if a.out:a.out.write_text(json.dumps(result,indent=2)+"\n")
     print("VERIFIED SIGNED CLASS SELECTOR",json.dumps(result["selector_shape"]))
     print("PC LITERAL VALUES",json.dumps(result["literal_loads"]))
+    print("ROM CLASS REGISTER VERIFIED",json.dumps(result["signed_class_records"]))
     print("LIVE OBJECT/CLASS4: NOT VERIFIED")
 if __name__=="__main__":
     main()
