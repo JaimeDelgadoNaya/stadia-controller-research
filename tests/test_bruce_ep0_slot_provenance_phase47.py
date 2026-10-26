@@ -35,6 +35,15 @@ class EP0SlotProvenance47(unittest.TestCase):
         self.assertFalse(x["registrar_called_on_these_local_predicates"])
         self.assertIsNone(x["signed_adapter"])
 
+    def test_signed_clearer_zeroes_both_callback_and_context(self):
+        self.assertEqual(a.CLEAR_PINS[0x600D1122],
+                         ("strd","r2, r2, [r3, #0xc]"))
+        self.assertEqual(a.CLEAR_PINS[0x600D1120],("movs","r2, #0"))
+        self.assertEqual(a.CLEAR_PINS[0x600D1126],
+                         ("strb","r2, [r3, #0x14]"))
+        self.assertEqual(a.endpoint_index(0x00),0)
+        self.assertEqual(a.endpoint_index(0x80),1)
+
     def test_original_code_mutation_detected(self):
         self.assertEqual(a.validate_pins(dict(a.PINS)),len(a.PINS))
         changed=dict(a.PINS)
