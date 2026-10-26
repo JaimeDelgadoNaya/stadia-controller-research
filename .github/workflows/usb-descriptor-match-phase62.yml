@@ -17,6 +17,7 @@ on:
       - 'tools/audit_task_entry_phase73.py'
       - 'tools/audit_queue_receive_phase74.py'
       - 'tools/execute_queue_guards_phase74.py'
+      - 'tools/audit_queue_producers_phase75.py'
       - 'tools/parse_usb_configuration.py'
       - 'tests/test_usb_descriptor_match_phase62.py'
       - 'tests/test_usb_provider_phase63.py'
@@ -32,6 +33,7 @@ on:
       - 'tests/test_task_entry_phase73.py'
       - 'tests/test_queue_receive_phase74.py'
       - 'tests/test_queue_receive_guards_phase74.py'
+      - 'tests/test_queue_producers_phase75.py'
       - 'evidence/usb*phase*.json'
       - '.github/workflows/usb-descriptor-match-phase62.yml'
   workflow_dispatch:
@@ -75,6 +77,8 @@ jobs:
           python -m tools.audit_queue_receive_phase74 "$image" --out "$RUNNER_TEMP/phase74-queue.json"
           STADIA_BRUCE_IMAGE="$image" python -m unittest tests.test_queue_receive_guards_phase74 -v
           python -m tools.execute_queue_guards_phase74 "$image" --out "$RUNNER_TEMP/phase74-guards.json"
+          STADIA_BRUCE_IMAGE="$image" python -m unittest tests.test_queue_producers_phase75 -v
+          python -m tools.audit_queue_producers_phase75 "$image" --out "$RUNNER_TEMP/phase75-producers.json"
           python -m tools.audit_usb_descriptor_match_phase62 "$image" --emulate --out "$report"
           python - "$report" <<'PY'
           import json, sys
