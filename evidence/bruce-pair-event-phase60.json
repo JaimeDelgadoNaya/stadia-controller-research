@@ -1,0 +1,71 @@
+{
+  "phase": 60,
+  "date": "2026-10-26",
+  "pr": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/pull/62",
+  "source": {
+    "kind": "exact original signed Bruce OEM update",
+    "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+    "hardware": false
+  },
+  "pair": {
+    "base": "0x2000f878",
+    "function_slot": "0x2000fbf4",
+    "context_slot": "0x2000fbf8"
+  },
+  "computed_aliases": {
+    "PC_relative_loaders": 10,
+    "original_positive_control_writes": [
+      {
+        "pc": "0x60063878",
+        "address": "0x2000fbf4"
+      },
+      {
+        "pc": "0x6006387e",
+        "address": "0x2000fbf8"
+      }
+    ],
+    "proven_read_in_straight_line_paths": 0,
+    "analysis_boundary": "single code run until branch/call/clobber; other aliases excluded",
+    "negative_not_global_proof": true
+  },
+  "function_literals": {
+    "count": 37,
+    "values": {
+      "0x600ce233": 35,
+      "0xa9c5": 1,
+      "0x6007e6a1": 1
+    }
+  },
+  "direct_calls": {
+    "thumb_direct_BL_shape_hits": 0,
+    "domain": "signed XIP and startup relocated ITCM",
+    "not_exhaustive_for_indirect_calls": true
+  },
+  "decision": {
+    "status": "DEPRIORITIZE_AS_HOST_CODE_EXECUTION_CANDIDATE",
+    "proof_of_impossibility": false,
+    "reason": "no verified reader/invoker of pair and no USB host controlled path",
+    "next": "read-only physical USB enumeration plus bridge alternative evaluation"
+  },
+  "ci": {
+    "OEM_source": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40371183749",
+    "offline_test_runs": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40371183571",
+    "tests_python_311_and_312": 714,
+    "status": "passed"
+  },
+  "limitations": {
+    "live_RAM_pair_values": "UNMEASURED",
+    "USB_origin": "UNPROVEN",
+    "class10_active": "UNVERIFIED",
+    "owner_dynamic_fields": "UNMEASURED",
+    "firmware_execution": "NOT DEMONSTRATED",
+    "HAB_CLOSED_bypass": "NOT DEMONSTRATED",
+    "Xbox_support": "NOT DEMONSTRATED"
+  },
+  "safety": {
+    "physical_USB_request": false,
+    "physical_RAM_read": false,
+    "flash_write": false,
+    "efuse_write": false
+  }
+}

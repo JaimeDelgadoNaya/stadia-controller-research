@@ -51,6 +51,7 @@ on:
       - 'tools/audit_bruce_parent_consumer_phase57.py'
       - 'tools/audit_bruce_field80_helper_phase58.py'
       - 'tools/audit_bruce_pair_consumers_phase59.py'
+      - 'tools/audit_bruce_pair_event_phase60.py'
       - 'tools/emulate_bruce_class10_callback_guard.py'
       - 'tools/emulate_bruce_class_selector.py'
       - 'tools/emulate_bruce_class_request_fragment.py'
@@ -102,6 +103,7 @@ on:
       - 'tests/test_bruce_parent_consumer_phase57.py'
       - 'tests/test_bruce_field80_helper_phase58.py'
       - 'tests/test_bruce_pair_consumers_phase59.py'
+      - 'tests/test_bruce_pair_event_phase60.py'
       - 'tests/test_emulate_bruce_class10_callback_guard.py'
       - 'tests/test_emulate_bruce_class_selector.py'
       - 'tests/test_bruce_class_request_fragment.py'
@@ -289,6 +291,7 @@ jobs:
           python -m tools.audit_bruce_parent_consumer_phase57 /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/phase57-parent-consumers.json
           python -m tools.audit_bruce_field80_helper_phase58 /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/phase58-helper.json
           python -m tools.audit_bruce_pair_consumers_phase59 /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/phase59-pair-consumers.json
+          python -m tools.audit_bruce_pair_event_phase60 /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/phase60-pair-event.json
           python -m tools.emulate_bruce_class10_callback_guard /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/class10-guard-virtual.json
           python -m tools.emulate_bruce_class_selector /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/selection-synthetic.json
           python -m tools.emulate_bruce_class_request_fragment /tmp/stadia-app-offline/bruce.bin --out /tmp/stadia-app-offline/synthetic-class-requests.json
