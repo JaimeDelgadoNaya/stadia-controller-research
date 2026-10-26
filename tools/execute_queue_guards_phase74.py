@@ -109,6 +109,38 @@ def execute_guards(uc,image):
         'work_item_callback_executed':False,
     }
 
+def classify_unexecuted_queue_branch(snapshot):
+    """Static branch expectation; queue critical/sync helpers NOT executed.
+
+    Original ITCM: 0x6D7A loads [control+0x38], 0x6D7C branches on
+    zero to 0x6DB4, where 0x6DB6 tests saved timeout. A modeled
+    state before synchronization cannot establish future behavior.
+    """
+    values=snapshot['control_words']
+    if len(values)!=16:
+        raise ValueError('Phase74 original queue control snapshot length drift')
+    count=int(values[14],16)  # +0x38
+    wait=int(snapshot['queue_receive_r2_timeout'],16)
+    if count==0 and wait==0xFFFFFFFF:
+        branch='EXPECTED_EMPTY_QUEUE_THEN_WAIT_IF_STATE_UNCHANGED'
+    elif count==0 and wait==0:
+        branch='EXPECTED_EMPTY_QUEUE_NO_WAIT_IF_STATE_UNCHANGED'
+    else:
+        branch='OTHER; NO_RECEIVE_OUTCOME_DEMONSTRATED'
+    return {
+        'original_count_field_offset':'0x38',
+        'model_count_before_critical':count,
+        'original_queue_count_load':'0x6d7a LDR R5,[R4,#0x38]',
+        'original_zero_guard':'0x6d7c CBZ R5,#0x6db4',
+        'original_timeout_load':'0x6db4 LDR R5,[SP,#4]',
+        'original_nonzero_wait_guard':'0x6db6 CBNZ R5,#0x6dc0',
+        'timeout_value':hex(wait),
+        'unexecuted_branch_expectation':branch,
+        'critical_sections_and_scheduler_executed':False,
+        'queue_delivery_or_callback_observed':False,
+    }
+
+
 def audit(image):
     if len(image)!=IMAGE_SIZE or hashlib.sha256(image).hexdigest()!=IMAGE_SHA256:
         raise ValueError('Phase74 original exact SHA-pinned OEM required')
@@ -119,6 +151,7 @@ def audit(image):
     uc,entry=prepare_phase73_state(image)
     queue=queue_snapshot(uc)
     executed=execute_guards(uc,image)
+    projected=classify_unexecuted_queue_branch(queue)
     return dict(
         phase=74,
         original_oem_SHA256=IMAGE_SHA256,
@@ -126,6 +159,7 @@ def audit(image):
         original_receiver_ITCM='0x6d2c',
         inherited_phase73_queue_state=queue,
         original_receive_guard_execution=executed,
+        static_queue_branch_projection=projected,
         safety_and_limits=[
             'Retained original-task virtual state still depends on modeled scheduler, SVC frame and virtual MMIO.',
             'Only the original BL, signed XIP veneer and ITCM argument-check prologue execute in emulator.',
@@ -144,6 +178,8 @@ def main():
     text=json.dumps(result,indent=2)+'\n'
     if args.out:args.out.write_text(text,encoding='utf-8')
     print('PHASE74 ORIGINAL RECEIVE GUARDS',json.dumps(result['original_receive_guard_execution']))
+    print('PHASE74 STATIC EMPTY-QUEUE PROJECTION',json.dumps(result['static_queue_branch_projection']))
+    print('PHASE74 COMPLETE EVIDENCE',json.dumps(result,separators=(',',':')))
     print('PHASE74 STOP BEFORE 0x7734: NO MESSAGE, CALLBACK OR DEVICE I/O')
 
 if __name__=='__main__':
