@@ -51,7 +51,13 @@
     "secondary_context_read_PC": "0x60061414",
     "guard_comparison_PC": "0x6006140c",
     "indirect_call_PC": "0x60061416",
-    "secondary_callback_live_value": "UNKNOWN"
+    "secondary_callback_live_value": "UNKNOWN",
+    "RAM_base_literal": "0x200064c0",
+    "guard_sentinel_literal": "0x600d4f05",
+    "secondary_callback_RAM_slot": "0x20009ef8",
+    "secondary_callback_context_RAM_slot": "0x20009efc",
+    "virtual_emulation": "Stops before indirect BLX, with synthetic RAM and signed original machine code",
+    "reading_live_secondary_callback": "NOT MEASURED"
   },
   "candidate_scan": {
     "initialized_RAM_triplets": 73,
