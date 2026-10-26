@@ -128,10 +128,13 @@ def branch_aware_footprints(image):
     # Deliberately use known block anchor rather than guess that this is
     # the start of caller A's containing function.
     regions={
-        "A_atomic_predecessor":(0x600621F0,0x600622A0),
+        "A_previous_signed_fragment":(0x600621F0,0x60062220),
+        "A_atomic_tail":(0x60062264,0x60062298),
         "B_exact_function":(B_ENTRY,0x6006B2D8),
         "B_status_callee":(0x600D8F64,0x600D8FCE),
         "B_fallback_callee":(0x600D8ED4,0x600D8F20),
+        "B_common_status_helper":(0x600D8E6C,0x600D8ED0),
+        "B_status_helper_variant":(0x600D8F24,0x600D8F64),
         "queue_producer_API":(API,0x600926B2),
         "known_class10_callback":(0x600613FC,0x60061422),
     }
@@ -170,6 +173,44 @@ def upstream_census(image):
     }
 
 
+def aligned_original_code_pointer_refs(image,targets):
+    """Exact aligned Thumb-pointer words; static only, never callback proof."""
+    inv={addr|1:name for name,addr in targets.items()}
+    matches={name:[] for name in targets}
+    for off in range(0,len(image)-3,4):
+        value=struct.unpack_from("<I",image,off)[0]
+        if value in inv:
+            matches[inv[value]].append({
+                "file_offset":hex(off),
+                "pc_if_XIP":hex(BASE+off),
+                "value":hex(value),
+                "role":"ORIGINAL_SIGNED_LITERAL_NOT_RUNTIME_REACHABILITY",
+            })
+    return matches
+
+
+def upstream_source_analysis(image):
+    targets={
+        "B_worker_callback":B_ENTRY,
+        "B_status_read":0x600D8F64,
+        "B_status_common":0x600D8E6C,
+        "B_status_variant":0x600D8F24,
+        "B_status_fallback":0x600D8ED4,
+    }
+    return {
+        "aligned_thumb_pointer_words":aligned_original_code_pointer_refs(image,targets),
+        "direct_bl_shapes":direct_xrefs(image,targets),
+        "statically_pinned_status_helper_edges":{
+            "B_primary":"0x6006b294 BL 0x600d8f64",
+            "B_primary_internal":"0x600d8f70 BL 0x600d8e6c; R1=9",
+            "B_fallback":"0x6006b2b8 BL 0x600d8ed4",
+            "B_fallback_internal":"0x600d8ee2 BL 0x600d8e6c; R1=9",
+        },
+        "owner_object_of_R4":"UNDETERMINED",
+        "USB_EP0_or_class10_provenance":"NOT_DEMONSTRATED",
+    }
+
+
 def audit(image):
     if len(image)!=IMAGE_SIZE or hashlib.sha256(image).hexdigest()!=IMAGE_SHA256:
         raise ValueError("Phase76 requires original signed Bruce OEM exact SHA-256")
@@ -181,6 +222,7 @@ def audit(image):
     paths=signed_producer_argument_paths(image)
     contexts=branch_aware_footprints(image)
     xrefs=upstream_census(image)
+    nested=upstream_source_analysis(image)
     return {
         "phase":76,
         "original_SHA256":IMAGE_SHA256,
@@ -189,6 +231,7 @@ def audit(image):
         "signed_producer_callsites":paths,
         "bounded_signed_contexts":contexts,
         "direct_code_shaped_upstream_references":xrefs,
+        "B_nested_status_source_xrefs":nested,
         "limits":{
             "runtime_call_A_executed":False,
             "runtime_call_B_executed":False,
@@ -213,6 +256,7 @@ def main():
     if a.out:a.out.write_text(json.dumps(r,indent=2)+"\n",encoding="utf-8")
     print("PHASE76 ARGUMENT_PATHS",json.dumps(r["signed_producer_callsites"]))
     print("PHASE76 XREFS",json.dumps(r["direct_code_shaped_upstream_references"]))
+    print("PHASE76 NESTED_STATUS_SOURCE",json.dumps(r["B_nested_status_source_xrefs"]))
     for label,context in r["bounded_signed_contexts"].items():
         print("PHASE76 WINDOW",label,json.dumps(context))
     print("PHASE76 COMPLETE EVIDENCE",json.dumps(r,separators=(",",":")))
