@@ -81,6 +81,24 @@ def signed_function_preview(image,raw_ptr):
     return {"kind":kind,"runtime_pc":hex(pc),"code":[]}
 
 
+def verify_signed_callback_entries(image,first,second):
+    """Validate actual original Thumb entry instructions; no live invocation."""
+    if first!=0x600CE233 or second!=0x0000A9C5:
+        raise ValueError("phase58 original signed callback-like pointer literal drift")
+    x=decode(image,0x600CE232,0x600CE234)
+    y=itcm_rows(image,0xA9C4,4)
+    if (len(x),len(y))!=(1,1) or (x[0]["m"],x[0]["op"])!=("bx","lr") or (
+        y[0]["m"],y[0]["op"])!=("b.w","#0xb980"):
+        raise ValueError("phase58 signed callback entry instructions drift")
+    return {
+        "entry_one":"0x600ce232 BX LR (no-op return)",
+        "entry_two":"0xa9c4 B.W 0xb980 (ITCM function tail branch)",
+        "second_target_preview":itcm_rows(image,0xB980,0x90)[:36],
+        "callback_registered_or_executed":"UNVERIFIED",
+        "USB_source":"UNVERIFIED",
+    }
+
+
 def backend_pair_provenance(image):
     rows=decode(image,BACKEND,0x60063886)
     result={r["pc"]:(r["m"],r["op"]) for r in rows}
@@ -93,6 +111,7 @@ def backend_pair_provenance(image):
         raise ValueError("phase58 backend global base not within expected SRAM")
     first=signed_word(image,((0x6007E7E8+4)&~3)+0x38)
     second=signed_word(image,((0x6007E80E+4)&~3)+0x18)
+    entries=verify_signed_callback_entries(image,first,second)
     return {
         "original_pins":len(BACKEND_PINS),
         "global_base_literal_address":hex(literal_at),
@@ -105,6 +124,7 @@ def backend_pair_provenance(image):
         "branch_one_function_preview":signed_function_preview(image,first),
         "branch_one_second_word":"0 (0x6007E7F0/0x6007E7F2)",
         "branch_two_literal_word":hex(second),
+        "verified_signed_entries":entries,
         "branch_two_function_preview":signed_function_preview(image,second),
         "branch_two_second_word":"caller R4 object pointer (0x6007E814 STRD R3,R4)",
         "runtime_values_or_invocation":"UNMEASURED",
