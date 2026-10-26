@@ -50,6 +50,20 @@ class ParentConsumerPhase57(unittest.TestCase):
         self.assertEqual(a.READER_ENTRIES["later_dispatch"][0x6007E8B8],("mov","r4, r0"))
         self.assertEqual(len(a.XREF_TARGETS),3)
 
+    def test_guarded_same_argument_paths_require_correct_branches(self):
+        pins=a.READER_ENTRIES["state_dispatch"]
+        self.assertEqual(pins[0x6007E7A2],("cmp","r3, #2"))
+        self.assertEqual(pins[0x6007E7A4],("beq","#0x6007e7e8"))
+        self.assertEqual(pins[0x6007E7AA],("cmp","r5, #2"))
+        self.assertEqual(pins[0x6007E7AC],("beq","#0x6007e80e"))
+
+    def test_signed_global_holder_write_read_pins(self):
+        self.assertEqual(a.GLOBAL_CHAIN_PINS[0x60079DBC],("ldr","r0, [pc, #0x24]"))
+        self.assertEqual(a.GLOBAL_CHAIN_PINS[0x60079CD8],("str","r3, [r6]"))
+        self.assertEqual(a.GLOBAL_CHAIN_PINS[0x60079C50],("ldr","r1, [pc, #0x14]"))
+        self.assertEqual(a.GLOBAL_GETTER_LITERAL_SITE,0x60079C68)
+        self.assertEqual(a.GLOBAL_PRODUCER_LITERAL_SITE,0x60079DE4)
+
     def test_original_sha_required(self):
         with self.assertRaisesRegex(ValueError,"SHA-256"):
             a.audit(b"not signed firmware")
