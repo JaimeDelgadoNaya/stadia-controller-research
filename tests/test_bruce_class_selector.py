@@ -9,8 +9,9 @@ class SelectorTests(unittest.TestCase):
             x.audit(bytes(x.IMAGE_SIZE))
     def test_selector_table_has_three_method_words(self):
         self.assertEqual([i[0] for i in x.RECORDS],[1,2,4])
-        self.assertEqual(x.RECORD_START+2*16,0x60104BA0)
-        self.assertEqual(x.RECORDS[2][1][-1],0x600D0E59)
+        self.assertEqual(x.RECORD_START+2*16,0x60104B94)
+        self.assertEqual(x.RECORDS[2][1][-1],0x600D0333)
+        self.assertEqual(x.RECORDS[3][1][-1],0x600D0E59)
     def test_startup_copy_checks_reference_vs_execution(self):
         # This synthetic input can be inspected without a real controller.
         fake=bytearray(x.DATA_SOURCE_OFFSET+x.DATA_END-x.DATA_DESTINATION)
