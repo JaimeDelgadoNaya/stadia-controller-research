@@ -239,6 +239,14 @@ def audit(image):
         },
         "synthetic_branch_matrix":rows,
         "direct_inbound_descriptor_loop_A":inbound["direct_branch_candidates"][:16],
+        "focused_ep0_registration_candidate":[
+            hex(q["pc"])+" "+q["m"]+" "+q["op"]
+            for q in decode(image,0x60054E98,0x60054F70)
+        ],
+        "nearby_cleanup_call_context":[
+            hex(q["pc"])+" "+q["m"]+" "+q["op"]
+            for q in decode(image,0x60061510,0x60061552)
+        ],
         "signed_deregistrar_candidate_window":[
             hex(q["pc"])+" "+q["m"]+" "+q["op"]
             for q in decode(image,0x600D10EA,0x600D1134)
@@ -273,6 +281,8 @@ def main():
     print("PHASE47 ORIGINAL SIGNED ENDPOINT ADAPTERS",json.dumps(result["original_signed_adapter_literals"]))
     print("PHASE47 CONDITIONAL SLOT MATRIX",json.dumps(result["synthetic_branch_matrix"]))
     print("PHASE47 SIGNED SLOT CLEARER",json.dumps(result["signed_slot_clearer"]))
+    print("PHASE47 FOCUSED EP0 REGISTRAR",json.dumps(result["focused_ep0_registration_candidate"]))
+    print("PHASE47 OTHER CLEANUP CONTEXT",json.dumps(result["nearby_cleanup_call_context"]))
     print("PHASE47 SLOT CLEARING CONTEXT",json.dumps(result["signed_deregistrar_candidate_window"]))
     print("PHASE47 LIVE EP0 CALLBACK: UNMEASURED; NO DEVICE IO")
 
