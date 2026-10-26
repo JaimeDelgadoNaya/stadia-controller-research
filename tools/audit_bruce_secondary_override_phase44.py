@@ -93,7 +93,24 @@ def audit(image):
     func=int(callback,16)&~1
     # Context larger than one basic block intentionally printed as candidate
     # linear decode only; do not infer path reachability or entry arguments.
-    near=decode(image,0x600770E0,0x6007720A)
+    near=decode(image,0x600771D8,0x6007720A)
+    focus=[
+        {
+            "window_start":hex(lo),
+            "window_end_exclusive":hex(hi),
+            "linear_decode_only":True,
+            "instructions":[hex(q["pc"])+" "+q["m"]+" "+q["op"]
+                            for q in decode(image,lo,hi)]
+        }
+        for lo,hi in (
+            (0x60077000,0x6007706C),
+            (0x6007706C,0x600770D8),
+            (0x600770D8,0x60077144),
+            (0x60077144,0x600771B0),
+            (0x600771B0,0x60077210),
+            (0x60077360,0x600773E0),
+        )
+    ]
     literal_window=[
         {"PC":hex(pc),"word":hex(read_u32(image,pc))}
         for pc in range(0x600772D0,0x60077310,4)
@@ -101,6 +118,7 @@ def audit(image):
     return {
         "phase":44,"signed_oem_exact_sha_verified":True,
         "second_writer":writer,
+        "potential_context_r4_origin_windows":focus,
         "later_writer_local_decode":[
             hex(x["pc"])+" "+x["m"]+" "+x["op"] for x in near
         ],
@@ -127,6 +145,8 @@ def main():
     if arg.out:arg.out.write_text(json.dumps(x,indent=2)+"\n")
     print("PHASE44 SECONDARY WRITER LITERALS",json.dumps(x["second_writer"]))
     print("PHASE44 SECONDARY WRITER PRIOR CODE",json.dumps(x["later_writer_local_decode"]))
+    for window in x["potential_context_r4_origin_windows"]:
+        print("PHASE44 SECONDARY WRITER R4 ORIGIN",json.dumps(window))
     print("PHASE44 SECONDARY WRITER CALLBACK TARGET",json.dumps(x["original_callback_target_preview"]))
     print("PHASE44 SECONDARY WRITER LITERAL POOL",json.dumps(x["original_literal_pool_neighborhood"]))
 
