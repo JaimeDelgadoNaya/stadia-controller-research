@@ -18,6 +18,17 @@ class SecondWriterTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"drift"):
             a.check_pins(mutation)
 
+    def test_original_13_case_dispatch_table_is_pinned(self):
+        self.assertEqual(len(a.EXPECTED_TBB), 13)
+        self.assertTrue(a.validate_signed_dispatch_table(a.EXPECTED_TBB))
+        self.assertEqual(a.TBB_BASE + 2 * a.EXPECTED_TBB[1], 0x60077392)
+        self.assertEqual(a.TBB_BASE + 2 * a.EXPECTED_TBB[3], 0x600773A4)
+        self.assertEqual(a.TBB_BASE + 2 * a.EXPECTED_TBB[4], 0x600773AE)
+        invalid=bytearray(a.EXPECTED_TBB)
+        invalid[3]^=1
+        with self.assertRaisesRegex(ValueError,"drift"):
+            a.validate_signed_dispatch_table(bytes(invalid))
+
     def test_wrong_original_file_rejected(self):
         with self.assertRaisesRegex(ValueError,"SHA-256"):
             a.audit(b"synthetic")
