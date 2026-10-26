@@ -1,0 +1,63 @@
+{
+  "phase": 52,
+  "date": "2026-10-26",
+  "pull_request": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/pull/54",
+  "input": {
+    "source": "original signed OEM Bruce update, no live flash/RAM readback",
+    "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3"
+  },
+  "bounded_CFG": {
+    "mode2_hypothesis": {
+      "root": "0x60060fe8",
+      "owner_R0": "0x2000a2a8",
+      "mode_R1": 2,
+      "abstract_states": 113,
+      "transitive_call_sites": [
+        "0x6006102e BL 0x60060f84",
+        "0x60060f90 BL 0x600550e4"
+      ],
+      "verified_signed_static_conditional_store": {
+        "pc": "0x6005512e",
+        "kind": "STR R4,[R5,#4]",
+        "source_pointer": "0x2000a2ac",
+        "destination_address": "0x20004084",
+        "description": "address of config struct owner+4 written to common USB singleton +4, conditional on guards"
+      }
+    },
+    "mode1_control": {
+      "abstract_states": 31,
+      "shared_config_ptr_store_in_surveyed_path": false
+    }
+  },
+  "pre_registration_method_validation": {
+    "pc": "0x600550f6",
+    "load": "LDR R3,[R1,#4]",
+    "read_from_RAM_address": "0x2000a2b0",
+    "cmp": "0x600550f8 CMP R3,#0",
+    "abort_on_null": "0x600550fa BEQ 0x600551a2",
+    "runtime_value": "UNMEASURED"
+  },
+  "fields_unobserved": {
+    "owner_plus4": "0x2000a2ac: class records pointer value unknown",
+    "owner_plus8": "0x2000a2b0: method address unknown",
+    "owner_plus12": "0x2000a2b4: count byte unknown"
+  },
+  "limits": {
+    "full_interprocedural_cfg": false,
+    "physical_mode2_selected": "UNVERIFIED",
+    "active_class10": "UNVERIFIED",
+    "live_EP0_class10": "UNVERIFIED",
+    "host_controllable_arbitrary_function_pointer": "NOT DEMONSTRATED",
+    "unsigned_firmware_execution": "NOT DEMONSTRATED",
+    "HAB_closed_bypass": "NOT DEMONSTRATED",
+    "Xbox_or_Switch2_native": "NOT DEMONSTRATED",
+    "USB_sent": false,
+    "flash_or_efuses_written": false
+  },
+  "quality": {
+    "synthetic_tests": "branch modes, PC relative Thumb literal, address alias redefinition, outside-call clobber, CFG budget",
+    "signed_OEM_audit": "required in CI; first version rejected because missing PC base calculation, later fixed and verified",
+    "version_control": "PR #54"
+  },
+  "next": "Phase53: attribute original signed writers of owner+8 method and owner+4/+12 class list, then passive read-only USB observation if static dataflow insufficient."
+}
