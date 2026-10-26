@@ -1,5 +1,6 @@
 """Phase52 bounded interprocedural branch and pointer-transfer regressions."""
 import unittest
+import struct
 from tools import audit_bruce_owner_cfg_phase52 as a
 
 def ins(pc,m,op,nxt):
@@ -56,6 +57,20 @@ class OwnerCFG52(unittest.TestCase):
               0x60061020:ins(0x60061020,"pop","{pc}",None)}
         with self.assertRaisesRegex(ValueError,"budget"):
             a.flow(code,b"",2,max_states=1)
+
+    def test_original_thumb_PC_literal_addressing(self):
+        image=bytearray(0x21100)
+        struct.pack_into("<I",image,0x20ff0,a.SHARED_USB)
+        code={
+            0x60060fe8:ins(0x60060fe8,"ldr","r5, [pc, #4]",0x60060fec),
+            0x60060fec:ins(0x60060fec,"adds","r4, r0, #4",0x60060fee),
+            0x60060fee:ins(0x60060fee,"str","r4, [r5, #4]",0x60060ff2),
+            0x60060ff2:ins(0x60060ff2,"pop","{pc}",None),
+        }
+        stores=a.flow(code,image,2)["conditional_store_candidates"]
+        self.assertEqual(len(stores),1)
+        self.assertEqual(stores[0]["address"],hex(a.CONFIG_SLOT))
+        self.assertEqual(stores[0]["source"],hex(a.OWNER+4))
 
     def test_signed_image_not_synthetic(self):
         with self.assertRaisesRegex(ValueError,"SHA-256"):
