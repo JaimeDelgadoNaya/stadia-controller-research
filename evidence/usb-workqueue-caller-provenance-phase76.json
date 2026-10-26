@@ -1610,6 +1610,110 @@
         "operands": "lr"
       }
     ],
+    "shared_queue_helper": [
+      {
+        "pc": "0x6009267c",
+        "mnemonic": "mov",
+        "operands": "r2, r0"
+      },
+      {
+        "pc": "0x6009267e",
+        "mnemonic": "ldr",
+        "operands": "r0, [pc, #0x18]"
+      },
+      {
+        "pc": "0x60092680",
+        "mnemonic": "push",
+        "operands": "{r3, lr}"
+      },
+      {
+        "pc": "0x60092682",
+        "mnemonic": "ldr",
+        "operands": "r1, [r0, #0x58]"
+      },
+      {
+        "pc": "0x60092684",
+        "mnemonic": "cbnz",
+        "operands": "r1, #0x60092692"
+      },
+      {
+        "pc": "0x60092686",
+        "mnemonic": "ldr",
+        "operands": "r1, [pc, #0x14]"
+      },
+      {
+        "pc": "0x60092688",
+        "mnemonic": "bl",
+        "operands": "#0x6010177a"
+      },
+      {
+        "pc": "0x6009268c",
+        "mnemonic": "tst.w",
+        "operands": "r0, #0xff"
+      },
+      {
+        "pc": "0x60092690",
+        "mnemonic": "bne",
+        "operands": "#0x60092696"
+      },
+      {
+        "pc": "0x60092692",
+        "mnemonic": "mov.w",
+        "operands": "r0, #0"
+      },
+      {
+        "pc": "0x60092696",
+        "mnemonic": "pop",
+        "operands": "{r3, pc}"
+      },
+      {
+        "pc": "0x60092698",
+        "mnemonic": "lsls",
+        "operands": "r4, r1, #5"
+      },
+      {
+        "pc": "0x6009269a",
+        "mnemonic": "movs",
+        "operands": "r0, #2"
+      }
+    ],
+    "USB_mode_owner_call_to_shared_helper": [
+      {
+        "pc": "0x60060f28",
+        "mnemonic": "movs",
+        "operands": "r3, #1"
+      },
+      {
+        "pc": "0x60060f2a",
+        "mnemonic": "push",
+        "operands": "{lr}"
+      },
+      {
+        "pc": "0x60060f2c",
+        "mnemonic": "str.w",
+        "operands": "r3, [r0, #0x90]"
+      },
+      {
+        "pc": "0x60060f30",
+        "mnemonic": "sub",
+        "operands": "sp, #0x9c"
+      },
+      {
+        "pc": "0x60060f32",
+        "mnemonic": "mov",
+        "operands": "r0, r3"
+      },
+      {
+        "pc": "0x60060f34",
+        "mnemonic": "bl",
+        "operands": "#0x6009267c"
+      },
+      {
+        "pc": "0x60060f38",
+        "mnemonic": "tst.w",
+        "operands": "r0, #0xff"
+      }
+    ],
     "known_class10_callback": [
       {
         "pc": "0x600613fc",
@@ -1856,6 +1960,15 @@
     "value_currently_in_device_RAM": "NOT_READ",
     "ability_of_USB_to_rewrite_function_pointer": "NOT_DEMONSTRATED",
     "callback_execution": "NOT_OBSERVED"
+  },
+  "phase66_phase76_shared_signed_helper": {
+    "shared_target": "0x6009267c",
+    "phase66_prior_USB_mode_writer_caller": "0x60060f34",
+    "phase76_B_initializer_caller": "0x6006b400",
+    "two_signed_original_CALL_PCs": true,
+    "same_object_identity": "NOT_PROVEN",
+    "runtime_order_and_reachability": "NOT_PROVEN",
+    "USB_packet_to_callback_control": "NOT_PROVEN"
   },
   "limits": {
     "runtime_call_A_executed": false,
