@@ -213,6 +213,10 @@ def audit(image):
         "original_signed_adapter_literals":actual_literals,
         "synthetic_branch_matrix":rows,
         "direct_inbound_descriptor_loop_A":inbound["direct_branch_candidates"][:16],
+        "signed_deregistrar_candidate_window":[
+            hex(q["pc"])+" "+q["m"]+" "+q["op"]
+            for q in decode(image,0x600D10EA,0x600D1134)
+        ],
         "observed_limits":{
             "EP0_OUT_not_select_type1_under_A_predicates":True,
             "EP0_IN_may_select_type1_only_if_flag_predicates_met":True,
@@ -242,6 +246,7 @@ def main():
     }))
     print("PHASE47 ORIGINAL SIGNED ENDPOINT ADAPTERS",json.dumps(result["original_signed_adapter_literals"]))
     print("PHASE47 CONDITIONAL SLOT MATRIX",json.dumps(result["synthetic_branch_matrix"]))
+    print("PHASE47 SLOT CLEARING CONTEXT",json.dumps(result["signed_deregistrar_candidate_window"]))
     print("PHASE47 LIVE EP0 CALLBACK: UNMEASURED; NO DEVICE IO")
 
 if __name__=="__main__":
