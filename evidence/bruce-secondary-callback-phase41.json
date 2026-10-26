@@ -1,0 +1,68 @@
+{
+  "phase": 41,
+  "date": "2026-10-26",
+  "original_image": {
+    "kind": "signed Bruce OEM update archive, not installed flash readback",
+    "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+    "byte_size": 1050984,
+    "verified_on_original_in_ci": true
+  },
+  "callback": {
+    "first_signed_handler": "0x600613fc",
+    "secondary_callback_slot": "0x20009ef8",
+    "secondary_context_slot": "0x20009efc",
+    "verified_signed_read": "0x6006140a",
+    "physical_ram_contents": "UNKNOWN",
+    "EP0_active": "NOT PROVEN",
+    "secondary_context_read_signed_original": "0x60061414"
+  },
+  "static_audit": {
+    "instructions_linearly_decoded_including_focused_duplicate": 180127,
+    "target_candidate_accesses": {
+      "read": 1,
+      "write": 0
+    },
+    "aligned_literal_refs": {
+      "secondary_callback": 0,
+      "secondary_context": 0,
+      "global_base_0x200064c0": 58,
+      "object_base_0x20009e00": 3
+    },
+    "verified_candidate_pc_relative_literals": 4,
+    "offset_shape_store_count": 24,
+    "offset_store_triage": {
+      "stack_based": 12,
+      "statically_resolved_unrelated_0x20026160": 3,
+      "unresolved_nonstack": 9
+    },
+    "unresolved_nonstack_pcs": [
+      "0x60058846",
+      "0x600a4ff2",
+      "0x600a54f4",
+      "0x600d574e",
+      "0x600ddb84",
+      "0x600ebd86",
+      "0x600f1c60",
+      "0x600f4e44",
+      "0x600ff9ec"
+    ],
+    "known_copy": "0x20002740..0x20003fd8 excludes secondary slots",
+    "limits": [
+      "Linear Thumb disassembly may mistake data for instructions",
+      "Interprocedural pointer aliases, runtime stores and DMA not ruled out",
+      "No link from nine candidates to secondary object established",
+      "No evidence of host-controlled setter or custom execution"
+    ],
+    "context_read_excluded_from_linear_counter_by_branch_reset": true
+  },
+  "reproduction": {
+    "auditor": "python -m tools.audit_bruce_secondary_registry local/bruce_pvt_a_prod_signed.bin",
+    "tests": "python -m unittest tests.test_bruce_secondary_registry -v",
+    "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40298495926"
+  },
+  "physical_usb_used": false,
+  "flash_or_efuses_written": false,
+  "host_controlled_secondary_callback_proven": false,
+  "firmware_custom_execution_proven": false,
+  "hab_closed_bypass_proven": false
+}

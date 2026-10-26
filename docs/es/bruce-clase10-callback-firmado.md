@@ -78,4 +78,4 @@ python -m unittest tests.test_bruce_class10_record_producer -v
 python -m tools.audit_bruce_class10_record_producer local/bruce_pvt_a_prod_signed.bin --out local/class10-record-builder.json
 ```
 
-[PR #40](https://github.com/JaimeDelgadoNaya/stadia-controller-research/pull/40). El workflow utiliza copias temporales firmadas verificadas por SHA-256 que se eliminan al terminar.
+[PR #41 fusionada](https://github.com/JaimeDelgadoNaya/stadia-controller-research/pull/41) (sustituye la PR #40, cerrada sin fusionar). El workflow utiliza copias temporales firmadas verificadas por SHA-256 que se eliminan al terminar.
