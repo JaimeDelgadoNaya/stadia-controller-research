@@ -23,6 +23,7 @@ END = BASE + 0xFF000
 FIELDS = {OWNER + 4: "class_array_pointer",
           OWNER + 8: "config_method_pointer",
           OWNER + 12: "class_count"}
+POSITIVE_CONTROLS = {OWNER + 0x90: "prior_mode_and_status"}
 SEEDS = (0x60041E90, 0x6005ABF2, 0x6005ACC0, 0x6005ACCC,
          0x6005ACDA, 0x600610EA, 0x60065446, 0x60071416,
          0x60074AF8, 0x60074E56, 0x60079D7C)
@@ -177,10 +178,11 @@ def trace(image, seeds=SEEDS, *, max_states=10000, max_depth=2, max_span=0x200):
                 continue
 
             for address, source in known_stores(mnemonic, op, registers):
-                if address in FIELDS:
+                if address in FIELDS or address in POSITIVE_CONTROLS:
                     event = {
                         "seed": hex(root), "site": hex(pc), "instruction": mnemonic + " " + op,
-                        "field": FIELDS[address], "address": hex(address),
+                        "field": FIELDS.get(address, POSITIVE_CONTROLS.get(address)), "address": hex(address),
+                        "type": "TARGET" if address in FIELDS else "POSITIVE_CONTROL",
                         "source_register": source,
                         "source_value": hex(registers[source]) if source in registers else "UNKNOWN",
                         "direct_call_context": [{"site": a, "target": b, "kind": k} for a, b, k in chain],
@@ -235,9 +237,15 @@ def audit(image):
     if len(image) != IMAGE_SIZE or hashlib.sha256(image).hexdigest() != IMAGE_SHA256:
         raise ValueError("phase54 exact SHA-256-pinned original signed Bruce OEM required")
     out = trace(image)
+    positive = [e for e in out["potential_store_sites"] if e["type"] == "POSITIVE_CONTROL"]
+    controls = {e["site"] for e in positive}
+    if not {"0x60061022", "0x60061070"}.issubset(controls):
+        raise ValueError("phase54 original signed positive-control mode store missing " + repr(sorted(controls)))
     return {
         "phase": 54, "original_signed_SHA_verified": True,
         "signed_SHA256": IMAGE_SHA256, **out,
+        "target_field_candidates": [e for e in out["potential_store_sites"] if e["type"] == "TARGET"],
+        "verified_signed_mode_store_controls": [e for e in out["potential_store_sites"] if e["type"] == "POSITIVE_CONTROL"],
         "live_RAM_fields": "UNMEASURED", "active_class10": "UNVERIFIED",
         "host_controlled_callback": "NOT DEMONSTRATED",
         "unsigned_firmware_execution": "NOT DEMONSTRATED",
@@ -256,7 +264,8 @@ def main():
         a.out.write_text(json.dumps(r, indent=2) + "\n")
     print("PHASE54 OWNER WRITER SURVEY", json.dumps({
         "source_count": r["source_load_count"],
-        "store_candidates": len(r["potential_store_sites"]),
+        "store_candidates": len(r["target_field_candidates"]),
+        "mode_store_positive_controls": len(r["verified_signed_mode_store_controls"]),
         "roots": r["source_summary"],
     }))
     for row in r["potential_store_sites"]:
