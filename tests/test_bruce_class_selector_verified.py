@@ -15,6 +15,13 @@ class SelectorPinsTests(unittest.TestCase):
         self.assertEqual(x.PINS[0x60055218],("cmp","r6, #0x50"))
         self.assertEqual(x.PINS[0x60055194],("blx","r3"))
         self.assertEqual(x.PINS[0x60055214],("blx","r2"))
+    def test_class10_not_class4_contains_setup_forwarder(self):
+        self.assertEqual(x.ROM_TABLE_BASE,0x60104B74)
+        self.assertEqual(x.ROM_TABLE_EXPECTED[2][0],4)
+        self.assertEqual(x.ROM_TABLE_EXPECTED[2][1][-1],0x600D0333)
+        self.assertEqual(x.ROM_TABLE_EXPECTED[3][0],10)
+        self.assertEqual(x.ROM_TABLE_EXPECTED[3][1][-1],0x600D0E59)
+
     def test_drift_rejected(self):
         rows=dict(x.PINS)
         rows[0x60055198]=("cmp","r7, #0x60")
