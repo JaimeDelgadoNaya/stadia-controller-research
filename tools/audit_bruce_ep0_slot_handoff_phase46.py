@@ -150,7 +150,7 @@ def audit(image):
             "function_word_offset":12,
             "context_word_offset":16,
             "indirect_callback_pc":"0x600d104e",
-            "event_arg_is_original_SETUP_packet":False,
+            "event_arg_is_original_SETUP_packet":"UNVERIFIED; event structure != assumed raw SETUP",
             "runtime_slot_contents":"UNMEASURED",
         },
         "signed_slot_registration":{
