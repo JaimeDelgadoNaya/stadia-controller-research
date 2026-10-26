@@ -1,0 +1,66 @@
+{
+  "phase": 58,
+  "date": "2026-10-26",
+  "PR": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/pull/60",
+  "source": {
+    "kind": "original signed Bruce OEM update",
+    "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+    "hardware_RAM_read": false
+  },
+  "caller_source": {
+    "reader_1": "0x6007e7ea LDR.W R0,[R0,#0x80]",
+    "reader_2": "0x6007e810 LDR.W R0,[R4,#0x80]",
+    "adapter_calls": [
+      "0x6007e7fa",
+      "0x6007e81e"
+    ]
+  },
+  "adapter": {
+    "entry": "0x600d54b8",
+    "original_signed_pins": 6,
+    "tail": "0x6006386c",
+    "argument_transfer": "R0_new = R1_old; R1_new = R2_old; R0_old not directly forwarded"
+  },
+  "backend": {
+    "entry": "0x6006386c",
+    "original_signed_pins": 10,
+    "base_literal_site": "0x60063888",
+    "base": "0x2000f878",
+    "destinations": [
+      "0x2000fbf4",
+      "0x2000fbf8"
+    ],
+    "branch_one": {
+      "function_pointer_raw": "0x600ce233",
+      "signed_literal_site": "0x6007e824",
+      "context": "0",
+      "entry": "0x600ce232 BX LR"
+    },
+    "branch_two": {
+      "function_pointer_raw": "0x0000a9c5",
+      "signed_literal_site": "0x6007e828",
+      "context": "R4 = dynamic object pointer",
+      "entry": "ITCM 0xa9c4 B.W 0xb980"
+    }
+  },
+  "interpretation": "callback/context registration pattern; runtime invocation and USB relevance unverified",
+  "verification": {
+    "OEM_Actions": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40364601068",
+    "status": "success"
+  },
+  "limits": {
+    "global_values_actual": "UNMEASURED",
+    "callback_invoked": "UNVERIFIED",
+    "host_USB_connection": "UNPROVEN",
+    "class10_active": "UNVERIFIED",
+    "owner_fields": "UNMEASURED",
+    "unsigned_firmware": "NOT DEMONSTRATED",
+    "HAB_CLOSED_bypass": "NOT DEMONSTRATED"
+  },
+  "safety": {
+    "physical_usb": false,
+    "flash_writes": false,
+    "efuse_writes": false
+  },
+  "next": "phase59: track consumers and invocations of RAM pair 0x2000fbf4/0x2000fbf8 and ITCM target 0xb980"
+}
