@@ -1,0 +1,68 @@
+{
+  "date": "2026-10-26",
+  "phase": 45,
+  "PR": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/pull/47",
+  "image": "signed OEM Bruce update file, NOT installed-flash readback",
+  "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+  "exact_oem_signed_anchors": {
+    "class10_registry_flash": "0x60104ba4",
+    "class10_registry_selector": 10,
+    "class10_forwarder_thumb": "0x600d0e59",
+    "boot_copied_class10_record_RAM": "0x200030f4",
+    "record_handler_thumb": "0x600613fd",
+    "bRequest_load": "0x600d0eb8",
+    "tail_BX": "0x600d0ebe",
+    "first_class10_R1_gate": "0x600613fc",
+    "secondary_conditional_indirect_BLX": "0x60061416",
+    "boot_sentinel": "0x600d4f05",
+    "second_signed_callback": "0x600db029",
+    "second_signed_callback_context": "0x20003670",
+    "secondary_handler_branch": "0x600db028",
+    "table_select": "0x60077370"
+  },
+  "conditional_guards": {
+    "recipient": "bmRequestType & 0x1f == 1",
+    "interface": "SETUP byte at +4 equals class object byte at +0x0d",
+    "class10_selected": "UNVERIFIED",
+    "secondary_callback_installed_live": "UNVERIFIED",
+    "signed_class10_stage": "R1 unsigned > 0x7f",
+    "second_handler_stage": "R1-0x80 unsigned <= 0x0c"
+  },
+  "verified_OEM_signed_table": {
+    "0x80": "0x60077382",
+    "0x81": "0x60077392",
+    "0x82": "0x6007739c",
+    "0x83": "0x600773a4",
+    "0x84": "0x600773ae",
+    "0x85": "0x600773ba",
+    "0x86": "0x600773c2",
+    "0x87": "0x600773e0",
+    "0x88": "0x60077406",
+    "0x89": "0x60077420",
+    "0x8a": "0x60077434",
+    "0x8b": "0x60077494",
+    "0x8c": "0x6007749a"
+  },
+  "interesting_branch_local_effects": {
+    "0x81": "derive context+0x190; store result pointer in response R2+4 and tag 8 at R2+8",
+    "0x83": "derive context+0x12c; clear [R2+8]; branch to common signed function",
+    "0x84": "derive context+0x1d8; store pointer at [R2+4] and tag 2 at R2+8",
+    "0x8b": "call fixed signed function 0x60077744",
+    "0x8c": "call fixed signed functions 0x60077720 and 0x60077730; store results at [context+0x198] and [context+4]; share case 0x81 output branch"
+  },
+  "not_demonstrated": [
+    "USB1 physical EP0 packet delivered to class10 forwarder",
+    "active class10 selected on real controller",
+    "second signed callback active on real controller",
+    "host-controlled arbitrary function pointer write",
+    "custom execution or HAB CLOSED bypass",
+    "native Xbox/Switch 2 firmware"
+  ],
+  "physical_operations": {
+    "device_connected": false,
+    "usb_sent": false,
+    "flash_written": false,
+    "efuses_changed": false
+  },
+  "next": "Recover signed IRQ/EP0 caller chain and actual setup buffer origin, check setter branch predicates."
+}
