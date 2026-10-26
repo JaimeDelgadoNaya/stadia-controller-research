@@ -1,0 +1,81 @@
+{
+  "phase": 74,
+  "original_oem_SHA256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+  "signed_receiver_pins": 13,
+  "original_receiver_ITCM": "0x6d2c",
+  "inherited_phase73_queue_state": {
+    "queue_object": "0x2002014c",
+    "control_field": "0x200201fc",
+    "control_pointer": "0x200201ac",
+    "worker_wait_call": "0x600ee152",
+    "worker_call_target": "0x6013d268",
+    "queue_receive_r0": "0x200201ac",
+    "queue_receive_r1_output": "0x20020b1c",
+    "queue_receive_r2_timeout": "0xffffffff",
+    "virtual_SP": "0x20020b18",
+    "control_words": [
+      "0x20020200",
+      "0x0",
+      "0x0",
+      "0x0",
+      "0x0",
+      "0x0",
+      "0x0",
+      "0x0",
+      "0x0",
+      "0x0",
+      "0x0",
+      "0x0",
+      "0x0",
+      "0x0",
+      "0x0",
+      "0xa"
+    ],
+    "output_before": "0xa5a5a5a5"
+  },
+  "original_receive_guard_execution": {
+    "original_instruction_addresses": [
+      "0x600ee152",
+      "0x6013d268",
+      "0x6d2c",
+      "0x6d30",
+      "0x6d32",
+      "0x6d34",
+      "0x6d36",
+      "0x6d38",
+      "0x6d46"
+    ],
+    "stop_before_helper": "0x6d58",
+    "input_queue_control": "0x200201ac",
+    "input_output_buffer": "0x20020b1c",
+    "input_wait": "0xffffffff",
+    "saved_queue_control_R4": "0x200201ac",
+    "saved_output_buffer_R7": "0x20020b1c",
+    "stacked_timeout": "0xffffffff",
+    "output_before": "0xa5a5a5a5",
+    "output_after": "0xa5a5a5a5",
+    "original_guard_path_executed": true,
+    "first_sync_helper_executed": false,
+    "queue_dequeue_executed": false,
+    "work_item_callback_executed": false
+  },
+  "static_queue_branch_projection": {
+    "original_count_field_offset": "0x38",
+    "model_count_before_critical": 0,
+    "original_queue_count_load": "0x6d7a LDR R5,[R4,#0x38]",
+    "original_zero_guard": "0x6d7c CBZ R5,#0x6db4",
+    "original_timeout_load": "0x6db4 LDR R5,[SP,#4]",
+    "original_nonzero_wait_guard": "0x6db6 CBNZ R5,#0x6dc0",
+    "timeout_value": "0xffffffff",
+    "unexecuted_branch_expectation": "EXPECTED_EMPTY_QUEUE_THEN_WAIT_IF_STATE_UNCHANGED",
+    "critical_sections_and_scheduler_executed": false,
+    "queue_delivery_or_callback_observed": false
+  },
+  "safety_and_limits": [
+    "Retained original-task virtual state still depends on modeled scheduler, SVC frame and virtual MMIO.",
+    "Only the original BL, signed XIP veneer and ITCM argument-check prologue execute in emulator.",
+    "Stopped before original 0x7734 kernel primitive. No kernel critical sections, semaphore waits or task switching run.",
+    "No work item is dequeued and no callback is executed; no artificial message is injected.",
+    "No physical USB or installed RAM evidence; no custom firmware execution or HAB CLOSED bypass."
+  ]
+}
