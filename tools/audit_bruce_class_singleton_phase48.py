@@ -91,7 +91,7 @@ def audit(image):
         raise ValueError("class10 ROM method0 changed")
     glob=raw_word(image,GLOBAL_LIT)
     if glob!=GLOBAL:
-        raise ValueError("original class10 init singleton source changed")
+        raise ValueError("original class10 init singleton differs from EP0 lookup: "+hex(glob)+" vs "+hex(GLOBAL))
     return {
         "phase":48,"signed_original_OEM_SHA_verified":True,
         "semantic_pins":pins,
