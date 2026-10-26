@@ -1,0 +1,77 @@
+{
+  "phase": 50,
+  "date": "2026-10-26",
+  "pull_request": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/pull/52",
+  "source": {
+    "original_OEM_signed_update": true,
+    "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+    "actual_installed_flash_readback": false,
+    "active_RAM_snapshot": false
+  },
+  "confirmed_original_code": {
+    "RAM_owner_pointer_literal_site": "0x60071438",
+    "RAM_owner_address": "0x2000a2a8",
+    "owner_loaded": "0x60071416 LDR R0,[PC,#0x20]",
+    "conditional_mode2_if_input1": [
+      "0x60071428 CMP R4,#1",
+      "0x6007142c MOVEQ R1,#2"
+    ],
+    "mode_transition": "0x6007141c B.W 0x60060fe8",
+    "owner_preserved": "0x60060ff0 MOV R4,R0",
+    "mode2_guard": "0x60061020 CMP R5,#2; 0x6006102a BNE",
+    "constructor_call": "0x6006102e BL 0x60060f84",
+    "config_pointer_constructor": "0x60060f8a ADDS R1,R0,#4 then 0x60060f90 BL 0x600550e4",
+    "config_pointer_store": "0x6005512e STR R4,[R5,#4] into [0x20004084] under original signed setup"
+  },
+  "derived_owner_RAM_fields": {
+    "runtime_class_record_array_pointer": "0x2000a2ac",
+    "dynamic_config_method_pointer": "0x2000a2b0",
+    "runtime_class_record_count_byte": "0x2000a2b4",
+    "mode_byte": "0x2000a2b8",
+    "USB_engine_pointer_output": "0x2000a340",
+    "note": "field addresses only, NOT field values"
+  },
+  "signed_image_literals": {
+    "owner_base_aligned_word_occurrences": 16,
+    "addresses": [
+      "0x60041e98",
+      "0x6005ac14",
+      "0x6005acc8",
+      "0x6005acd4",
+      "0x6005acec",
+      "0x6005bc1c",
+      "0x600610f8",
+      "0x60064940",
+      "0x60065450",
+      "0x60071438",
+      "0x60074b00",
+      "0x60074e68",
+      "0x600755b8",
+      "0x600761cc",
+      "0x60079dd4",
+      "0x6007f714"
+    ],
+    "direct_aligned_word_literals_to_owner_plus4_plus8_plus12": 0,
+    "scope": "aligned 32-bit words first 0xFF000 signed OEM application bytes; not exhaustive alias/store search"
+  },
+  "boot_copy": {
+    "initialized_data_RAM_start": "0x20002740",
+    "initialized_data_RAM_end_exclusive": "0x20003fd8",
+    "owner_inside_initialized_copy": false
+  },
+  "limits": [
+    "The physical USB owner mode2 execution has not been observed.",
+    "No original signed runtime value of owner+4/+8/+12 has been recovered.",
+    "No definitive base-register-relative store chain to those three fields has yet been attributed.",
+    "Original signed class10 record presence is not proof of active runtime class10 configuration.",
+    "The OEM device code does not demonstrate user-controlled arbitrary callback pointer writes.",
+    "No unsigned code execution, HAB CLOSED bypass, Xbox or Switch 2 native compatibility has been demonstrated."
+  ],
+  "safety": {
+    "hardware_access": false,
+    "usb_requests_sent": false,
+    "firmware_flashing": false,
+    "efuses_written": false
+  },
+  "next": "Phase51: attribute owner+4/+8/+12 actual runtime store provenance from base-register-relative writers; verify active class selector10 or consider passive USB evidence without firmware writes."
+}
