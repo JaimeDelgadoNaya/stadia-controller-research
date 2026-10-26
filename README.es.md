@@ -1,5 +1,7 @@
 # Investigación del mando Stadia
 
+**[Fase 72 — restauración de software SVC original](docs/es/restauracion-svc-fase72.md).** La misma CPU virtual anterior a SVC ejecuta el wrapper/manejador original, restaura palabras, fija PSP 0x20020B28 y limpia BASEPRI. Se detiene antes de BX LR: no se ejecutan entrega SVC, retorno de excepción, desapilado de hardware ni entrada de tarea.
+
 **[Fase 71 — normalización del contador y límite SVC](docs/es/normalizacion-contador-svc-fase71.md).** El arranque original limpia el sentinela con readback virtual de prioridad 0xF0 y se detiene antes de SVC. BASEPRI conserva 0x50; se identifica estáticamente su limpieza en el manejador. No se ejecutan la excepción/cambio de contexto ni se miden los bits físicos de prioridad.
 
 **[Fase 70 — registro original y estado crítico](docs/es/registro-planificador-fase70.md).** El registro y helpers ITCM originales insertan la estructura en la lista virtual de prioridad 1. El sentinela OEM conserva BASEPRI virtual 0x50; un vector independiente con contador cero restaura cero. No se ejecutan entrada de tarea, cambio de contexto ni activación física.

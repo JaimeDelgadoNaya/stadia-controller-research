@@ -66,7 +66,7 @@ def verify_pins(image):
             raise ValueError('Phase71 port literal drift')
 
 
-def start_case(image,ram,mask):
+def start_case(image,ram,mask,*,return_machine=False):
     from unicorn import UC_HOOK_CODE,UC_HOOK_MEM_READ,UC_HOOK_MEM_WRITE
     from unicorn.arm_const import UC_ARM_REG_PC,UC_ARM_REG_R1,UC_ARM_REG_BASEPRI,UC_ARM_REG_MSP
     uc=machine(image,ram)
@@ -99,9 +99,7 @@ def start_case(image,ram,mask):
         if address==NESTING or 0xE000E000<=address<0xE000F000:
             writes.append(dict(pc=hex(m.reg_read(UC_ARM_REG_PC)),address=hex(address),size=size,value=hex(value)))
 
-    uc.hook_add(UC_HOOK_CODE,hook)
-    uc.hook_add(UC_HOOK_MEM_READ,read_hook)
-    uc.hook_add(UC_HOOK_MEM_WRITE,write_hook)
+    hooks=[uc.hook_add(UC_HOOK_CODE,hook),uc.hook_add(UC_HOOK_MEM_READ,read_hook),uc.hook_add(UC_HOOK_MEM_WRITE,write_hook)]
     uc.emu_start(ENTRY|1,0x10000002,count=1000)
     if not outcome:
         raise ValueError('Port start did not reach bounded stop')
@@ -114,13 +112,18 @@ def start_case(image,ram,mask):
             raise ValueError('Original tick arithmetic differs')
     elif outcome[0]!='assertion_call_before_normalization' or word(NESTING)!=0xAAAAAAAA:
         raise ValueError('Priority-readback rejection differs')
-    return dict(priority_readback_mask=hex(mask),initial_priority_byte='0xa0',initial_basepri='0x50',
+    result=dict(priority_readback_mask=hex(mask),initial_priority_byte='0xa0',initial_basepri='0x50',
         outcome=outcome[0],stop_pc=hex(steps[-1]),assertion_line=uc.reg_read(UC_ARM_REG_R1) if not success else None,
         nesting_after=hex(word(NESTING)),virtual_basepri_after=hex(uc.reg_read(UC_ARM_REG_BASEPRI)),
         clock_word_from_virtual_initialized_data=word(CLOCK),tick_reload=word(0xE000E014),
         virtual_vtor=hex(BASE),virtual_msp=hex(uc.reg_read(UC_ARM_REG_MSP)),
         probe_reads=reads,observed_original_writes=writes,svc_executed=False,
         task_entry_executed=0x60101760 in steps,instruction_hooks=len(steps))
+    if return_machine:
+        for handle in hooks:
+            uc.hook_del(handle)
+        return result,uc
+    return result
 
 
 def audit(image):
