@@ -43,6 +43,17 @@ python -m tools.audit_hab_rom_version_phase83 local/restricted_ivt_flashloader.b
 python -m tools.audit_hab_rom_version_phase83 local/bruce_pvt_a_prod_signed.bin --sample bruce_prod --out local/hab-bruce-phase83.json
 ```
 
+## Resultados verificados sobre originales OEM
+
+[**Evidencia JSON de la fase 83**](../../evidence/hab-rom-version-phase83.json) · [GitHub Actions, archivos originales SHA-256](https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40558134910).
+
+| Imagen original | Cabecera IVT | Cabecera CSF | Versión de HAB ROM |
+|---|---|---|---|
+| Bruce prod firmada | **0x41** | **0x42** | Desconocida |
+| Cargador RAM firmado | **0x41** | **0x42** | Desconocida |
+
+**26 pruebas sintéticas de las fases 81, 82 y 83 correctas**, además de los análisis de las dos muestras públicas con SHA-256 original. Estos valores son **de formatos de las imágenes**; no son una medida del HAB integrado en ROM. Aún no existe un resultado reproducible de `get_version()` de la unidad.
+
 ## Decisión
 
 **Resultado actual: no hay versión HAB ROM exacta demostrada; no se puede confirmar la aplicabilidad de la vulnerabilidad de autenticación en la unidad.** [CVE-2022-45163](https://community.nxp.com/t5/i-MX-Security/SDP-Read-Bypass-CVE-2022-45163/ta-p/1553565) describe una **superficie SDP de confidencialidad distinta**, no desbloqueo de firmas.
