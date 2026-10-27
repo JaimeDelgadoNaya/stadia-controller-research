@@ -1,0 +1,60 @@
+{
+  "research_line": "nxp_hab",
+  "phase": 85,
+  "date": "2026-10-27",
+  "source": {
+    "repo": "JaimeDelgadoNaya/stadia-controller-research",
+    "signed_sample": "bruce_prod",
+    "original_sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+    "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40568935912"
+  },
+  "previous_phase84_pin": {
+    "file_offset": "0x726",
+    "xip_address": "0x60040726",
+    "thumb_hex": "3a48816a0847",
+    "hab_rvt_base": "0x00200300",
+    "rvt_pointer_offset": "0x28",
+    "nxp_function": "failsafe",
+    "not_get_version": true
+  },
+  "phase85_scope": {
+    "signed_bruce_pre_csf_only": true,
+    "raw_pointer_values": [
+      "0x60040726",
+      "0x60040727"
+    ],
+    "potential_direct_thumb_branch_decoding": true,
+    "whole_file_sha_verification": true,
+    "program_state_proof": false
+  },
+  "observed_results": {
+    "raw_pointer_candidates": 0,
+    "decoded_direct_branch_candidates": 0,
+    "confirmed_runtime_callers": 0,
+    "confirmed_usb_or_update_trigger": false,
+    "rom_hab_version_measured": false,
+    "hardware_communication_performed": false
+  },
+  "test_suite": {
+    "cumulative_phase81_to85_synthetic_tests": 52,
+    "run_completed_success": true,
+    "full_signed_image_match": true
+  },
+  "interpretation": {
+    "decision": "PROVISIONAL_NO_GO_FAILSAFE_AS_FIRMWARE_EXECUTION_ROUTE",
+    "reason": "An existing signed firmware fragment delegates to ROM failsafe, not get_version, with no directly encoded caller or raw function pointer candidates found in the bounded pre-CSF Bruce original. There is no host-controllable trigger, code execution, ROM patch-version disclosure, or signature bypass evidence.",
+    "negative_result_scope": "Absence of syntactic direct branches/pointers does not rule out indirect or calculated calls, other firmware images, or different ROM API entries."
+  },
+  "deferred": {
+    "owner_private_bootloader_file": "NOT_AVAILABLE_IN_CURRENT_SESSION_FOR_NEW_BINARY_SCAN",
+    "prior_documentation_maintained": true,
+    "physical_rom_hab_version": "UNKNOWN",
+    "installed_application_exact_sha": "UNCONFIRMED"
+  },
+  "safety": {
+    "no_device_contact": true,
+    "no_otp_writes": true,
+    "no_flash_writes": true,
+    "proprietary_binaries_committed": false
+  }
+}
