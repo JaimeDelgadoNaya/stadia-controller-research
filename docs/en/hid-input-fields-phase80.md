@@ -1,0 +1,11 @@
+# Phase 80 — Physical HID input and observed fields
+
+27 October 2026. During a 30-second input window, the chat requested repeated A/B presses, stick movement and trigger presses. **1,758 reports with 1,399 distinct contents** arrived; all have **ID 3 and 11 bytes**, dynamically confirming that descriptor contract for this window. Action performance was not confirmed and individual samples were not labeled; physical button assignments remain unproven.
+
+The descriptor-derived payload offsets exclude the ID byte: hat at bit 0, 15 button bits at bit 8, X/Y at bit 24, Z/Rz at bit 40, page 2 usages 0xC5/0xC4 at bit 56, and consumer bits at bit 72. Eight button elements varied. All four generic desktop axes reached 1 and 255 (232, 232, 213 and 208 distinct values); both page 2 values reached 0 and 255 (142 and 148 distinct values). Hat stayed at 8, outside logical range 0–7 with Null State flag enabled; this is not classified as a fault. Consumer bits and constant padding stayed zero.
+
+The earlier empty window did not establish failure; this observation does not identify its cause. Aggregates preserve no timing/order and do not establish polling frequency. Windows HID input is not a bus packet capture. No bulk endpoints, Work Queue linkage, callbacks or unsigned execution were observed. No output/feature reports, mode commands or firmware/eFuse writes were performed.
+
+Run `python -m tools.analyze_hid_input_phase80 evidence/usb-live-hid-input-phase80.json evidence/stadia-hid-report-contract.json --out local/fields80.json` and `python -m unittest tests.test_hid_fields_phase80 -v`. Offline analysis needs neither hidapi nor hardware. The physical observation used phase 79's `capture(30)` with action-request metadata documented separately; its default metadata assumes no requested actions. CI reproduces analysis of recorded aggregates, not physical measurement.
+
+[Aggregated capture](../../evidence/usb-live-hid-input-phase80.json) · [Field observations](../../evidence/usb-hid-field-observations-phase80.json). Next: individually labeled controls, including an explicit D-pad trial. Physical HID input now provides evidence for pursuing an external bridge independently of custom firmware execution.

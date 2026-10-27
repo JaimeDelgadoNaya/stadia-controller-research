@@ -1,0 +1,332 @@
+{
+  "phase": 80,
+  "descriptor_sha256": "88121159b7b6cf6ffa4025d0d5aebe1d4ae83013ee34acc8dd4bf2cff52116d8",
+  "report_count": 1758,
+  "distinct_reports": 1399,
+  "fields": [
+    {
+      "report_id": 3,
+      "usage_page": 1,
+      "usages": [
+        57
+      ],
+      "payload_bit_offset": 0,
+      "size": 4,
+      "count": 1,
+      "flags": 66,
+      "logical_min": 0,
+      "logical_max": 7,
+      "observed_elements": [
+        {
+          "distinct": 1,
+          "min": 8,
+          "max": 8,
+          "outside_logical_range": [
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "report_id": 3,
+      "usage_page": 1,
+      "usages": [],
+      "payload_bit_offset": 4,
+      "size": 4,
+      "count": 1,
+      "flags": 3,
+      "logical_min": 0,
+      "logical_max": 7,
+      "observed_elements": [
+        {
+          "distinct": 1,
+          "min": 0,
+          "max": 0,
+          "outside_logical_range": []
+        }
+      ]
+    },
+    {
+      "report_id": 3,
+      "usage_page": 9,
+      "usages": [
+        18,
+        17,
+        20,
+        19,
+        13,
+        12,
+        11,
+        15,
+        14,
+        8,
+        7,
+        5,
+        4,
+        2,
+        1
+      ],
+      "payload_bit_offset": 8,
+      "size": 1,
+      "count": 15,
+      "flags": 2,
+      "logical_min": 0,
+      "logical_max": 1,
+      "observed_elements": [
+        {
+          "distinct": 1,
+          "min": 0,
+          "max": 0,
+          "outside_logical_range": []
+        },
+        {
+          "distinct": 1,
+          "min": 0,
+          "max": 0,
+          "outside_logical_range": []
+        },
+        {
+          "distinct": 2,
+          "min": 0,
+          "max": 1,
+          "outside_logical_range": []
+        },
+        {
+          "distinct": 2,
+          "min": 0,
+          "max": 1,
+          "outside_logical_range": []
+        },
+        {
+          "distinct": 1,
+          "min": 0,
+          "max": 0,
+          "outside_logical_range": []
+        },
+        {
+          "distinct": 1,
+          "min": 0,
+          "max": 0,
+          "outside_logical_range": []
+        },
+        {
+          "distinct": 1,
+          "min": 0,
+          "max": 0,
+          "outside_logical_range": []
+        },
+        {
+          "distinct": 2,
+          "min": 0,
+          "max": 1,
+          "outside_logical_range": []
+        },
+        {
+          "distinct": 2,
+          "min": 0,
+          "max": 1,
+          "outside_logical_range": []
+        },
+        {
+          "distinct": 2,
+          "min": 0,
+          "max": 1,
+          "outside_logical_range": []
+        },
+        {
+          "distinct": 2,
+          "min": 0,
+          "max": 1,
+          "outside_logical_range": []
+        },
+        {
+          "distinct": 1,
+          "min": 0,
+          "max": 0,
+          "outside_logical_range": []
+        },
+        {
+          "distinct": 1,
+          "min": 0,
+          "max": 0,
+          "outside_logical_range": []
+        },
+        {
+          "distinct": 2,
+          "min": 0,
+          "max": 1,
+          "outside_logical_range": []
+        },
+        {
+          "distinct": 2,
+          "min": 0,
+          "max": 1,
+          "outside_logical_range": []
+        }
+      ]
+    },
+    {
+      "report_id": 3,
+      "usage_page": 9,
+      "usages": [],
+      "payload_bit_offset": 23,
+      "size": 1,
+      "count": 1,
+      "flags": 3,
+      "logical_min": 0,
+      "logical_max": 1,
+      "observed_elements": [
+        {
+          "distinct": 1,
+          "min": 0,
+          "max": 0,
+          "outside_logical_range": []
+        }
+      ]
+    },
+    {
+      "report_id": 3,
+      "usage_page": 1,
+      "usages": [
+        48,
+        49
+      ],
+      "payload_bit_offset": 24,
+      "size": 8,
+      "count": 2,
+      "flags": 2,
+      "logical_min": 1,
+      "logical_max": 255,
+      "observed_elements": [
+        {
+          "distinct": 232,
+          "min": 1,
+          "max": 255,
+          "outside_logical_range": []
+        },
+        {
+          "distinct": 232,
+          "min": 1,
+          "max": 255,
+          "outside_logical_range": []
+        }
+      ]
+    },
+    {
+      "report_id": 3,
+      "usage_page": 1,
+      "usages": [
+        50,
+        53
+      ],
+      "payload_bit_offset": 40,
+      "size": 8,
+      "count": 2,
+      "flags": 2,
+      "logical_min": 1,
+      "logical_max": 255,
+      "observed_elements": [
+        {
+          "distinct": 213,
+          "min": 1,
+          "max": 255,
+          "outside_logical_range": []
+        },
+        {
+          "distinct": 208,
+          "min": 1,
+          "max": 255,
+          "outside_logical_range": []
+        }
+      ]
+    },
+    {
+      "report_id": 3,
+      "usage_page": 2,
+      "usages": [
+        197,
+        196
+      ],
+      "payload_bit_offset": 56,
+      "size": 8,
+      "count": 2,
+      "flags": 2,
+      "logical_min": 0,
+      "logical_max": 255,
+      "observed_elements": [
+        {
+          "distinct": 142,
+          "min": 0,
+          "max": 255,
+          "outside_logical_range": []
+        },
+        {
+          "distinct": 148,
+          "min": 0,
+          "max": 255,
+          "outside_logical_range": []
+        }
+      ]
+    },
+    {
+      "report_id": 3,
+      "usage_page": 12,
+      "usages": [
+        233,
+        234,
+        205
+      ],
+      "payload_bit_offset": 72,
+      "size": 1,
+      "count": 3,
+      "flags": 2,
+      "logical_min": 0,
+      "logical_max": 1,
+      "observed_elements": [
+        {
+          "distinct": 1,
+          "min": 0,
+          "max": 0,
+          "outside_logical_range": []
+        },
+        {
+          "distinct": 1,
+          "min": 0,
+          "max": 0,
+          "outside_logical_range": []
+        },
+        {
+          "distinct": 1,
+          "min": 0,
+          "max": 0,
+          "outside_logical_range": []
+        }
+      ]
+    },
+    {
+      "report_id": 3,
+      "usage_page": 12,
+      "usages": [],
+      "payload_bit_offset": 75,
+      "size": 5,
+      "count": 1,
+      "flags": 3,
+      "logical_min": 0,
+      "logical_max": 1,
+      "observed_elements": [
+        {
+          "distinct": 1,
+          "min": 0,
+          "max": 0,
+          "outside_logical_range": []
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "Descriptor usages, not labeled physical actions.",
+    "Out-of-range values are observations, not automatically faults; null states and constant padding require interpretation.",
+    "Aggregates retain no timing/order; no polling-rate inference.",
+    "No vendor bulk, Work Queue, callback or unsigned execution evidence."
+  ]
+}
