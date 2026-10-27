@@ -11,6 +11,8 @@ on:
       - 'tests/test_hab_rom_version_phase83.py'
       - 'tools/audit_hab_rvt_literals_phase84.py'
       - 'tests/test_hab_rvt_literals_phase84.py'
+      - 'tools/audit_hab_rvt_failsafe_phase84.py'
+      - 'tests/test_hab_rvt_failsafe_phase84.py'
       - '.github/workflows/nxp-rom-advisories-phase81.yml'
   workflow_dispatch:
 
@@ -27,7 +29,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: Synthetic offline regression tests
-        run: python -m unittest tests/test_nxp_rom_advisories_phase81.py tests/test_hab_unlock_phase82.py tests/test_hab_rom_version_phase83.py tests/test_hab_rvt_literals_phase84.py -v
+        run: python -m unittest tests/test_nxp_rom_advisories_phase81.py tests/test_hab_unlock_phase82.py tests/test_hab_rom_version_phase83.py tests/test_hab_rvt_literals_phase84.py tests/test_hab_rvt_failsafe_phase84.py -v
       - name: Retrieve exact archived signed OEM samples
         shell: bash
         run: |
@@ -146,6 +148,25 @@ jobs:
                       break
                   print('  ',hex(ins.address),ins.mnemonic,ins.op_str)
           print('Disassembly is local and may include data; code reachability unverified.')
+          PY
+      - name: Assert exact Google signed HAB failsafe ROM slot veneer
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m tools.audit_hab_rvt_failsafe_phase84 /tmp/stadia-nxp81/bruce.bin --out /tmp/stadia-nxp81/failsafe.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('/tmp/stadia-nxp81/failsafe.json').read_text())
+          f=d['finding']
+          assert f['thumb_sequence_xip_address']=='0x60040726'
+          assert f['signed_literal_file_offset']=='0x810'
+          assert f['signed_literal_value']=='0x00200300'
+          assert f['rvt_indirect_pointer_slot']=='0x00200328'
+          assert f['rvt_member_by_nxp_layout']=='failsafe'
+          assert f['get_version_called_by_this_sequence'] is False
+          print('Verified signed OEM Thumb HAB failsafe veneer:', f)
+          print('No live ROM execution or HAB version inferred.')
           PY
       - name: Delete temporary OEM images and reports
         if: always()
