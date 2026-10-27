@@ -1,5 +1,7 @@
 # Stadia Controller Research
 
+**[Phase 89 — Thumb SRC_GPR7 synthesized-address survey](docs/en/src-gpr7-synthesis-phase89.md).** SHA-pinned signed Bruce has one candidate MOVW low-half but no MOVT with upper half 0x400F; signed RAM loader has neither. **No MOVW/MOVT SRC pairs or GPR7 stores of this form**. 118 cumulative synthetic tests pass; bit3 producer remains unknown. [Evidence](evidence/src-gpr7-synthesis-phase89.json).
+
 **Research integration.** The USB and NXP/bootloader tracks keep separate evidence and regression tests. Static analysis is not proof of physical execution, host access to the updater or HAB CLOSED bypass. [Five research workstreams](docs/en/parallel-research.md).
 
 **[Phase 88 — SRC_GPR7 register-map correction and update-bit writer review](docs/en/src-gpr7-writers-phase88.md).** NXP documents `0x400F8038` as **SRC_GPR7**, not GPR6 (`0x400F8034`); phase87 corrected. The selected owner bootloader A instructions show **two attributable GPR7 writes**, clearing to `0` and app-status `0x10/0x20`; neither sets `0x08`. **New signed Bruce finding:** original code at `0x60078A1C–0x60078A28` writes **5 or 6** to SRC_GPR7; neither value asserts update bit `0x08`. The update-bit writer and USB provenance remain **unproved**. SHA-pinned original Thumb sequence and OEM literal census. [Tool](tools/audit_src_gpr7_writers_phase88.py).
