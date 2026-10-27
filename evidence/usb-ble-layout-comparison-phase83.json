@@ -1,0 +1,158 @@
+{
+  "phase": 83,
+  "upstream_commit": "d8392de8f838e12cf16c985b9beb8080c7acd970",
+  "upstream_bridge_sha256": "375821e4e1b846ebab99b5e124f4399b7b06a8f0d9ce9eb6f306d82467335334",
+  "usb_descriptor_sha256": "88121159b7b6cf6ffa4025d0d5aebe1d4ae83013ee34acc8dd4bf2cff52116d8",
+  "usb_capture_phase": 80,
+  "usb_capture_report_count": 1758,
+  "matched_button_positions": [
+    {
+      "upstream_ble_label": "a",
+      "payload_byte": 2,
+      "bit": 6,
+      "usb_button_usage": 1,
+      "usb_recorded_reports_with_bit_set": 43
+    },
+    {
+      "upstream_ble_label": "assistant",
+      "payload_byte": 1,
+      "bit": 1,
+      "usb_button_usage": 17,
+      "usb_recorded_reports_with_bit_set": 0
+    },
+    {
+      "upstream_ble_label": "b",
+      "payload_byte": 2,
+      "bit": 5,
+      "usb_button_usage": 2,
+      "usb_recorded_reports_with_bit_set": 9
+    },
+    {
+      "upstream_ble_label": "capture",
+      "payload_byte": 1,
+      "bit": 0,
+      "usb_button_usage": 18,
+      "usb_recorded_reports_with_bit_set": 0
+    },
+    {
+      "upstream_ble_label": "lb",
+      "payload_byte": 2,
+      "bit": 2,
+      "usb_button_usage": 7,
+      "usb_recorded_reports_with_bit_set": 8
+    },
+    {
+      "upstream_ble_label": "ls",
+      "payload_byte": 2,
+      "bit": 0,
+      "usb_button_usage": 14,
+      "usb_recorded_reports_with_bit_set": 15
+    },
+    {
+      "upstream_ble_label": "menu",
+      "payload_byte": 1,
+      "bit": 5,
+      "usb_button_usage": 12,
+      "usb_recorded_reports_with_bit_set": 0
+    },
+    {
+      "upstream_ble_label": "options",
+      "payload_byte": 1,
+      "bit": 6,
+      "usb_button_usage": 11,
+      "usb_recorded_reports_with_bit_set": 0
+    },
+    {
+      "upstream_ble_label": "rb",
+      "payload_byte": 2,
+      "bit": 1,
+      "usb_button_usage": 8,
+      "usb_recorded_reports_with_bit_set": 20
+    },
+    {
+      "upstream_ble_label": "rs",
+      "payload_byte": 1,
+      "bit": 7,
+      "usb_button_usage": 15,
+      "usb_recorded_reports_with_bit_set": 1
+    },
+    {
+      "upstream_ble_label": "stadia",
+      "payload_byte": 1,
+      "bit": 4,
+      "usb_button_usage": 13,
+      "usb_recorded_reports_with_bit_set": 0
+    },
+    {
+      "upstream_ble_label": "x",
+      "payload_byte": 2,
+      "bit": 4,
+      "usb_button_usage": 4,
+      "usb_recorded_reports_with_bit_set": 0
+    },
+    {
+      "upstream_ble_label": "y",
+      "payload_byte": 2,
+      "bit": 3,
+      "usb_button_usage": 5,
+      "usb_recorded_reports_with_bit_set": 0
+    }
+  ],
+  "matched_analog_positions": [
+    {
+      "upstream_ble_label": "lt",
+      "payload_byte": 7,
+      "usb_usage_page": 2,
+      "usb_usage": 197
+    },
+    {
+      "upstream_ble_label": "lx",
+      "payload_byte": 3,
+      "usb_usage_page": 1,
+      "usb_usage": 48
+    },
+    {
+      "upstream_ble_label": "ly",
+      "payload_byte": 4,
+      "usb_usage_page": 1,
+      "usb_usage": 49
+    },
+    {
+      "upstream_ble_label": "rt",
+      "payload_byte": 8,
+      "usb_usage_page": 2,
+      "usb_usage": 196
+    },
+    {
+      "upstream_ble_label": "rx",
+      "payload_byte": 5,
+      "usb_usage_page": 1,
+      "usb_usage": 50
+    },
+    {
+      "upstream_ble_label": "ry",
+      "payload_byte": 6,
+      "usb_usage_page": 1,
+      "usb_usage": 53
+    }
+  ],
+  "usb_button_usages_without_upstream_label": [
+    19,
+    20
+  ],
+  "last_payload_byte": {
+    "upstream_source_comment": "BLE byte 9 described as padding",
+    "usb_descriptor": "consumer-page input bits 0..2 and constant bits 3..7",
+    "usb_capture_consumer_active_reports": {
+      "0xe9": 0,
+      "0xea": 0,
+      "0xcd": 0
+    }
+  },
+  "limits": [
+    "BLE source labels are upstream assumptions, not independently verified physical assignments.",
+    "Equal offsets across transports do not establish equal live BLE semantics.",
+    "USB aggregate counts are not button press counts or proof of individual actions.",
+    "No BLE capture, compiled bridge, hardware testing or console compatibility established."
+  ]
+}
