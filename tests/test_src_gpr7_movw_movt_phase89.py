@@ -3,7 +3,8 @@ import struct
 import unittest
 from tools.audit_src_gpr7_movw_movt_phase89 import (
     SRC_BASE,SRC_GPR6,SRC_GPR7,
-    analyze_encodings,audit,decode_thumb_mov_imm,decode_thumb_store
+    analyze_encodings,audit,decode_thumb_mov_imm,decode_thumb_store,
+    BRUCE_LONE_MOVW_OFFSET,BRUCE_LONE_MOVW_RETURN_BYTES,classify_bruce_lone_movw
 )
 
 
@@ -115,6 +116,22 @@ class MOVWPhase89Tests(unittest.TestCase):
         self.assertEqual(r["pair_count"],1)
         self.assertFalse(r["same_register_ordered_pairs"][0][
             "actual_reaching_definition_proven"])
+
+    def test_pinned_original_scalar_return_not_src_address(self):
+        b=bytearray(b"\xff"*(BRUCE_LONE_MOVW_OFFSET+8))
+        b[BRUCE_LONE_MOVW_OFFSET:BRUCE_LONE_MOVW_OFFSET+6]=BRUCE_LONE_MOVW_RETURN_BYTES
+        d=classify_bruce_lone_movw(bytes(b))
+        self.assertEqual(d["original_bytes"],"48f200007047")
+        self.assertEqual(d["static_instructions"],["MOVW R0, #0x8000","BX LR"])
+        self.assertFalse(d["gpr7_bit3_write_proven"])
+        self.assertFalse(d["control_flow_reachability_proven"])
+
+    def test_altered_signed_movw_return_is_rejected(self):
+        b=bytearray(b"\xff"*(BRUCE_LONE_MOVW_OFFSET+8))
+        b[BRUCE_LONE_MOVW_OFFSET:BRUCE_LONE_MOVW_OFFSET+6]=BRUCE_LONE_MOVW_RETURN_BYTES
+        b[BRUCE_LONE_MOVW_OFFSET+4]^=1
+        with self.assertRaisesRegex(ValueError,"bytes mismatch"):
+            classify_bruce_lone_movw(bytes(b))
 
     def test_source_sha_gate_before_results(self):
         with self.assertRaisesRegex(ValueError,"SHA-256"):
