@@ -1,5 +1,7 @@
 # Investigación del mando Stadia
 
+**[Fase 82 — interpretación del comando HAB CSF UNLOCK](docs/es/nxp-hab-unlock-fase82.md).** Analizador del motor y máscara de funciones del UNLOCK presente en el cargador RAM firmado, con pruebas sintéticas y sin divulgar UID. **UNLOCK configura acceso posterior a determinados periféricos; no elimina HAB CLOSED ni valida firmware propio.** [Herramienta](tools/audit_hab_unlock_phase82.py).
+
 **[Fase 81 — vulnerabilidades NXP HAB/CSF y SDP](docs/es/nxp-rom-csf-fase81.md).** Auditor offline de IVT/CSF anclado a muestras SHA-256, con pruebas sintéticas y CI sobre dos imágenes OEM públicas. Distingue vulnerabilidad HAB en autenticación adicional de la CVE-2022-45163 (divulgación de memoria SDP). **Versión HAB ROM desconocida; sin ejecución propia, bypass ni recuperación demostrados.** [Herramienta](tools/audit_nxp_rom_advisories_phase81.py).
 
 **[Fase 85 — controles USB confirmados físicamente](docs/es/controles-usb-etiquetados-fase85.md).** Con acciones aisladas y confirmadas: **A/B/X/Y → 1/2/4/5**, cruceta cardinal → **0/2/4/6**, y los usos **20/19 son indicadores digitales de los gatillos izquierdo/derecho**, además de sus valores analógicos. [Mapa](evidence/usb-control-map-phase85.json).
