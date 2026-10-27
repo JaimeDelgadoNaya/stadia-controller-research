@@ -13,6 +13,8 @@ on:
       - 'tests/test_hab_rvt_literals_phase84.py'
       - 'tools/audit_hab_rvt_failsafe_phase84.py'
       - 'tests/test_hab_rvt_failsafe_phase84.py'
+      - 'tools/audit_hab_failsafe_callers_phase85.py'
+      - 'tests/test_hab_failsafe_callers_phase85.py'
       - '.github/workflows/nxp-rom-advisories-phase81.yml'
   workflow_dispatch:
 
@@ -28,8 +30,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Install offline decoder dependency
+        run: python -m pip install -r requirements.txt
       - name: Synthetic offline regression tests
-        run: python -m unittest tests/test_nxp_rom_advisories_phase81.py tests/test_hab_unlock_phase82.py tests/test_hab_rom_version_phase83.py tests/test_hab_rvt_literals_phase84.py tests/test_hab_rvt_failsafe_phase84.py -v
+        run: python -m unittest tests/test_nxp_rom_advisories_phase81.py tests/test_hab_unlock_phase82.py tests/test_hab_rom_version_phase83.py tests/test_hab_rvt_literals_phase84.py tests/test_hab_rvt_failsafe_phase84.py tests/test_hab_failsafe_callers_phase85.py -v
       - name: Retrieve exact archived signed OEM samples
         shell: bash
         run: |
@@ -167,6 +171,26 @@ jobs:
           assert f['get_version_called_by_this_sequence'] is False
           print('Verified signed OEM Thumb HAB failsafe veneer:', f)
           print('No live ROM execution or HAB version inferred.')
+          PY
+      - name: Survey possible direct and pointer callers of pinned HAB failsafe
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m tools.audit_hab_failsafe_callers_phase85 /tmp/stadia-nxp81/bruce.bin --out /tmp/stadia-nxp81/failsafe-callers.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('/tmp/stadia-nxp81/failsafe-callers.json').read_text())
+          assert d['original_sha256']=='466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3'
+          assert d['failsafe_veneer_entry']=='0x60040726'
+          assert d['confirmed_runtime_callers']==0
+          assert d['confirmed_usb_or_update_trigger'] is False
+          assert d['rom_version_measured'] is False
+          assert d['candidate_pointer_count']==len(d['raw_pointer_candidates'])
+          assert d['candidate_direct_branch_count']==len(d['decoded_direct_branch_candidates'])
+          print('Signed failsafe candidate pointer words:',d['raw_pointer_candidates'])
+          print('Direct Thumb branch candidates:',d['decoded_direct_branch_candidates'])
+          print('These are static shape matches only, with no call/reachability proof.')
           PY
       - name: Delete temporary OEM images and reports
         if: always()
