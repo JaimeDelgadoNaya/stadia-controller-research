@@ -1,0 +1,242 @@
+{
+  "phase": 84,
+  "compiler": "ziglang 0.13.0 host cc -O2",
+  "baseline_input": "08000080808080000000",
+  "baseline_xbox_bytes": "0014000000000000000000000000000000000000",
+  "individual_bit_cases": [
+    {
+      "payload_byte": 1,
+      "bit": 0,
+      "changed_output_bytes": [],
+      "changed_parsed_flags": [
+        "capture"
+      ]
+    },
+    {
+      "payload_byte": 1,
+      "bit": 1,
+      "changed_output_bytes": [],
+      "changed_parsed_flags": [
+        "assistant"
+      ]
+    },
+    {
+      "payload_byte": 1,
+      "bit": 2,
+      "changed_output_bytes": [],
+      "changed_parsed_flags": []
+    },
+    {
+      "payload_byte": 1,
+      "bit": 3,
+      "changed_output_bytes": [],
+      "changed_parsed_flags": []
+    },
+    {
+      "payload_byte": 1,
+      "bit": 4,
+      "changed_output_bytes": [
+        3
+      ],
+      "changed_parsed_flags": [
+        "stadia"
+      ]
+    },
+    {
+      "payload_byte": 1,
+      "bit": 5,
+      "changed_output_bytes": [
+        2
+      ],
+      "changed_parsed_flags": [
+        "menu"
+      ]
+    },
+    {
+      "payload_byte": 1,
+      "bit": 6,
+      "changed_output_bytes": [
+        2
+      ],
+      "changed_parsed_flags": [
+        "options"
+      ]
+    },
+    {
+      "payload_byte": 1,
+      "bit": 7,
+      "changed_output_bytes": [
+        2
+      ],
+      "changed_parsed_flags": [
+        "rs"
+      ]
+    },
+    {
+      "payload_byte": 2,
+      "bit": 0,
+      "changed_output_bytes": [
+        2
+      ],
+      "changed_parsed_flags": [
+        "ls"
+      ]
+    },
+    {
+      "payload_byte": 2,
+      "bit": 1,
+      "changed_output_bytes": [
+        3
+      ],
+      "changed_parsed_flags": [
+        "rb"
+      ]
+    },
+    {
+      "payload_byte": 2,
+      "bit": 2,
+      "changed_output_bytes": [
+        3
+      ],
+      "changed_parsed_flags": [
+        "lb"
+      ]
+    },
+    {
+      "payload_byte": 2,
+      "bit": 3,
+      "changed_output_bytes": [
+        3
+      ],
+      "changed_parsed_flags": [
+        "y"
+      ]
+    },
+    {
+      "payload_byte": 2,
+      "bit": 4,
+      "changed_output_bytes": [
+        3
+      ],
+      "changed_parsed_flags": [
+        "x"
+      ]
+    },
+    {
+      "payload_byte": 2,
+      "bit": 5,
+      "changed_output_bytes": [
+        3
+      ],
+      "changed_parsed_flags": [
+        "b"
+      ]
+    },
+    {
+      "payload_byte": 2,
+      "bit": 6,
+      "changed_output_bytes": [
+        3
+      ],
+      "changed_parsed_flags": [
+        "a"
+      ]
+    },
+    {
+      "payload_byte": 2,
+      "bit": 7,
+      "changed_output_bytes": [],
+      "changed_parsed_flags": []
+    },
+    {
+      "payload_byte": 9,
+      "bit": 0,
+      "changed_output_bytes": [],
+      "changed_parsed_flags": []
+    },
+    {
+      "payload_byte": 9,
+      "bit": 1,
+      "changed_output_bytes": [],
+      "changed_parsed_flags": []
+    },
+    {
+      "payload_byte": 9,
+      "bit": 2,
+      "changed_output_bytes": [],
+      "changed_parsed_flags": []
+    },
+    {
+      "payload_byte": 9,
+      "bit": 3,
+      "changed_output_bytes": [],
+      "changed_parsed_flags": []
+    },
+    {
+      "payload_byte": 9,
+      "bit": 4,
+      "changed_output_bytes": [],
+      "changed_parsed_flags": []
+    },
+    {
+      "payload_byte": 9,
+      "bit": 5,
+      "changed_output_bytes": [],
+      "changed_parsed_flags": []
+    },
+    {
+      "payload_byte": 9,
+      "bit": 6,
+      "changed_output_bytes": [],
+      "changed_parsed_flags": []
+    },
+    {
+      "payload_byte": 9,
+      "bit": 7,
+      "changed_output_bytes": [],
+      "changed_parsed_flags": []
+    }
+  ],
+  "usb_capture_phase": 80,
+  "usb_capture_canonical_sha256": "bc026a584e4347bd7c1f565c7efde3e6ce901982bbbed0a461a1c88bf5ead5db",
+  "usb_capture_report_count": 1758,
+  "distinct_usb_payloads": 1399,
+  "hypothetical_usb_as_ble_paired_checks": 6995,
+  "hypothetical_usb_as_ble_weighted_pairs": 8790,
+  "paired_bit_positions": [
+    [
+      1,
+      2
+    ],
+    [
+      1,
+      3
+    ],
+    [
+      9,
+      0
+    ],
+    [
+      9,
+      1
+    ],
+    [
+      9,
+      2
+    ]
+  ],
+  "limits": [
+    "Host compilation of original bridge.c with stubbed queues, not ESP32 firmware.",
+    "The 13 parsed flags exclude raw report storage and all other state fields.",
+    "USB payloads replayed as hypothetical BLE inputs; actual BLE equivalence is unproven.",
+    "No queue scheduling, button action execution, device I/O or console compatibility tested."
+  ],
+  "upstream_commit": "d8392de8f838e12cf16c985b9beb8080c7acd970",
+  "upstream_bridge_sha256": "375821e4e1b846ebab99b5e124f4399b7b06a8f0d9ce9eb6f306d82467335334",
+  "upstream_header_sha256": {
+    "main/bridge.h": "3ca85b3822f0dd30195bd982a2e95dedeea4b41df4b9f6f48f630835530d8bd8",
+    "main/dongle_config.h": "4edda12fd8ff7b956c01507b787d8bdb4728205b56ff2986b2adc18f43417708",
+    "main/dongle_state.h": "79e27d46ecb506df1484dd2d34fc60d0a5c99efb9df355622b33bb616f505c19"
+  },
+  "compiler_version": "0.13.0"
+}

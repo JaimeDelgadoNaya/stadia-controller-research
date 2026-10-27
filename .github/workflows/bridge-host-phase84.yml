@@ -1,0 +1,36 @@
+name: Pinned BLE bridge host experiment
+
+on:
+  pull_request:
+    paths:
+      - 'tools/audit_bridge_host_phase84.py'
+      - 'tools/prepare_external_bridge.py'
+      - 'tests/test_bridge_host_phase84.py'
+      - 'tests/fixtures/phase84/**'
+      - 'evidence/usb-bridge-host-tests-phase84.json'
+      - 'evidence/usb-live-hid-input-phase80.json'
+      - 'evidence/external-bridge-source.json'
+      - '.github/workflows/bridge-host-phase84.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  host-bridge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install ziglang==0.13.0
+      - name: Prepare separately licensed pinned source and reproduce host experiment
+        shell: bash
+        run: |
+          set -euo pipefail
+          python tools/prepare_external_bridge.py "$RUNNER_TEMP/stadia-bridge"
+          STADIA_BRIDGE_CHECKOUT="$RUNNER_TEMP/stadia-bridge" \
+          STADIA_BRIDGE_LIBRARY="$RUNNER_TEMP/phase84-bridge.so" \
+            python -m unittest tests.test_bridge_host_phase84 -v

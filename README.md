@@ -1,5 +1,7 @@
 # Stadia Controller Research
 
+**[Phase 84 — original bridge functions on host](docs/en/bridge-host-experiment-phase84.md).** The pinned BLE translator was host-compiled for **6,995 paired checks** using hypothetical USB-derived payloads. Candidate 19/20 and consumer bits do not affect output or 13 inspected flags; Assistant/Capture affect their flags. Actual BLE remains unverified. [Evidence](evidence/usb-bridge-host-tests-phase84.json).
+
 **[Phase 83 — USB and BLE bridge positions](docs/en/usb-ble-layout-comparison-phase83.md).** The pinned BLE parser shares positions with **13 USB button fields and six analog values**; cross-transport physical labels remain hypotheses. USB consumer bits and the BLE padding claim need separate testing. [Evidence](evidence/usb-ble-layout-comparison-phase83.json).
 
 **[Phase 82 — differential HID tests](docs/en/hid-differential-tests-phase82.md).** **39,424 synthetic vectors without mismatches**, including every button subset, plus rejection of wrong IDs/lengths and 1,504 descriptor mutations. Fixed acceptance of Boolean/floating-point aggregate totals. Entirely offline. [Evidence](evidence/usb-hid-differential-phase82.json).
