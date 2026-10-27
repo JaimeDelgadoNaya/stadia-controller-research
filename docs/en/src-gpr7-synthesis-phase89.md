@@ -15,7 +15,7 @@ The [SHA-gated analyzer](../../tools/audit_src_gpr7_movw_movt_phase89.py) verifi
 | Same-register MOVW/MOVT pairs | **0** | **0** |
 | Possible GPR7 store shapes from such pairs | **0** | **0** |
 
-**118 cumulative synthetic NXP phase81–89 tests passed**, along with Python 3.11/3.12 and five parallel regression tracks.
+**120 cumulative synthetic NXP phase81–89 tests passed**, along with Python 3.11/3.12 and five parallel regression tracks.
 
 ## NXP documentary caution
 
