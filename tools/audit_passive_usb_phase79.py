@@ -20,10 +20,12 @@ FIELDS = (
     'usb.bus_id', 'usb.device_address', 'usb.endpoint_address',
     'usb.urb_type', 'usb.data_len', 'usb.bmRequestType',
     'usb.setup.bRequest', 'usb.idVendor', 'usb.idProduct',
+    'usb.urb_id', 'usb.irp_id',
 )
 EVENT_NAMES = {'S': 'submit', 'C': 'complete', 'E': 'error'}
 REQUEST_CLASSES = ('standard', 'class', 'vendor', 'reserved')
 MAX_ROWS = 2_000_000
+MAX_PENDING_URBS = 200_000
 
 
 def integer(text, name, maximum=None):
@@ -39,6 +41,27 @@ def integer(text, name, maximum=None):
     if value < 0 or (maximum is not None and value > maximum):
         raise ValueError(f'Out-of-range {name}')
     return value
+
+
+def urb_identifier(value):
+    """Parse a capture-local 64-bit ID; never include it in reports or exceptions."""
+    if value is None or not str(value).strip():
+        return None
+    raw = str(value).strip()
+    try:
+        if raw.lower().startswith('0x'):
+            if len(raw) > 18:
+                raise ValueError('ID too long')
+            result = int(raw[2:], 16)
+        else:
+            if len(raw) > 20:
+                raise ValueError('ID too long')
+            result = int(raw, 10)
+    except ValueError as exc:
+        raise ValueError('Invalid USB URB/IRP identifier') from exc
+    if not 0 <= result <= 0xffffffffffffffff:
+        raise ValueError('Out-of-range USB URB/IRP identifier')
+    return result
 
 
 def expected_endpoints(phase61):
@@ -79,6 +102,9 @@ def audit(csv_path, phase61, bus, address):
     incomplete_setup = 0
     missing_endpoint = 0
     for_recognized = 0
+    pairing = Counter()
+    pending = {}
+    id_columns = []
 
     with open(csv_path, encoding='utf-8-sig', newline='') as stream:
         reader = csv.DictReader(stream)
@@ -90,6 +116,8 @@ def audit(csv_path, phase61, bus, address):
         forbidden = set(reader.fieldnames) - set(FIELDS)
         if forbidden:
             raise ValueError('Unapproved columns (possible raw payload/private fields): '+', '.join(sorted(forbidden)))
+        id_columns = [name for name in ('usb.urb_id', 'usb.irp_id')
+                      if name in reader.fieldnames]
         for row in reader:
             rows += 1
             if rows > MAX_ROWS:
@@ -114,6 +142,37 @@ def audit(csv_path, phase61, bus, address):
             if event not in EVENT_NAMES:
                 raise ValueError('Unexpected USB URB event (expected S/C/E)')
             payload_length = integer(row.get('usb.data_len'), 'data_len', 2**32-1)
+            if id_columns:
+                present_ids = {ident for name in id_columns
+                               if (ident := urb_identifier(row.get(name))) is not None}
+                if len(present_ids) > 1:
+                    raise ValueError('Conflicting USB URB/IRP identifiers')
+                if not present_ids:
+                    pairing['missing_id_events'] += 1
+                else:
+                    pairing['id_events'] += 1
+                    identifier = next(iter(present_ids))
+                    if ep is None:
+                        pairing['unpairable_endpoint_events'] += 1
+                    elif event == 'S':
+                        if identifier in pending:
+                            previous_ep, _ = pending[identifier]
+                            pending[identifier] = (previous_ep, True)
+                            pairing['duplicate_pending_submit'] += 1
+                        else:
+                            pending[identifier] = (ep, False)
+                            if len(pending) > MAX_PENDING_URBS:
+                                raise ValueError('Too many pending URB identifiers')
+                    else:
+                        previous = pending.pop(identifier, None)
+                        if previous is None:
+                            pairing['unmatched_' + EVENT_NAMES[event]] += 1
+                        elif previous[1]:
+                            pairing['ambiguous_id_terminal'] += 1
+                        elif previous[0] != ep:
+                            pairing['endpoint_mismatch'] += 1
+                        else:
+                            pairing['paired_' + EVENT_NAMES[event]] += 1
             if ep is None:
                 missing_endpoint += 1
                 continue
@@ -144,6 +203,10 @@ def audit(csv_path, phase61, bus, address):
     if not selected:
         raise ValueError('No URBs for selected bus/device')
 
+    pairing_status = ('not_exported' if not id_columns
+                      else 'not_observed' if not pairing['id_events']
+                      else 'partial_ids' if pairing['missing_id_events']
+                      else 'id_events_observed')
     endpoints = []
     for ep in sorted(known):
         n = counters[ep]
@@ -166,10 +229,24 @@ def audit(csv_path, phase61, bus, address):
                         'setup_request_classes': dict(sorted((key,value) for key,value in control.items()
                                                  if key not in ('submit','complete','error')))},
         'undeclared_endpoint_events': {f'0x{ep:02x}': count for ep,count in sorted(unknown.items())},
+        'urb_pairing': {
+            'status': pairing_status, 'id_fields_exported': id_columns,
+            'id_events': pairing['id_events'], 'missing_id_events': pairing['missing_id_events'],
+            'paired_complete': pairing['paired_complete'], 'paired_error': pairing['paired_error'],
+            'unmatched_complete': pairing['unmatched_complete'],
+            'unmatched_error': pairing['unmatched_error'],
+            'unmatched_submit_at_end': len(pending),
+            'duplicate_pending_submit': pairing['duplicate_pending_submit'],
+            'ambiguous_id_terminal': pairing['ambiguous_id_terminal'],
+            'endpoint_mismatch': pairing['endpoint_mismatch'],
+            'unpairable_endpoint_events': pairing['unpairable_endpoint_events'],
+        },
         'limits': [
             'Bus and device address are operator-selected; VID/PID validation is positive only if observed within the selected rows.',
             'Only URB event and header metadata were analyzed. Captured bytes, serial numbers and timings are neither read nor exported.',
             'Submit and completion may describe one transfer; counts and reported lengths are not independent USB transactions or verified bytes on wire.',
+            'URB/IRP IDs, when exported, are used only in memory. Pairing is a capture-local association, not proof of delivery, firmware processing or host-triggered callback.',
+            'Unmatched or ambiguous identifiers can arise from capture boundaries, dropped events, reused IDs or incomplete exports. Pairing requires equal endpoints.',
             'Known endpoint membership is a match to phase61 enumeration, not a signed OEM function or parser assignment.',
             'No installed-firmware hash, live RAM state, USB-to-WorkQueue callback, host pointer control, code execution or HAB bypass was established.',
         ],
