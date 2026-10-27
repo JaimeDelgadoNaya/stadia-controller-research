@@ -79,9 +79,9 @@ def audit(evidence):
 
     app_a = literal(0x60801F18)
     app_b = literal(0x60801EFA)
-    gpr6 = literal(0x60801F0C) + 0x38
+    gpr7 = literal(0x60801F0C) + 0x38
     vtor = literal(0x60801F22)
-    if (app_a, app_b, gpr6, vtor) != (0x60040000, 0x60840000, 0x400F8038, 0xE000ED08):
+    if (app_a, app_b, gpr7, vtor) != (0x60040000, 0x60840000, 0x400F8038, 0xE000ED08):
         raise ValueError("Unexpected literals in documented application dispatch")
     if int(instructions[0x60801F00]["direct_target"], 16) != 0x6080200C:
         raise ValueError("Unexpected application validator target")
@@ -102,7 +102,7 @@ def audit(evidence):
                 row = {"selected_id": selected_id, "validation_success": False,
                        "action": "write_boot_status_and_return",
                        "application_base": hex(app_a if selected_id == 2 else app_b),
-                       "status_register": hex(gpr6),
+                       "status_register": hex(gpr7),
                        "status_value": hex(0x10 if selected_id == 2 else 0x20)}
             cases.append(row)
     return {"image_sha256": IMAGE_SHA256, "region": hex(REGION_START),
