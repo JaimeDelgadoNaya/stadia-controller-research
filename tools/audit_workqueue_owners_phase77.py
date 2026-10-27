@@ -102,7 +102,7 @@ def verify_field_anchors(image):
     mapping={}
     for low,high in ((0x60062126,0x60062130),(0x60062264,0x60062290),
                      (0x6006B290,0x6006B2D0),
-                     (0x6006B416,0x6006B424)):
+                     (0x6006B416,0x6006B452)):
         mapping.update({int(r["pc"],16):(r["m"],r["op"])
                         for r in code_rows(image,low,high)})
     for pc,pin in expected.items():
