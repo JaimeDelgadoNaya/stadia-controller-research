@@ -342,11 +342,16 @@ jobs:
               d=json.loads(Path('/tmp/stadia-nxp81/synth-'+label+'.json').read_text())
               assert d['original_sha256']==orig
               assert d['confirmed_gpr7_bit3_writer_count']==0
+              assert d['movw_low_half_encodings']==(1 if label=='bruce' else 0)
+              assert d['movt_0x400f_encodings']==0
+              assert d['pair_count']==0
+              assert d['store_shape_count']==0
               assert d['device_io'] is False and d['physical_execution'] is False
               assert d['store_shape_count']==len(d['possibly_computed_gpr7_store_shapes'])
               assert d['pair_count']==len(d['same_register_ordered_pairs'])
               print('Phase89',label,'movw/low:',d['movw_low_half_encodings'],'movt/high:',d['movt_0x400f_encodings'],
                     'pair count:',d['pair_count'],'store shapes:',d['store_shape_count'])
+              print('Phase89',label,'MOVW candidates:',d['movw_candidates'][:32])
               print('Phase89',label,'pairs:',d['same_register_ordered_pairs'][:32])
               print('Phase89',label,'store shapes:',d['possibly_computed_gpr7_store_shapes'][:32])
           print('Encoding matches are NOT reachable code or a known update-bit writer.')
