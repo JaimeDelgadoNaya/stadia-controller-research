@@ -21,4 +21,15 @@ python -m tools.audit_hab_rom_version_phase83 local/restricted_ivt_flashloader.b
 python -m tools.audit_hab_rom_version_phase83 local/bruce_pvt_a_prod_signed.bin --sample bruce_prod
 ```
 
+## Validated signed OEM evidence
+
+[Sanitized phase83 evidence](../../evidence/hab-rom-version-phase83.json) · [Successful original-image GitHub Actions](https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40558134910).
+
+| SHA-pinned public image | IVT header | CSF header | Actual ROM HAB version |
+|---|---|---|---|
+| Bruce prod signed app | **0x41** | **0x42** | Unknown |
+| Signed RAM loader | **0x41** | **0x42** | Unknown |
+
+**26 phase81–83 synthetic tests passed**. Both images passed original SHA-256 checks. Header values are image **structure format versions**, not a measurement of the silicon ROM patch level. There is no archived owner `get_version()` response.
+
 The related [CVE-2022-45163 advisory](https://community.nxp.com/t5/i-MX-Security/SDP-Read-Bypass-CVE-2022-45163/ta-p/1553565) concerns potential SDP **memory disclosure**, a different property from signed-code execution. No access to hardware, ROM execution or test firmware is performed or implied.
