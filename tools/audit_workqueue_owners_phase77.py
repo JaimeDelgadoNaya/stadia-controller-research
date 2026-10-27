@@ -12,6 +12,7 @@ from capstone import Cs,CS_ARCH_ARM,CS_MODE_THUMB,CS_MODE_MCLASS
 from tools.audit_signed_app_surface import IMAGE_SHA256,IMAGE_SIZE
 from tools.audit_bruce_ep0_registration import decode
 from tools.audit_queue_producers_phase75 import BASE, xip_target_BL_shapes
+from tools.audit_usb_provider_phase63 import GLOBAL, OWNER
 from tools.audit_workqueue_caller_provenance_phase76 import (
     original_callsite_assertions,verify_B_callback_registration,
     cross_check_phase66_shared_helper, CALL_A,CALL_B,B_ENTRY
@@ -172,6 +173,11 @@ def signed_pointer_refs(image,targets):
 B_DIRECT_ACTIVATION_CALL_PINS={
     0x600747B0:("mov","r0, r7"),
     0x600747B2:("bl","#0x60060f28"),
+    0x600747B6:("add.w","r0, r5, #0x39c0"),
+    0x600747BE:("add.w","r5, r5, #0x3f00"),
+    0x600747C4:("adds","r5, #4"),
+    0x600747D2:("bl","#0x6006b2e8"),
+    0x600747D6:("mov","r0, r5"),
     0x600747D8:("bl","#0x6006b3e8"),
 }
 
@@ -181,12 +187,19 @@ def verify_B_direct_activation_caller(image):
     for pc,expected in B_DIRECT_ACTIVATION_CALL_PINS.items():
         if found.get(pc)!=expected:
             raise ValueError(f"Phase77 signed activation->B initializer drift {pc:#x}: {found.get(pc)}")
+    if GLOBAL+0x3DE8!=OWNER or GLOBAL+0x3F04!=OWNER+0x11C:
+        raise ValueError("Phase77 modeled phase66 GLOBAL/OWNER relative arithmetic drift")
     return {
         "original_signed_pins":len(B_DIRECT_ACTIVATION_CALL_PINS),
         "phase66_mode_activation":"0x600747b2 BL 0x60060f28",
         "direct_B_initializer":"0x600747d8 BL 0x6006b3e8",
         "B_initializer_entry":"0x6006b3e8",
-        "callsite_R0_argument":"PENDING_LINEAGE_AUDIT",
+        "callsite_R0_argument":"R0=R5 at 0x600747D6; original R5 += 0x3F04",
+        "phase66_modeled_input_GLOBAL":hex(GLOBAL),
+        "phase66_modeled_owner":hex(OWNER),
+        "modeled_B_object_under_phase66_input":hex(GLOBAL+0x3F04),
+        "modeled_B_object_equals_owner_plus_0x11C":True,
+        "physical_RAM_identity_measured":False,
         "runtime_executed":"UNVERIFIED",
         "host_USB_event_origin":"NOT_PROVEN",
     }
