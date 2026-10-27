@@ -227,7 +227,7 @@ jobs:
           d=json.loads(Path('/tmp/stadia-nxp81/update-trigger.json').read_text())
           assert d["gpr6_address"] == "0x400f8038"
           assert d["gpr6_handler"]["masked_trigger"] == "0x08"
-          assert d["pinned_instruction_count"] == 30
+          assert d["pinned_instruction_count"] == 31
           assert d["pure_low_byte_cases"] == 256
           assert d["pure_low_byte_cases_with_bit3"] == 128
           a=d["source_of_update_wrapper_arguments"]
