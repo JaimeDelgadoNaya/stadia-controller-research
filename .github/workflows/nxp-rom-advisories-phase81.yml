@@ -7,6 +7,8 @@ on:
       - 'tests/test_nxp_rom_advisories_phase81.py'
       - 'tools/audit_hab_unlock_phase82.py'
       - 'tests/test_hab_unlock_phase82.py'
+      - 'tools/audit_hab_rom_version_phase83.py'
+      - 'tests/test_hab_rom_version_phase83.py'
       - '.github/workflows/nxp-rom-advisories-phase81.yml'
   workflow_dispatch:
 
@@ -23,7 +25,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: Synthetic offline regression tests
-        run: python -m unittest tests/test_nxp_rom_advisories_phase81.py tests/test_hab_unlock_phase82.py -v
+        run: python -m unittest tests/test_nxp_rom_advisories_phase81.py tests/test_hab_unlock_phase82.py tests/test_hab_rom_version_phase83.py -v
       - name: Retrieve exact archived signed OEM samples
         shell: bash
         run: |
@@ -82,6 +84,25 @@ jobs:
           assert bruce['unlock_count']==0, 'Unexpected Bruce OEM UNLOCK'
           print('Pinned OEM OCOTP SRK_REVOKE UNLOCK metadata matches exact original.')
           print('No fuse revocation, HAB bypass, custom execution, or live ROM behavior shown.')
+          PY
+      - name: Confirm signed-file version bytes cannot establish ROM HAB patch level
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m tools.audit_hab_rom_version_phase83 /tmp/stadia-nxp81/bruce.bin --sample bruce_prod --out /tmp/stadia-nxp81/hab-bruce.json
+          python -m tools.audit_hab_rom_version_phase83 /tmp/stadia-nxp81/loader.bin --sample restricted_ram_loader --out /tmp/stadia-nxp81/hab-loader.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          for sample in ('bruce','loader'):
+              data=json.loads(Path('/tmp/stadia-nxp81/hab-'+sample+'.json').read_text())
+              print(sample,'IVT header:',data['signed_file_versions']['ivt_header_version_byte'],
+                    'CSF header:',data['signed_file_versions']['csf_header_version_byte'])
+              assert data['signed_file_versions']['these_bytes_are_exact_rom_hab_version'] is False
+              assert data['documented_rom_rvt']['get_version_pointer_slot']=='0x00200330'
+              assert data['operator_supplied_rvt_snapshot'] is None
+              assert data['actual_owner_bootrom_hab_version']=='UNKNOWN_NOT_MEASURED'
+          print('No owner ROM RVT evidence; no version or exploit inferred.')
           PY
       - name: Delete temporary OEM images and reports
         if: always()
