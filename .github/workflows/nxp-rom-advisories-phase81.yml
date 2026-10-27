@@ -282,6 +282,10 @@ jobs:
               for ins in md.disasm(data[start:end],0x60040000+start):
                   print('  ',hex(ins.address),ins.mnemonic,ins.op_str)
           print('These are unverified local instruction windows; no runtime path asserted.')
+          print('PINNED GPR6 WRITER BYTES:',data[0x38a1c:0x38a2a].hex())
+          for ins in md.disasm(data[0x38a1c:0x38a2a],0x60078a1c):
+              print('PINNED GPR6 WRITER INSTRUCTION:',hex(ins.address),ins.bytes.hex(),ins.mnemonic,ins.op_str)
+          print('PINNED GPR6 BASE LITERAL:',data[0x38abc:0x38ac0].hex())
           PY
       - name: Delete temporary OEM images and reports
         if: always()
