@@ -1,5 +1,7 @@
 # Stadia Controller Research
 
+**[NXP research phase 84 — offline HAB RVT literal census](docs/en/nxp-hab-rvt-literals-phase84.md).** SHA-256-gated survey for exact `entry`, `exit`, `authenticate_image_no_dcd` and `get_version` pointer-slot words in original OEM images. **A literal is not an executed call, and absence is not proof against computed references.** Tested controller's ROM HAB version remains unmeasured. [Tool](tools/audit_hab_rvt_literals_phase84.py).
+
 **[Phase 83 — provenance of the BootROM HAB version](docs/en/hab-rom-version-phase83.md).** NXP places the RT1060 HAB RVT at `0x00200300` and the `get_version` pointer slot at `0x00200330`. SHA-pinned offline auditing separates signed-image IVT/CSF format headers from live ROM revision. **No actual owner's `get_version` return is archived; precise HAB version and applicability remain unknown.** [Tool](tools/audit_hab_rom_version_phase83.py).
 
 **[Phase 82 — interpreting HAB CSF UNLOCK](docs/en/nxp-hab-unlock-phase82.md).** **Pinned original finding:** signed RAM loader contains UNLOCK **OCOTP / SRK_REVOKE** (engine `0x21`, mask `0x00000002`, no UID), while Bruce has no UNLOCK. Offline CI/tests; no fuse access or HAB bypass. **UNLOCK affects selected peripheral access after BootROM; it does not disable HAB CLOSED or authorize custom code.** [Tool](tools/audit_hab_unlock_phase82.py).
