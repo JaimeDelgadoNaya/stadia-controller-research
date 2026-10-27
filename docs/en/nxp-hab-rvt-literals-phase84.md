@@ -4,7 +4,7 @@
 
 The [SHA-256-pinned auditor](../../tools/audit_hab_rvt_literals_phase84.py) inspects only the **pre-CSF** portion of the original Google-signed images. It searches halfword-aligned 32-bit little-endian constant words for the exact documented RT1060 HAB RVT base and pointer slots `0x00200300`, `0x00200304`, `0x00200308`, `0x00200324`, `0x0020032c`, and `0x00200330` (`get_version`). It reports file offsets and alignments, but every hit has **`instruction_reference_confirmed=false`**.
 
-This is a **raw literal-word census, not a call graph**. It can miss computed `MOVW/MOVT` addresses, pointer arithmetic, indirect calls and byte-unaligned values. A hit does not establish executable code or an active caller; **zero hits never establishes that `get_version` cannot be invoked**.
+For each hit, a second bounded pass also looks for **syntactically compatible 16/32-bit Thumb literal-LDR encodings** targeting the word. Instruction boundaries and actual execution are **not validated**. This remains a **raw literal-word census, not a call graph**. It can miss computed `MOVW/MOVT` addresses, pointer arithmetic, indirect calls and byte-unaligned values. A hit does not establish executable code or an active caller; **zero hits never establishes that `get_version` cannot be invoked**.
 
 Previously identified direct HAB authentication API use in the privately extracted bootloader A is documented in [phase9](../es/arranque.md). The private sample is never uploaded to CI. The dedicated [GitHub Actions workflow](../../.github/workflows/nxp-rom-advisories-phase81.yml) audits two public archived signed images after enforcing their whole-file SHA-256, runs [synthetic tests](../../tests/test_hab_rvt_literals_phase84.py), and deletes source binaries.
 
