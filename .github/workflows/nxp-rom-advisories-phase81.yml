@@ -126,6 +126,7 @@ jobs:
               print(sample,'RVT literal hits:',data['counts_by_slot'])
               print(sample,'offsets:',[(v['file_offset'],v['slot_name'],v['word_alignment'])
                                        for v in data['literal_hits']])
+              print(sample,'syntactic_thumb_literal_load_shapes:',[(v['file_offset'],v['syntactic_thumb_load_candidates']) for v in data['literal_hits']])
           print('Raw constants only; not evidence of executed get_version call.')
           PY
       - name: Delete temporary OEM images and reports
