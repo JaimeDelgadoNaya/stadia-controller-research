@@ -20,6 +20,7 @@ on:
       - 'tools/audit_queue_producers_phase75.py'
       - 'tools/audit_workqueue_caller_provenance_phase76.py'
       - 'tools/audit_workqueue_owners_phase77.py'
+      - 'tools/audit_workqueue_shared_init_phase78.py'
       - 'tools/parse_usb_configuration.py'
       - 'tests/test_usb_descriptor_match_phase62.py'
       - 'tests/test_usb_provider_phase63.py'
@@ -38,6 +39,7 @@ on:
       - 'tests/test_queue_producers_phase75.py'
       - 'tests/test_workqueue_caller_provenance_phase76.py'
       - 'tests/test_workqueue_owners_phase77.py'
+      - 'tests/test_workqueue_shared_init_phase78.py'
       - 'evidence/usb*phase*.json'
       - '.github/workflows/usb-descriptor-match-phase62.yml'
   workflow_dispatch:
@@ -86,6 +88,8 @@ jobs:
           python -m tools.audit_workqueue_caller_provenance_phase76 "$image" --out "$RUNNER_TEMP/phase76-provenance.json"
           STADIA_BRUCE_IMAGE="$image" python -m unittest tests.test_workqueue_owners_phase77 -v
           python -m tools.audit_workqueue_owners_phase77 "$image" --out "$RUNNER_TEMP/phase77-owner-origin.json"
+          STADIA_BRUCE_IMAGE="$image" python -m unittest tests.test_workqueue_shared_init_phase78 -v
+          python -m tools.audit_workqueue_shared_init_phase78 "$image" --out "$RUNNER_TEMP/phase78-global-queue.json"
           STADIA_BRUCE_IMAGE="$image" python -m unittest tests.test_workqueue_caller_provenance_phase76 -v
           python -m tools.audit_usb_descriptor_match_phase62 "$image" --emulate --out "$report"
           python - "$report" <<'PY'
