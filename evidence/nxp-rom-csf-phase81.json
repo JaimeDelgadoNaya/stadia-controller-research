@@ -1,0 +1,62 @@
+{
+  "phase": 81,
+  "evidence_type": "offline_original_oem_csf_command_inventory",
+  "date": "2026-10-27",
+  "sources": {
+    "nxp_additional_image_hab_advisory": "https://community.nxp.com/t5/i-MX-Security/Authentication-Vulnerability-when-extending-the-Root-of-Trust/ta-p/1511348",
+    "nxp_sdp_cve_2022_45163": "https://community.nxp.com/t5/i-MX-Security/SDP-Read-Bypass-CVE-2022-45163/ta-p/1553565",
+    "hab_guidelines": "https://community.nxp.com/pwmxy87654/attachments/pwmxy87654/imx-processors/160465/2/AN12263.pdf",
+    "github_actions": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40554628963"
+  },
+  "audits": [
+    {
+      "sample": "bruce_prod",
+      "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+      "full_sha256_checked": true,
+      "ivt_dcd_pointer_null": true,
+      "csf_command_names": [
+        "INSTALL_KEY",
+        "INSTALL_KEY",
+        "AUTHENTICATE_DATA",
+        "INSTALL_KEY",
+        "AUTHENTICATE_DATA"
+      ],
+      "deprecated_command_count": 0,
+      "unknown_command_count": 0
+    },
+    {
+      "sample": "restricted_ram_loader",
+      "sha256": "c39ea8962cc3094a9167ba80634f1ea0652b747b4572d1de2802d9f2f4e144c5",
+      "full_sha256_checked": true,
+      "ivt_dcd_pointer_null": true,
+      "csf_command_names": [
+        "INSTALL_KEY",
+        "INSTALL_KEY",
+        "AUTHENTICATE_DATA",
+        "INSTALL_KEY",
+        "AUTHENTICATE_DATA",
+        "UNLOCK"
+      ],
+      "deprecated_command_count": 0,
+      "unknown_command_count": 0,
+      "unlock_meaning": "Not interpreted as vulnerability or bypass"
+    }
+  ],
+  "not_audited_with_phase81_tool": [
+    "private owner-extracted bootloader A"
+  ],
+  "limitations": {
+    "bootrom_hab_version": "UNKNOWN",
+    "rom_rejection_of_tampered_csf": "NOT_TESTED",
+    "cve_2022_45163_exploitation": "NOT_TESTED",
+    "custom_code_execution": "NOT_DEMONSTRATED",
+    "fused_srk_trust": "NOT_VERIFIED",
+    "connected_controller": false,
+    "flash_writes": false,
+    "efuse_writes": false
+  },
+  "publication": {
+    "firmware_binaries_included": false,
+    "raw_device_identifiers_included": false
+  }
+}
