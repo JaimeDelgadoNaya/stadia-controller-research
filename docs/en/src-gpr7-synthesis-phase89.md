@@ -17,6 +17,10 @@ The [SHA-gated analyzer](../../tools/audit_src_gpr7_movw_movt_phase89.py) verifi
 
 **118 cumulative synthetic NXP phase81–89 tests passed**, along with Python 3.11/3.12 and five parallel regression tracks.
 
+## NXP documentary caution
+
+The [RT1060 Rev.3 reference manual, §21.6.11](https://www.pjrc.com/teensy/IMXRT1060RM_rev3.pdf) lists SRC_GPR7 at **0x400F8038**, with documented reset value zero and reserved ROM use. However, [an NXP employee clarified](https://community.nxp.com/t5/i-MX-RT-Crossover-MCUs/SRC-GPRx-Register-Usage/m-p/1037773) that **the current ROM does not necessarily use all SRC_GPR registers**, reserving them for cross-silicon and ROM-revision compatibility. No evidence here identifies a ROM writer of bit3 or confirms retention across the device's actual warm-reset path.
+
 **Decision:** bounded NO-GO for this specific MOVW/MOVT construction pattern in the two original signed images. The source of **SRC_GPR7 bit3 (0x08)** remains unknown; the existing Bruce status writer stores **5 or 6**, neither setting bit3. A NXP ROM role, reset persistence, USB-host control and any custom-code execution or HAB bypass remain unproven.
 
 Next step: verify RT1060 SRC_GPR7 ROM ownership and reset semantics using primary documentation only, with no hardware risk.
