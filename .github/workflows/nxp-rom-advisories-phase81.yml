@@ -70,7 +70,18 @@ jobs:
                     'sanitized:', [(q['relative_csf_offset'],q['engine_code'],q['engine'],
                                    q['feature_mask'],q['features'],q['unmapped_features_mask'],
                                    q['has_uid_field']) for q in v['unlock_commands']])
-          print('Unlock is OEM CSF peripheral policy metadata; not HAB bypass.')
+          loader=json.loads(Path('/tmp/stadia-nxp81/unlock-loader.json').read_text())
+          bruce=json.loads(Path('/tmp/stadia-nxp81/unlock-bruce.json').read_text())
+          assert loader['unlock_count']==1, 'Unexpected OEM RAM loader UNLOCK command count'
+          target=loader['unlock_commands'][0]
+          assert target['relative_csf_offset']=='0x48'
+          assert target['engine_code']=='0x21' and target['engine']=='OCOTP'
+          assert target['feature_mask']=='0x00000002'
+          assert target['features']==['SRK_REVOKE'] and target['unmapped_features_mask']=='0x00000000'
+          assert target['has_uid_field'] is False
+          assert bruce['unlock_count']==0, 'Unexpected Bruce OEM UNLOCK'
+          print('Pinned OEM OCOTP SRK_REVOKE UNLOCK metadata matches exact original.')
+          print('No fuse revocation, HAB bypass, custom execution, or live ROM behavior shown.')
           PY
       - name: Delete temporary OEM images and reports
         if: always()
