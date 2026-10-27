@@ -1,6 +1,6 @@
 # Stadia Controller Research
 
-**[Phase 89 — Thumb SRC_GPR7 synthesized-address survey](docs/en/src-gpr7-synthesis-phase89.md).** SHA-pinned signed Bruce has one candidate MOVW low-half but no MOVT with upper half 0x400F; signed RAM loader has neither. **No MOVW/MOVT SRC pairs or GPR7 stores of this form**. 118 cumulative synthetic tests pass; bit3 producer remains unknown. [Evidence](evidence/src-gpr7-synthesis-phase89.json).
+**[Phase 89 — Thumb SRC_GPR7 synthesized-address survey](docs/en/src-gpr7-synthesis-phase89.md).** SHA-pinned signed Bruce has one candidate MOVW low-half but no MOVT with upper half 0x400F; signed RAM loader has neither. **No MOVW/MOVT SRC pairs or GPR7 stores of this form**. 120 cumulative synthetic tests pass; bit3 producer remains unknown. [Evidence](evidence/src-gpr7-synthesis-phase89.json).
 
 **Research integration.** The USB and NXP/bootloader tracks keep separate evidence and regression tests. Static analysis is not proof of physical execution, host access to the updater or HAB CLOSED bypass. [Five research workstreams](docs/en/parallel-research.md).
 
