@@ -23,7 +23,7 @@ WINDOWS={
     "A_candidate_middle_block":(0x600620C0,0x60062140),
     "A_candidate_late_block":(0x60062140,0x600621C0),
     "A_candidate_last_block":(0x600621C0,0x60062220),
-    "A_candidate_atomic_setup":(0x60062220,0x60062270),
+    "A_atomic_setup_after_table":(0x60062250,0x60062270),
     "A_atomic_and_enqueue":(0x6006226A,0x60062298),
     "B_owner_initializer_predecessor":(0x6006B380,0x6006B400),
     "B_owner_initializer_and_callbacks":(0x6006B400,0x6006B450),
@@ -32,6 +32,7 @@ WINDOWS={
     "B_caller_and_guard_clear":(0x6006B290,0x6006B2D8),
 }
 TARGETS={
+    "B_initializer_candidate_6006b3e8":0x6006B3E8,
     "B_initializer_candidate_6006b3f8":0x6006B3F8,
     "B_initializer_candidate_6006b3e0":0x6006B3E0,
     "B_initializer_candidate_6006b400":0x6006B400,
@@ -100,6 +101,63 @@ def verify_field_anchors(image):
             raise ValueError(f"Phase77 signed original source anchor drift {pc:#x}: {mapping.get(pc)}")
     return len(expected)
 
+B_INIT_ANCHORS={
+    0x6006B3E8:("push","{r4, r5, lr}"),
+    0x6006B3EA:("ldrb.w","r3, [r0, #0x180]"),
+    0x6006B3F0:("mov","r4, r0"),
+    0x6006B3F2:("cbz","r3, #0x6006b3fe"),
+    0x6006B3F8:("mov","r0, r5"),
+    0x6006B400:("bl","#0x6009267c"),
+    0x6006B416:("ldr","r3, [pc, #0x9c]"),
+    0x6006B41C:("str.w","r4, [r4, #0x120]"),
+    0x6006B420:("str.w","r3, [r4, #0x11c]"),
+    0x6006B442:("strb.w","r3, [r4, #0x180]"),
+    0x6006B44A:("mov","r0, r4"),
+}
+B_GATE_RESET_ANCHORS={
+    0x6006B29C:("ldrb.w","r3, [r4, #0x182]"),
+    0x6006B2BC:("movs","r0, #0"),
+    0x6006B2C2:("strb.w","r0, [r4, #0x182]"),
+}
+
+def verify_B_owner_state(image):
+    found={}
+    for lo,hi in (
+        (0x6006B3E8,0x6006B402),
+        (0x6006B416,0x6006B452),
+        (0x6006B290,0x6006B2CA),
+    ):
+        found.update({int(r["pc"],16):(r["m"],r["op"])
+                      for r in code_rows(image,lo,hi)})
+    pins={**B_INIT_ANCHORS,**B_GATE_RESET_ANCHORS}
+    for pc,expected in pins.items():
+        if found.get(pc)!=expected:
+            raise ValueError(f"Phase77 signed original B owner/gate drift {pc:#x}: {found.get(pc)}")
+    return {
+        "original_signed_instruction_pins":len(pins),
+        "initializer_entry":"0x6006b3e8",
+        "entry_R4_source":"R4=R0 at 0x6006b3f0",
+        "pre_init_guard":"[R0+0x180] != 0 skips the main initializer",
+        "ready_flag_store":"0x6006b442 STRB 1,[R4+0x180]",
+        "signed_callback_method_store":"0x6006b420 STR.W signed_0x6006B291,[R4+0x11C]",
+        "signed_callback_context_store":"0x6006b41c STR.W R4,[R4+0x120]",
+        "runtime_callback_gate_read":"0x6006b29c LDRB R3,[R4+0x182]",
+        "runtime_gate_clear":"0x6006b2c2 STRB 0,[R4+0x182]",
+        "identity_of_initializer_R0_in_live_device":"UNKNOWN",
+        "other_writers_outside_local_scanned_region":"NOT_EXCLUDED",
+        "host_USB_control":"NOT_DEMONSTRATED",
+    }
+
+def signed_pointer_refs(image,targets):
+    wanted={addr|1:key for key,addr in targets.items()}
+    out={key:[] for key in targets}
+    for off in range(0,len(image)-3,4):
+        value=struct.unpack_from("<I",image,off)[0]
+        if value in wanted:
+            out[wanted[value]].append({"file_offset":hex(off),
+                  "thumb_value":hex(value),"role":"STATIC_WORD_NOT_RUNTIME_INVOCATION"})
+    return out
+
 def audit(image):
     if len(image)!=IMAGE_SIZE or hashlib.sha256(image).hexdigest()!=IMAGE_SHA256:
         raise ValueError("Phase77 exact original Bruce OEM SHA-256 required")
@@ -107,9 +165,11 @@ def audit(image):
     B=verify_B_callback_registration(image)
     shared=cross_check_phase66_shared_helper(image)
     n=verify_field_anchors(image)
+    B_owner=verify_B_owner_state(image)
     windows=bounded_signed_windows(image)
     accesses=near_field_access_candidates(image)
     edges=direct_upstream_edges(image)
+    ptrs=signed_pointer_refs(image,TARGETS)
     return {
         "phase":77,"signed_original_SHA256":IMAGE_SHA256,
         "original_SHA_verified":True,"signed_pin_count":n,
@@ -144,6 +204,8 @@ def main():
         print("PHASE77 WINDOW",key,json.dumps(v,separators=(",",":")))
     print("PHASE77 FIELD_SHAPES",json.dumps(result["signed_byte_status_shape_candidates"]))
     print("PHASE77 DIRECT_BL",json.dumps(result["upstream_direct_BL_shapes"]))
+    print("PHASE77 B_OWNER",json.dumps(result["B_object_initializer_and_local_gate"]))
+    print("PHASE77 POINTERS",json.dumps(result["candidate_function_pointer_literals"]))
     print("PHASE77 EVIDENCE",json.dumps(result,separators=(",",":")))
     print("PHASE77 PHYSICAL USB ORIGIN UNPROVEN")
 
