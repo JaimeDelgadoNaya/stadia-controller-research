@@ -1,0 +1,192 @@
+{
+  "phase": 85,
+  "descriptor_sha256": "88121159b7b6cf6ffa4025d0d5aebe1d4ae83013ee34acc8dd4bf2cff52116d8",
+  "trial_count": 10,
+  "user_confirmed_trial_count": 10,
+  "trials": {
+    "A": {
+      "report_count": 18,
+      "distinct_reports": 2,
+      "user_confirmed": true,
+      "unchanged_analog_fields": {
+        "X": 128,
+        "Y": 128,
+        "Z": 128,
+        "Rz": 128,
+        "0xc5": 0,
+        "0xc4": 0
+      },
+      "usb_button_usage": 1
+    },
+    "B": {
+      "report_count": 9,
+      "distinct_reports": 2,
+      "user_confirmed": true,
+      "unchanged_analog_fields": {
+        "X": 128,
+        "Y": 128,
+        "Z": 128,
+        "Rz": 128,
+        "0xc5": 0,
+        "0xc4": 0
+      },
+      "usb_button_usage": 2
+    },
+    "X": {
+      "report_count": 13,
+      "distinct_reports": 2,
+      "user_confirmed": true,
+      "unchanged_analog_fields": {
+        "X": 128,
+        "Y": 128,
+        "Z": 128,
+        "Rz": 128,
+        "0xc5": 0,
+        "0xc4": 0
+      },
+      "usb_button_usage": 4
+    },
+    "Y": {
+      "report_count": 13,
+      "distinct_reports": 2,
+      "user_confirmed": true,
+      "unchanged_analog_fields": {
+        "X": 128,
+        "Y": 128,
+        "Z": 128,
+        "Rz": 128,
+        "0xc5": 0,
+        "0xc4": 0
+      },
+      "usb_button_usage": 5
+    },
+    "LT": {
+      "report_count": 346,
+      "distinct_reports": 184,
+      "user_confirmed": true,
+      "unchanged_analog_fields": {
+        "X": 128,
+        "Y": 128,
+        "Z": 128,
+        "Rz": 128,
+        "0xc4": 0
+      },
+      "usb_analog_usage": "0xc5",
+      "usb_button_usage": 20,
+      "analog_min": 0,
+      "analog_max": 255,
+      "distinct_analog_values": 184,
+      "sampled_analog_64": true,
+      "analog_range_button_clear": [
+        0,
+        63
+      ],
+      "analog_range_button_set": [
+        64,
+        255
+      ],
+      "all_samples_match_candidate_boundary_64": true
+    },
+    "RT": {
+      "report_count": 345,
+      "distinct_reports": 158,
+      "user_confirmed": true,
+      "unchanged_analog_fields": {
+        "X": 128,
+        "Y": 128,
+        "Z": 128,
+        "Rz": 128,
+        "0xc5": 0
+      },
+      "usb_analog_usage": "0xc4",
+      "usb_button_usage": 19,
+      "analog_min": 0,
+      "analog_max": 255,
+      "distinct_analog_values": 158,
+      "sampled_analog_64": false,
+      "analog_range_button_clear": [
+        0,
+        63
+      ],
+      "analog_range_button_set": [
+        65,
+        255
+      ],
+      "all_samples_match_candidate_boundary_64": true
+    },
+    "dpad_up": {
+      "report_count": 9,
+      "distinct_reports": 2,
+      "user_confirmed": true,
+      "unchanged_analog_fields": {
+        "X": 128,
+        "Y": 128,
+        "Z": 128,
+        "Rz": 128,
+        "0xc5": 0,
+        "0xc4": 0
+      },
+      "hat_direction_code": 0,
+      "hat_released_code": 8
+    },
+    "dpad_right": {
+      "report_count": 9,
+      "distinct_reports": 2,
+      "user_confirmed": true,
+      "unchanged_analog_fields": {
+        "X": 128,
+        "Y": 128,
+        "Z": 128,
+        "Rz": 128,
+        "0xc5": 0,
+        "0xc4": 0
+      },
+      "hat_direction_code": 2,
+      "hat_released_code": 8
+    },
+    "dpad_down": {
+      "report_count": 9,
+      "distinct_reports": 2,
+      "user_confirmed": true,
+      "unchanged_analog_fields": {
+        "X": 128,
+        "Y": 128,
+        "Z": 128,
+        "Rz": 128,
+        "0xc5": 0,
+        "0xc4": 0
+      },
+      "hat_direction_code": 4,
+      "hat_released_code": 8
+    },
+    "dpad_left": {
+      "report_count": 8,
+      "distinct_reports": 2,
+      "user_confirmed": true,
+      "unchanged_analog_fields": {
+        "X": 128,
+        "Y": 128,
+        "Z": 128,
+        "Rz": 128,
+        "0xc5": 0,
+        "0xc4": 0
+      },
+      "hat_direction_code": 6,
+      "hat_released_code": 8
+    }
+  },
+  "corresponding_upstream_ble_position_matches_usb_observation": {
+    "A": true,
+    "B": true,
+    "X": true,
+    "Y": true,
+    "LT": true,
+    "RT": true
+  },
+  "limits": [
+    "User-confirmed actions in this USB session only; no physical BLE labels established.",
+    "Aggregate reports have no temporal order; counts are not press counts.",
+    "A threshold candidate is only supported at sampled values; no hysteresis or exact boundary proven.",
+    "No bridge hardware, USB output reports, firmware changes or console behavior tested."
+  ]
+}
