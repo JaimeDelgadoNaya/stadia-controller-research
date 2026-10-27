@@ -1,5 +1,7 @@
 # Investigación del mando Stadia
 
+**[Fase 84 — funciones originales del puente en host](docs/es/prueba-host-puente-fase84.md).** Compilado el traductor BLE fijado: **6.995 comparaciones emparejadas** con payloads USB hipotéticos. Los bits candidatos 19/20 y multimedia no alteran la salida ni 13 banderas observadas; Assistant/Capture sí cambian sus banderas. Falta verificar BLE real. [Evidencia](evidence/usb-bridge-host-tests-phase84.json).
+
 **[Fase 83 — posiciones USB y puente BLE](docs/es/comparacion-usb-ble-fase83.md).** El código BLE fijado coincide en posición con **13 botones y seis valores analógicos USB**; son hipótesis de correspondencia, no etiquetas físicas demostradas. El byte multimedia USB y el supuesto padding BLE requieren una prueba separada. [Evidencia](evidence/usb-ble-layout-comparison-phase83.json).
 
 **[Fase 82 — pruebas diferenciales HID](docs/es/pruebas-diferenciales-hid-fase82.md).** **39.424 vectores sintéticos sin discrepancias**, incluidos todos los subconjuntos de botones; rechazo de IDs/longitudes incorrectos y 1.504 mutaciones del descriptor. Corregida la aceptación de totales booleanos/flotantes. Todo offline. [Evidencia](evidence/usb-hid-differential-phase82.json).
