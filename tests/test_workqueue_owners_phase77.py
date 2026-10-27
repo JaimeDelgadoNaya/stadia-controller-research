@@ -32,6 +32,10 @@ class Phase77OwnerOriginTests(unittest.TestCase):
         self.assertTrue(result["signed_pin_count"]>=9)
         self.assertTrue(result["B_signed_function_initializer"]["callback_origin"].startswith("SIGNED"))
         self.assertEqual(result["decision"]["physical_USB_origin"],"NOT_PROVEN")
+        self.assertEqual(result["B_direct_activation_caller"]["modeled_B_object_under_phase66_input"],"0x2000a3c4")
+        self.assertEqual(result["B_direct_activation_caller"]["direct_B_initializer"],"0x600747d8 BL 0x6006b3e8")
+        self.assertEqual(result["B_object_initializer_and_local_gate"]["original_signed_instruction_pins"],14)
+        self.assertEqual(result["decision"]["A_R4_owner"],"LOCAL_PROVENANCE_R4_FROM_R2_AT_0x6006212C; caller of function unknown")
 
     @unittest.skipUnless(os.environ.get("STADIA_BRUCE_IMAGE") and
                           (ROOT/"evidence/usb-workqueue-owner-origin-phase77.json").exists(),
