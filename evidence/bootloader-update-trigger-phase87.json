@@ -12,7 +12,7 @@
     "selected_instruction_pins": 31
   },
   "register_trigger": {
-    "name": "GPR6",
+    "name": "GPR7",
     "address": "0x400f8038",
     "original_base_literal": "0x400f8000",
     "read_site": "0x60802866",
@@ -56,17 +56,17 @@
       "0x10",
       "0x20"
     ],
-    "represents_physically_measured_gpr6": false
+    "represents_physically_measured_gpr7": false
   },
   "unknowns": {
     "who_writes_bit3": "UNKNOWN",
-    "usb_host_controls_gpr6": "NOT_ESTABLISHED",
+    "usb_host_controls_gpr7": "NOT_ESTABLISHED",
     "power_on_and_reset_register_persistence": "NOT_MEASURED",
     "physical_update_activated": "NOT_OBSERVED",
     "hab_signature_bypass": "NOT_DEMONSTRATED",
     "private_original_image_full_hash_this_phase": "NOT_REHASHED"
   },
-  "decision": "GO_OFFLINE_TO_FIND_GPR6_BIT3_WRITER; NO_GO_FOR_DIRECT_USB_OR_FLASH_HARDWARE_EXPERIMENTS",
+  "decision": "GO_OFFLINE_TO_FIND_GPR7_BIT3_WRITER; NO_GO_FOR_DIRECT_USB_OR_FLASH_HARDWARE_EXPERIMENTS",
   "verification": {
     "synthetic_tests_phase81_to87": 76,
     "ci": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40575899921",
