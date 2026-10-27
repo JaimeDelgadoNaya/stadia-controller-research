@@ -19,4 +19,15 @@ python -m tools.audit_nxp_rom_advisories_phase81 local/restricted_ivt_flashloade
 python -m tools.audit_nxp_rom_advisories_phase81 local/bootloader-a.bin --sample bootloader_a
 ```
 
+## Verified original OEM results
+
+[**Sanitized evidence JSON**](../../evidence/nxp-rom-csf-phase81.json) · [GitHub Actions run](https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40554628963)
+
+| Hash-pinned original | Original DCD | CSF command inventory | Deprecated |
+|---|---|---|---:|
+| Bruce prod signed app | Null | INSTALL_KEY ×3, AUTHENTICATE_DATA ×2 | **0** |
+| Signed RAM loader | Null | INSTALL_KEY ×3, AUTHENTICATE_DATA ×2, UNLOCK ×1 | **0** |
+
+The RAM loader's `UNLOCK` command warrants independent offline interpretation, but **is not a demonstrated bypass**. The private, owner-extracted bootloader A has **not yet been checked with this particular phase81 auditor**; its signatures were reviewed previously.
+
 **Evidence limit:** the absence of deprecated commands in unchanged signed OEM images does **not** prove the ROM would reject a modified CSF. This checker does not inspect ROM firmware, read its HAB version, verify fused SRK or establish acceptance of custom code. The SDP confidentiality and HAB authentication advisories address distinct potential weaknesses; neither constitutes a verified firmware unlock on Stadia. No destructive testing is proposed.
