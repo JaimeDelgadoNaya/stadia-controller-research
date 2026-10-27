@@ -8,7 +8,12 @@ class Phase77OwnerOriginTests(unittest.TestCase):
     def test_known_signed_fields(self):
         self.assertEqual(p.CALL_A,0x6006228C)
         self.assertEqual(p.CALL_B,0x6006B2B0)
-        self.assertEqual(len(p.TARGETS),8)
+        self.assertEqual(len(p.TARGETS),9)
+
+    def test_original_B_ready_and_reset_pins(self):
+        self.assertEqual(p.B_INIT_ANCHORS[0x6006B3EA],("ldrb.w","r3, [r0, #0x180]"))
+        self.assertEqual(p.B_INIT_ANCHORS[0x6006B442],("strb.w","r3, [r4, #0x180]"))
+        self.assertEqual(p.B_GATE_RESET_ANCHORS[0x6006B2C2],("strb.w","r0, [r4, #0x182]"))
 
     def test_invalid_original_signed_sample_rejected(self):
         with self.assertRaisesRegex(ValueError,"SHA-256"):
