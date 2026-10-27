@@ -1,0 +1,82 @@
+{
+  "phase": 87,
+  "line": "bootloader_A_update_trigger",
+  "date": "2026-10-27",
+  "status": "BOUNDED_ORIGINAL_INSTRUCTION_PROVENANCE",
+  "source": {
+    "type": "previously_public_original_thumb_instruction_records",
+    "path": "evidence/bootloader-analysis.json",
+    "recorded_build": 169429,
+    "recorded_full_image_sha256": "59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0",
+    "full_binary_rehashed_this_phase": false,
+    "selected_instruction_pins": 31
+  },
+  "register_trigger": {
+    "name": "GPR7",
+    "address": "0x400f8038",
+    "original_base_literal": "0x400f8000",
+    "read_site": "0x60802866",
+    "explicit_zero_register_site": "0x60802862",
+    "clear_site": "0x6080286a",
+    "low_byte_site": "0x6080286c",
+    "test_site": "0x608028b0",
+    "bit_mask": "0x08",
+    "skip_on_zero_site": "0x608028b2",
+    "conditional_call_site": "0x608028c6",
+    "conditional_call_target": "0x60801ed0"
+  },
+  "oem_call_arguments": {
+    "r0_storage_context": "0x200095a8",
+    "r1_callback_thumb": "0x6080285d",
+    "r2_callback_context": "0x200090d8",
+    "constructor": "0x60801cc8",
+    "descriptor_selector": "0x12",
+    "coordinator": "0x60801dd4",
+    "callback_or_context_directly_from_host_usb": false
+  },
+  "other_selected_writer": {
+    "site": "0x60801f14",
+    "values": [
+      "0x10",
+      "0x20"
+    ],
+    "sets_bit3": false,
+    "complete_writer_census": false
+  },
+  "model": {
+    "exhaustive_low_byte_states": 256,
+    "states_with_bit3_set": 128,
+    "examples_true": [
+      "0x08",
+      "0x18",
+      "0x28"
+    ],
+    "examples_false": [
+      "0x00",
+      "0x10",
+      "0x20"
+    ],
+    "represents_physically_measured_gpr7": false
+  },
+  "unknowns": {
+    "who_writes_bit3": "UNKNOWN",
+    "usb_host_controls_gpr7": "NOT_ESTABLISHED",
+    "power_on_and_reset_register_persistence": "NOT_MEASURED",
+    "physical_update_activated": "NOT_OBSERVED",
+    "hab_signature_bypass": "NOT_DEMONSTRATED",
+    "private_original_image_full_hash_this_phase": "NOT_REHASHED"
+  },
+  "decision": "GO_OFFLINE_TO_FIND_GPR7_BIT3_WRITER; NO_GO_FOR_DIRECT_USB_OR_FLASH_HARDWARE_EXPERIMENTS",
+  "verification": {
+    "synthetic_tests_phase81_to87": 76,
+    "ci": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40575899921",
+    "general_ci": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40575899852",
+    "passed": true
+  },
+  "safety": {
+    "controller_connected": false,
+    "private_firmware_published": false,
+    "flash_operations": false,
+    "efuse_changes": false
+  }
+}

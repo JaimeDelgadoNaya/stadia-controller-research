@@ -12,7 +12,7 @@ El analizador comprueba la huella, instrucciones y literales antes de construir 
 | 3 | 0x60840000 (B) | Lo mismo para B | Escribe 0x20 en 0x400F8038 y retorna |
 | Otro | No se valida ninguna | — | Retorna sin seleccionar |
 
-El validador debe devolver cero en su byte bajo para seguir al salto. La dirección 0x400F8038 es el registro GPR6 de estado, **no flash**. Esto no demuestra reinicio ni recuperación automática. La procedencia de los identificadores 2/3 queda por determinar.
+El validador debe devolver cero en su byte bajo para seguir al salto. La dirección 0x400F8038 es el registro GPR7 de estado, **no flash**. Esto no demuestra reinicio ni recuperación automática. La procedencia de los identificadores 2/3 queda por determinar.
 
 ## Reproducción
 
@@ -21,4 +21,4 @@ El validador debe devolver cero en su byte bajo para seguir al salto. La direcci
 
 Los seis escenarios son **sintéticos**: un modelo de flujo basado en instrucciones verificadas, no pruebas físicas, emulación ARM, ejecución de firmware propio ni elusión de autenticación.
 
-**Siguiente paso:** seguir los llamadores de 0x60801EF0 y los lectores/escritores de GPR6 en el binario local con hash coincidente para comprobar si existe selección tras fallo.
+**Siguiente paso:** seguir los llamadores de 0x60801EF0 y los lectores/escritores de GPR7 en el binario local con hash coincidente para comprobar si existe selección tras fallo.

@@ -1,0 +1,58 @@
+{
+  "phase": 83,
+  "date": "2026-10-27",
+  "title": "RT1060 HAB ROM version provenance gate",
+  "sources": {
+    "nxp_AN12263": "https://community.nxp.com/pwmxy87654/attachments/pwmxy87654/imx-processors/160465/2/AN12263.pdf",
+    "nxp_HAB4_API": "https://community.nxp.com/pwmxy87654/attachments/pwmxy87654/MCX/481/1/HAB4_API.pdf",
+    "nxp_advisory": "https://community.nxp.com/t5/i-MX-Security/Authentication-Vulnerability-when-extending-the-Root-of-Trust/ta-p/1511348",
+    "github_actions_originals": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40558134910"
+  },
+  "documented_rvt": {
+    "base": "0x00200300",
+    "authenticate_image_no_dcd_pointer_slot": "0x0020032c",
+    "get_version_pointer_slot": "0x00200330",
+    "rvt_header_tag": "0xdd",
+    "pointer_slot_not_direct_function": true
+  },
+  "reproducible_originals": [
+    {
+      "sample": "bruce_prod",
+      "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+      "ivt_format_header": "0x41",
+      "csf_format_header": "0x42",
+      "exact_owner_rom_version_inferred": false
+    },
+    {
+      "sample": "restricted_ram_loader",
+      "sha256": "c39ea8962cc3094a9167ba80634f1ea0652b747b4572d1de2802d9f2f4e144c5",
+      "ivt_format_header": "0x41",
+      "csf_format_header": "0x42",
+      "exact_owner_rom_version_inferred": false
+    }
+  ],
+  "physically_recorded": {
+    "device_rom_status": "HAB_CLOSED",
+    "rom_status_word": "0x12343412",
+    "hab_success_word": "0xf0f0f0f0",
+    "actual_rvt_snapshot_archived": false,
+    "get_version_return_archived": false
+  },
+  "advisory_gate": {
+    "nxp_affected_hab_versions": "up to 4.3.6 only when using ROM APIs for additional-image authentication",
+    "owner_hab_version": "UNKNOWN_NOT_MEASURED",
+    "rom_vulnerability_status": "NOT_CLASSIFIED",
+    "custom_code_execution": "NOT_DEMONSTRATED"
+  },
+  "tests": {
+    "synthetic_tests_phases_81_82_83": 26,
+    "original_oem_samples_verified_by_sha256": true
+  },
+  "privacy": {
+    "owner_bootloader_a_binary_published": false,
+    "rom_dump_published": false,
+    "hardware_connected": false,
+    "flash_writes": false,
+    "efuse_writes": false
+  }
+}

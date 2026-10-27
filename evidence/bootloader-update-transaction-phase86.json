@@ -1,0 +1,112 @@
+{
+  "line": "bootloader_A_update_security",
+  "phase": 86,
+  "date": "2026-10-27",
+  "status": "OFFLINE_DISASSEMBLY_ORDERING_CONFIRMED_HARDWARE_UNVERIFIED",
+  "provenance": {
+    "source": "evidence/bootloader-analysis.json",
+    "recorded_owner_original_build": 169429,
+    "recorded_owner_original_sha256": "59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0",
+    "source_kind": "selected publicly archived original instruction records",
+    "full_private_binary_access_this_phase": false,
+    "raw_binary_sha256_recomputed_this_phase": false,
+    "selected_instructions_pinned": 31,
+    "writer_dependency": "tools/trace_write_path.py"
+  },
+  "static_sequence": [
+    {
+      "step": 1,
+      "name": "auth_current_bootloader",
+      "address": "0x60801e02",
+      "auth_flag": 1
+    },
+    {
+      "step": 2,
+      "name": "candidate_structural_only_precheck",
+      "address": "0x60801e28",
+      "auth_flag": 0
+    },
+    {
+      "step": 3,
+      "name": "backup_shared_ivt",
+      "address": "0x60801e42",
+      "size_bytes": 4096
+    },
+    {
+      "step": 4,
+      "name": "power_input_guard",
+      "address": "0x60801e58"
+    },
+    {
+      "step": 5,
+      "name": "read_candidate_ivt",
+      "address": "0x60801d9c",
+      "size_bytes": 4096
+    },
+    {
+      "step": 6,
+      "name": "attempt_write_candidate_ivt",
+      "address": "0x60801dc0",
+      "size_bytes": 4096
+    },
+    {
+      "step": 7,
+      "name": "post_write_authentication_candidate",
+      "address": "0x60801e84",
+      "auth_flag": 1
+    },
+    {
+      "step": 8,
+      "name": "conditional_restore_ivt",
+      "address": "0x60801e9e",
+      "size_bytes": 4096
+    }
+  ],
+  "synthetic_analysis": {
+    "exhaustive_gates": 8,
+    "combinations": 256,
+    "exemplars": 10,
+    "early_gates_before_candidate_ivt_write": [
+      "current_auth",
+      "candidate_structure",
+      "backup_read",
+      "power_guard",
+      "candidate_read"
+    ],
+    "candidate_write_may_precede_hab_candidate_success": true,
+    "candidate_read_failure_before_install_restore": false,
+    "candidate_write_failure_triggers_restore_attempt": true,
+    "post_auth_failure_triggers_restore_attempt": true,
+    "rollback_may_fail": true,
+    "all_accepted_model_states_require_postwrite_auth": true,
+    "simulates_power_loss": false,
+    "actual_flash_writes": false,
+    "hardware_recovery_tested": false
+  },
+  "prior_device_measurements": {
+    "hab": "CLOSED",
+    "bootloader_B_slot": "all_ff_erased",
+    "complete_flash_restore_image_available": false
+  },
+  "finding": "Original update coordinator attempts fixed-length shared IVT installation before final candidate HAB authentication; on selected failure paths attempts restore, but does not prove atomicity/power-loss recovery or custom execution.",
+  "security_boundary": {
+    "usb_host_reachability": "NOT_ESTABLISHED",
+    "arbitrary_signed_code_execution": "NOT_DEMONSTRATED",
+    "hab_signature_bypass": "NOT_DEMONSTRATED",
+    "physical_restore": "NOT_VERIFIED",
+    "installed_firmware_hash": "NOT_VERIFIED"
+  },
+  "decision": "NO_GO_FOR_PHYSICAL_IVT_WRITE_OR_FAULT_INJECTION_ON_ONLY_CONTROLLER; GO_FOR_OFFLINE_INPUT_PROVENANCE_AND_RECOVERY_CONSTRAINT_ANALYSIS",
+  "verification": {
+    "phase81_to86_specific_synthetic_tests": 64,
+    "github_ci": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40571971894",
+    "general_python_311_312_passed": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40571971759"
+  },
+  "publication": {
+    "private_bootloader_a_uploaded": false,
+    "proprietary_firmware_included": false,
+    "device_connected": false,
+    "fuse_writes": false,
+    "flash_writes": false
+  }
+}

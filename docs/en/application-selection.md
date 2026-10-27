@@ -12,7 +12,7 @@ The script checks instruction bytes, selected disassembly and literals before bu
 | 3 | 0x60840000 (B) | Same for B | Write 0x20 to 0x400F8038 and return |
 | Other | None | — | Return without dispatch |
 
-Only a zero result in the validator's low byte follows the success path. 0x400F8038 is the GPR6 status register, **not firmware flash**. This does not demonstrate automatic fallback, reboot or recovery. The callers providing selector values 2 and 3 remain untraced.
+Only a zero result in the validator's low byte follows the success path. 0x400F8038 is the GPR7 status register, **not firmware flash**. This does not demonstrate automatic fallback, reboot or recovery. The callers providing selector values 2 and 3 remain untraced.
 
 ## Reproduction
 
@@ -21,4 +21,4 @@ Only a zero result in the validator's low byte follows the success path. 0x400F8
 
 Six **synthetic** control-flow outcomes supported by fingerprinted evidence, not device tests, ARM emulation or a signature bypass.
 
-**Next:** trace callers of 0x60801EF0 and GPR6 readers/writers using a matching local bootloader image.
+**Next:** trace callers of 0x60801EF0 and GPR7 readers/writers using a matching local bootloader image.
