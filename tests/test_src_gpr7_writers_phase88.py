@@ -120,7 +120,7 @@ class SourceWriterPhase88(unittest.TestCase):
 
 
     def test_synthetic_thumb_literal_load_is_a_candidate_not_a_writer(self):
-        data=bytearray(b"\\xff"*64)
+        data=bytearray(b"\xff"*64)
         # Thumb LDR R0, [PC,#4] at offset 0; PC=4, literal at offset 8.
         struct.pack_into("<H",data,0,0x4801)
         struct.pack_into("<I",data,8,SRC_BASE)
@@ -131,7 +131,7 @@ class SourceWriterPhase88(unittest.TestCase):
         self.assertFalse(h[0]["writer_reachable_or_executed"])
 
     def test_raw_src_literal_with_no_load_is_still_not_proof_of_absence(self):
-        data=bytearray(b"\\xff"*64)
+        data=bytearray(b"\xff"*64)
         struct.pack_into("<I",data,8,SRC_GPR7)
         h=raw_src_constant_census(bytes(data),len(data))
         self.assertEqual(h[0]["syntactic_thumb_pc_ldr_candidates"],[])
