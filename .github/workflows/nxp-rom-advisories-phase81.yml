@@ -21,6 +21,8 @@ on:
       - 'tests/test_bootloader_update_trigger_phase87.py'
       - 'tools/audit_src_gpr7_writers_phase88.py'
       - 'tests/test_src_gpr7_writers_phase88.py'
+      - 'tools/triage_src_gpr7_thumb_phase88.py'
+      - 'tests/test_triage_src_gpr7_thumb_phase88.py'
       - '.github/workflows/nxp-rom-advisories-phase81.yml'
   workflow_dispatch:
 
@@ -39,7 +41,7 @@ jobs:
       - name: Install offline decoder dependency
         run: python -m pip install -r requirements.txt
       - name: Synthetic offline regression tests
-        run: python -m unittest tests/test_nxp_rom_advisories_phase81.py tests/test_hab_unlock_phase82.py tests/test_hab_rom_version_phase83.py tests/test_hab_rvt_literals_phase84.py tests/test_hab_rvt_failsafe_phase84.py tests/test_hab_failsafe_callers_phase85.py tests/test_bootloader_update_transaction_phase86.py tests/test_bootloader_update_trigger_phase87.py tests/test_src_gpr7_writers_phase88.py -v
+        run: python -m unittest tests/test_nxp_rom_advisories_phase81.py tests/test_hab_unlock_phase82.py tests/test_hab_rom_version_phase83.py tests/test_hab_rvt_literals_phase84.py tests/test_hab_rvt_failsafe_phase84.py tests/test_hab_failsafe_callers_phase85.py tests/test_bootloader_update_transaction_phase86.py tests/test_bootloader_update_trigger_phase87.py tests/test_src_gpr7_writers_phase88.py tests/test_triage_src_gpr7_thumb_phase88.py -v
       - name: Retrieve exact archived signed OEM samples
         shell: bash
         run: |
@@ -266,6 +268,24 @@ jobs:
                     "candidate word totals:",d["public_original"]["counts_by_name"])
               print("Candidate locations:",d["public_original"]["raw_constant_hits"])
           print("No original complete bootloader rehash or real GPR7 activation.")
+          PY
+      - name: Check short straightline LDR to GPR7 STR shapes on public OEM files
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m tools.triage_src_gpr7_thumb_phase88 /tmp/stadia-nxp81/bruce.bin --sample bruce_prod --out /tmp/stadia-nxp81/triage-bruce.json
+          python -m tools.triage_src_gpr7_thumb_phase88 /tmp/stadia-nxp81/loader.bin --sample restricted_ram_loader --out /tmp/stadia-nxp81/triage-loader.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          for sample in ("bruce","loader"):
+              d=json.loads(Path("/tmp/stadia-nxp81/triage-"+sample+".json").read_text())
+              assert d["confirmed_reachable_bit3_writers"] == 0
+              assert not d["full_original_control_flow_or_rom_writers_included"]
+              print(sample, "potential base LDR instructions:",d["candidate_literal_ldr_encodings"])
+              print(sample, "syntactic SRC_GPR7 stores:",d["syntactic_store_count"])
+              print(sample, "store candidates:",d["syntactic_stores_to_src_gpr7"])
+          print("Instruction encoding shapes only: never proof of live application, ROM or host control.")
           PY
       - name: Delete temporary OEM images and reports
         if: always()
