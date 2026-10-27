@@ -9,6 +9,8 @@ on:
       - 'tests/test_hab_unlock_phase82.py'
       - 'tools/audit_hab_rom_version_phase83.py'
       - 'tests/test_hab_rom_version_phase83.py'
+      - 'tools/audit_hab_rvt_literals_phase84.py'
+      - 'tests/test_hab_rvt_literals_phase84.py'
       - '.github/workflows/nxp-rom-advisories-phase81.yml'
   workflow_dispatch:
 
@@ -25,7 +27,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: Synthetic offline regression tests
-        run: python -m unittest tests/test_nxp_rom_advisories_phase81.py tests/test_hab_unlock_phase82.py tests/test_hab_rom_version_phase83.py -v
+        run: python -m unittest tests/test_nxp_rom_advisories_phase81.py tests/test_hab_unlock_phase82.py tests/test_hab_rom_version_phase83.py tests/test_hab_rvt_literals_phase84.py -v
       - name: Retrieve exact archived signed OEM samples
         shell: bash
         run: |
@@ -105,6 +107,26 @@ jobs:
               assert data['operator_supplied_rvt_snapshot'] is None
               assert data['actual_owner_bootrom_hab_version']=='UNKNOWN_NOT_MEASURED'
           print('No owner ROM RVT evidence; no version or exploit inferred.')
+          PY
+      - name: Census ROM HAB RVT address literals in hash-pinned OEM samples
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m tools.audit_hab_rvt_literals_phase84 /tmp/stadia-nxp81/bruce.bin --sample bruce_prod --out /tmp/stadia-nxp81/rvt-bruce.json
+          python -m tools.audit_hab_rvt_literals_phase84 /tmp/stadia-nxp81/loader.bin --sample restricted_ram_loader --out /tmp/stadia-nxp81/rvt-loader.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          for sample in ('bruce','loader'):
+              data=json.loads(Path('/tmp/stadia-nxp81/rvt-'+sample+'.json').read_text())
+              assert data['sample'] in ('bruce_prod','restricted_ram_loader')
+              assert data['get_version_invocation_established'] is False
+              assert data['actual_rom_version_established'] is False
+              assert data['recognized_slot_words'] == len(data['literal_hits'])
+              print(sample,'RVT literal hits:',data['counts_by_slot'])
+              print(sample,'offsets:',[(v['file_offset'],v['slot_name'],v['word_alignment'])
+                                       for v in data['literal_hits']])
+          print('Raw constants only; not evidence of executed get_version call.')
           PY
       - name: Delete temporary OEM images and reports
         if: always()
