@@ -1,0 +1,21 @@
+{
+  "phase": 79,
+  "captured_at_utc": "2026-10-27T16:39:48.330027+00:00",
+  "method": "Windows HID input reads via hidapi 0.14.0.post4",
+  "vid": "18d1",
+  "pid": "9400",
+  "usage_page": 1,
+  "usage": 5,
+  "requested_seconds": 10,
+  "elapsed_seconds": 10.015,
+  "report_count": 0,
+  "distinct_reports": [],
+  "all_match_id3_length11": false,
+  "limits": {
+    "USB_packet_capture": false,
+    "output_or_feature_reports_sent": false,
+    "button_actions_requested_or_labeled": false,
+    "vendor_bulk_endpoints_observed": false,
+    "workqueue_or_callback_link_demonstrated": false
+  }
+}
