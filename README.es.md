@@ -1,5 +1,7 @@
 # Investigación del mando Stadia
 
+**[Fase 81 — vulnerabilidades NXP HAB/CSF y SDP](docs/es/nxp-rom-csf-fase81.md).** Auditor offline de IVT/CSF anclado a muestras SHA-256, con pruebas sintéticas y CI sobre dos imágenes OEM públicas. Distingue vulnerabilidad HAB en autenticación adicional de la CVE-2022-45163 (divulgación de memoria SDP). **Versión HAB ROM desconocida; sin ejecución propia, bypass ni recuperación demostrados.** [Herramienta](tools/audit_nxp_rom_advisories_phase81.py).
+
 **[Fase 85 — controles USB confirmados físicamente](docs/es/controles-usb-etiquetados-fase85.md).** Con acciones aisladas y confirmadas: **A/B/X/Y → 1/2/4/5**, cruceta cardinal → **0/2/4/6**, y los usos **20/19 son indicadores digitales de los gatillos izquierdo/derecho**, además de sus valores analógicos. [Mapa](evidence/usb-control-map-phase85.json).
 
 **[Fase 84 — funciones originales del puente en host](docs/es/prueba-host-puente-fase84.md).** Compilado el traductor BLE fijado: **6.995 comparaciones emparejadas** con payloads USB hipotéticos. Los bits candidatos 19/20 y multimedia no alteran la salida ni 13 banderas observadas; Assistant/Capture sí cambian sus banderas. Falta verificar BLE real. [Evidencia](evidence/usb-bridge-host-tests-phase84.json).
