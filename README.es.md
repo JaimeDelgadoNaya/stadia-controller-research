@@ -1,6 +1,6 @@
 # Investigación del mando Stadia
 
-**[Fase 89 — síntesis Thumb de direcciones SRC_GPR7](docs/es/src-gpr7-sintesis-fase89.md).** Análisis SHA-pinned de Bruce y cargador RAM: un MOVW candidato en Bruce, ningún MOVT de mitad alta 0x400F, **cero parejas MOVW/MOVT y cero escritores GPR7 derivados**. Pasaron 118 pruebas acumuladas; el origen de bit 0x08 sigue sin conocerse. [Evidencia](evidence/src-gpr7-synthesis-phase89.json).
+**[Fase 89 — síntesis Thumb de direcciones SRC_GPR7](docs/es/src-gpr7-sintesis-fase89.md).** Análisis SHA-pinned de Bruce y cargador RAM: un MOVW candidato en Bruce, ningún MOVT de mitad alta 0x400F, **cero parejas MOVW/MOVT y cero escritores GPR7 derivados**. Pasaron 120 pruebas acumuladas; el origen de bit 0x08 sigue sin conocerse. [Evidencia](evidence/src-gpr7-synthesis-phase89.json).
 
 **Integración de investigación.** Las líneas USB y NXP/bootloader mantienen evidencias y pruebas independientes. Un análisis estático no demuestra ejecución física, acceso del host al actualizador ni elusión de HAB CLOSED. [Cinco líneas de trabajo](docs/es/investigacion-paralela.md).
 
