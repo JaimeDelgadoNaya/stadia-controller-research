@@ -123,7 +123,7 @@ B_GATE_RESET_ANCHORS={
 def verify_B_owner_state(image):
     found={}
     for lo,hi in (
-        (0x6006B3E8,0x6006B402),
+        (0x6006B3E8,0x6006B404),
         (0x6006B416,0x6006B452),
         (0x6006B290,0x6006B2CA),
     ):
