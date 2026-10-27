@@ -1,4 +1,4 @@
-"""Synthetic-only phase87 GPR6 bit3 update-entry and provenance tests."""
+"""Synthetic-only phase87 GPR7 bit3 update-entry and provenance tests."""
 import copy
 import json
 from pathlib import Path
@@ -55,17 +55,17 @@ class UpdateTriggerPhase87Tests(unittest.TestCase):
         self.assertTrue(a["callback_is_fixed_signed_literal"])
         self.assertEqual(a["calls_coordinator"],"0x60801dd4")
 
-    def test_sibling_gpr6_writer_is_status_0x10_or_0x20(self):
+    def test_sibling_gpr7_writer_is_status_0x10_or_0x20(self):
         result=audit(self.source)
-        self.assertEqual(result["other_pinned_gpr6_writer"]["values"],["0x10","0x20"])
-        self.assertFalse(result["other_pinned_gpr6_writer"]["complete_writer_census"])
+        self.assertEqual(result["other_pinned_gpr7_writer"]["values"],["0x10","0x20"])
+        self.assertFalse(result["other_pinned_gpr7_writer"]["complete_writer_census"])
         self.assertEqual(REGISTER,BASE+0x38)
         self.assertEqual(UPDATE_MASK,0x08)
 
     def test_no_unproven_reachability_assumptions(self):
         out=audit(self.source)
-        self.assertEqual(out["undetermined"]["usb_host_can_set_gpr6_bit3"],"NOT_ESTABLISHED")
-        self.assertEqual(out["undetermined"]["who_sets_gpr6_bit3"],"UNKNOWN")
+        self.assertEqual(out["undetermined"]["usb_host_can_set_gpr7_bit3"],"NOT_ESTABLISHED")
+        self.assertEqual(out["undetermined"]["who_sets_gpr7_bit3"],"UNKNOWN")
         self.assertFalse(out["raw_original_binary_rehashed_this_phase"])
         self.assertFalse(out["device_io"])
         self.assertFalse(out["firmware_or_fuse_writes"])
