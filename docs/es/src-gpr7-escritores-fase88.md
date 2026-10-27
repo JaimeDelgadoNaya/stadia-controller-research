@@ -45,6 +45,28 @@ python -m tools.audit_src_gpr7_writers_phase88 --public-image local/restricted_i
 
 La [CI](../../.github/workflows/nxp-rom-advisories-phase81.yml) utiliza temporalmente las muestras OEM originales, exige sus SHA-256, ejecuta las pruebas sintéticas y borra los archivos. No accede al mando ni a sus fusibles, flash o registros.
 
+## Hallazgo de la segunda pasada: Bruce sí escribe SRC_GPR7
+
+Tras localizar **12 codificaciones de carga literal SRC_BASE en Bruce** y **15 en el cargador RAM firmado**, una segunda pasada Thumb acotada encontró **una secuencia original concreta** de Bruce que utiliza `+0x38`. Su código firmado está en `0x60078A1C–0x60078A28` (offset del archivo `0x38A1C`) y usa el literal `0x400F8000` en `0x38ABC`.
+
+```asm
+0x60078A1C  LDRB  R3, [R4, #8]       ; lee condición interna
+0x60078A1E  CMP   R3, #1
+0x60078A20  LDR   R3, [PC, #0x98]   ; [0x38ABC] = 0x400F8000
+0x60078A22  ITE   EQ
+0x60078A24  MOVEQ R2, #5
+0x60078A26  MOVNE R2, #6
+0x60078A28  STR   R2, [R3, #0x38]   ; SRC_GPR7 = 5 o 6
+```
+
+**Resultado estático:** Bruce firmada escribe **5 o 6**, según el byte `[R4+8]`; ninguno contiene el bit de actualización `0x08`. Esta rutina **no es un escritor confirmado del bit 3**, pero demuestra una utilización original concreta del mismo registro por software de aplicación. Falta verificar qué objeto proporciona `R4`, el llamador y la posible secuencia de reinicio. No hemos observado su ejecución física ni un origen USB.
+
+La [herramienta de verificación exacta](../../tools/audit_bruce_gpr7_status_phase88.py) comprueba el archivo completo por SHA-256 mediante fase 81 y los 14 bytes originales `237a012b264b0cbf052206229a63`, el cálculo PC-relative y la dirección final. Las [pruebas sintéticas](../../tests/test_bruce_gpr7_status_phase88.py) rechazan modificaciones, comprueban las máscaras y **no presentan esto como una ejecución real**.
+
+El censo de palabras de la imagen original obtuvo **6** literales `SRC_BASE` y **1** literal `GPR6` en Bruce; el cargador RAM contiene **10** literales `SRC_BASE`. **Ninguno incluye una palabra literal directa GPR7**, lo que no impide obtener GPR7 mediante `SRC_BASE+0x38`.
+
+[**Evidencia de fase 88**](../../evidence/src-gpr7-writers-phase88.json) · [Pruebas reales de originales SHA-pinned](https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40579561235)
+
 ## Decisión de investigación
 
 **GO** solamente para buscar evidencia independiente del escritor del **bit 3 de SRC_GPR7**, de su persistencia real durante reinicios y de un eventual origen externo, sin asumir que esos hechos se han demostrado. **NO-GO** para modificar bits de GPR7, forzar saltos al actualizador o escribir IVT en el único mando, dado el riesgo de recuperación ya identificado.
