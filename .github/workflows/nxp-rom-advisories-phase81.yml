@@ -5,6 +5,8 @@ on:
     paths:
       - 'tools/audit_nxp_rom_advisories_phase81.py'
       - 'tests/test_nxp_rom_advisories_phase81.py'
+      - 'tools/audit_hab_unlock_phase82.py'
+      - 'tests/test_hab_unlock_phase82.py'
       - '.github/workflows/nxp-rom-advisories-phase81.yml'
   workflow_dispatch:
 
@@ -21,7 +23,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: Synthetic offline regression tests
-        run: python -m unittest tests/test_nxp_rom_advisories_phase81.py -v
+        run: python -m unittest tests/test_nxp_rom_advisories_phase81.py tests/test_hab_unlock_phase82.py -v
       - name: Retrieve exact archived signed OEM samples
         shell: bash
         run: |
@@ -52,6 +54,23 @@ jobs:
                     'unknown:', v['csf']['unknown_count'])
               print('BootROM HAB version:', v['limits']['bootrom_hab_version'])
           print('No physical sample testing, exploit attempt or code execution.')
+          PY
+      - name: Decode signed HAB UNLOCK flags with UID omitted
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m tools.audit_hab_unlock_phase82 /tmp/stadia-nxp81/loader.bin --sample restricted_ram_loader --out /tmp/stadia-nxp81/unlock-loader.json
+          python -m tools.audit_hab_unlock_phase82 /tmp/stadia-nxp81/bruce.bin --sample bruce_prod --out /tmp/stadia-nxp81/unlock-bruce.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          for name in ('unlock-loader','unlock-bruce'):
+              v=json.loads(Path('/tmp/stadia-nxp81/'+name+'.json').read_text())
+              print(name, 'count:', v['unlock_count'],
+                    'sanitized:', [(q['relative_csf_offset'],q['engine_code'],q['engine'],
+                                   q['feature_mask'],q['features'],q['unmapped_features_mask'],
+                                   q['has_uid_field']) for q in v['unlock_commands']])
+          print('Unlock is OEM CSF peripheral policy metadata; not HAB bypass.')
           PY
       - name: Delete temporary OEM images and reports
         if: always()
