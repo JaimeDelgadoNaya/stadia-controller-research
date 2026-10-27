@@ -1,0 +1,39 @@
+{
+  "phase": 81,
+  "descriptor_sha256": "88121159b7b6cf6ffa4025d0d5aebe1d4ae83013ee34acc8dd4bf2cff52116d8",
+  "source_phase": 80,
+  "report_count": 1758,
+  "button_usage_pressed_report_counts": {
+    "18": 0,
+    "17": 0,
+    "20": 252,
+    "19": 222,
+    "13": 0,
+    "12": 0,
+    "11": 0,
+    "15": 1,
+    "14": 15,
+    "8": 20,
+    "7": 8,
+    "5": 0,
+    "4": 0,
+    "2": 9,
+    "1": 43
+  },
+  "consumer_usage_pressed_report_counts": {
+    "0xe9": 0,
+    "0xea": 0,
+    "0xcd": 0
+  },
+  "hat_raw_values": [
+    8
+  ],
+  "null_hat_report_count": 1758,
+  "nonzero_padding_report_count": 0,
+  "generic_axis_outside_range_report_count": 0,
+  "limits": [
+    "Counts describe reports, not press events or durations.",
+    "Physical button labels and left/right control assignment unverified.",
+    "No output protocol, console compatibility or firmware execution demonstrated."
+  ]
+}
