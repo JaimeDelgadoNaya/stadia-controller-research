@@ -1,5 +1,7 @@
 # Investigación del mando Stadia
 
+**[Fase 83 — posiciones USB y puente BLE](docs/es/comparacion-usb-ble-fase83.md).** El código BLE fijado coincide en posición con **13 botones y seis valores analógicos USB**; son hipótesis de correspondencia, no etiquetas físicas demostradas. El byte multimedia USB y el supuesto padding BLE requieren una prueba separada. [Evidencia](evidence/usb-ble-layout-comparison-phase83.json).
+
 **[Fase 82 — pruebas diferenciales HID](docs/es/pruebas-diferenciales-hid-fase82.md).** **39.424 vectores sintéticos sin discrepancias**, incluidos todos los subconjuntos de botones; rechazo de IDs/longitudes incorrectos y 1.504 mutaciones del descriptor. Corregida la aceptación de totales booleanos/flotantes. Todo offline. [Evidencia](evidence/usb-hid-differential-phase82.json).
 
 **[Fase 81 — decodificador HID offline](docs/es/decodificador-hid-offline-fase81.md).** Replay de los **1.758 informes**: los quince bits de botón siguen usos HID no consecutivos. El decodificador conserva ejes, estados nulos y diagnósticos, contrastados con el descriptor; los nombres físicos y la salida del puente siguen pendientes. [Evidencia](evidence/usb-hid-decoder-replay-phase81.json).

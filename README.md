@@ -1,5 +1,7 @@
 # Stadia Controller Research
 
+**[Phase 83 — USB and BLE bridge positions](docs/en/usb-ble-layout-comparison-phase83.md).** The pinned BLE parser shares positions with **13 USB button fields and six analog values**; cross-transport physical labels remain hypotheses. USB consumer bits and the BLE padding claim need separate testing. [Evidence](evidence/usb-ble-layout-comparison-phase83.json).
+
 **[Phase 82 — differential HID tests](docs/en/hid-differential-tests-phase82.md).** **39,424 synthetic vectors without mismatches**, including every button subset, plus rejection of wrong IDs/lengths and 1,504 descriptor mutations. Fixed acceptance of Boolean/floating-point aggregate totals. Entirely offline. [Evidence](evidence/usb-hid-differential-phase82.json).
 
 **[Phase 81 — offline HID decoder](docs/en/offline-hid-decoder-phase81.md).** Replay of **1,758 reports** handles the nonconsecutive HID button usages, raw axes, null states and diagnostics. Descriptor cross-checks validate parsing; physical labels and bridge output remain pending. [Evidence](evidence/usb-hid-decoder-replay-phase81.json).

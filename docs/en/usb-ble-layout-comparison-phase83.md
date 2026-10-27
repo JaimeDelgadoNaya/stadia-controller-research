@@ -1,0 +1,11 @@
+# Phase 83 — USB descriptor and BLE bridge position comparison
+
+27 October 2026. Offline comparison of phase 80 USB evidence with the separate GPL-3.0 upstream bridge pinned at [commit d8392de8](https://github.com/danzig666/stadia-dongle-esp/tree/d8392de8f838e12cf16c985b9beb8080c7acd970). The tool requires the recorded SHA-256 of `main/bridge.c` and the USB descriptor; upstream source is not copied into this repository.
+
+All 13 labeled button positions and six analog positions extracted from the upstream BLE parser coincide with declared USB payload fields after excluding USB report ID 3. For example upstream BLE labels A and B occupy the same positions as USB button usages 1 and 2, active in 43 and 9 recorded USB reports respectively. Counts are reports, not press events. **Matching positions do not establish matching physical or BLE semantics.** USB usages 19 and 20 are not labeled by the upstream parser; their USB bits were set in 222 and 252 reports. This is not proof of a bridge fault or that BLE transmits those controls identically.
+
+Upstream LX/LY/RX/RY positions match USB X/Y/Z/Rz; LT/RT positions match page 2 usages 0xC5/0xC4. Physical left/right assignment and calibration remain unverified. The upstream comment calls BLE byte 9 padding, while the USB descriptor declares three Consumer bits and five constant bits at payload byte 9. Those consumer bits were zero in the observed USB capture, so equivalence remains unresolved.
+
+[Comparison evidence](../../evidence/usb-ble-layout-comparison-phase83.json). Reproduce by preparing the phase 32 checkout with `python tools/prepare_external_bridge.py local/stadia-dongle-esp` (or `--verify-only` if present), then run `python -m tools.compare_bridge_layout_phase83 local/stadia-dongle-esp/main/bridge.c evidence/stadia-hid-report-contract.json evidence/usb-live-hid-input-phase80.json --out local/layout83.json`. Set `STADIA_BRIDGE_SOURCE` to the absolute source path to enable the evidence-reproduction test in `python -m unittest tests.test_bridge_layout_phase83 -v`; ordinary tests run without this separate checkout.
+
+No live BLE capture, build, bridge execution or console compatibility was established. Individually labeled USB control trials and a separate BLE capture are needed to test the inferred mappings.
