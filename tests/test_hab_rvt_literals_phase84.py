@@ -3,7 +3,7 @@ import struct
 import unittest
 
 from tools.audit_hab_rvt_literals_phase84 import (
-    MAX_HITS, RVT_BASE, SLOTS, audit, census_pre_csf_words,
+    MAX_HITS, RVT_BASE, SLOTS, audit, census_pre_csf_words, thumb_pc_relative_ldr_candidates,
 )
 
 
@@ -73,6 +73,35 @@ class RVTLiteralPhase84Tests(unittest.TestCase):
         self.assertEqual(SLOTS[RVT_BASE + 0x2C],
                          "authenticate_image_no_dcd_slot")
         self.assertEqual(SLOTS[RVT_BASE + 0x30], "get_version_slot")
+
+
+    def test_thumb16_literal_load_encoding_is_only_syntactic_candidate(self):
+        raw = bytearray(b"\\xff" * 32)
+        struct.pack_into("<H", raw, 0, 0x4801)  # pc 4 + imm8*4 = file offset 8
+        struct.pack_into("<I", raw, 8, RVT_BASE + 0x30)
+        hits = census_pre_csf_words(bytes(raw), len(raw))
+        self.assertEqual(len(hits), 1)
+        self.assertEqual(hits[0]["slot_name"], "get_version_slot")
+        self.assertEqual(hits[0]["syntactic_thumb_load_candidates"][0][
+            "encoding_shape"], "thumb16_ldr_literal_t1")
+        self.assertFalse(hits[0]["syntactic_thumb_load_candidates"][0][
+            "instruction_boundary_verified"])
+
+    def test_thumb32_literal_load_encoding_is_only_syntactic_candidate(self):
+        raw = bytearray(b"\\xff" * 32)
+        struct.pack_into("<HH", raw, 0, 0xf8df, 0x0004)  # pc 4 + imm12 4 = 8
+        struct.pack_into("<I", raw, 8, RVT_BASE + 0x2c)
+        candidates = thumb_pc_relative_ldr_candidates(bytes(raw), 8)
+        self.assertEqual(len(candidates), 1)
+        self.assertEqual(candidates[0]["encoding_shape"], "thumb32_ldr_literal_t2")
+        self.assertFalse(candidates[0]["executed_or_reachable"])
+
+    def test_literal_with_no_encoded_load_is_not_proven_unreferenced(self):
+        raw = bytearray(b"\\xff" * 32)
+        struct.pack_into("<I", raw, 8, RVT_BASE)
+        hits = census_pre_csf_words(bytes(raw), len(raw))
+        self.assertEqual(hits[0]["syntactic_thumb_load_candidates"], [])
+        self.assertFalse(hits[0]["instruction_reference_confirmed"])
 
 
 if __name__ == "__main__":
