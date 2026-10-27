@@ -1,0 +1,53 @@
+{
+  "phase": 82,
+  "date": "2026-10-27",
+  "source": "offline original firmware SHA-256 verified GitHub Actions",
+  "original_oem_samples": [
+    {
+      "sample": "restricted_ram_loader",
+      "sha256": "c39ea8962cc3094a9167ba80634f1ea0652b747b4572d1de2802d9f2f4e144c5",
+      "original_ivt_csf_phase81_validated": true,
+      "unlock_count": 1,
+      "unlock": [
+        {
+          "relative_csf_offset": "0x48",
+          "tag": "0xb2",
+          "engine_code": "0x21",
+          "engine": "OCOTP",
+          "feature_mask": "0x00000002",
+          "features": [
+            "SRK_REVOKE"
+          ],
+          "unknown_bits_mask": "0x00000000",
+          "uid_present": false
+        }
+      ]
+    },
+    {
+      "sample": "bruce_prod",
+      "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+      "original_ivt_csf_phase81_validated": true,
+      "unlock_count": 0,
+      "unlock": []
+    }
+  ],
+  "verification": {
+    "original_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40556380124",
+    "synthetic_tests_phase81_and_82": 16,
+    "private_bootloader_a_phase82_evaluated": false,
+    "physical_controller_connected": false,
+    "efuse_write": false,
+    "flash_write": false
+  },
+  "conclusion": "Original Google-signed RAM loader requests OCOTP SRK_REVOKE feature to remain unlocked during post-ROM use. No fuse revocation observed, no bypass of HAB CLOSED, no custom code or ROM behavior demonstrated.",
+  "limits": [
+    "Exact BootROM HAB version unmeasured",
+    "Actual OCOTP lock state after boot unmeasured",
+    "Physical SRK fuse values/trust and revocation state not read",
+    "No unsafe OTP write, attempt at unlocking ROM, or device I/O"
+  ],
+  "publication": {
+    "raw_uid_included": false,
+    "original_firmware_binary_included": false
+  }
+}
