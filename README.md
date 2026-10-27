@@ -1,5 +1,7 @@
 # Stadia Controller Research
 
+**[Phase 81 — NXP HAB/CSF and SDP security advisories](docs/en/nxp-rom-csf-phase81.md).** SHA-256-pinned offline IVT/CSF checker with synthetic tests and CI on two archived public signed OEM images. Separates additional-image HAB authentication advisory from CVE-2022-45163 (SDP information disclosure). **BootROM HAB version unknown; no custom execution, signature bypass, or recovery demonstrated.** [Tool](tools/audit_nxp_rom_advisories_phase81.py).
+
 **[Phase 85 — physically confirmed USB controls](docs/en/usb-labeled-controls-phase85.md).** With isolated, user-confirmed actions: **A/B/X/Y → 1/2/4/5**, cardinal D-pad → **0/2/4/6**, and usages **20/19 are the left/right trigger digital indicators** alongside analog values. [Map](evidence/usb-control-map-phase85.json).
 
 **[Phase 84 — original bridge functions on host](docs/en/bridge-host-experiment-phase84.md).** The pinned BLE translator was host-compiled for **6,995 paired checks** using hypothetical USB-derived payloads. Candidate 19/20 and consumer bits do not affect output or 13 inspected flags; Assistant/Capture affect their flags. Actual BLE remains unverified. [Evidence](evidence/usb-bridge-host-tests-phase84.json).
