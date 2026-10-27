@@ -365,6 +365,7 @@ jobs:
           from capstone import Cs, CS_ARCH_ARM, CS_MODE_THUMB
           img=Path('/tmp/stadia-nxp81/bruce.bin').read_bytes()
           md=Cs(CS_ARCH_ARM,CS_MODE_THUMB)
+          print('Phase89 isolated MOVW / BX LR instruction bytes:',img[0x21e22:0x21e28].hex())
           for begin,end in ((0x21e10,0x21e38),(0x21e1e,0x21e46)):
               print('Phase89 isolated MOVW context (decoded but reachability not confirmed):')
               for ins in md.disasm(img[begin:end],0x60040000+begin):
