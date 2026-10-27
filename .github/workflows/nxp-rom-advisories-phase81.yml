@@ -25,6 +25,8 @@ on:
       - 'tests/test_triage_src_gpr7_thumb_phase88.py'
       - 'tools/audit_bruce_gpr7_status_phase88.py'
       - 'tests/test_bruce_gpr7_status_phase88.py'
+      - 'tools/audit_src_gpr7_movw_movt_phase89.py'
+      - 'tests/test_src_gpr7_movw_movt_phase89.py'
       - '.github/workflows/nxp-rom-advisories-phase81.yml'
   workflow_dispatch:
 
@@ -43,7 +45,7 @@ jobs:
       - name: Install offline decoder dependency
         run: python -m pip install -r requirements.txt
       - name: Synthetic offline regression tests
-        run: python -m unittest tests/test_nxp_rom_advisories_phase81.py tests/test_hab_unlock_phase82.py tests/test_hab_rom_version_phase83.py tests/test_hab_rvt_literals_phase84.py tests/test_hab_rvt_failsafe_phase84.py tests/test_hab_failsafe_callers_phase85.py tests/test_bootloader_update_transaction_phase86.py tests/test_bootloader_update_trigger_phase87.py tests/test_src_gpr7_writers_phase88.py tests/test_triage_src_gpr7_thumb_phase88.py tests/test_bruce_gpr7_status_phase88.py -v
+        run: python -m unittest tests/test_nxp_rom_advisories_phase81.py tests/test_hab_unlock_phase82.py tests/test_hab_rom_version_phase83.py tests/test_hab_rvt_literals_phase84.py tests/test_hab_rvt_failsafe_phase84.py tests/test_hab_failsafe_callers_phase85.py tests/test_bootloader_update_transaction_phase86.py tests/test_bootloader_update_trigger_phase87.py tests/test_src_gpr7_writers_phase88.py tests/test_triage_src_gpr7_thumb_phase88.py tests/test_bruce_gpr7_status_phase88.py tests/test_src_gpr7_movw_movt_phase89.py -v
       - name: Retrieve exact archived signed OEM samples
         shell: bash
         run: |
@@ -325,6 +327,29 @@ jobs:
           assert f['host_usb_controls_condition']=='NOT_ESTABLISHED'
           print('Exact signed original Bruce status GPR7 writer pinned:',f)
           print('Values 5/6 do not set update bit 0x08. Physical trigger still unresolved.')
+          PY
+      - name: Inventory Thumb MOVW/MOVT constructed SRC addresses in OEM originals
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m tools.audit_src_gpr7_movw_movt_phase89 /tmp/stadia-nxp81/bruce.bin --sample bruce_prod --out /tmp/stadia-nxp81/synth-bruce.json
+          python -m tools.audit_src_gpr7_movw_movt_phase89 /tmp/stadia-nxp81/loader.bin --sample restricted_ram_loader --out /tmp/stadia-nxp81/synth-loader.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          for label,orig in (('bruce','466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3'),
+                             ('loader','c39ea8962cc3094a9167ba80634f1ea0652b747b4572d1de2802d9f2f4e144c5')):
+              d=json.loads(Path('/tmp/stadia-nxp81/synth-'+label+'.json').read_text())
+              assert d['original_sha256']==orig
+              assert d['confirmed_gpr7_bit3_writer_count']==0
+              assert d['device_io'] is False and d['physical_execution'] is False
+              assert d['store_shape_count']==len(d['possibly_computed_gpr7_store_shapes'])
+              assert d['pair_count']==len(d['same_register_ordered_pairs'])
+              print('Phase89',label,'movw/low:',d['movw_low_half_encodings'],'movt/high:',d['movt_0x400f_encodings'],
+                    'pair count:',d['pair_count'],'store shapes:',d['store_shape_count'])
+              print('Phase89',label,'pairs:',d['same_register_ordered_pairs'][:32])
+              print('Phase89',label,'store shapes:',d['possibly_computed_gpr7_store_shapes'][:32])
+          print('Encoding matches are NOT reachable code or a known update-bit writer.')
           PY
       - name: Delete temporary OEM images and reports
         if: always()
