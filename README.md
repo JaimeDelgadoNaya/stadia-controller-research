@@ -1,5 +1,7 @@
 # Stadia Controller Research
 
+**[Phase 80 — physical HID input confirmed](docs/en/hid-input-fields-phase80.md).** A 30-second window delivered **1,758 reports, all ID 3 and 11 bytes**, with changing buttons and six analog fields. Individual physical control assignments remain unresolved. [Evidence](evidence/usb-hid-field-observations-phase80.json).
+
 **[Phase 79 — physical HID observation](docs/en/hid-observation-phase79.md).** A 10-second input read of the connected controller received **zero reports**. Without requested button actions this does not distinguish inactivity, mode or failure. This is not a bus capture or evidence of a Work Queue link. [Evidence](evidence/usb-live-hid-input-phase79.json).
 
 **[Phase 78 — signed shared Work Queue initializer and USB inference boundary](docs/en/original-shared-workqueue-init-phase78.md).** Both the signed USB-mode writer from phase 66 and B initializer from phases 76–77 call original `0x6009267C` with **R0=1**. **16 pinned signed instructions** show it reads global Work Queue `0x2002014C`, handle `+0x58`, and the `Work Queue Task` literal. Two **original virtual guard paths executed**: absent handle stops before creation at `0x6010177A`; existing handle skips creation and returns zero. A common singleton initialization helper is **not evidence of a physical host USB packet, controllable callback, unsigned execution or HAB CLOSED bypass**. [Evidence](evidence/usb-workqueue-shared-init-phase78.json) · [PR #80](https://github.com/JaimeDelgadoNaya/stadia-controller-research/pull/80).
