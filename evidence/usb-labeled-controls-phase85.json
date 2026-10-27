@@ -1,0 +1,1688 @@
+{
+  "phase": 85,
+  "scope": "Individually requested USB HID actions; user explicitly confirmed each action after its capture.",
+  "trials": [
+    {
+      "phase": 85,
+      "captured_at_utc": "2026-10-27T17:25:33.045669+00:00",
+      "method": "Windows HID input reads via hidapi 0.14.0.post4",
+      "vid": "18d1",
+      "pid": "9400",
+      "usage_page": 1,
+      "usage": 5,
+      "requested_seconds": 20,
+      "elapsed_seconds": 20.015,
+      "report_count": 18,
+      "distinct_reports": [
+        {
+          "hex": "0308000080808080000000",
+          "count": 9
+        },
+        {
+          "hex": "0308004080808080000000",
+          "count": 9
+        }
+      ],
+      "all_match_id3_length11": true,
+      "limits": {
+        "USB_packet_capture": false,
+        "output_or_feature_reports_sent": false,
+        "vendor_bulk_endpoints_observed": false,
+        "workqueue_or_callback_link_demonstrated": false
+      },
+      "interaction": {
+        "requested_action": "A",
+        "actual_action_confirmation": "user_confirmed_only_requested_action"
+      }
+    },
+    {
+      "phase": 85,
+      "captured_at_utc": "2026-10-27T17:26:19.222828+00:00",
+      "method": "Windows HID input reads via hidapi 0.14.0.post4",
+      "vid": "18d1",
+      "pid": "9400",
+      "usage_page": 1,
+      "usage": 5,
+      "requested_seconds": 20,
+      "elapsed_seconds": 20.0,
+      "report_count": 9,
+      "distinct_reports": [
+        {
+          "hex": "0308000080808080000000",
+          "count": 4
+        },
+        {
+          "hex": "0308002080808080000000",
+          "count": 5
+        }
+      ],
+      "all_match_id3_length11": true,
+      "limits": {
+        "USB_packet_capture": false,
+        "output_or_feature_reports_sent": false,
+        "vendor_bulk_endpoints_observed": false,
+        "workqueue_or_callback_link_demonstrated": false
+      },
+      "interaction": {
+        "requested_action": "B",
+        "actual_action_confirmation": "user_confirmed_only_requested_action"
+      }
+    },
+    {
+      "phase": 85,
+      "captured_at_utc": "2026-10-27T17:26:49.237547+00:00",
+      "method": "Windows HID input reads via hidapi 0.14.0.post4",
+      "vid": "18d1",
+      "pid": "9400",
+      "usage_page": 1,
+      "usage": 5,
+      "requested_seconds": 20,
+      "elapsed_seconds": 20.016,
+      "report_count": 13,
+      "distinct_reports": [
+        {
+          "hex": "0308000080808080000000",
+          "count": 6
+        },
+        {
+          "hex": "0308001080808080000000",
+          "count": 7
+        }
+      ],
+      "all_match_id3_length11": true,
+      "limits": {
+        "USB_packet_capture": false,
+        "output_or_feature_reports_sent": false,
+        "vendor_bulk_endpoints_observed": false,
+        "workqueue_or_callback_link_demonstrated": false
+      },
+      "interaction": {
+        "requested_action": "X",
+        "actual_action_confirmation": "user_confirmed_only_requested_action"
+      }
+    },
+    {
+      "phase": 85,
+      "captured_at_utc": "2026-10-27T17:27:18.180579+00:00",
+      "method": "Windows HID input reads via hidapi 0.14.0.post4",
+      "vid": "18d1",
+      "pid": "9400",
+      "usage_page": 1,
+      "usage": 5,
+      "requested_seconds": 20,
+      "elapsed_seconds": 20.0,
+      "report_count": 13,
+      "distinct_reports": [
+        {
+          "hex": "0308000080808080000000",
+          "count": 6
+        },
+        {
+          "hex": "0308000880808080000000",
+          "count": 7
+        }
+      ],
+      "all_match_id3_length11": true,
+      "limits": {
+        "USB_packet_capture": false,
+        "output_or_feature_reports_sent": false,
+        "vendor_bulk_endpoints_observed": false,
+        "workqueue_or_callback_link_demonstrated": false
+      },
+      "interaction": {
+        "requested_action": "Y",
+        "actual_action_confirmation": "user_confirmed_only_requested_action"
+      }
+    },
+    {
+      "phase": 85,
+      "captured_at_utc": "2026-10-27T17:27:56.555541+00:00",
+      "method": "Windows HID input reads via hidapi 0.14.0.post4",
+      "vid": "18d1",
+      "pid": "9400",
+      "usage_page": 1,
+      "usage": 5,
+      "requested_seconds": 20,
+      "elapsed_seconds": 20.0,
+      "report_count": 346,
+      "distinct_reports": [
+        {
+          "hex": "0308000080808080000000",
+          "count": 21
+        },
+        {
+          "hex": "0308000080808080030000",
+          "count": 2
+        },
+        {
+          "hex": "0308000080808080040000",
+          "count": 2
+        },
+        {
+          "hex": "0308000080808080050000",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080060000",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080080000",
+          "count": 2
+        },
+        {
+          "hex": "0308000080808080090000",
+          "count": 2
+        },
+        {
+          "hex": "03080000808080800b0000",
+          "count": 4
+        },
+        {
+          "hex": "03080000808080800c0000",
+          "count": 1
+        },
+        {
+          "hex": "03080000808080800f0000",
+          "count": 3
+        },
+        {
+          "hex": "0308000080808080110000",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080120000",
+          "count": 2
+        },
+        {
+          "hex": "0308000080808080130000",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080140000",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080190000",
+          "count": 4
+        },
+        {
+          "hex": "03080000808080801a0000",
+          "count": 2
+        },
+        {
+          "hex": "03080000808080801b0000",
+          "count": 1
+        },
+        {
+          "hex": "03080000808080801d0000",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080200000",
+          "count": 3
+        },
+        {
+          "hex": "0308000080808080210000",
+          "count": 3
+        },
+        {
+          "hex": "0308000080808080220000",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080250000",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080260000",
+          "count": 4
+        },
+        {
+          "hex": "0308000080808080270000",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080290000",
+          "count": 1
+        },
+        {
+          "hex": "03080000808080802a0000",
+          "count": 3
+        },
+        {
+          "hex": "03080000808080802b0000",
+          "count": 2
+        },
+        {
+          "hex": "03080000808080802c0000",
+          "count": 2
+        },
+        {
+          "hex": "03080000808080802e0000",
+          "count": 4
+        },
+        {
+          "hex": "03080000808080802f0000",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080310000",
+          "count": 2
+        },
+        {
+          "hex": "0308000080808080330000",
+          "count": 5
+        },
+        {
+          "hex": "0308000080808080340000",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080350000",
+          "count": 2
+        },
+        {
+          "hex": "0308000080808080370000",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080380000",
+          "count": 2
+        },
+        {
+          "hex": "0308000080808080390000",
+          "count": 1
+        },
+        {
+          "hex": "03080000808080803a0000",
+          "count": 1
+        },
+        {
+          "hex": "03080000808080803b0000",
+          "count": 1
+        },
+        {
+          "hex": "03080000808080803d0000",
+          "count": 4
+        },
+        {
+          "hex": "03080000808080803e0000",
+          "count": 3
+        },
+        {
+          "hex": "03080000808080803f0000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080400000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080410000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080420000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080430000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080440000",
+          "count": 3
+        },
+        {
+          "hex": "0308040080808080450000",
+          "count": 4
+        },
+        {
+          "hex": "0308040080808080460000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080470000",
+          "count": 3
+        },
+        {
+          "hex": "0308040080808080480000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080490000",
+          "count": 1
+        },
+        {
+          "hex": "03080400808080804a0000",
+          "count": 2
+        },
+        {
+          "hex": "03080400808080804c0000",
+          "count": 3
+        },
+        {
+          "hex": "03080400808080804e0000",
+          "count": 1
+        },
+        {
+          "hex": "03080400808080804f0000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080500000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080510000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080530000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080550000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080560000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080570000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080590000",
+          "count": 2
+        },
+        {
+          "hex": "03080400808080805a0000",
+          "count": 1
+        },
+        {
+          "hex": "03080400808080805b0000",
+          "count": 3
+        },
+        {
+          "hex": "03080400808080805c0000",
+          "count": 1
+        },
+        {
+          "hex": "03080400808080805d0000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080600000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080610000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080620000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080640000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080650000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080660000",
+          "count": 3
+        },
+        {
+          "hex": "0308040080808080690000",
+          "count": 2
+        },
+        {
+          "hex": "03080400808080806a0000",
+          "count": 1
+        },
+        {
+          "hex": "03080400808080806b0000",
+          "count": 2
+        },
+        {
+          "hex": "03080400808080806c0000",
+          "count": 1
+        },
+        {
+          "hex": "03080400808080806d0000",
+          "count": 1
+        },
+        {
+          "hex": "03080400808080806e0000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080710000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080720000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080730000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080750000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080770000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080780000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080790000",
+          "count": 1
+        },
+        {
+          "hex": "03080400808080807a0000",
+          "count": 1
+        },
+        {
+          "hex": "03080400808080807c0000",
+          "count": 1
+        },
+        {
+          "hex": "03080400808080807d0000",
+          "count": 3
+        },
+        {
+          "hex": "0308040080808080800000",
+          "count": 3
+        },
+        {
+          "hex": "0308040080808080810000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080840000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080850000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080860000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080870000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080880000",
+          "count": 2
+        },
+        {
+          "hex": "03080400808080808b0000",
+          "count": 2
+        },
+        {
+          "hex": "03080400808080808c0000",
+          "count": 1
+        },
+        {
+          "hex": "03080400808080808d0000",
+          "count": 1
+        },
+        {
+          "hex": "03080400808080808e0000",
+          "count": 1
+        },
+        {
+          "hex": "03080400808080808f0000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080910000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080920000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080930000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080950000",
+          "count": 3
+        },
+        {
+          "hex": "0308040080808080970000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080980000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080990000",
+          "count": 3
+        },
+        {
+          "hex": "03080400808080809a0000",
+          "count": 3
+        },
+        {
+          "hex": "03080400808080809b0000",
+          "count": 2
+        },
+        {
+          "hex": "03080400808080809c0000",
+          "count": 1
+        },
+        {
+          "hex": "03080400808080809d0000",
+          "count": 1
+        },
+        {
+          "hex": "03080400808080809e0000",
+          "count": 1
+        },
+        {
+          "hex": "03080400808080809f0000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080a00000",
+          "count": 3
+        },
+        {
+          "hex": "0308040080808080a10000",
+          "count": 3
+        },
+        {
+          "hex": "0308040080808080a30000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080a40000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080a50000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080a60000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080a70000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080a80000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080a90000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080ab0000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080ac0000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080ae0000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080b00000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080b20000",
+          "count": 3
+        },
+        {
+          "hex": "0308040080808080b30000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080b40000",
+          "count": 3
+        },
+        {
+          "hex": "0308040080808080b60000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080b70000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080b80000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080ba0000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080bb0000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080bc0000",
+          "count": 3
+        },
+        {
+          "hex": "0308040080808080bd0000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080be0000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080bf0000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080c00000",
+          "count": 3
+        },
+        {
+          "hex": "0308040080808080c20000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080c40000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080c60000",
+          "count": 3
+        },
+        {
+          "hex": "0308040080808080c70000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080c90000",
+          "count": 6
+        },
+        {
+          "hex": "0308040080808080ca0000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080cb0000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080cc0000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080ce0000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080cf0000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080d00000",
+          "count": 4
+        },
+        {
+          "hex": "0308040080808080d10000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080d30000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080d40000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080d60000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080d70000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080d80000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080d90000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080da0000",
+          "count": 4
+        },
+        {
+          "hex": "0308040080808080dc0000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080dd0000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080de0000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080df0000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080e10000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080e20000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080e30000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080e50000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080e70000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080e80000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080ea0000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080eb0000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080ed0000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080ee0000",
+          "count": 3
+        },
+        {
+          "hex": "0308040080808080f10000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080f20000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080f40000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080f50000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080f60000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080f70000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080f90000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080fb0000",
+          "count": 2
+        },
+        {
+          "hex": "0308040080808080fc0000",
+          "count": 1
+        },
+        {
+          "hex": "0308040080808080fe0000",
+          "count": 3
+        },
+        {
+          "hex": "0308040080808080ff0000",
+          "count": 6
+        }
+      ],
+      "all_match_id3_length11": true,
+      "limits": {
+        "USB_packet_capture": false,
+        "output_or_feature_reports_sent": false,
+        "vendor_bulk_endpoints_observed": false,
+        "workqueue_or_callback_link_demonstrated": false
+      },
+      "interaction": {
+        "requested_action": "LT",
+        "actual_action_confirmation": "user_confirmed_only_requested_action"
+      }
+    },
+    {
+      "phase": 85,
+      "captured_at_utc": "2026-10-27T17:28:34.076071+00:00",
+      "method": "Windows HID input reads via hidapi 0.14.0.post4",
+      "vid": "18d1",
+      "pid": "9400",
+      "usage_page": 1,
+      "usage": 5,
+      "requested_seconds": 20,
+      "elapsed_seconds": 20.015,
+      "report_count": 345,
+      "distinct_reports": [
+        {
+          "hex": "0308000080808080000000",
+          "count": 16
+        },
+        {
+          "hex": "0308000080808080000800",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080000900",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080000a00",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080000b00",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080000c00",
+          "count": 3
+        },
+        {
+          "hex": "0308000080808080000e00",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080000f00",
+          "count": 3
+        },
+        {
+          "hex": "0308000080808080001000",
+          "count": 2
+        },
+        {
+          "hex": "0308000080808080001100",
+          "count": 2
+        },
+        {
+          "hex": "0308000080808080001200",
+          "count": 3
+        },
+        {
+          "hex": "0308000080808080001300",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080001400",
+          "count": 4
+        },
+        {
+          "hex": "0308000080808080001500",
+          "count": 3
+        },
+        {
+          "hex": "0308000080808080001600",
+          "count": 3
+        },
+        {
+          "hex": "0308000080808080001700",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080001800",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080001a00",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080001b00",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080001e00",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080001f00",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080002000",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080002100",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080002400",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080002600",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080002800",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080002900",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080002a00",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080002b00",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080002e00",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080003000",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080003100",
+          "count": 2
+        },
+        {
+          "hex": "0308000080808080003300",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080003500",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080003600",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080003d00",
+          "count": 3
+        },
+        {
+          "hex": "0308000080808080003e00",
+          "count": 1
+        },
+        {
+          "hex": "0308000080808080003f00",
+          "count": 1
+        },
+        {
+          "hex": "0308080080808080004100",
+          "count": 3
+        },
+        {
+          "hex": "0308080080808080004300",
+          "count": 1
+        },
+        {
+          "hex": "0308080080808080004900",
+          "count": 1
+        },
+        {
+          "hex": "0308080080808080004d00",
+          "count": 1
+        },
+        {
+          "hex": "0308080080808080004f00",
+          "count": 1
+        },
+        {
+          "hex": "0308080080808080005100",
+          "count": 1
+        },
+        {
+          "hex": "0308080080808080005200",
+          "count": 1
+        },
+        {
+          "hex": "0308080080808080005500",
+          "count": 1
+        },
+        {
+          "hex": "0308080080808080005700",
+          "count": 1
+        },
+        {
+          "hex": "0308080080808080005800",
+          "count": 2
+        },
+        {
+          "hex": "0308080080808080005b00",
+          "count": 2
+        },
+        {
+          "hex": "0308080080808080005d00",
+          "count": 2
+        },
+        {
+          "hex": "0308080080808080005f00",
+          "count": 1
+        },
+        {
+          "hex": "0308080080808080006700",
+          "count": 2
+        },
+        {
+          "hex": "0308080080808080006800",
+          "count": 1
+        },
+        {
+          "hex": "0308080080808080006b00",
+          "count": 1
+        },
+        {
+          "hex": "0308080080808080006c00",
+          "count": 1
+        },
+        {
+          "hex": "0308080080808080007000",
+          "count": 1
+        },
+        {
+          "hex": "0308080080808080007200",
+          "count": 1
+        },
+        {
+          "hex": "0308080080808080007300",
+          "count": 1
+        },
+        {
+          "hex": "0308080080808080007400",
+          "count": 2
+        },
+        {
+          "hex": "0308080080808080007a00",
+          "count": 1
+        },
+        {
+          "hex": "0308080080808080007c00",
+          "count": 1
+        },
+        {
+          "hex": "0308080080808080007d00",
+          "count": 2
+        },
+        {
+          "hex": "0308080080808080007e00",
+          "count": 1
+        },
+        {
+          "hex": "0308080080808080008000",
+          "count": 1
+        },
+        {
+          "hex": "0308080080808080008200",
+          "count": 1
+        },
+        {
+          "hex": "0308080080808080008300",
+          "count": 1
+        },
+        {
+          "hex": "0308080080808080008500",
+          "count": 1
+        },
+        {
+          "hex": "0308080080808080008d00",
+          "count": 3
+        },
+        {
+          "hex": "0308080080808080008f00",
+          "count": 1
+        },
+        {
+          "hex": "0308080080808080009000",
+          "count": 1
+        },
+        {
+          "hex": "0308080080808080009500",
+          "count": 1
+        },
+        {
+          "hex": "0308080080808080009700",
+          "count": 1
+        },
+        {
+          "hex": "0308080080808080009800",
+          "count": 1
+        },
+        {
+          "hex": "0308080080808080009b00",
+          "count": 1
+        },
+        {
+          "hex": "0308080080808080009c00",
+          "count": 2
+        },
+        {
+          "hex": "0308080080808080009d00",
+          "count": 1
+        },
+        {
+          "hex": "0308080080808080009e00",
+          "count": 2
+        },
+        {
+          "hex": "0308080080808080009f00",
+          "count": 5
+        },
+        {
+          "hex": "030808008080808000a200",
+          "count": 1
+        },
+        {
+          "hex": "030808008080808000a300",
+          "count": 1
+        },
+        {
+          "hex": "030808008080808000a500",
+          "count": 2
+        },
+        {
+          "hex": "030808008080808000a600",
+          "count": 3
+        },
+        {
+          "hex": "030808008080808000a700",
+          "count": 2
+        },
+        {
+          "hex": "030808008080808000a900",
+          "count": 1
+        },
+        {
+          "hex": "030808008080808000aa00",
+          "count": 1
+        },
+        {
+          "hex": "030808008080808000ab00",
+          "count": 1
+        },
+        {
+          "hex": "030808008080808000ad00",
+          "count": 1
+        },
+        {
+          "hex": "030808008080808000ae00",
+          "count": 2
+        },
+        {
+          "hex": "030808008080808000af00",
+          "count": 1
+        },
+        {
+          "hex": "030808008080808000b000",
+          "count": 1
+        },
+        {
+          "hex": "030808008080808000b100",
+          "count": 1
+        },
+        {
+          "hex": "030808008080808000b300",
+          "count": 1
+        },
+        {
+          "hex": "030808008080808000b500",
+          "count": 1
+        },
+        {
+          "hex": "030808008080808000b600",
+          "count": 1
+        },
+        {
+          "hex": "030808008080808000b700",
+          "count": 2
+        },
+        {
+          "hex": "030808008080808000b900",
+          "count": 2
+        },
+        {
+          "hex": "030808008080808000bb00",
+          "count": 1
+        },
+        {
+          "hex": "030808008080808000bc00",
+          "count": 1
+        },
+        {
+          "hex": "030808008080808000bd00",
+          "count": 3
+        },
+        {
+          "hex": "030808008080808000be00",
+          "count": 2
+        },
+        {
+          "hex": "030808008080808000c000",
+          "count": 1
+        },
+        {
+          "hex": "030808008080808000c200",
+          "count": 2
+        },
+        {
+          "hex": "030808008080808000c300",
+          "count": 1
+        },
+        {
+          "hex": "030808008080808000c400",
+          "count": 1
+        },
+        {
+          "hex": "030808008080808000c600",
+          "count": 2
+        },
+        {
+          "hex": "030808008080808000c800",
+          "count": 1
+        },
+        {
+          "hex": "030808008080808000c900",
+          "count": 2
+        },
+        {
+          "hex": "030808008080808000ca00",
+          "count": 1
+        },
+        {
+          "hex": "030808008080808000cb00",
+          "count": 1
+        },
+        {
+          "hex": "030808008080808000cc00",
+          "count": 2
+        },
+        {
+          "hex": "030808008080808000cd00",
+          "count": 2
+        },
+        {
+          "hex": "030808008080808000ce00",
+          "count": 2
+        },
+        {
+          "hex": "030808008080808000cf00",
+          "count": 2
+        },
+        {
+          "hex": "030808008080808000d100",
+          "count": 2
+        },
+        {
+          "hex": "030808008080808000d200",
+          "count": 1
+        },
+        {
+          "hex": "030808008080808000d300",
+          "count": 1
+        },
+        {
+          "hex": "030808008080808000d500",
+          "count": 1
+        },
+        {
+          "hex": "030808008080808000d600",
+          "count": 1
+        },
+        {
+          "hex": "030808008080808000d700",
+          "count": 3
+        },
+        {
+          "hex": "030808008080808000d800",
+          "count": 12
+        },
+        {
+          "hex": "030808008080808000d900",
+          "count": 3
+        },
+        {
+          "hex": "030808008080808000da00",
+          "count": 2
+        },
+        {
+          "hex": "030808008080808000db00",
+          "count": 3
+        },
+        {
+          "hex": "030808008080808000dc00",
+          "count": 4
+        },
+        {
+          "hex": "030808008080808000dd00",
+          "count": 6
+        },
+        {
+          "hex": "030808008080808000de00",
+          "count": 3
+        },
+        {
+          "hex": "030808008080808000df00",
+          "count": 3
+        },
+        {
+          "hex": "030808008080808000e000",
+          "count": 4
+        },
+        {
+          "hex": "030808008080808000e100",
+          "count": 3
+        },
+        {
+          "hex": "030808008080808000e200",
+          "count": 2
+        },
+        {
+          "hex": "030808008080808000e300",
+          "count": 3
+        },
+        {
+          "hex": "030808008080808000e400",
+          "count": 4
+        },
+        {
+          "hex": "030808008080808000e500",
+          "count": 4
+        },
+        {
+          "hex": "030808008080808000e600",
+          "count": 4
+        },
+        {
+          "hex": "030808008080808000e700",
+          "count": 3
+        },
+        {
+          "hex": "030808008080808000e800",
+          "count": 2
+        },
+        {
+          "hex": "030808008080808000e900",
+          "count": 5
+        },
+        {
+          "hex": "030808008080808000ea00",
+          "count": 2
+        },
+        {
+          "hex": "030808008080808000eb00",
+          "count": 2
+        },
+        {
+          "hex": "030808008080808000ec00",
+          "count": 4
+        },
+        {
+          "hex": "030808008080808000ed00",
+          "count": 1
+        },
+        {
+          "hex": "030808008080808000ee00",
+          "count": 1
+        },
+        {
+          "hex": "030808008080808000ef00",
+          "count": 2
+        },
+        {
+          "hex": "030808008080808000f000",
+          "count": 4
+        },
+        {
+          "hex": "030808008080808000f200",
+          "count": 4
+        },
+        {
+          "hex": "030808008080808000f300",
+          "count": 2
+        },
+        {
+          "hex": "030808008080808000f400",
+          "count": 1
+        },
+        {
+          "hex": "030808008080808000f500",
+          "count": 3
+        },
+        {
+          "hex": "030808008080808000f600",
+          "count": 3
+        },
+        {
+          "hex": "030808008080808000f700",
+          "count": 1
+        },
+        {
+          "hex": "030808008080808000f800",
+          "count": 1
+        },
+        {
+          "hex": "030808008080808000f900",
+          "count": 7
+        },
+        {
+          "hex": "030808008080808000fa00",
+          "count": 9
+        },
+        {
+          "hex": "030808008080808000fb00",
+          "count": 6
+        },
+        {
+          "hex": "030808008080808000fc00",
+          "count": 3
+        },
+        {
+          "hex": "030808008080808000fd00",
+          "count": 14
+        },
+        {
+          "hex": "030808008080808000fe00",
+          "count": 6
+        },
+        {
+          "hex": "030808008080808000ff00",
+          "count": 11
+        }
+      ],
+      "all_match_id3_length11": true,
+      "limits": {
+        "USB_packet_capture": false,
+        "output_or_feature_reports_sent": false,
+        "vendor_bulk_endpoints_observed": false,
+        "workqueue_or_callback_link_demonstrated": false
+      },
+      "interaction": {
+        "requested_action": "RT",
+        "actual_action_confirmation": "user_confirmed_only_requested_action"
+      }
+    },
+    {
+      "phase": 85,
+      "captured_at_utc": "2026-10-27T17:29:17.361241+00:00",
+      "method": "Windows HID input reads via hidapi 0.14.0.post4",
+      "vid": "18d1",
+      "pid": "9400",
+      "usage_page": 1,
+      "usage": 5,
+      "requested_seconds": 15.0,
+      "elapsed_seconds": 15.016,
+      "report_count": 9,
+      "distinct_reports": [
+        {
+          "hex": "0300000080808080000000",
+          "count": 5
+        },
+        {
+          "hex": "0308000080808080000000",
+          "count": 4
+        }
+      ],
+      "all_match_id3_length11": true,
+      "limits": {
+        "USB_packet_capture": false,
+        "output_or_feature_reports_sent": false,
+        "vendor_bulk_endpoints_observed": false,
+        "workqueue_or_callback_link_demonstrated": false
+      },
+      "interaction": {
+        "requested_action": "dpad_up",
+        "actual_action_confirmation": "user_confirmed_only_requested_action"
+      }
+    },
+    {
+      "phase": 85,
+      "captured_at_utc": "2026-10-27T17:29:43.461019+00:00",
+      "method": "Windows HID input reads via hidapi 0.14.0.post4",
+      "vid": "18d1",
+      "pid": "9400",
+      "usage_page": 1,
+      "usage": 5,
+      "requested_seconds": 15.0,
+      "elapsed_seconds": 15.0,
+      "report_count": 9,
+      "distinct_reports": [
+        {
+          "hex": "0302000080808080000000",
+          "count": 5
+        },
+        {
+          "hex": "0308000080808080000000",
+          "count": 4
+        }
+      ],
+      "all_match_id3_length11": true,
+      "limits": {
+        "USB_packet_capture": false,
+        "output_or_feature_reports_sent": false,
+        "vendor_bulk_endpoints_observed": false,
+        "workqueue_or_callback_link_demonstrated": false
+      },
+      "interaction": {
+        "requested_action": "dpad_right",
+        "actual_action_confirmation": "user_confirmed_only_requested_action"
+      }
+    },
+    {
+      "phase": 85,
+      "captured_at_utc": "2026-10-27T17:30:08.813615+00:00",
+      "method": "Windows HID input reads via hidapi 0.14.0.post4",
+      "vid": "18d1",
+      "pid": "9400",
+      "usage_page": 1,
+      "usage": 5,
+      "requested_seconds": 15.0,
+      "elapsed_seconds": 15.0,
+      "report_count": 9,
+      "distinct_reports": [
+        {
+          "hex": "0304000080808080000000",
+          "count": 5
+        },
+        {
+          "hex": "0308000080808080000000",
+          "count": 4
+        }
+      ],
+      "all_match_id3_length11": true,
+      "limits": {
+        "USB_packet_capture": false,
+        "output_or_feature_reports_sent": false,
+        "vendor_bulk_endpoints_observed": false,
+        "workqueue_or_callback_link_demonstrated": false
+      },
+      "interaction": {
+        "requested_action": "dpad_down",
+        "actual_action_confirmation": "user_confirmed_only_requested_action"
+      }
+    },
+    {
+      "phase": 85,
+      "captured_at_utc": "2026-10-27T17:30:35.139677+00:00",
+      "method": "Windows HID input reads via hidapi 0.14.0.post4",
+      "vid": "18d1",
+      "pid": "9400",
+      "usage_page": 1,
+      "usage": 5,
+      "requested_seconds": 15.0,
+      "elapsed_seconds": 15.0,
+      "report_count": 8,
+      "distinct_reports": [
+        {
+          "hex": "0306000080808080000000",
+          "count": 4
+        },
+        {
+          "hex": "0308000080808080000000",
+          "count": 4
+        }
+      ],
+      "all_match_id3_length11": true,
+      "limits": {
+        "USB_packet_capture": false,
+        "output_or_feature_reports_sent": false,
+        "vendor_bulk_endpoints_observed": false,
+        "workqueue_or_callback_link_demonstrated": false
+      },
+      "interaction": {
+        "requested_action": "dpad_left",
+        "actual_action_confirmation": "user_confirmed_only_requested_action"
+      }
+    }
+  ]
+}
