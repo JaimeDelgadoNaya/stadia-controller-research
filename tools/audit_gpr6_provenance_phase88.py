@@ -25,6 +25,44 @@ MAX_LITERAL_HITS = 4096
 BRUCE_XIP_BASE = 0x60040000
 
 
+BRUCE_WRITER_OFFSET = 0x38A1C
+BRUCE_WRITER_BYTES = bytes.fromhex("237a012b264b0cbf052206229a63")
+BRUCE_WRITER_LITERAL_OFFSET = 0x38ABC
+
+
+def decode_pinned_bruce_gpr6_status_writer(image):
+    """Pin the original 5/6 GPR6 writer without claiming any host trigger.
+
+    Caller must authenticate full Bruce SHA-256 for original-file evidence;
+    this pure decoder also accepts synthetic byte fixtures in unit tests.
+    """
+    if not isinstance(image,bytes) or len(image)<BRUCE_WRITER_LITERAL_OFFSET+4:
+        raise ValueError("Incomplete Bruce writer fixture")
+    fragment=image[BRUCE_WRITER_OFFSET:BRUCE_WRITER_OFFSET+len(BRUCE_WRITER_BYTES)]
+    if fragment!=BRUCE_WRITER_BYTES:
+        raise ValueError("Original Bruce GPR6 instruction pin mismatch")
+    # LDR R3,[PC,#0x98] at offset +4: align(PC=instruction+4,4).
+    effective=(((BRUCE_WRITER_OFFSET+4)+4)&~3)+0x98
+    if effective!=BRUCE_WRITER_LITERAL_OFFSET:
+        raise ValueError("Original Bruce literal effective offset mismatch")
+    base=struct.unpack_from("<I",image,BRUCE_WRITER_LITERAL_OFFSET)[0]
+    if base!=GPR6_BASE:
+        raise ValueError("Original Bruce SRC base literal mismatch")
+    return {
+       "signed_xip_instruction_site":hex(BRUCE_XIP_BASE+0x38a28),
+       "signed_file_instruction_offset":hex(0x38a28),
+       "pinned_thumb_bytes":BRUCE_WRITER_BYTES.hex(),
+       "literal_file_offset":hex(BRUCE_WRITER_LITERAL_OFFSET),
+       "literal_value":f"0x{base:08x}",
+       "target_register":f"0x{base+GPR6_OFFSET:08x}",
+       "conditional_source":"(r4 + 8) is compared with 1; object provenance unknown",
+       "possible_written_values":[5,6],
+       "bit3_set_by_either_value":False,
+       "verified_instruction_sequence":True,
+       "runtime_execution_or_host_origin_confirmed":False,
+    }
+
+
 def census_bruce_literals(image):
     """Scan signed image only through CSF start, after whole-image SHA gate."""
     prior = audit_signed_bruce(image, "bruce_prod")
@@ -125,6 +163,7 @@ def audit(bruce, records):
        "phase":88,
        "research_question":"Who produces SRC_GPR6 bit3 (update request 0x08)?",
        "bruce_signed_original":census_bruce_literals(bruce),
+       "signed_bruce_status_writer":decode_pinned_bruce_gpr6_status_writer(bruce),
        "bootloader_selected_original":census_bootloader_selected(records),
        "decision":"NO_HOST_CONTROL_CLAIM_WITHOUT_PROVEN_GPR6_BIT3_WRITER",
        "caveats":[
