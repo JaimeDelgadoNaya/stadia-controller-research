@@ -1,6 +1,6 @@
 # Stadia Controller Research
 
-**[NXP research phase 84 — offline HAB RVT literal census](docs/en/nxp-hab-rvt-literals-phase84.md).** SHA-256-gated survey for exact `entry`, `exit`, `authenticate_image_no_dcd` and `get_version` pointer-slot words in original OEM images. **A literal is not an executed call, and absence is not proof against computed references.** Tested controller's ROM HAB version remains unmeasured. [Tool](tools/audit_hab_rvt_literals_phase84.py).
+**[NXP research phase 84 — original OEM HAB `failsafe` veneer](docs/en/nxp-hab-rvt-literals-phase84.md).** Exact original signed Bruce Thumb bytes load RVT base `0x00200300` and branch through NXP **`failsafe` (`+0x28`)**, not `get_version` (`+0x30`). Two RVT base literals found in Bruce; no direct `get_version` word in Bruce or RAM loader. **No ROM version measurement or HAB bypass.** [Evidence](evidence/nxp-hab-rvt-failsafe-phase84.json).
 
 **[Phase 83 — provenance of the BootROM HAB version](docs/en/hab-rom-version-phase83.md).** NXP places the RT1060 HAB RVT at `0x00200300` and the `get_version` pointer slot at `0x00200330`. SHA-pinned offline auditing separates signed-image IVT/CSF format headers from live ROM revision. **No actual owner's `get_version` return is archived; precise HAB version and applicability remain unknown.** [Tool](tools/audit_hab_rom_version_phase83.py).
 
