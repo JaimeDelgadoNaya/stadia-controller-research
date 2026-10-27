@@ -14,6 +14,16 @@
 
 All results must label **physical measurement**, **whole-file SHA-pinned original**, **selected published disassembly**, **synthetic test**, or **hypothesis**. The [parallel CI workflow](../../.github/workflows/research-workstreams.yml) runs isolated synthetic test jobs for each track. Existing main CI covers Python 3.11/3.12, and the pinned OEM workflow audits archived public signed binaries after SHA verification. CI tasks are automation for tests, **not autonomous LLM research agents**.
 
+## New phase90 external research priorities (27 Oct 2026)
+
+Five original tracks remain; three scoped sub-tasks were added, **not as autonomous background AI agents**:
+
+- **Gotham Wi-Fi/local protocols:** [#107](https://github.com/JaimeDelgadoNaya/stadia-controller-research/issues/107) — obtain revision-pinned gist bytes, static BLE/credential security audit and synthetic traffic only. The original gist is not yet source-audited.
+- **Signed flash recovery:** [#108](https://github.com/JaimeDelgadoNaya/stadia-controller-research/issues/108) — offline compatible mode/FCB/recovery safety assessment. Gary's dump command writes FlexSPI registers and is not passive.
+- **NCC/NXP HAB:** [#109](https://github.com/JaimeDelgadoNaya/stadia-controller-research/issues/109) — ROM-version provenance and exact DCD/CSF preconditions; do not transfer an i.MX6ULL exploit claim to Stadia RT1060 without evidence.
+
+See [phase90 report](external-research-phase90.md) and its [three parallel evidence CI lanes](../../.github/workflows/external-research-phase90.yml). These automate reproducible tests, not autonomous research execution.
+
 **Safety gates:** no controller writes, ROM exploitation, flash/IVT modifications, eFuse changes, power-cut fault injections, owner-private bootloader publishing, or ungrounded host execution claims. HAB CLOSED remains unbypassed. Even a genuine USB→GPR7 update request would not authorize unsigned custom firmware.
 
 This integration reconciles historical USB research PRs **#81/#82** with NXP/bootloader PRs **#90–#96/#98**, while preserving the physically measured HID changes already in `main`. Do not merge the superseded #97.
