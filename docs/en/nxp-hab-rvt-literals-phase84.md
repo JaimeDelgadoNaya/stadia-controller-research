@@ -14,6 +14,27 @@ python -m tools.audit_hab_rvt_literals_phase84 local/bruce_pvt_a_prod_signed.bin
 python -m tools.audit_hab_rvt_literals_phase84 local/restricted_ivt_flashloader.bin --sample restricted_ram_loader
 ```
 
+## Verified result on exact signed OEM files
+
+[Sanitized pinned evidence](../../evidence/nxp-hab-rvt-failsafe-phase84.json) · [Successful original-image GitHub Actions](https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40567286976).
+
+| Signed sample | Literal word `0x00200300` occurrences | Direct `get_version` slot word `0x00200330` |
+|---|---:|---:|
+| Bruce original update | **2**, offsets `0x810` / `0xcd224` | **0** |
+| Original signed RAM loader | **0** | **0** |
+
+A signed original Thumb16 sequence at image file offset `0x726` has been verified byte-for-byte as `3a48816a0847`, decoding to:
+
+```asm
+0x60040726  LDR R0, [PC, #0xE8]    ; dereference signed literal 0x810 -> 0x00200300
+0x60040728  LDR R1, [R0, #0x28]    ; ROM RVT pointer slot 0x00200328
+0x6004072A  BX R1                   ; conditional-on-entry indirect tail branch
+```
+
+[NXP's own HAB RVT structure](https://github.com/nxp-mcuxpresso/sbl/blob/master/component/secure/semifunc/hab_rvt.c) labels `+0x28` **`failsafe`**, `+0x2c` `authenticate_image_no_dcd` and `+0x30` `get_version`. This original OEM sequence **targets failsafe, not get_version**. Neither code reachability nor ROM pointer contents have been observed on hardware. The second literal at `0xcd224` has no syntactic Thumb literal-load candidate in the selected window.
+
+The dedicated action and all **45 synthetic phase81–84 tests** pass. The private owner-extracted bootloader A is not included in public CI or this census.
+
 **Evidence boundary:** physical ROM HAB patch version, live RVT contents, execution of `get_version`, CSF parser vulnerabilities, signed-code bypass and rollback all remain unverified. No USB, flash or OTP operations are performed.
 
 References: [NXP AN12263](https://community.nxp.com/pwmxy87654/attachments/pwmxy87654/imx-processors/160465/2/AN12263.pdf) · [NXP additional-image HAB advisory](https://community.nxp.com/t5/i-MX-Security/Authentication-Vulnerability-when-extending-the-Root-of-Trust/ta-p/1511348).
