@@ -129,6 +129,24 @@ jobs:
               print(sample,'syntactic_thumb_literal_load_shapes:',[(v['file_offset'],v['syntactic_thumb_load_candidates']) for v in data['literal_hits']])
           print('Raw constants only; not evidence of executed get_version call.')
           PY
+      - name: Bounded Thumb decode near original Bruce RVT literal candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install -r requirements.txt
+          python - <<'PY'
+          from pathlib import Path
+          from capstone import Cs, CS_ARCH_ARM, CS_MODE_THUMB
+          data=Path('/tmp/stadia-nxp81/bruce.bin').read_bytes()
+          md=Cs(CS_ARCH_ARM, CS_MODE_THUMB)
+          for start,end in ((0x700,0x74c),(0x720,0x760),(0xcd1e0,0xcd226)):
+              print('Bounded original fragment:',hex(start),hex(end))
+              for ins in md.disasm(data[start:end],0x60040000+start):
+                  if (start==0x700 and ins.address-0x60040000 > 0x730):
+                      break
+                  print('  ',hex(ins.address),ins.mnemonic,ins.op_str)
+          print('Disassembly is local and may include data; code reachability unverified.')
+          PY
       - name: Delete temporary OEM images and reports
         if: always()
         run: rm -rf /tmp/stadia-nxp81
