@@ -39,28 +39,28 @@ jobs:
           case "$TRACK" in
             bruce)
               python -m unittest \
-                tests.test_src_gpr7_writers_phase88 \
-                tests.test_bruce_gpr7_status_phase88 \
-                tests.test_triage_src_gpr7_thumb_phase88 -v
+                tests/test_src_gpr7_writers_phase88 \
+                tests/test_bruce_gpr7_status_phase88 \
+                tests/test_triage_src_gpr7_thumb_phase88 -v
               ;;
             bootloader)
               python -m unittest \
-                tests.test_bootloader_update_transaction_phase86 \
-                tests.test_bootloader_update_trigger_phase87 -v
+                tests/test_bootloader_update_transaction_phase86 \
+                tests/test_bootloader_update_trigger_phase87 -v
               ;;
             nxp-hab)
               python -m unittest \
-                tests.test_nxp_rom_advisories_phase81 \
-                tests.test_hab_unlock_phase82 \
-                tests.test_hab_rom_version_phase83 \
-                tests.test_hab_rvt_literals_phase84 \
-                tests.test_hab_rvt_failsafe_phase84 \
-                tests.test_hab_failsafe_callers_phase85 -v
+                tests/test_nxp_rom_advisories_phase81 \
+                tests/test_hab_unlock_phase82 \
+                tests/test_hab_rom_version_phase83 \
+                tests/test_hab_rvt_literals_phase84 \
+                tests/test_hab_rvt_failsafe_phase84 \
+                tests/test_hab_failsafe_callers_phase85 -v
               ;;
             usb-hid)
               python -m unittest \
-                tests.test_passive_usb_phase79 \
-                tests.test_passive_usb_phase80 -v
+                tests/test_passive_usb_phase79 \
+                tests/test_passive_usb_phase80 -v
               ;;
             independent-qa)
               python -m unittest discover -s tests -v
