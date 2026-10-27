@@ -19,7 +19,7 @@ class UpdateTriggerPhase87Tests(unittest.TestCase):
 
     def test_pinned_original_instructions(self):
         index=validate(self.source)
-        self.assertEqual(len(PINS),30)
+        self.assertEqual(len(PINS),31)
         self.assertEqual(index[0x608028B0]["bytes"],"2307")
 
     def test_only_low_byte_bit3_selects_update_call(self):
