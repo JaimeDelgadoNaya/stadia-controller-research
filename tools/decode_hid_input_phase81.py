@@ -32,6 +32,8 @@ def decode_report(raw, descriptor):
 def replay(capture, descriptor):
     if hashlib.sha256(descriptor).hexdigest() != DESCRIPTOR_SHA256:
         raise ValueError('Exact recorded HID descriptor required')
+    if type(capture['report_count']) is not int or capture['report_count'] < 0:
+        raise ValueError('Nonnegative integer report_count required')
     counts = {usage:0 for usage in BUTTON_USAGES}
     consumers = {usage:0 for usage in CONSUMER_USAGES}
     total = null_hat = padding = zero_axes = 0

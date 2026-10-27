@@ -1,0 +1,20 @@
+{
+  "phase": 82,
+  "descriptor_sha256": "88121159b7b6cf6ffa4025d0d5aebe1d4ae83013ee34acc8dd4bf2cff52116d8",
+  "synthetic_vector_counts": {
+    "all_button_combinations": 32768,
+    "individual_payload_byte_sweeps": 2560,
+    "seed82_mixed_payloads": 4096
+  },
+  "vector_stream_sha256": "eca20a61a10d3052134405bb114f105c898d1887fd296bbd57211422add4e24c",
+  "rejected_wrong_ids": 255,
+  "rejected_lengths_in_0_to_64": 64,
+  "rejected_single_bit_descriptor_mutations": 1504,
+  "differential_mismatches": 0,
+  "limits": [
+    "Synthetic decoder validation, not physical control mapping.",
+    "All 32768 button subsets covered; full 80-bit payload space not exhausted.",
+    "Reference shares the earlier generic descriptor parser and bit extractor.",
+    "No USB I/O, output protocol or console compatibility tested."
+  ]
+}

@@ -1,5 +1,7 @@
 # Stadia Controller Research
 
+**[Phase 82 — differential HID tests](docs/en/hid-differential-tests-phase82.md).** **39,424 synthetic vectors without mismatches**, including every button subset, plus rejection of wrong IDs/lengths and 1,504 descriptor mutations. Fixed acceptance of Boolean/floating-point aggregate totals. Entirely offline. [Evidence](evidence/usb-hid-differential-phase82.json).
+
 **[Phase 81 — offline HID decoder](docs/en/offline-hid-decoder-phase81.md).** Replay of **1,758 reports** handles the nonconsecutive HID button usages, raw axes, null states and diagnostics. Descriptor cross-checks validate parsing; physical labels and bridge output remain pending. [Evidence](evidence/usb-hid-decoder-replay-phase81.json).
 
 **[Phase 80 — physical HID input confirmed](docs/en/hid-input-fields-phase80.md).** A 30-second window delivered **1,758 reports, all ID 3 and 11 bytes**, with changing buttons and six analog fields. Individual physical control assignments remain unresolved. [Evidence](evidence/usb-hid-field-observations-phase80.json).

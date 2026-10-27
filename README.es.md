@@ -1,5 +1,7 @@
 # Investigación del mando Stadia
 
+**[Fase 82 — pruebas diferenciales HID](docs/es/pruebas-diferenciales-hid-fase82.md).** **39.424 vectores sintéticos sin discrepancias**, incluidos todos los subconjuntos de botones; rechazo de IDs/longitudes incorrectos y 1.504 mutaciones del descriptor. Corregida la aceptación de totales booleanos/flotantes. Todo offline. [Evidencia](evidence/usb-hid-differential-phase82.json).
+
 **[Fase 81 — decodificador HID offline](docs/es/decodificador-hid-offline-fase81.md).** Replay de los **1.758 informes**: los quince bits de botón siguen usos HID no consecutivos. El decodificador conserva ejes, estados nulos y diagnósticos, contrastados con el descriptor; los nombres físicos y la salida del puente siguen pendientes. [Evidencia](evidence/usb-hid-decoder-replay-phase81.json).
 
 **[Fase 80 — entrada HID física confirmada](docs/es/entrada-hid-campos-fase80.md).** En 30 segundos llegaron **1.758 informes, todos ID 3 y 11 bytes**, con variación de botones y seis campos analógicos. El mapeo de acciones físicas individuales sigue pendiente. [Evidencia](evidence/usb-hid-field-observations-phase80.json).
