@@ -26,6 +26,8 @@ WINDOWS={
     "A_candidate_last_block":(0x600621C0,0x60062220),
     "A_atomic_setup_after_table":(0x60062250,0x60062270),
     "A_atomic_and_enqueue":(0x6006226A,0x60062298),
+    "mode_activation_upstream":(0x60074772,0x600747B0),
+    "mode_activation_direct_B_initializer":(0x600747B0,0x60074818),
     "B_owner_initializer_predecessor":(0x6006B380,0x6006B400),
     "B_owner_initializer_and_callbacks":(0x6006B400,0x6006B450),
     "B_callback_storage_adjacent":(0x6006B450,0x6006B4B0),
@@ -167,6 +169,28 @@ def signed_pointer_refs(image,targets):
                   "thumb_value":hex(value),"role":"STATIC_WORD_NOT_RUNTIME_INVOCATION"})
     return out
 
+B_DIRECT_ACTIVATION_CALL_PINS={
+    0x600747B0:("mov","r0, r7"),
+    0x600747B2:("bl","#0x60060f28"),
+    0x600747D8:("bl","#0x6006b3e8"),
+}
+
+def verify_B_direct_activation_caller(image):
+    found={int(row["pc"],16):(row["m"],row["op"])
+           for row in code_rows(image,0x600747B0,0x60074800)}
+    for pc,expected in B_DIRECT_ACTIVATION_CALL_PINS.items():
+        if found.get(pc)!=expected:
+            raise ValueError(f"Phase77 signed activation->B initializer drift {pc:#x}: {found.get(pc)}")
+    return {
+        "original_signed_pins":len(B_DIRECT_ACTIVATION_CALL_PINS),
+        "phase66_mode_activation":"0x600747b2 BL 0x60060f28",
+        "direct_B_initializer":"0x600747d8 BL 0x6006b3e8",
+        "B_initializer_entry":"0x6006b3e8",
+        "callsite_R0_argument":"PENDING_LINEAGE_AUDIT",
+        "runtime_executed":"UNVERIFIED",
+        "host_USB_event_origin":"NOT_PROVEN",
+    }
+
 def audit(image):
     if len(image)!=IMAGE_SIZE or hashlib.sha256(image).hexdigest()!=IMAGE_SHA256:
         raise ValueError("Phase77 exact original Bruce OEM SHA-256 required")
@@ -175,6 +199,7 @@ def audit(image):
     shared=cross_check_phase66_shared_helper(image)
     n=verify_field_anchors(image)
     B_owner=verify_B_owner_state(image)
+    activation=verify_B_direct_activation_caller(image)
     windows=bounded_signed_windows(image)
     accesses=near_field_access_candidates(image)
     edges=direct_upstream_edges(image)
@@ -183,6 +208,7 @@ def audit(image):
         "phase":77,"signed_original_SHA256":IMAGE_SHA256,
         "original_SHA_verified":True,"signed_pin_count":n,
         "B_object_initializer_and_local_gate":B_owner,
+        "B_direct_activation_caller":activation,
         "candidate_function_pointer_literals":ptrs,
         "B_signed_function_initializer":B,
         "B_shared_helper":shared,
@@ -217,6 +243,7 @@ def main():
     print("PHASE77 FIELD_SHAPES",json.dumps(result["signed_byte_status_shape_candidates"]))
     print("PHASE77 DIRECT_BL",json.dumps(result["upstream_direct_BL_shapes"]))
     print("PHASE77 B_OWNER",json.dumps(result["B_object_initializer_and_local_gate"]))
+    print("PHASE77 B_ACTIVATION",json.dumps(result["B_direct_activation_caller"]))
     print("PHASE77 POINTERS",json.dumps(result["candidate_function_pointer_literals"]))
     print("PHASE77 EVIDENCE",json.dumps(result,separators=(",",":")))
     print("PHASE77 PHYSICAL USB ORIGIN UNPROVEN")
