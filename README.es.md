@@ -1,5 +1,7 @@
 # Investigación del mando Stadia
 
+**[Línea NXP, fase 85 — decisión sobre HAB `failsafe`](docs/es/nxp-hab-failsafe-decision-fase85.md).** Censo SHA-256 de Bruce firmado: **0 punteros directos y 0 saltos Thumb directos** al stub `failsafe` `0x60040726`. **52 pruebas sintéticas pasadas**. **NO-GO provisional** para seguir tratándolo como entrada de firmware propio o lector de versión ROM; las llamadas indirectas no quedan descartadas. [Evidencia](evidence/nxp-hab-failsafe-callers-phase85.json).
+
 **[Línea NXP, fase 84 — rutina OEM HAB `failsafe` verificada](docs/es/nxp-hab-rvt-literales-fase84.md).** Bruce firmado contiene dos literales `0x00200300`; **uno lo carga código original en `0x60040726` y salta mediante `+0x28`, slot `failsafe` de NXP**, no `get_version` (`+0x30`). No hay literal directo `get_version` en Bruce ni cargador RAM, pero eso no excluye llamadas calculadas. **Versión HAB real desconocida, sin bypass.** [Evidencia](evidence/nxp-hab-rvt-failsafe-phase84.json).
 
 **[Fase 83 — procedencia de la versión HAB ROM](docs/es/hab-rom-version-fase83.md).** NXP sitúa la tabla RVT del RT1060 en `0x00200300` y el slot `get_version` en `0x00200330`. El auditor SHA-256 de imágenes originales diferencia cabeceras IVT/CSF de la revisión de ROM, con pruebas offline. **No hay aún lectura del resultado real de `get_version`; la versión HAB del mando sigue desconocida y no se ha demostrado un bypass.** [Herramienta](tools/audit_hab_rom_version_phase83.py).
