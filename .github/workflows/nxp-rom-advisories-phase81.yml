@@ -258,10 +258,18 @@ jobs:
           assert l["unambiguous_selected_bit3_setters"] == 0
           assert l["complete_bootloader_writer_census"] is False
           assert b["confirmed_writers_of_gpr6_bit3"] == 0
+          writer=d["signed_bruce_status_writer"]
+          assert writer["target_register"] == "0x400f8038"
+          assert writer["signed_xip_instruction_site"] == "0x60078a28"
+          assert writer["pinned_thumb_bytes"] == "237a012b264b0cbf052206229a63"
+          assert writer["possible_written_values"] == [5,6]
+          assert writer["bit3_set_by_either_value"] is False
+          assert writer["runtime_execution_or_host_origin_confirmed"] is False
           assert d["device_connected"] is False and d["firmware_written"] is False
           print("Bruce signed GPR6 literal counts:",b["literal_counts"])
           print("Bruce candidate literal offsets:",[(x["file_offset"],x["constant"],x["syntactic_thumb_load_candidates"])
                 for x in b["literal_hits"]])
+          print("Signed Bruce 5/6 GPR6 writer:",writer)
           print("Pinned bootloader GPR6 accesses:",l["pinned_gpr6_accesses"])
           print("Selected STR [base + 0x38] shapes:",l["all_selected_str_offset_0x38_shapes"])
           print("No confirmed GPR6 update bit3 producer nor USB provenance.")
