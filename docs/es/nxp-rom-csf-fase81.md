@@ -34,6 +34,17 @@ python -m tools.audit_nxp_rom_advisories_phase81 local/restricted_ivt_flashloade
 python -m tools.audit_nxp_rom_advisories_phase81 local/bootloader-a.bin --sample bootloader_a --out local/bootloader-csf.json
 ```
 
+## Resultado original verificado por GitHub Actions
+
+[**Evidencia JSON de fase 81**](../../evidence/nxp-rom-csf-phase81.json) · [Ejecución reproducible](https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40554628963)
+
+| Archivo OEM SHA-256 verificado | DCD original | Comandos CSF | Comandos heredados peligrosos |
+|---|---|---|---:|
+| Aplicación Bruce prod | Nulo | INSTALL_KEY ×3, AUTHENTICATE_DATA ×2 | **0** |
+| Cargador firmado RAM | Nulo | INSTALL_KEY ×3, AUTHENTICATE_DATA ×2, UNLOCK ×1 | **0** |
+
+**Nuevo dato:** el CSF del cargador RAM incluye `UNLOCK`. No es por sí mismo un `WRITE_DATA` ni equivale a un desbloqueo de HAB. Su parámetro y efectos solo deberían estudiarse offline y con documentación NXP. El bootloader A extraído por el propietario aún **no** ha sido procesado por el nuevo auditor de fase 81; sus firmas ya se estudiaron con el verificador anterior.
+
 ## Evidencia que falta
 
 **Encontrar cero comandos antiguos en la imagen OEM original no prueba que la ROM rechace una imagen manipulada.** La vulnerabilidad investigada se refiere precisamente a validaciones de imágenes adicionales no confiables. La herramienta **no emula la ROM ni prueba vulnerabilidades**. Hay que identificar de forma independiente la versión HAB y las validaciones ROM efectivas.
