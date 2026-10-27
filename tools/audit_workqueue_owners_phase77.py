@@ -21,6 +21,7 @@ from tools.audit_workqueue_caller_provenance_phase76 import (
 WINDOWS={
     "A_candidate_prior_block":(0x60062040,0x600620C0),
     "A_candidate_middle_block":(0x600620C0,0x60062140),
+    "A_candidate_entry_prologue":(0x60062126,0x60062140),
     "A_candidate_late_block":(0x60062140,0x600621C0),
     "A_candidate_last_block":(0x600621C0,0x60062220),
     "A_atomic_setup_after_table":(0x60062250,0x60062270),
@@ -37,6 +38,7 @@ TARGETS={
     "B_initializer_candidate_6006b3e0":0x6006B3E0,
     "B_initializer_candidate_6006b400":0x6006B400,
     "A_candidate_entry_60062040":0x60062040,
+    "A_candidate_entry_60062126":0x60062126,
     "A_candidate_entry_60062140":0x60062140,
     "A_candidate_entry_600621c0":0x600621C0,
     "B_work_callback":B_ENTRY,
@@ -80,6 +82,9 @@ def direct_upstream_edges(image):
 
 def verify_field_anchors(image):
     expected={
+        0x60062126:("push","{r4, r5, r6, lr}"),
+        0x60062128:("mov","r5, r0"),
+        0x6006212C:("mov","r4, r2"),
         0x60062264:("uxtb","r0, r0"),
         0x60062266:("cmp","r0, #0xe"),
         0x60062268:("bne","#0x6006229e"),
@@ -95,7 +100,7 @@ def verify_field_anchors(image):
     0x6006B43E:("movs","r3, #1"),
     }
     mapping={}
-    for low,high in ((0x60062264,0x60062290),
+    for low,high in ((0x60062126,0x60062130),(0x60062264,0x60062290),
                      (0x6006B290,0x6006B2D0),
                      (0x6006B416,0x6006B424)):
         mapping.update({int(r["pc"],16):(r["m"],r["op"])
@@ -185,8 +190,8 @@ def audit(image):
         "signed_byte_status_shape_candidates":accesses,
         "upstream_direct_BL_shapes":edges,
         "decision":{
-            "A_R4_owner":"UNRESOLVED",
-            "A_R5_atomic_flag_origin":"UNRESOLVED",
+            "A_R4_owner":"LOCAL_PROVENANCE_R4_FROM_R2_AT_0x6006212C; caller of function unknown",
+            "A_R5_atomic_flag_origin":"LOCAL_PROVENANCE_R5_FROM_R0_AT_0x60062128; upstream object unknown",
             "B_R4_owner":"UNRESOLVED",
             "A_additional_gate":"0x60062266 CMP R0,#0x0E; 0x60062268 BNE skip producer",
             "B_status_writer_0x182":"NOT_PROVEN",
