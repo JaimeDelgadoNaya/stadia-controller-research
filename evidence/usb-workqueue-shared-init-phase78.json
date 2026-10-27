@@ -1,0 +1,114 @@
+{
+  "phase": 78,
+  "original_image_sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+  "exact_signed_OEM_verified": true,
+  "signed_initialization": {
+    "pinned_original_instructions": 16,
+    "mode_caller": {
+      "pc": "0x60060f34",
+      "original_argument_setup": "0x60060f28 R3=1; 0x60060f32 R0=R3",
+      "R0_when_calling_helper": 1
+    },
+    "B_initializer": {
+      "pc": "0x6006b400",
+      "original_argument_setup": "0x6006b3fe MOVS R0,#1",
+      "R0_when_calling_helper": 1
+    },
+    "helper": "0x6009267c",
+    "helper_action": "check [WorkQueue+0x58]; call original task creation helper only if no handle",
+    "queue_object_literal_PC": "0x60092698",
+    "queue_object": "0x2002014c",
+    "worker_label_literal_PC": "0x6009269c",
+    "worker_label_pointer": "0x6012f592",
+    "worker_label": "Work Queue Task",
+    "creation_callee": "0x6010177a"
+  },
+  "virtual_guard_cases": [
+    {
+      "seeded_existing_handle": false,
+      "virtual_handle_before": "0x0",
+      "instruction_pcs": [
+        "0x6009267c",
+        "0x6009267e",
+        "0x60092680",
+        "0x60092682",
+        "0x60092684",
+        "0x60092686",
+        "0x60092688",
+        "0x6010177a"
+      ],
+      "stop_before_creation": true,
+      "original_helper_returned_without_creation": false,
+      "r0_after": "0x2002014c",
+      "r1_after": "0x6012f592",
+      "r2_after": "0x1",
+      "handle_after": "0x0",
+      "creation_executed": false,
+      "scheduler_or_USB_executed": false
+    },
+    {
+      "seeded_existing_handle": true,
+      "virtual_handle_before": "0x20025000",
+      "instruction_pcs": [
+        "0x6009267c",
+        "0x6009267e",
+        "0x60092680",
+        "0x60092682",
+        "0x60092684",
+        "0x60092692",
+        "0x60092696",
+        "0x10000000"
+      ],
+      "stop_before_creation": false,
+      "original_helper_returned_without_creation": true,
+      "r0_after": "0x0",
+      "r1_after": "0x20025000",
+      "r2_after": "0x1",
+      "handle_after": "0x20025000",
+      "creation_executed": false,
+      "scheduler_or_USB_executed": false
+    }
+  ],
+  "prior_phase77_activation_join": {
+    "original_signed_pins": 8,
+    "phase66_mode_activation": "0x600747b2 BL 0x60060f28",
+    "direct_B_initializer": "0x600747d8 BL 0x6006b3e8",
+    "B_initializer_entry": "0x6006b3e8",
+    "callsite_R0_argument": "R0=R5 at 0x600747D6; original R5 += 0x3F04",
+    "phase66_modeled_input_GLOBAL": "0x200064c0",
+    "phase66_modeled_owner": "0x2000a2a8",
+    "modeled_B_object_under_phase66_input": "0x2000a3c4",
+    "modeled_B_object_equals_owner_plus_0x11C": true,
+    "physical_RAM_identity_measured": false,
+    "runtime_executed": "UNVERIFIED",
+    "host_USB_event_origin": "NOT_PROVEN"
+  },
+  "prior_phase76_shared_helper": {
+    "shared_target": "0x6009267c",
+    "phase66_prior_USB_mode_writer_caller": "0x60060f34",
+    "phase76_B_initializer_caller": "0x6006b400",
+    "two_signed_original_CALL_PCs": true,
+    "same_object_identity": "NOT_PROVEN",
+    "runtime_order_and_reachability": "NOT_PROVEN",
+    "USB_packet_to_callback_control": "NOT_PROVEN"
+  },
+  "interpretation": {
+    "helper_shared_because_global_WorkQueue": "CONSISTENT_WITH_SIGNED_CODE_AND_VIRTUAL_GUARD",
+    "USB_mode_call_must_imply_USB_host_event": false,
+    "B_initializer_call_must_imply_USB_host_event": false,
+    "proof_of_USB_physical_event_to_work_item": "NOT_ESTABLISHED",
+    "host_controlled_code_pointer": "NOT_DEMONSTRATED",
+    "A_producer_source": "UNRESOLVED",
+    "B_callback_original_OEM": "0x6006b291",
+    "signed_callback_call_executed": false,
+    "unsigned_execution_or_HAB_bypass": "NOT_DEMONSTRATED"
+  },
+  "limits": {
+    "USB_device_commands": false,
+    "live_RAM_readback": false,
+    "flash_or_eFuse_writes": false,
+    "queue_creation_or_message_delivery": false,
+    "runtime_mapped_USB_event": false,
+    "alternative_indirect_callers_or_aliases": "NOT_EXCLUDED"
+  }
+}
