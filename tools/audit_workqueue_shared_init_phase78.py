@@ -50,7 +50,7 @@ def signed_verification(image):
             (HELPER,0x60092698))
     found={}
     for start,end in pieces:
-        found.update({int(row["pc"],16):(row["m"],row["op"])
+        found.update({row["pc"]:(row["m"],row["op"])
                       for row in decode(image,start,end)})
     for pc,expected in PINS.items():
         if found.get(pc)!=expected:
