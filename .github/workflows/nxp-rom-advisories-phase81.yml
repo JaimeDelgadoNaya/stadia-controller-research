@@ -1,0 +1,331 @@
+name: Phase 81 original OEM CSF advisory audit
+
+on:
+  pull_request:
+    paths:
+      - 'tools/audit_nxp_rom_advisories_phase81.py'
+      - 'tests/test_nxp_rom_advisories_phase81.py'
+      - 'tools/audit_hab_unlock_phase82.py'
+      - 'tests/test_hab_unlock_phase82.py'
+      - 'tools/audit_hab_rom_version_phase83.py'
+      - 'tests/test_hab_rom_version_phase83.py'
+      - 'tools/audit_hab_rvt_literals_phase84.py'
+      - 'tests/test_hab_rvt_literals_phase84.py'
+      - 'tools/audit_hab_rvt_failsafe_phase84.py'
+      - 'tests/test_hab_rvt_failsafe_phase84.py'
+      - 'tools/audit_hab_failsafe_callers_phase85.py'
+      - 'tests/test_hab_failsafe_callers_phase85.py'
+      - 'tools/audit_bootloader_update_transaction_phase86.py'
+      - 'tests/test_bootloader_update_transaction_phase86.py'
+      - 'tools/audit_bootloader_update_trigger_phase87.py'
+      - 'tests/test_bootloader_update_trigger_phase87.py'
+      - 'tools/audit_src_gpr7_writers_phase88.py'
+      - 'tests/test_src_gpr7_writers_phase88.py'
+      - 'tools/triage_src_gpr7_thumb_phase88.py'
+      - 'tests/test_triage_src_gpr7_thumb_phase88.py'
+      - 'tools/audit_bruce_gpr7_status_phase88.py'
+      - 'tests/test_bruce_gpr7_status_phase88.py'
+      - '.github/workflows/nxp-rom-advisories-phase81.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pinned-oem-csf:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install offline decoder dependency
+        run: python -m pip install -r requirements.txt
+      - name: Synthetic offline regression tests
+        run: python -m unittest tests/test_nxp_rom_advisories_phase81.py tests/test_hab_unlock_phase82.py tests/test_hab_rom_version_phase83.py tests/test_hab_rvt_literals_phase84.py tests/test_hab_rvt_failsafe_phase84.py tests/test_hab_failsafe_callers_phase85.py tests/test_bootloader_update_transaction_phase86.py tests/test_bootloader_update_trigger_phase87.py tests/test_src_gpr7_writers_phase88.py tests/test_triage_src_gpr7_thumb_phase88.py tests/test_bruce_gpr7_status_phase88.py -v
+      - name: Retrieve exact archived signed OEM samples
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/stadia-nxp81
+          curl --fail --location --silent --show-error --retry 3 --max-time 60 \
+            'https://raw.githubusercontent.com/StadiaMemories/firmware/main/bruce_pvt_a_prod_signed.bin' \
+            -o /tmp/stadia-nxp81/bruce.bin
+          curl --fail --location --silent --show-error --retry 3 --max-time 60 \
+            'https://raw.githubusercontent.com/StadiaMemories/firmware/main/restricted_ivt_flashloader.bin' \
+            -o /tmp/stadia-nxp81/loader.bin
+          echo '466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3  /tmp/stadia-nxp81/bruce.bin' | sha256sum -c -
+          echo 'c39ea8962cc3094a9167ba80634f1ea0652b747b4572d1de2802d9f2f4e144c5  /tmp/stadia-nxp81/loader.bin' | sha256sum -c -
+      - name: Analyze signed CSF metadata without USB or firmware execution
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m tools.audit_nxp_rom_advisories_phase81 /tmp/stadia-nxp81/bruce.bin --sample bruce_prod --out /tmp/stadia-nxp81/bruce.json
+          python -m tools.audit_nxp_rom_advisories_phase81 /tmp/stadia-nxp81/loader.bin --sample restricted_ram_loader --out /tmp/stadia-nxp81/loader.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          for name in ('bruce', 'loader'):
+              v=json.loads(Path('/tmp/stadia-nxp81/'+name+'.json').read_text())
+              print(name, 'DCD null:', v['ivt']['dcd_is_null'],
+                    'CSF commands:', [q['name'] for q in v['csf']['commands']],
+                    'deprecated:', v['csf']['deprecated_count'],
+                    'unknown:', v['csf']['unknown_count'])
+              print('BootROM HAB version:', v['limits']['bootrom_hab_version'])
+          print('No physical sample testing, exploit attempt or code execution.')
+          PY
+      - name: Decode signed HAB UNLOCK flags with UID omitted
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m tools.audit_hab_unlock_phase82 /tmp/stadia-nxp81/loader.bin --sample restricted_ram_loader --out /tmp/stadia-nxp81/unlock-loader.json
+          python -m tools.audit_hab_unlock_phase82 /tmp/stadia-nxp81/bruce.bin --sample bruce_prod --out /tmp/stadia-nxp81/unlock-bruce.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          for name in ('unlock-loader','unlock-bruce'):
+              v=json.loads(Path('/tmp/stadia-nxp81/'+name+'.json').read_text())
+              print(name, 'count:', v['unlock_count'],
+                    'sanitized:', [(q['relative_csf_offset'],q['engine_code'],q['engine'],
+                                   q['feature_mask'],q['features'],q['unmapped_features_mask'],
+                                   q['has_uid_field']) for q in v['unlock_commands']])
+          loader=json.loads(Path('/tmp/stadia-nxp81/unlock-loader.json').read_text())
+          bruce=json.loads(Path('/tmp/stadia-nxp81/unlock-bruce.json').read_text())
+          assert loader['unlock_count']==1, 'Unexpected OEM RAM loader UNLOCK command count'
+          target=loader['unlock_commands'][0]
+          assert target['relative_csf_offset']=='0x48'
+          assert target['engine_code']=='0x21' and target['engine']=='OCOTP'
+          assert target['feature_mask']=='0x00000002'
+          assert target['features']==['SRK_REVOKE'] and target['unmapped_features_mask']=='0x00000000'
+          assert target['has_uid_field'] is False
+          assert bruce['unlock_count']==0, 'Unexpected Bruce OEM UNLOCK'
+          print('Pinned OEM OCOTP SRK_REVOKE UNLOCK metadata matches exact original.')
+          print('No fuse revocation, HAB bypass, custom execution, or live ROM behavior shown.')
+          PY
+      - name: Confirm signed-file version bytes cannot establish ROM HAB patch level
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m tools.audit_hab_rom_version_phase83 /tmp/stadia-nxp81/bruce.bin --sample bruce_prod --out /tmp/stadia-nxp81/hab-bruce.json
+          python -m tools.audit_hab_rom_version_phase83 /tmp/stadia-nxp81/loader.bin --sample restricted_ram_loader --out /tmp/stadia-nxp81/hab-loader.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          for sample in ('bruce','loader'):
+              data=json.loads(Path('/tmp/stadia-nxp81/hab-'+sample+'.json').read_text())
+              print(sample,'IVT header:',data['signed_file_versions']['ivt_header_version_byte'],
+                    'CSF header:',data['signed_file_versions']['csf_header_version_byte'])
+              assert data['signed_file_versions']['ivt_header_version_byte']=='0x41'
+              assert data['signed_file_versions']['csf_header_version_byte']=='0x42'
+              assert data['signed_file_versions']['these_bytes_are_exact_rom_hab_version'] is False
+              assert data['documented_rom_rvt']['get_version_pointer_slot']=='0x00200330'
+              assert data['operator_supplied_rvt_snapshot'] is None
+              assert data['actual_owner_bootrom_hab_version']=='UNKNOWN_NOT_MEASURED'
+          print('No owner ROM RVT evidence; no version or exploit inferred.')
+          PY
+      - name: Census ROM HAB RVT address literals in hash-pinned OEM samples
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m tools.audit_hab_rvt_literals_phase84 /tmp/stadia-nxp81/bruce.bin --sample bruce_prod --out /tmp/stadia-nxp81/rvt-bruce.json
+          python -m tools.audit_hab_rvt_literals_phase84 /tmp/stadia-nxp81/loader.bin --sample restricted_ram_loader --out /tmp/stadia-nxp81/rvt-loader.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          for sample in ('bruce','loader'):
+              data=json.loads(Path('/tmp/stadia-nxp81/rvt-'+sample+'.json').read_text())
+              assert data['sample'] in ('bruce_prod','restricted_ram_loader')
+              assert data['get_version_invocation_established'] is False
+              assert data['actual_rom_version_established'] is False
+              assert data['recognized_slot_words'] == len(data['literal_hits'])
+              print(sample,'RVT literal hits:',data['counts_by_slot'])
+              print(sample,'offsets:',[(v['file_offset'],v['slot_name'],v['word_alignment'])
+                                       for v in data['literal_hits']])
+              print(sample,'syntactic_thumb_literal_load_shapes:',[(v['file_offset'],v['syntactic_thumb_load_candidates']) for v in data['literal_hits']])
+          print('Raw constants only; not evidence of executed get_version call.')
+          PY
+      - name: Bounded Thumb decode near original Bruce RVT literal candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install -r requirements.txt
+          python - <<'PY'
+          from pathlib import Path
+          from capstone import Cs, CS_ARCH_ARM, CS_MODE_THUMB
+          data=Path('/tmp/stadia-nxp81/bruce.bin').read_bytes()
+          md=Cs(CS_ARCH_ARM, CS_MODE_THUMB)
+          for start,end in ((0x700,0x74c),(0x720,0x760),(0xcd1e0,0xcd226)):
+              print('Bounded original fragment:',hex(start),hex(end))
+              for ins in md.disasm(data[start:end],0x60040000+start):
+                  if (start==0x700 and ins.address-0x60040000 > 0x730):
+                      break
+                  print('  ',hex(ins.address),ins.mnemonic,ins.op_str)
+          print('Disassembly is local and may include data; code reachability unverified.')
+          PY
+      - name: Assert exact Google signed HAB failsafe ROM slot veneer
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m tools.audit_hab_rvt_failsafe_phase84 /tmp/stadia-nxp81/bruce.bin --out /tmp/stadia-nxp81/failsafe.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('/tmp/stadia-nxp81/failsafe.json').read_text())
+          f=d['finding']
+          assert f['thumb_sequence_xip_address']=='0x60040726'
+          assert f['signed_literal_file_offset']=='0x810'
+          assert f['signed_literal_value']=='0x00200300'
+          assert f['rvt_indirect_pointer_slot']=='0x00200328'
+          assert f['rvt_member_by_nxp_layout']=='failsafe'
+          assert f['get_version_called_by_this_sequence'] is False
+          print('Verified signed OEM Thumb HAB failsafe veneer:', f)
+          print('No live ROM execution or HAB version inferred.')
+          PY
+      - name: Survey possible direct and pointer callers of pinned HAB failsafe
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m tools.audit_hab_failsafe_callers_phase85 /tmp/stadia-nxp81/bruce.bin --out /tmp/stadia-nxp81/failsafe-callers.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('/tmp/stadia-nxp81/failsafe-callers.json').read_text())
+          assert d['original_sha256']=='466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3'
+          assert d['failsafe_veneer_entry']=='0x60040726'
+          assert d['confirmed_runtime_callers']==0
+          assert d['confirmed_usb_or_update_trigger'] is False
+          assert d['rom_version_measured'] is False
+          assert d['candidate_pointer_count']==len(d['raw_pointer_candidates'])
+          assert d['candidate_direct_branch_count']==len(d['decoded_direct_branch_candidates'])
+          print('Signed failsafe candidate pointer words:',d['raw_pointer_candidates'])
+          print('Direct Thumb branch candidates:',d['decoded_direct_branch_candidates'])
+          print('These are static shape matches only, with no call/reachability proof.')
+          PY
+      - name: Enforce original bootloader A IVT update authentication/rollback ordering
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m tools.audit_bootloader_update_transaction_phase86 --out /tmp/stadia-nxp81/transaction.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('/tmp/stadia-nxp81/transaction.json').read_text())
+          assert d['bootloader_sha256_in_source']=='59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0'
+          assert d['fixed_ivt_io_bytes']==4096
+          assert d['write_before_candidate_hab_final_validation'] is True
+          assert d['synthetic_state_combinations_checked']==256
+          assert d['unsigned_code_execution_established'] is False
+          assert d['physical_write_or_rollback_demonstrated'] is False
+          assert d['host_controls_update_state'] is False
+          print('Pinned transaction order:',d['transactional_order'])
+          print('Modeled gated paths:',sorted(d['synthetic_scenarios']))
+          print('Selected public disassembly source, not raw firmware or hardware.')
+          PY
+      - name: Assert GPR7 bit-3 update trigger and OEM-only callback parameters
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m tools.audit_bootloader_update_trigger_phase87 --out /tmp/stadia-nxp81/update-trigger.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('/tmp/stadia-nxp81/update-trigger.json').read_text())
+          assert d["gpr7_address"] == "0x400f8038"
+          assert d["gpr7_handler"]["masked_trigger"] == "0x08"
+          assert d["pinned_instruction_count"] == 31
+          assert d["pure_low_byte_cases"] == 256
+          assert d["pure_low_byte_cases_with_bit3"] == 128
+          a=d["source_of_update_wrapper_arguments"]
+          assert a["argument_r0_storage_context"] == "0x200095a8"
+          assert a["argument_r1_callback_thumb"] == "0x6080285d"
+          assert a["argument_r2_callback_context"] == "0x200090d8"
+          assert d["other_pinned_gpr7_writer"]["values"] == ["0x10", "0x20"]
+          assert d["undetermined"]["who_sets_gpr7_bit3"] == "UNKNOWN"
+          assert d["undetermined"]["usb_host_can_set_gpr7_bit3"] == "NOT_ESTABLISHED"
+          print("Original update trigger: GPR7 bit3 with signed fixed OEM arguments.")
+          print("NO proof of host USB control, caller trigger writer, or HAB bypass.")
+          PY
+      - name: Check SRC_GPR7 signed sources and public OEM literal candidates
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m tools.audit_src_gpr7_writers_phase88 --public-image /tmp/stadia-nxp81/bruce.bin --sample bruce_prod --out /tmp/stadia-nxp81/src-bruce.json
+          python -m tools.audit_src_gpr7_writers_phase88 --public-image /tmp/stadia-nxp81/loader.bin --sample restricted_ram_loader --out /tmp/stadia-nxp81/src-loader.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          for sample in ("bruce","loader"):
+              d=json.loads(Path("/tmp/stadia-nxp81/src-"+sample+".json").read_text())
+              assert d["nxp_register_map"]["gpr6"] == "0x400f8034"
+              assert d["nxp_register_map"]["gpr7"] == "0x400f8038"
+              s=d["selected_bootloader_a"]
+              assert s["selected_functions"] == 28
+              assert s["selected_instructions"] == 903
+              assert s["known_selected_stores_setting_bit3"] == 0
+              assert s["direct_store_count"] == 2
+              assert d["public_original"]["proven_direct_gpr7_writers"] == 0
+              assert d["public_original"]["proven_rom_or_usb_trigger_sources"] == 0
+              print("NXP SRC register-map correction; OEM sample:",sample,
+                    "candidate word totals:",d["public_original"]["counts_by_name"])
+              print("Candidate locations:",d["public_original"]["raw_constant_hits"])
+          print("No original complete bootloader rehash or real GPR7 activation.")
+          PY
+      - name: Check short straightline LDR to GPR7 STR shapes on public OEM files
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m tools.triage_src_gpr7_thumb_phase88 /tmp/stadia-nxp81/bruce.bin --sample bruce_prod --out /tmp/stadia-nxp81/triage-bruce.json
+          python -m tools.triage_src_gpr7_thumb_phase88 /tmp/stadia-nxp81/loader.bin --sample restricted_ram_loader --out /tmp/stadia-nxp81/triage-loader.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          for sample in ("bruce","loader"):
+              d=json.loads(Path("/tmp/stadia-nxp81/triage-"+sample+".json").read_text())
+              assert d["confirmed_reachable_bit3_writers"] == 0
+              assert not d["full_original_control_flow_or_rom_writers_included"]
+              print(sample, "potential base LDR instructions:",d["candidate_literal_ldr_encodings"])
+              print(sample, "syntactic SRC_GPR7 stores:",d["syntactic_store_count"])
+              print(sample, "store candidates:",d["syntactic_stores_to_src_gpr7"])
+          print("Instruction encoding shapes only: never proof of live application, ROM or host control.")
+          PY
+      - name: Inspect exact original Bruce Thumb context of possible GPR7 writer
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          from capstone import Cs,CS_ARCH_ARM,CS_MODE_THUMB
+          image=Path('/tmp/stadia-nxp81/bruce.bin').read_bytes()
+          cap=Cs(CS_ARCH_ARM,CS_MODE_THUMB)
+          for lo,hi in ((0x389e0,0x38a20),(0x38a20,0x38a50),(0x38a50,0x38a90)):
+              print('Original Bruce Thumb window',hex(lo),hex(hi))
+              print('Exact source bytes',image[lo:hi].hex())
+              for op in cap.disasm(image[lo:hi],0x60040000+lo):
+                  print(hex(op.address),op.bytes.hex(),op.mnemonic,op.op_str)
+          print('Disassembly is bounded and does not prove a live USB-triggered call.')
+          PY
+      - name: Pin original signed Bruce SRC_GPR7 status 5/6 writer and no update bit
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m tools.audit_bruce_gpr7_status_phase88 /tmp/stadia-nxp81/bruce.bin --out /tmp/stadia-nxp81/bruce-status-gpr7.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('/tmp/stadia-nxp81/bruce-status-gpr7.json').read_text())
+          f=d['finding']
+          assert f['site_start']=='0x60078a1c'
+          assert f['original_fragment_file_offset']=='0x38a1c'
+          assert f['fragment_thumb16_hex']=='237a012b264b0cbf052206229a63'
+          assert f['literal_file_offset']=='0x38abc'
+          assert f['computed_destination']=='0x400f8038'
+          assert [f['value_when_equal'],f['value_when_not_equal']]==[5,6]
+          assert not f['either_value_sets_bootloader_update_bit3']
+          assert f['host_usb_controls_condition']=='NOT_ESTABLISHED'
+          print('Exact signed original Bruce status GPR7 writer pinned:',f)
+          print('Values 5/6 do not set update bit 0x08. Physical trigger still unresolved.')
+          PY
+      - name: Delete temporary OEM images and reports
+        if: always()
+        run: rm -rf /tmp/stadia-nxp81

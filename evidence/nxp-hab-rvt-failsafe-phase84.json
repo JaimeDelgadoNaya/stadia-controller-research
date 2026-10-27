@@ -1,0 +1,79 @@
+{
+  "line": "nxp",
+  "phase": 84,
+  "date": "2026-10-27",
+  "kind": "original_firmware_hash_pinned_static_usb_independent_hab_rvt_analysis",
+  "originals": [
+    {
+      "sample": "bruce_prod",
+      "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+      "search_span": "0x000000..0xff02f",
+      "word_stride_bytes": 2,
+      "slot_literal_hits": [
+        {
+          "file_offset": "0x810",
+          "constant": "0x00200300",
+          "classification": "rvt_base",
+          "alignment": "4_byte",
+          "candidate_load_at": "0x726"
+        },
+        {
+          "file_offset": "0xcd224",
+          "constant": "0x00200300",
+          "classification": "rvt_base",
+          "alignment": "4_byte",
+          "candidate_load_at": null
+        }
+      ],
+      "get_version_slot_literal_hits": 0
+    },
+    {
+      "sample": "restricted_ram_loader",
+      "sha256": "c39ea8962cc3094a9167ba80634f1ea0652b747b4572d1de2802d9f2f4e144c5",
+      "search_span": "0x000000..0x16fff",
+      "word_stride_bytes": 2,
+      "slot_literal_hits": [],
+      "get_version_slot_literal_hits": 0
+    }
+  ],
+  "static_signed_bruce_veneer": {
+    "instruction_file_offset": "0x726",
+    "instruction_xip_address": "0x60040726",
+    "thumb16_encoded_bytes": "3a48816a0847",
+    "instructions": [
+      "LDR R0, [PC, #0xE8]",
+      "LDR R1, [R0, #0x28]",
+      "BX R1"
+    ],
+    "loaded_signed_literal": {
+      "offset": "0x810",
+      "value": "0x00200300"
+    },
+    "rom_pointer_slot": "0x00200328",
+    "rom_pointer_member": "failsafe",
+    "get_version_slot": "0x00200330",
+    "get_version_call_in_this_fragment": false,
+    "live_execution_observed": false,
+    "actual_rom_pointer_content_observed": false
+  },
+  "reference_for_rom_vector_layout": "https://github.com/nxp-mcuxpresso/sbl/blob/master/component/secure/semifunc/hab_rvt.c",
+  "reproducibility": {
+    "original_ci": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40567286976",
+    "synthetic_unit_tests_phases81_to84": 45,
+    "actual_code_bytes_asserted": true,
+    "hardware_connected": false,
+    "physical_hab_version_still_unknown": true,
+    "signed_code_execution_or_signature_bypass": false
+  },
+  "caveats": [
+    "Single literal+veneer is not a reachable host-triggered path",
+    "Two RVT base words are unproved executed except the separately pinned static sequence",
+    "Negative raw word census cannot exclude calculated or indirect calls",
+    "Bruce OEM update hash does not establish full installed-firmware identity",
+    "No ROM image, runtime RAM, OTP fuses, program writes or device I/O"
+  ],
+  "publication": {
+    "full_proprietary_images_in_repo": false,
+    "private_bootloader_uploaded": false
+  }
+}
