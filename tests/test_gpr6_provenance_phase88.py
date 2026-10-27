@@ -8,7 +8,9 @@ from unittest.mock import patch
 
 from tools.audit_gpr6_provenance_phase88 import (
     BRUCE_XIP_BASE,GPR6,GPR6_BASE,
-    audit,census_bootloader_selected,census_bruce_literals
+    BRUCE_WRITER_OFFSET,BRUCE_WRITER_BYTES,BRUCE_WRITER_LITERAL_OFFSET,
+    audit,census_bootloader_selected,census_bruce_literals,
+    decode_pinned_bruce_gpr6_status_writer
 )
 
 RECORD=Path(__file__).resolve().parents[1]/"evidence/bootloader-analysis.json"
@@ -19,6 +21,13 @@ def synthetic_image(*placements):
     data=bytearray(b"\xff"*(SPAN+64))
     for offset,constant in placements:
         struct.pack_into("<I",data,offset,constant)
+    return bytes(data)
+
+
+def synthetic_image_with_bruce_writer(*placements):
+    data=bytearray(synthetic_image(*placements))
+    data[BRUCE_WRITER_OFFSET:BRUCE_WRITER_OFFSET+len(BRUCE_WRITER_BYTES)]=BRUCE_WRITER_BYTES
+    struct.pack_into("<I",data,BRUCE_WRITER_LITERAL_OFFSET,GPR6_BASE)
     return bytes(data)
 
 
@@ -59,6 +68,34 @@ class GPR6ProvenancePhase88Tests(unittest.TestCase):
         self.assertFalse(c[0]["instruction_boundary_verified"])
         self.assertFalse(r["literal_hits"][0]["proven_gpr6_bit3_writer"])
 
+    def test_signed_bruce_status_writer_is_5_or_6_not_bit3(self):
+        d=decode_pinned_bruce_gpr6_status_writer(synthetic_image_with_bruce_writer())
+        self.assertEqual(d["target_register"],"0x400f8038")
+        self.assertEqual(d["possible_written_values"],[5,6])
+        self.assertFalse(d["bit3_set_by_either_value"])
+        self.assertTrue(d["verified_instruction_sequence"])
+        self.assertFalse(d["runtime_execution_or_host_origin_confirmed"])
+
+    def test_bruce_writer_mutations_and_wrong_base_rejected(self):
+        original=synthetic_image_with_bruce_writer()
+        for at in range(BRUCE_WRITER_OFFSET,BRUCE_WRITER_OFFSET+len(BRUCE_WRITER_BYTES)):
+            tampered=bytearray(original)
+            tampered[at]^=1
+            with self.subTest(byte_offset=hex(at)):
+                with self.assertRaisesRegex(ValueError,"pin mismatch"):
+                    decode_pinned_bruce_gpr6_status_writer(bytes(tampered))
+        wrong=bytearray(original)
+        struct.pack_into("<I",wrong,BRUCE_WRITER_LITERAL_OFFSET,GPR6)
+        with self.assertRaisesRegex(ValueError,"literal mismatch"):
+            decode_pinned_bruce_gpr6_status_writer(bytes(wrong))
+
+    def test_bruce_writer_report_is_not_usb_trigger(self):
+        with patch("tools.audit_gpr6_provenance_phase88.audit_signed_bruce",
+                   return_value={"sample_sha256":"synthetic-test-not-an-original"}):
+            d=audit(synthetic_image_with_bruce_writer(),self.record)
+        self.assertFalse(d["signed_bruce_status_writer"]["bit3_set_by_either_value"])
+        self.assertFalse(d["bootloader_selected_original"]["host_usb_writer_proven"])
+
     def test_bootloader_selected_has_clear_and_unrelated_status_only(self):
         r=census_bootloader_selected(self.record)
         self.assertEqual(r["unambiguous_selected_bit3_setters"],0)
@@ -89,7 +126,7 @@ class GPR6ProvenancePhase88Tests(unittest.TestCase):
     def test_no_unsupported_live_execution_claim(self):
         with patch("tools.audit_gpr6_provenance_phase88.audit_signed_bruce",
                    return_value={"sample_sha256":"synthetic-test-not-an-original"}):
-            r=audit(synthetic_image((0x100,GPR6)),self.record)
+            r=audit(synthetic_image_with_bruce_writer((0x100,GPR6)),self.record)
         self.assertFalse(r["device_connected"])
         self.assertFalse(r["firmware_written"])
         self.assertFalse(r["bootloader_selected_original"]["host_usb_writer_proven"])
