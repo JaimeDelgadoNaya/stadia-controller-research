@@ -80,6 +80,9 @@ def direct_upstream_edges(image):
 
 def verify_field_anchors(image):
     expected={
+        0x60062264:("uxtb","r0, r0"),
+        0x60062266:("cmp","r0, #0xe"),
+        0x60062268:("bne","#0x6006229e"),
         0x60062288:("add.w","r0, r4, #0x10"),
         0x6006228C:("bl","#0x600926a0"),
         0x6006B29C:("ldrb.w","r3, [r4, #0x182]"),
@@ -89,9 +92,10 @@ def verify_field_anchors(image):
         0x6006B416:("ldr","r3, [pc, #0x9c]"),
         0x6006B41C:("str.w","r4, [r4, #0x120]"),
         0x6006B420:("str.w","r3, [r4, #0x11c]"),
+    0x6006B43E:("movs","r3, #1"),
     }
     mapping={}
-    for low,high in ((0x60062288,0x60062290),
+    for low,high in ((0x60062264,0x60062290),
                      (0x6006B290,0x6006B2D0),
                      (0x6006B416,0x6006B424)):
         mapping.update({int(r["pc"],16):(r["m"],r["op"])
@@ -138,7 +142,7 @@ def verify_B_owner_state(image):
         "initializer_entry":"0x6006b3e8",
         "entry_R4_source":"R4=R0 at 0x6006b3f0",
         "pre_init_guard":"[R0+0x180] != 0 skips the main initializer",
-        "ready_flag_store":"0x6006b442 STRB 1,[R4+0x180]",
+        "ready_flag_store":"0x6006b43e MOVS R3,#1; 0x6006b442 STRB R3,[R4+0x180]",
         "signed_callback_method_store":"0x6006b420 STR.W signed_0x6006B291,[R4+0x11C]",
         "signed_callback_context_store":"0x6006b41c STR.W R4,[R4+0x120]",
         "runtime_callback_gate_read":"0x6006b29c LDRB R3,[R4+0x182]",
@@ -182,6 +186,7 @@ def audit(image):
             "A_R4_owner":"UNRESOLVED",
             "A_R5_atomic_flag_origin":"UNRESOLVED",
             "B_R4_owner":"UNRESOLVED",
+            "A_additional_gate":"0x60062266 CMP R0,#0x0E; 0x60062268 BNE skip producer",
             "B_status_writer_0x182":"NOT_PROVEN",
             "physical_USB_origin":"NOT_PROVEN",
             "class10_or_EP0_event_link":"NOT_PROVEN",
