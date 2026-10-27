@@ -35,6 +35,14 @@ Los bytes `0x608028B4–0x608028C6` confirman las cargas, escrituras temporales 
 
 **Consecuencia:** en esta secuencia, ni la dirección del callback ni el objeto de almacenamiento son valores recibidos directamente de un paquete USB. Son parámetros OEM. La procedencia del *bit de activación* continúa abierta.
 
+## Resultado validado
+
+[**Evidencia saneada de fase 87**](../../evidence/bootloader-update-trigger-phase87.json) · [Ejecución CI de la auditoría](https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40575899921) · [Suite general Python 3.11/3.12](https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40575899852).
+
+La ejecución automática confirma **31 instrucciones ancladas**, **256 combinaciones sintéticas** del byte bajo de GPR6 y **128 valores que activan el bit 3**. Han pasado **76 pruebas específicas acumuladas de fases NXP 81–87** y la suite general en ambas versiones de Python.
+
+**Interpretación operativa:** identificar el desencadenante no significa conocer quién lo escribe. No hay conexión probada entre un mensaje externo y `GPR6 & 0x08`. El siguiente estudio útil requiere el origen de ese bit en un binario completo verificado; sin él no corresponde simular control USB real.
+
 ## Reproducibilidad y límites
 
 - El [auditor](../../tools/audit_bootloader_update_trigger_phase87.py) exige **31 instrucciones originales ancladas** y que pase el auditor de transacción de fase 86.
