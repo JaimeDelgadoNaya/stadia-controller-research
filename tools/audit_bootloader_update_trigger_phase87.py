@@ -22,6 +22,7 @@ UPDATE_COORDINATOR = 0x60801DD4
 # BL destinations are pinned independently below.
 PINS = (
     (0x60802860,"294b","ldr","r3, [pc, #0xa4]",BASE,None),
+    (0x60802862,"0022","movs","r2, #0",None,None),
     (0x60802866,"9c6b","ldr","r4, [r3, #0x38]",None,None),
     (0x6080286A,"9a63","str","r2, [r3, #0x38]",None,None),
     (0x6080286C,"e4b2","uxtb","r4, r4",None,None),
