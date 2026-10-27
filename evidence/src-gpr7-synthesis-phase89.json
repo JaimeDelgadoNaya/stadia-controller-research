@@ -12,7 +12,22 @@
       "movw_src_lower_candidates": 1,
       "movt_high_0x400f_candidates": 0,
       "movw_movt_pairs": 0,
-      "possible_gpr7_stores": 0
+      "possible_gpr7_stores": 0,
+      "movw_candidate": {
+        "file_offset": "0x21e22",
+        "thumb_register": "r0",
+        "immediate": "0x8000",
+        "mapped_xip_address": "0x60061e22",
+        "six_signed_original_bytes": "48f200007047",
+        "instruction_semantics": [
+          "MOVW R0,#0x8000",
+          "BX LR"
+        ],
+        "local_context": "Nearby VABS/VCMP/VCVT floating point instructions",
+        "not_src_address_construction": true,
+        "not_gpr7_bit3_store": true,
+        "physical_reachability_measured": false
+      }
     },
     {
       "sample": "restricted_ram_loader",
@@ -57,15 +72,24 @@
     ]
   },
   "verification": {
-    "cumulative_nxp_synthetic_tests": 118,
+    "cumulative_nxp_synthetic_tests": 120,
     "original_ci": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40583595092",
     "parallel_workstream_ci": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40583594875",
-    "general_python_ci": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40583594965"
+    "general_python_ci": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40583594965",
+    "latest_source_pin_ci": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/pull/105/checks"
   },
   "safety": {
     "device_connected": false,
     "usb_commands_sent": false,
     "ram_flash_otp_written": false,
     "private_bootloader_binary_uploaded": false
+  },
+  "documentary_context": {
+    "nxp_rev3_manual": "https://www.pjrc.com/teensy/IMXRT1060RM_rev3.pdf",
+    "nxp_staff_register_qualification": "https://community.nxp.com/t5/i-MX-RT-Crossover-MCUs/SRC-GPRx-Register-Usage/m-p/1037773",
+    "register_reserved_to_rom": true,
+    "rom_may_not_use_every_reserved_gpr": true,
+    "rom_writes_bit3_proven": false,
+    "warm_reset_retention_proven": false
   }
 }
