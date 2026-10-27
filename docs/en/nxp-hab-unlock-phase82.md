@@ -14,4 +14,21 @@ python -m tools.audit_hab_unlock_phase82 local/restricted_ivt_flashloader.bin --
 python -m tools.audit_hab_unlock_phase82 local/bruce_pvt_a_prod_signed.bin --sample bruce_prod
 ```
 
+## Exact signed OEM result
+
+[Sanitized immutable evidence](../../evidence/nxp-hab-unlock-phase82.json) · [GitHub Actions verified original](https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40556380124)
+
+| CSF field | Original signed RAM loader | Signed Bruce |
+|---|---|---|
+| UNLOCK count | **1** | **0** |
+| Relative CSF offset | **0x48** | — |
+| Engine | **0x21 / OCOTP** | — |
+| Feature mask | **0x00000002** | — |
+| NXP feature | **SRK_REVOKE** | — |
+| UID field | **Absent** | — |
+
+The Google-authored CSF requests that ROM leave **OCOTP SRK revocation capability** unlocked after its exit. This is not an SRK revocation event, not evidence of free access to OTP fuses, and **does not disable HAB authentication**. Revoking SRKs would irreversibly alter trust configuration; no such operation is attempted.
+
+The dedicated CI asserts those actual pinned values so future changes cannot silently reinterpret the original. Sixteen phase81/82 synthetic tests passed; live OCOTP register/fuse state remains unmeasured.
+
 **Evidence boundary:** a signed CSF expresses vendor-intended post-ROM peripheral policy. This is not physical runtime register measurement, proof of the BootROM HAB version, control of ROM parsing, signature bypass or arbitrary code execution. CVE-2022-45163 concerns a separate ROM SDP memory disclosure question. No connected controller, USB requests, flash writes or eFuse access.
