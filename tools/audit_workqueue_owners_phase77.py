@@ -177,6 +177,8 @@ def audit(image):
     return {
         "phase":77,"signed_original_SHA256":IMAGE_SHA256,
         "original_SHA_verified":True,"signed_pin_count":n,
+        "B_object_initializer_and_local_gate":B_owner,
+        "candidate_function_pointer_literals":ptrs,
         "B_signed_function_initializer":B,
         "B_shared_helper":shared,
         "signed_bounded_owner_windows":windows,
