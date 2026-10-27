@@ -23,6 +23,8 @@ on:
       - 'tests/test_src_gpr7_writers_phase88.py'
       - 'tools/triage_src_gpr7_thumb_phase88.py'
       - 'tests/test_triage_src_gpr7_thumb_phase88.py'
+      - 'tools/audit_bruce_gpr7_status_phase88.py'
+      - 'tests/test_bruce_gpr7_status_phase88.py'
       - '.github/workflows/nxp-rom-advisories-phase81.yml'
   workflow_dispatch:
 
@@ -41,7 +43,7 @@ jobs:
       - name: Install offline decoder dependency
         run: python -m pip install -r requirements.txt
       - name: Synthetic offline regression tests
-        run: python -m unittest tests/test_nxp_rom_advisories_phase81.py tests/test_hab_unlock_phase82.py tests/test_hab_rom_version_phase83.py tests/test_hab_rvt_literals_phase84.py tests/test_hab_rvt_failsafe_phase84.py tests/test_hab_failsafe_callers_phase85.py tests/test_bootloader_update_transaction_phase86.py tests/test_bootloader_update_trigger_phase87.py tests/test_src_gpr7_writers_phase88.py tests/test_triage_src_gpr7_thumb_phase88.py -v
+        run: python -m unittest tests/test_nxp_rom_advisories_phase81.py tests/test_hab_unlock_phase82.py tests/test_hab_rom_version_phase83.py tests/test_hab_rvt_literals_phase84.py tests/test_hab_rvt_failsafe_phase84.py tests/test_hab_failsafe_callers_phase85.py tests/test_bootloader_update_transaction_phase86.py tests/test_bootloader_update_trigger_phase87.py tests/test_src_gpr7_writers_phase88.py tests/test_triage_src_gpr7_thumb_phase88.py tests/test_bruce_gpr7_status_phase88.py -v
       - name: Retrieve exact archived signed OEM samples
         shell: bash
         run: |
@@ -302,6 +304,27 @@ jobs:
               for op in cap.disasm(image[lo:hi],0x60040000+lo):
                   print(hex(op.address),op.bytes.hex(),op.mnemonic,op.op_str)
           print('Disassembly is bounded and does not prove a live USB-triggered call.')
+          PY
+      - name: Pin original signed Bruce SRC_GPR7 status 5/6 writer and no update bit
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m tools.audit_bruce_gpr7_status_phase88 /tmp/stadia-nxp81/bruce.bin --out /tmp/stadia-nxp81/bruce-status-gpr7.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('/tmp/stadia-nxp81/bruce-status-gpr7.json').read_text())
+          f=d['finding']
+          assert f['site_start']=='0x60078a1c'
+          assert f['original_fragment_file_offset']=='0x38a1c'
+          assert f['fragment_thumb16_hex']=='237a012b264b0cbf052206229a63'
+          assert f['literal_file_offset']=='0x38abc'
+          assert f['computed_destination']=='0x400f8038'
+          assert [f['value_when_equal'],f['value_when_not_equal']]==[5,6]
+          assert not f['either_value_sets_bootloader_update_bit3']
+          assert f['host_usb_controls_condition']=='NOT_ESTABLISHED'
+          print('Exact signed original Bruce status GPR7 writer pinned:',f)
+          print('Values 5/6 do not set update bit 0x08. Physical trigger still unresolved.')
           PY
       - name: Delete temporary OEM images and reports
         if: always()
