@@ -1,0 +1,58 @@
+name: Phase 81 original OEM CSF advisory audit
+
+on:
+  pull_request:
+    paths:
+      - 'tools/audit_nxp_rom_advisories_phase81.py'
+      - 'tests/test_nxp_rom_advisories_phase81.py'
+      - '.github/workflows/nxp-rom-advisories-phase81.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pinned-oem-csf:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Synthetic offline regression tests
+        run: python -m unittest tests/test_nxp_rom_advisories_phase81.py -v
+      - name: Retrieve exact archived signed OEM samples
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/stadia-nxp81
+          curl --fail --location --silent --show-error --retry 3 --max-time 60 \
+            'https://raw.githubusercontent.com/StadiaMemories/firmware/main/bruce_pvt_a_prod_signed.bin' \
+            -o /tmp/stadia-nxp81/bruce.bin
+          curl --fail --location --silent --show-error --retry 3 --max-time 60 \
+            'https://raw.githubusercontent.com/StadiaMemories/firmware/main/restricted_ivt_flashloader.bin' \
+            -o /tmp/stadia-nxp81/loader.bin
+          echo '466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3  /tmp/stadia-nxp81/bruce.bin' | sha256sum -c -
+          echo 'c39ea8962cc3094a9167ba80634f1ea0652b747b4572d1de2802d9f2f4e144c5  /tmp/stadia-nxp81/loader.bin' | sha256sum -c -
+      - name: Analyze signed CSF metadata without USB or firmware execution
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m tools.audit_nxp_rom_advisories_phase81 /tmp/stadia-nxp81/bruce.bin --sample bruce_prod --out /tmp/stadia-nxp81/bruce.json
+          python -m tools.audit_nxp_rom_advisories_phase81 /tmp/stadia-nxp81/loader.bin --sample restricted_ram_loader --out /tmp/stadia-nxp81/loader.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          for name in ('bruce', 'loader'):
+              v=json.loads(Path('/tmp/stadia-nxp81/'+name+'.json').read_text())
+              print(name, 'DCD null:', v['ivt']['dcd_is_null'],
+                    'CSF commands:', [q['name'] for q in v['csf']['commands']],
+                    'deprecated:', v['csf']['deprecated_count'],
+                    'unknown:', v['csf']['unknown_count'])
+              print('BootROM HAB version:', v['limits']['bootrom_hab_version'])
+          print('No physical sample testing, exploit attempt or code execution.')
+          PY
+      - name: Delete temporary OEM images and reports
+        if: always()
+        run: rm -rf /tmp/stadia-nxp81
