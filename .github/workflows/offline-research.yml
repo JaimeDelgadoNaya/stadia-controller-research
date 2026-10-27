@@ -26,3 +26,45 @@ jobs:
           python tools/model_ranges.py > /tmp/stadia-range-model.json
           python tools/emulate_range_check.py > /tmp/stadia-range-emulated.json
           python tools/emulate_storage.py > /tmp/stadia-storage-emulated.json
+
+  nxp-phase81-originals:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Retrieve public signed OEM samples after exact SHA-256 checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/stadia-nxp81
+          curl --fail --location --silent --show-error --retry 3 --max-time 60 \
+            'https://raw.githubusercontent.com/StadiaMemories/firmware/main/bruce_pvt_a_prod_signed.bin' \
+            -o /tmp/stadia-nxp81/bruce.bin
+          curl --fail --location --silent --show-error --retry 3 --max-time 60 \
+            'https://raw.githubusercontent.com/StadiaMemories/firmware/main/restricted_ivt_flashloader.bin' \
+            -o /tmp/stadia-nxp81/loader.bin
+          echo '466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3  /tmp/stadia-nxp81/bruce.bin' | sha256sum -c -
+          echo 'c39ea8962cc3094a9167ba80634f1ea0652b747b4572d1de2802d9f2f4e144c5  /tmp/stadia-nxp81/loader.bin' | sha256sum -c -
+      - name: Verify IVT and CSF offline; print metadata only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m tools.audit_nxp_rom_advisories_phase81 /tmp/stadia-nxp81/bruce.bin --sample bruce_prod --out /tmp/stadia-nxp81/bruce.json
+          python -m tools.audit_nxp_rom_advisories_phase81 /tmp/stadia-nxp81/loader.bin --sample restricted_ram_loader --out /tmp/stadia-nxp81/loader.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          for name in ('bruce','loader'):
+              v=json.loads(Path('/tmp/stadia-nxp81/'+name+'.json').read_text())
+              print(name, 'DCD null:',v['ivt']['dcd_is_null'],
+                    'commands:',[c['name'] for c in v['csf']['commands']],
+                    'deprecated:',v['csf']['deprecated_count'],
+                    'unknown:',v['csf']['unknown_count'])
+          print('ROM HAB version unknown; host-only file parsing.')
+          PY
+      - name: Delete temporary OEM files
+        if: always()
+        run: rm -rf /tmp/stadia-nxp81
