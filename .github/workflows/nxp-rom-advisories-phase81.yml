@@ -216,7 +216,7 @@ jobs:
           print('Modeled gated paths:',sorted(d['synthetic_scenarios']))
           print('Selected public disassembly source, not raw firmware or hardware.')
           PY
-      - name: Assert GPR6 bit-3 update trigger and OEM-only callback parameters
+      - name: Assert GPR7 bit-3 update trigger and OEM-only callback parameters
         shell: bash
         run: |
           set -euo pipefail
@@ -225,8 +225,8 @@ jobs:
           import json
           from pathlib import Path
           d=json.loads(Path('/tmp/stadia-nxp81/update-trigger.json').read_text())
-          assert d["gpr6_address"] == "0x400f8038"
-          assert d["gpr6_handler"]["masked_trigger"] == "0x08"
+          assert d["gpr7_address"] == "0x400f8038"
+          assert d["gpr7_handler"]["masked_trigger"] == "0x08"
           assert d["pinned_instruction_count"] == 31
           assert d["pure_low_byte_cases"] == 256
           assert d["pure_low_byte_cases_with_bit3"] == 128
@@ -234,10 +234,10 @@ jobs:
           assert a["argument_r0_storage_context"] == "0x200095a8"
           assert a["argument_r1_callback_thumb"] == "0x6080285d"
           assert a["argument_r2_callback_context"] == "0x200090d8"
-          assert d["other_pinned_gpr6_writer"]["values"] == ["0x10", "0x20"]
-          assert d["undetermined"]["who_sets_gpr6_bit3"] == "UNKNOWN"
-          assert d["undetermined"]["usb_host_can_set_gpr6_bit3"] == "NOT_ESTABLISHED"
-          print("Original update trigger: GPR6 bit3 with signed fixed OEM arguments.")
+          assert d["other_pinned_gpr7_writer"]["values"] == ["0x10", "0x20"]
+          assert d["undetermined"]["who_sets_gpr7_bit3"] == "UNKNOWN"
+          assert d["undetermined"]["usb_host_can_set_gpr7_bit3"] == "NOT_ESTABLISHED"
+          print("Original update trigger: GPR7 bit3 with signed fixed OEM arguments.")
           print("NO proof of host USB control, caller trigger writer, or HAB bypass.")
           PY
       - name: Delete temporary OEM images and reports
