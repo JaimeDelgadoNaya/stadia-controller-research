@@ -266,6 +266,23 @@ jobs:
           print("Selected STR [base + 0x38] shapes:",l["all_selected_str_offset_0x38_shapes"])
           print("No confirmed GPR6 update bit3 producer nor USB provenance.")
           PY
+      - name: Bounded Thumb context for signed Bruce SRC register-base literals
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from capstone import Cs, CS_ARCH_ARM, CS_MODE_THUMB
+          from pathlib import Path
+          data=Path('/tmp/stadia-nxp81/bruce.bin').read_bytes()
+          md=Cs(CS_ARCH_ARM,CS_MODE_THUMB)
+          windows=[(0x1f110,0x1f160),(0x1f166,0x1f188),(0x20440,0x204cc),
+                   (0x38a00,0x38abc),(0xfd420,0xfd454),(0xfd480,0xfd4ac)]
+          for start,end in windows:
+              print('BRUCE SRC CANDIDATE CONTEXT',hex(start),hex(end))
+              for ins in md.disasm(data[start:end],0x60040000+start):
+                  print('  ',hex(ins.address),ins.mnemonic,ins.op_str)
+          print('These are unverified local instruction windows; no runtime path asserted.')
+          PY
       - name: Delete temporary OEM images and reports
         if: always()
         run: rm -rf /tmp/stadia-nxp81
