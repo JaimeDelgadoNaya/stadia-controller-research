@@ -15,6 +15,8 @@ on:
       - 'tests/test_hab_rvt_failsafe_phase84.py'
       - 'tools/audit_hab_failsafe_callers_phase85.py'
       - 'tests/test_hab_failsafe_callers_phase85.py'
+      - 'tools/audit_bootloader_update_transaction_phase86.py'
+      - 'tests/test_bootloader_update_transaction_phase86.py'
       - '.github/workflows/nxp-rom-advisories-phase81.yml'
   workflow_dispatch:
 
@@ -33,7 +35,7 @@ jobs:
       - name: Install offline decoder dependency
         run: python -m pip install -r requirements.txt
       - name: Synthetic offline regression tests
-        run: python -m unittest tests/test_nxp_rom_advisories_phase81.py tests/test_hab_unlock_phase82.py tests/test_hab_rom_version_phase83.py tests/test_hab_rvt_literals_phase84.py tests/test_hab_rvt_failsafe_phase84.py tests/test_hab_failsafe_callers_phase85.py -v
+        run: python -m unittest tests/test_nxp_rom_advisories_phase81.py tests/test_hab_unlock_phase82.py tests/test_hab_rom_version_phase83.py tests/test_hab_rvt_literals_phase84.py tests/test_hab_rvt_failsafe_phase84.py tests/test_hab_failsafe_callers_phase85.py tests/test_bootloader_update_transaction_phase86.py -v
       - name: Retrieve exact archived signed OEM samples
         shell: bash
         run: |
@@ -191,6 +193,26 @@ jobs:
           print('Signed failsafe candidate pointer words:',d['raw_pointer_candidates'])
           print('Direct Thumb branch candidates:',d['decoded_direct_branch_candidates'])
           print('These are static shape matches only, with no call/reachability proof.')
+          PY
+      - name: Enforce original bootloader A IVT update authentication/rollback ordering
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m tools.audit_bootloader_update_transaction_phase86 --out /tmp/stadia-nxp81/transaction.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('/tmp/stadia-nxp81/transaction.json').read_text())
+          assert d['bootloader_sha256_in_source']=='59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0'
+          assert d['fixed_ivt_io_bytes']==4096
+          assert d['write_before_candidate_hab_final_validation'] is True
+          assert d['synthetic_state_combinations_checked']==256
+          assert d['unsigned_code_execution_established'] is False
+          assert d['physical_write_or_rollback_demonstrated'] is False
+          assert d['host_controls_update_state'] is False
+          print('Pinned transaction order:',d['transactional_order'])
+          print('Modeled gated paths:',sorted(d['synthetic_scenarios']))
+          print('Selected public disassembly source, not raw firmware or hardware.')
           PY
       - name: Delete temporary OEM images and reports
         if: always()
