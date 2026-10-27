@@ -1,6 +1,6 @@
 # Stadia Controller Research
 
-**[Phase 82 — interpreting HAB CSF UNLOCK](docs/en/nxp-hab-unlock-phase82.md).** Decoder for signed RAM loader's UNLOCK engine and feature mask, with synthetic tests and UID redaction. **UNLOCK affects selected peripheral access after BootROM; it does not disable HAB CLOSED or authorize custom code.** [Tool](tools/audit_hab_unlock_phase82.py).
+**[Phase 82 — interpreting HAB CSF UNLOCK](docs/en/nxp-hab-unlock-phase82.md).** **Pinned original finding:** signed RAM loader contains UNLOCK **OCOTP / SRK_REVOKE** (engine `0x21`, mask `0x00000002`, no UID), while Bruce has no UNLOCK. Offline CI/tests; no fuse access or HAB bypass. **UNLOCK affects selected peripheral access after BootROM; it does not disable HAB CLOSED or authorize custom code.** [Tool](tools/audit_hab_unlock_phase82.py).
 
 **[Phase 81 — NXP HAB/CSF and SDP security advisories](docs/en/nxp-rom-csf-phase81.md).** SHA-256-pinned offline IVT/CSF checker with synthetic tests and CI on two archived public signed OEM images. Separates additional-image HAB authentication advisory from CVE-2022-45163 (SDP information disclosure). **BootROM HAB version unknown; no custom execution, signature bypass, or recovery demonstrated.** [Tool](tools/audit_nxp_rom_advisories_phase81.py).
 
