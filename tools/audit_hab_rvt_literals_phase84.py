@@ -25,6 +25,43 @@ SLOTS = {
 MAX_HITS = 4096
 
 
+
+def thumb_pc_relative_ldr_candidates(image, literal_offset, *, lookback=1100):
+    """Find *syntactic* Thumb LDR-literal encodings targeting a known word.
+
+    16-bit T1 (0x4800) and 32-bit T2 (0xF8DF/0xF85F) are recognized
+    without disassembling or validating instruction boundaries. Therefore
+    findings remain untrusted code-candidate encodings, not true xrefs.
+    """
+    if not isinstance(image, bytes) or not 0 <= literal_offset < len(image):
+        raise ValueError("Invalid literal offset")
+    found = []
+    start = max(0, literal_offset - lookback)
+    start += start & 1
+    for at in range(start, literal_offset, 2):
+        if at + 2 > len(image):
+            break
+        hw = struct.unpack_from("<H", image, at)[0]
+        pc = (at + 4) & ~3
+        target, encoding = None, None
+        if (hw & 0xf800) == 0x4800:
+            target = pc + (hw & 0xff) * 4
+            encoding = "thumb16_ldr_literal_t1"
+        if at + 4 <= len(image) and (hw & 0xff7f) == 0xf85f:
+            second = struct.unpack_from("<H", image, at + 2)[0]
+            imm = second & 0x0fff
+            target = pc + imm if hw & 0x80 else pc - imm
+            encoding = "thumb32_ldr_literal_t2"
+        if target == literal_offset:
+            found.append({
+                "potential_instruction_file_offset": hex(at),
+                "encoding_shape": encoding,
+                "instruction_boundary_verified": False,
+                "executed_or_reachable": False,
+            })
+    return found
+
+
 def census_pre_csf_words(image, end):
     """Find exact little-endian RVT slot words at halfword-aligned offsets.
 
@@ -44,6 +81,7 @@ def census_pre_csf_words(image, end):
             "slot_name": SLOTS[address],
             "word_alignment": "4_byte" if at % 4 == 0 else "2_byte_only",
             "instruction_reference_confirmed": False,
+            "syntactic_thumb_load_candidates": thumb_pc_relative_ldr_candidates(image, at),
         })
         if len(hits) > MAX_HITS:
             raise ValueError("Too many RVT literal candidates")
@@ -80,7 +118,7 @@ def audit(image, sample):
             "A zero count does not rule out a calculated or indirect RVT access."
         ),
         "out_of_scope": [
-            "Thumb instruction reachability and actual uses of literal pools",
+            "Thumb instruction boundary/reachability and actual uses of literal pools",
             "MOVW/MOVT, address arithmetic and dynamic pointer tables",
             "Installed application identity or the physical BootROM version",
             "HAB bypass, arbitrary execution and firmware recovery",
