@@ -1,5 +1,7 @@
 # Stadia Controller Research
 
+**[Phase 86 — bootloader A IVT update authentication/rollback audit](docs/en/bootloader-update-transaction-phase86.md).** **31 published original Thumb instruction pins** confirm current bootloader HAB authentication, structural-only candidate precheck, IVT backup and an **attempted fixed 4096-byte IVT install before candidate post-write HAB authentication**. Restore is attempted on relevant errors; **power-loss atomicity/recovery is not established**. 256 synthetic state combinations; 64 cumulative NXP tests passed. **No unsigned execution or HAB bypass proven.** [Evidence](evidence/bootloader-update-transaction-phase86.json).
+
 **[NXP phase 85 — HAB `failsafe` decision](docs/en/nxp-hab-failsafe-decision-phase85.md).** SHA-256-pinned original signed Bruce scan finds **zero direct pointer words and zero directly decoded Thumb branches** to failsafe veneer `0x60040726`. **52 synthetic tests passed**. **Provisional NO-GO** for this stub as a custom-execution/ROM-version path; indirect callers remain unexcluded. [Evidence](evidence/nxp-hab-failsafe-callers-phase85.json).
 
 **[NXP research phase 84 — original OEM HAB `failsafe` veneer](docs/en/nxp-hab-rvt-literals-phase84.md).** Exact original signed Bruce Thumb bytes load RVT base `0x00200300` and branch through NXP **`failsafe` (`+0x28`)**, not `get_version` (`+0x30`). Two RVT base literals found in Bruce; no direct `get_version` word in Bruce or RAM loader. **No ROM version measurement or HAB bypass.** [Evidence](evidence/nxp-hab-rvt-failsafe-phase84.json).
