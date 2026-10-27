@@ -22,6 +22,23 @@ python -m tools.audit_hab_unlock_phase82 local/restricted_ivt_flashloader.bin --
 python -m tools.audit_hab_unlock_phase82 local/bruce_pvt_a_prod_signed.bin --sample bruce_prod --out local/bruce-unlock.json
 ```
 
+## Hallazgo confirmado en la imagen OEM original
+
+**[Evidencia JSON fijada](../../evidence/nxp-hab-unlock-phase82.json)** · [GitHub Actions con muestra SHA-pinned](https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40556380124)
+
+| Campo | Cargador RAM firmado | Bruce firmado |
+|---|---|---|
+| Número de comandos UNLOCK | **1** | **0** |
+| Offset dentro del CSF | **0x48** | — |
+| Selector de motor | **0x21: OCOTP** | — |
+| Máscara de funciones | **0x00000002** | — |
+| Nombre según NXP | **SRK_REVOKE** | — |
+| UID en el comando | **No** | — |
+
+**Interpretación precisa:** el CSF original de Google pide a HAB que **no bloquee la función de revocación SRK de OCOTP** al salir de ROM. No ejecuta una revocación; no prueba que un tercero pueda modificar los fusibles, y no cambia la necesidad de firma válida para arrancar la aplicación. La revocación SRK sería una modificación irreversible del estado de confianza y no debe ensayarse en el mando único.
+
+La CI ahora comprueba explícitamente estos seis campos sobre el archivo OEM de SHA-256 fijo; las 16 pruebas sintéticas de las fases 81/82 también han pasado. El estado real de OCOTP después del arranque sigue sin medirse.
+
 ## Interpretación
 
 La comprobación confirma únicamente lo que **solicita el CSF original autenticado**; no demuestra el comportamiento interno de BootROM ni el estado posterior de los registros de seguridad. El equipo físico analizado sigue en HAB CLOSED y no se conoce su versión de HAB. La cuestión de CVE-2022-45163 (potencial divulgación de memoria por SDP) es independiente; nada aquí demuestra firmware propio ni bypass de autenticación.
