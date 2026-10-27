@@ -21,6 +21,12 @@ Las parejas deben compartir registro y estar separadas por un máximo de 96 byte
 
 **118 pruebas sintéticas acumuladas NXP 81–89 superadas.** Han pasado también Python 3.11/3.12 y los cinco trabajos de validación en paralelo. Un MOVW aislado no construye por sí solo una dirección completa SRC.
 
+## Nota documental de NXP: reserva no equivale a escritor
+
+El [manual RT1060 Rev. 3, §21.6.11](https://www.pjrc.com/teensy/IMXRT1060RM_rev3.pdf) describe SRC_GPR7 en **0x400F8038**, con valor de reset documentado cero y reservado al uso de ROM. Sin embargo, [un empleado de NXP aclaró](https://community.nxp.com/t5/i-MX-RT-Crossover-MCUs/SRC-GPRx-Register-Usage/m-p/1037773) que **la ROM actual no utiliza necesariamente todos los SRC_GPR** y que se reservan también por compatibilidad con otras versiones o procesadores. No hay un nombre de función ni una máscara documentada de propósito especial para GPR7 bit 3 en estas fuentes. El valor de reset publicado **no establece por sí solo el resultado tras cada clase de reinicio cálido**.
+
+**Por tanto, ni la reserva de ROM ni la ausencia de MOVT demuestran quién escribe 0x08.**
+
 ## Decisión
 
 **NO-GO para seguir buscando esta forma concreta MOVW/MOVT en los dos archivos firmados examinados.** El escritor original conocido de Bruce en 0x60078A28 almacena 5 o 6 en SRC_GPR7 y **no establece bit 3 (0x08)**. El bootloader A sí lee ese bit antes de la ruta de actualización, pero el escritor real y cualquier influencia USB siguen desconocidos.
