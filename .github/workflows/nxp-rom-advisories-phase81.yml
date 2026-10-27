@@ -344,6 +344,14 @@ jobs:
               assert d['confirmed_gpr7_bit3_writer_count']==0
               assert d['movw_low_half_encodings']==(1 if label=='bruce' else 0)
               assert d['movw_candidates']==([{'file_offset':'0x21e22','reg':'r0','imm16':'0x8000'}] if label=='bruce' else [])
+              expected_return={'movw_offset':'0x21e22','mapped_xip_address':'0x60061e22','original_bytes':'48f200007047'}
+              if label=='bruce':
+                  frag=d['bruce_lone_movw_local_return']
+                  for key,value in expected_return.items():
+                      assert frag[key]==value
+                  assert frag['gpr7_bit3_write_proven'] is False
+              else:
+                  assert d['bruce_lone_movw_local_return'] is None
               assert d['movt_0x400f_encodings']==0
               assert d['pair_count']==0
               assert d['store_shape_count']==0
