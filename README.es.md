@@ -1,5 +1,7 @@
 # Investigación del mando Stadia
 
+**[Fase 83 — procedencia de la versión HAB ROM](docs/es/hab-rom-version-fase83.md).** NXP sitúa la tabla RVT del RT1060 en `0x00200300` y el slot `get_version` en `0x00200330`. El auditor SHA-256 de imágenes originales diferencia cabeceras IVT/CSF de la revisión de ROM, con pruebas offline. **No hay aún lectura del resultado real de `get_version`; la versión HAB del mando sigue desconocida y no se ha demostrado un bypass.** [Herramienta](tools/audit_hab_rom_version_phase83.py).
+
 **[Fase 82 — interpretación del comando HAB CSF UNLOCK](docs/es/nxp-hab-unlock-fase82.md).** **Hallazgo verificado:** el CSF del cargador RAM firmado contiene UNLOCK para **OCOTP / SRK_REVOKE** (motor `0x21`, máscara `0x00000002`, sin UID), mientras Bruce no contiene UNLOCK. CI y pruebas offline; no hay acceso a fusibles ni bypass HAB. **UNLOCK configura acceso posterior a determinados periféricos; no elimina HAB CLOSED ni valida firmware propio.** [Herramienta](tools/audit_hab_unlock_phase82.py).
 
 **[Fase 81 — vulnerabilidades NXP HAB/CSF y SDP](docs/es/nxp-rom-csf-fase81.md).** Auditor offline de IVT/CSF anclado a muestras SHA-256, con pruebas sintéticas y CI sobre dos imágenes OEM públicas. Distingue vulnerabilidad HAB en autenticación adicional de la CVE-2022-45163 (divulgación de memoria SDP). **Versión HAB ROM desconocida; sin ejecución propia, bypass ni recuperación demostrados.** [Herramienta](tools/audit_nxp_rom_advisories_phase81.py).
