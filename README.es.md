@@ -1,5 +1,7 @@
 # Investigación del mando Stadia
 
+**[Fase 89 — síntesis Thumb de direcciones SRC_GPR7](docs/es/src-gpr7-sintesis-fase89.md).** Análisis SHA-pinned de Bruce y cargador RAM: un MOVW candidato en Bruce, ningún MOVT de mitad alta 0x400F, **cero parejas MOVW/MOVT y cero escritores GPR7 derivados**. Pasaron 118 pruebas acumuladas; el origen de bit 0x08 sigue sin conocerse. [Evidencia](evidence/src-gpr7-synthesis-phase89.json).
+
 **Integración de investigación.** Las líneas USB y NXP/bootloader mantienen evidencias y pruebas independientes. Un análisis estático no demuestra ejecución física, acceso del host al actualizador ni elusión de HAB CLOSED. [Cinco líneas de trabajo](docs/es/investigacion-paralela.md).
 
 **[Fase 88 — corrección SRC_GPR7 y escritores del bit de actualización](docs/es/src-gpr7-escritores-fase88.md).** Según el manual NXP, `0x400F8038` es **SRC_GPR7**, no GPR6 (`0x400F8034`): corregida la fase 87. El corpus seleccionado del bootloader A contiene **dos escrituras atribuibles a GPR7**: borrado a `0`, y estado `0x10/0x20`, ninguna establece `0x08`. **Nuevo hallazgo en Bruce firmada:** una secuencia original en `0x60078A1C–0x60078A28` escribe **5 o 6 en SRC_GPR7**, ninguno establece el bit de actualización `0x08`. El verdadero escritor del bit 3 y el control USB siguen **sin probarse**. La auditoría verifica el SHA-256 OEM y los bytes Thumb. [Herramienta](tools/audit_src_gpr7_writers_phase88.py).
