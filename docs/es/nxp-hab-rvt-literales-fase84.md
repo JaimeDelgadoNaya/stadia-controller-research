@@ -37,6 +37,29 @@ python -m tools.audit_hab_rvt_literals_phase84 local/bootloader-a.bin --sample b
 
 El [workflow offline](../../.github/workflows/nxp-rom-advisories-phase81.yml) descarga temporalmente dos muestras públicas, comprueba los SHA-256 originales, ejecuta el censo y borra los archivos sin publicarlos. Las [pruebas sintéticas](../../tests/test_hab_rvt_literals_phase84.py) incluyen controles positivos, falsos positivos potenciales, límites de región, alineación, fallo ante hashes incorrectos y exceso de coincidencias.
 
+## Resultados originales verificados (NXP84)
+
+[**Evidencia exacta**](../../evidence/nxp-hab-rvt-failsafe-phase84.json) · [CI sobre dos binarios OEM con SHA-256 confirmado](https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40567286976).
+
+| Imagen firmada | Literales `RVT_BASE 0x00200300` | Literales directos `get_version 0x00200330` |
+|---|---:|---:|
+| **Bruce** | **2**, offsets `0x810` y `0xCD224` | **0** |
+| Cargador RAM firmado | **0** | **0** |
+
+La codificación Thumb compatible con la primera constante se ha contrastado **sobre las instrucciones OEM originales firmadas** (bytes exactos `3a48816a0847`, offset `0x726`):
+
+```asm
+0x60040726  LDR R0, [PC, #0xE8]  ; literal de 0x810 -> 0x00200300
+0x60040728  LDR R1, [R0, #0x28]  ; RVT slot 0x00200328
+0x6004072A  BX R1                 ; salto indirecto condicionado a entrar al stub
+```
+
+El **[código de referencia de NXP](https://github.com/nxp-mcuxpresso/sbl/blob/master/component/secure/semifunc/hab_rvt.c)** identifica el miembro `+0x28` como **`failsafe`**, seguido de `authenticate_image_no_dcd` en `+0x2C` y **`get_version` en `+0x30`**. Por tanto, **este bloque no consulta la versión HAB**; es una secuencia estática compatible con un salto al `failsafe` de ROM. Se han verificado bytes, direcciones y significado del slot, **no la ejecución real o alcanzabilidad desde USB**.
+
+La segunda constante de Bruce (`0xCD224`) no tiene una instrucción de carga literal compatible dentro de la ventana examinada, y no se le atribuye función ejecutada.
+
+La CI ha pasado las **45 pruebas sintéticas acumuladas de fases NXP 81–84** y los chequeos de las dos imágenes originales. El bootloader A extraído privadamente no ha sido analizado por este nuevo censo; conserva la cadena de autenticación documentada en fase 9.
+
 ## Límite de interpretación
 
 Hasta disponer de medición independiente de la versión ROM (tabla HAB + retorno real de `get_version`), el estado sigue siendo **HAB CLOSED medido, versión HAB desconocida**. No hay ejecución de código propio, aceptación de CSF modificado, vulnerabilidad explotable ni recuperación demostradas. Esta herramienta no se conecta al dispositivo ni escribe flash o eFuses.
