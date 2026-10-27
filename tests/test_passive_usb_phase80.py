@@ -1,9 +1,22 @@
 """Phase 80 synthetic-only tests: in-memory pairing of USB URB/IRP identifiers."""
+import csv
 import json
+from pathlib import Path
+from tempfile import TemporaryDirectory
 import unittest
 
-from tests.test_passive_usb_phase79 import PHASE61, PassiveUsbPhase79, urb
-from tools.audit_passive_usb_phase79 import FIELDS, urb_identifier
+from tools.audit_passive_usb_phase79 import FIELDS, audit, urb_identifier
+
+PHASE61 = {'hub': {
+    'device': '12010102ef020140d1180094000101020301',
+    'configuration': ('0902500002010080fa080b0001ff0000000904000002ff00000007058702000200'
+                      '07050702000200080b01010300000009040100020300000009211101000122b600'
+                      '0705830340000607050303400006'),
+}}
+
+
+def urb(bus='1', address='4', endpoint='0x07', kind='S', data_len='5'):
+    return dict(zip(FIELDS[:5], (bus, address, endpoint, kind, data_len)))
 
 
 def event(kind='S', ep='0x07', urb_id='', irp_id='', bus='1', address='4'):
@@ -12,11 +25,14 @@ def event(kind='S', ep='0x07', urb_id='', irp_id='', bus='1', address='4'):
 
 
 class PassiveUsbPhase80(unittest.TestCase):
-    def setUp(self):
-        self.fixture = PassiveUsbPhase79()
-
     def run_rows(self, rows, headers=FIELDS):
-        return self.fixture.run_rows(rows, headers=headers, phase61=PHASE61)
+        with TemporaryDirectory() as d:
+            path = Path(d) / 'events.csv'
+            with path.open('w', encoding='utf-8', newline='') as stream:
+                writer = csv.DictWriter(stream, fieldnames=headers)
+                writer.writeheader()
+                writer.writerows(rows)
+            return audit(path, PHASE61, bus=1, address=4)
 
     def test_paired_complete_error_and_reused_identifier(self):
         rows = [
