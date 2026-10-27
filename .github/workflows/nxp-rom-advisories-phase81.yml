@@ -287,6 +287,22 @@ jobs:
               print(sample, "store candidates:",d["syntactic_stores_to_src_gpr7"])
           print("Instruction encoding shapes only: never proof of live application, ROM or host control.")
           PY
+      - name: Inspect exact original Bruce Thumb context of possible GPR7 writer
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          from capstone import Cs,CS_ARCH_ARM,CS_MODE_THUMB
+          image=Path('/tmp/stadia-nxp81/bruce.bin').read_bytes()
+          cap=Cs(CS_ARCH_ARM,CS_MODE_THUMB)
+          for lo,hi in ((0x389e0,0x38a20),(0x38a20,0x38a50),(0x38a50,0x38a90)):
+              print('Original Bruce Thumb window',hex(lo),hex(hi))
+              print('Exact source bytes',image[lo:hi].hex())
+              for op in cap.disasm(image[lo:hi],0x60040000+lo):
+                  print(hex(op.address),op.bytes.hex(),op.mnemonic,op.op_str)
+          print('Disassembly is bounded and does not prove a live USB-triggered call.')
+          PY
       - name: Delete temporary OEM images and reports
         if: always()
         run: rm -rf /tmp/stadia-nxp81
