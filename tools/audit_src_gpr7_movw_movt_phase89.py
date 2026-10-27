@@ -18,6 +18,33 @@ from tools.audit_src_gpr7_writers_phase88 import SRC_BASE, SRC_GPR6, SRC_GPR7
 # Target only documented i.MX RT1060 SRC register constants.
 LOW_HALVES = {0x8000: SRC_BASE, 0x8034: SRC_GPR6, 0x8038: SRC_GPR7}
 HIGH_HALF = 0x400F
+BRUCE_LONE_MOVW_OFFSET = 0x21E22
+BRUCE_LONE_MOVW_RETURN_BYTES = bytes.fromhex("48f200007047")
+
+
+def classify_bruce_lone_movw(image):
+    """Verify exact original MOVW R0,#0x8000 followed immediately by BX LR.
+
+    This classifies only six signed static bytes; not a full function CFG.
+    Original whole-file SHA-256 must be checked by the caller before using
+    this fact as evidence about any original Google firmware.
+    """
+    if not isinstance(image,bytes) or len(image)<BRUCE_LONE_MOVW_OFFSET+6:
+        raise ValueError("Bruce MOVW return evidence truncated")
+    if image[BRUCE_LONE_MOVW_OFFSET:BRUCE_LONE_MOVW_OFFSET+6] != BRUCE_LONE_MOVW_RETURN_BYTES:
+        raise ValueError("Original Bruce MOVW-return bytes mismatch")
+    return {
+        "movw_offset":"0x21e22",
+        "mapped_xip_address":"0x60061e22",
+        "original_bytes":BRUCE_LONE_MOVW_RETURN_BYTES.hex(),
+        "static_instructions":["MOVW R0, #0x8000","BX LR"],
+        "local_movt_after_movw":False,
+        "interpretation":"Signed local instruction sequence constructs a scalar return value, not the full SRC peripheral address.",
+        "control_flow_reachability_proven":False,
+        "gpr7_bit3_write_proven":False,
+    }
+
+
 PAIR_WINDOW = 96
 STORE_WINDOW = 96
 MAX_ITEMS = 4096
@@ -132,6 +159,7 @@ def audit(image, sample):
     verified=audit_original(image,sample)  # exact original SHA, IVT and CSF first
     findings=analyze_encodings(image,SAMPLES[sample]["csf"])
     return {"research_phase":89,"sample":sample,"original_sha256":verified["sample_sha256"],
+            "bruce_lone_movw_local_return":classify_bruce_lone_movw(image) if sample=="bruce_prod" else None,
             "questions":"Are any 0x400F8xxx SRC addresses synthesized via Thumb MOVW/MOVT and stored through directly?",
             **findings,
             "device_io":False,"physical_execution":False,"custom_firmware_execution":False,
