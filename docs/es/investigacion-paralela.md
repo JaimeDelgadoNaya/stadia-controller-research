@@ -24,6 +24,16 @@ Cada conclusión debe decir si procede de **medición física**, **binario OEM v
 
 La [CI de líneas paralelas](../../.github/workflows/research-workstreams.yml) ejecuta matrices de pruebas sintéticas independientes para A–E; esto no equivale a desplegar LLMs ni a activar trabajos persistentes en segundo plano. La [CI principal](../../.github/workflows/offline-research.yml) mantiene Python 3.11/3.12 y la [auditoría de originales](../../.github/workflows/nxp-rom-advisories-phase81.yml) valida archivos OEM públicos por SHA-256.
 
+## Nuevas prioridades después de la fase 90 (27-10-2026)
+
+Los cinco ámbitos originales siguen vigentes, pero se añaden tres tareas subordinadas de investigación que **no son agentes autónomos activos**:
+
+- **Gotham/Wi-Fi local:** [#107](https://github.com/JaimeDelgadoNaya/stadia-controller-research/issues/107) — obtener un gist por revisión y hash, auditar BLE/credenciales y construir pruebas sintéticas sin tocar el mando. El script no está auditado todavía.
+- **Recuperación Flash:** [#108](https://github.com/JaimeDelgadoNaya/stadia-controller-research/issues/108) — estudiar offline la matriz de modos, FCB y posibilidad real de recuperación. Las herramientas de Gary escriben registros FlexSPI incluso cuando extraen flash: no realizarlo en el único mando.
+- **NCC/NXP HAB:** [#109](https://github.com/JaimeDelgadoNaya/stadia-controller-research/issues/109) — comprobar precondiciones de la vulnerabilidad DCD/CSF y versión ROM; no atribuir el exploit de i.MX6ULL a Stadia sin pruebas.
+
+La [auditoría de fase 90](investigaciones-externas-fase90.md) y su [CI con tres comprobaciones](../../.github/workflows/external-research-phase90.yml) fijan los límites. GitHub Actions verifica fuentes públicas y pruebas sintéticas, **no ejecuta investigación autónoma persistente**.
+
 ## Política de riesgo
 
 - Sin escribir flash/IVT, registros físicos o eFuses en el único mando; sin inyección de fallos ni cortes de alimentación.

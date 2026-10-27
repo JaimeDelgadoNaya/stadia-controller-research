@@ -1,0 +1,74 @@
+name: Phase 90 external research evidence gates
+
+on:
+  pull_request:
+    paths:
+      - 'tools/audit_external_research_phase90.py'
+      - 'tests/test_external_research_phase90.py'
+      - 'evidence/external-research-phase90.json'
+      - '.github/workflows/external-research-phase90.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'tools/audit_external_research_phase90.py'
+      - 'tests/test_external_research_phase90.py'
+      - '.github/workflows/external-research-phase90.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  study-lanes:
+    name: ${{ matrix.lane }} · external evidence controls
+    strategy:
+      fail-fast: false
+      matrix:
+        lane: [gotham-evidence, hab-applicability, recovery-source]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run fail-closed original provenance tests
+        run: python -m unittest tests.test_external_research_phase90 -v
+      - name: Cross-check public recovery source against exact commit
+        if: matrix.lane == 'recovery-source'
+        shell: bash
+        run: |
+          set -euo pipefail
+          root=/tmp/stadia-external-recovery90
+          mkdir -p "$root/stadiatool"
+          upstream=1396830b449eee10e4d4de047c8db75d503f4ba3
+          for name in stadiatool.py flashloader.py sdp.py; do
+            curl --fail --location --silent --show-error --retry 3 --max-time 45 \
+              "https://raw.githubusercontent.com/GaryOderNichts/StadiaController/$upstream/stadiatool/$name" \
+              -o "$root/stadiatool/$name"
+          done
+          python -m tools.audit_external_research_phase90 --upstream-dir "$root" \
+            --out /tmp/stadia-external-recovery90-evidence.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          result=json.loads(Path('/tmp/stadia-external-recovery90-evidence.json').read_text())
+          recovery=result['recovery']
+          hab=result['nxp_hab']
+          gotham=result['gotham_wifi']
+          assert recovery['dump_command_actually_writes_flexspi_registers'] is True
+          assert recovery['dump_is_entirely_passive'] is False
+          assert recovery['safe_recovery_after_power_failure_proven'] is False
+          assert recovery['script_has_legacy_gpr_label']['verified_nxp_register_name']=='SRC_GPR7'
+          assert hab['known_stadia_bootloader_api']=='authenticate_image_no_dcd'
+          assert hab['owner_rom_hab_patch_version']=='UNKNOWN_NOT_MEASURED'
+          assert gotham['python_gist_source_code_audited_in_this_phase'] is False
+          assert gotham['credential_input_or_storage'] is False
+          print('Source identities:',recovery['verified_source_blobs'])
+          print('Recovery register writes and firmware erase endpoints: confirmed in upstream text.')
+          print('HAB preconditions only, no controller exploit/firmware accepted.')
+          print('Gotham Oct26 author report only; no Wi-Fi credentials accessed.')
+          PY
+      - name: Delete temporary public recovery source
+        if: always()
+        run: rm -rf /tmp/stadia-external-recovery90 /tmp/stadia-external-recovery90-evidence.json
