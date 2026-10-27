@@ -1,4 +1,4 @@
-"""Phase 87: bounded OEM GPR6 bit-3 -> bootloader A update entry provenance.
+"""Phase 87: bounded OEM GPR7 bit-3 -> bootloader A update entry provenance.
 
 Uses selected disassembly records previously extracted from owner bootloader A,
 not a raw firmware image. No real hardware, USB or flash interaction.
@@ -74,7 +74,7 @@ def validate(evidence):
 def flag_model(value):
     """Pure bit-test model. Never treats its flags as host-controlled."""
     if isinstance(value,bool) or not isinstance(value,int) or not 0<=value<=0xffffffff:
-        raise ValueError("Expected unsigned 32-bit GPR6 state")
+        raise ValueError("Expected unsigned 32-bit GPR7 state")
     snapshot=value&0xff  # original UXTB before LSLS #0x1c
     return {"register_value":f"0x{value:08x}",
             "low_byte_after_uxtb":f"0x{snapshot:02x}",
@@ -97,8 +97,8 @@ def audit(evidence):
        "reported_original_image_sha256":evidence["sha256"],
        "raw_original_binary_rehashed_this_phase":False,
        "pinned_instruction_count":len(PINS),
-       "gpr6_address":f"0x{REGISTER:08x}",
-       "gpr6_handler":{
+       "gpr7_address":f"0x{REGISTER:08x}",
+       "gpr7_handler":{
            "read_site":"0x60802866","clear_site":"0x6080286a",
            "low_byte_site":"0x6080286c",
            "bit_test_site":"0x608028b0",
@@ -116,7 +116,7 @@ def audit(evidence):
            "calls_constructor":"0x60801cc8",
            "calls_coordinator":"0x60801dd4",
        },
-       "other_pinned_gpr6_writer":{
+       "other_pinned_gpr7_writer":{
            "site":"0x60801f14",
            "values":["0x10","0x20"],
            "meaning":"application-validation failure status bits; not update trigger bit3",
@@ -126,14 +126,14 @@ def audit(evidence):
        "pure_low_byte_cases_with_bit3":sum(s["update_trigger_bit3_set"] for s in states),
        "examples":{f"0x{n:02x}":flag_model(n) for n in (0x00,0x01,0x04,0x08,0x10,0x18,0x20,0x28,0x80)},
        "undetermined":{
-           "who_sets_gpr6_bit3":"UNKNOWN",
-           "usb_host_can_set_gpr6_bit3":"NOT_ESTABLISHED",
-           "gpr6_persistence_across_reboot":"NOT_MEASURED",
+           "who_sets_gpr7_bit3":"UNKNOWN",
+           "usb_host_can_set_gpr7_bit3":"NOT_ESTABLISHED",
+           "gpr7_persistence_across_reboot":"NOT_MEASURED",
            "physically_executed_update":"NOT_OBSERVED",
            "signature_bypass":"NOT_DEMONSTRATED",
            "full_bootloader_writer_census":"NOT_PERFORMED",
        },
-       "decision":"GO_OFFLINE_FOR_GPR6_BIT3_WRITER_PROVENANCE; NO_GO_FOR_FLASH_EXPERIMENT",
+       "decision":"GO_OFFLINE_FOR_GPR7_BIT3_WRITER_PROVENANCE; NO_GO_FOR_FLASH_EXPERIMENT",
        "device_io":False,"firmware_or_fuse_writes":False
     }
 
