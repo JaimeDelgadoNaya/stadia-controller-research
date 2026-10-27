@@ -15,6 +15,7 @@ from pathlib import Path
 
 from tools.audit_bootloader_update_trigger_phase87 import validate as pin_phase87
 from tools.audit_nxp_rom_advisories_phase81 import SAMPLES, audit as pin_phase81
+from tools.audit_hab_rvt_literals_phase84 import thumb_pc_relative_ldr_candidates
 
 SRC_BASE = 0x400F8000
 SRC_GPR6 = SRC_BASE + 0x34  # NXP i.MX RT1060 RM Rev 3 §21.6.10
@@ -119,6 +120,7 @@ def raw_src_constant_census(image, boundary):
                 "alignment":"word_aligned" if at%4==0 else "halfword_only",
                 "writer_reachable_or_executed":False,
                 "instruction_xref_proven":False,
+                "syntactic_thumb_pc_ldr_candidates":thumb_pc_relative_ldr_candidates(image,at),
             })
             if len(hits)>MAX_MATCHES:
                 raise ValueError("Excessive SRC literal matches")
