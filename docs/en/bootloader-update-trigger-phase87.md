@@ -29,6 +29,12 @@ The wrapper `0x60801ED0` calls the constructor `0x60801CC8`, which resolves stor
 
 A separate original selected writer at `0x60801F14` stores only **`0x10` or `0x20`** to the same GPR6 register for app validation failure. Neither sets bit 3. **This is not a whole-image writer census.** We do not know which component writes bit 3, whether the value survives reboot, or whether any USB command can set it.
 
+## Verified offline results
+
+[Sanitized evidence](../../evidence/bootloader-update-trigger-phase87.json) · [Dedicated CI](https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40575899921) · [General Python 3.11/3.12 CI](https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40575899852).
+
+The original-disassembly gate confirms **31 pinned instructions**, and the 256 synthetic low-byte GPR6 values contain exactly **128 states with bit 3 set**. **76 specific phase81–87 regression tests passed**, along with the general Python test suites. **No caller or writer of the actual hardware bit has been established.**
+
 ## Evidence and decision
 
 The [auditor](../../tools/audit_bootloader_update_trigger_phase87.py) pins **31 selected original Thumb instructions** and reuses phase86 transaction validation. [Synthetic tests](../../tests/test_bootloader_update_trigger_phase87.py) cover all 256 low-byte flag states, exact internal arguments and fail-closed mutations. The source is a published *selected disassembly*, not an independently rehashed original binary or observed physical execution.
