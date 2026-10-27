@@ -1,5 +1,7 @@
 # Stadia Controller Research
 
+**[Phase 81 — offline HID decoder](docs/en/offline-hid-decoder-phase81.md).** Replay of **1,758 reports** handles the nonconsecutive HID button usages, raw axes, null states and diagnostics. Descriptor cross-checks validate parsing; physical labels and bridge output remain pending. [Evidence](evidence/usb-hid-decoder-replay-phase81.json).
+
 **[Phase 80 — physical HID input confirmed](docs/en/hid-input-fields-phase80.md).** A 30-second window delivered **1,758 reports, all ID 3 and 11 bytes**, with changing buttons and six analog fields. Individual physical control assignments remain unresolved. [Evidence](evidence/usb-hid-field-observations-phase80.json).
 
 **[Phase 79 — physical HID observation](docs/en/hid-observation-phase79.md).** A 10-second input read of the connected controller received **zero reports**. Without requested button actions this does not distinguish inactivity, mode or failure. This is not a bus capture or evidence of a Work Queue link. [Evidence](evidence/usb-live-hid-input-phase79.json).

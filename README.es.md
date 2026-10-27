@@ -1,5 +1,7 @@
 # Investigación del mando Stadia
 
+**[Fase 81 — decodificador HID offline](docs/es/decodificador-hid-offline-fase81.md).** Replay de los **1.758 informes**: los quince bits de botón siguen usos HID no consecutivos. El decodificador conserva ejes, estados nulos y diagnósticos, contrastados con el descriptor; los nombres físicos y la salida del puente siguen pendientes. [Evidencia](evidence/usb-hid-decoder-replay-phase81.json).
+
 **[Fase 80 — entrada HID física confirmada](docs/es/entrada-hid-campos-fase80.md).** En 30 segundos llegaron **1.758 informes, todos ID 3 y 11 bytes**, con variación de botones y seis campos analógicos. El mapeo de acciones físicas individuales sigue pendiente. [Evidencia](evidence/usb-hid-field-observations-phase80.json).
 
 **[Fase 79 — observación física HID](docs/es/observacion-hid-fase79.md).** Una lectura de 10 segundos del mando conectado recibió **cero informes**. Sin pulsaciones solicitadas, el resultado no distingue inactividad, modo o fallo. No es una captura del bus ni demuestra un enlace con Work Queue. [Evidencia](evidence/usb-live-hid-input-phase79.json).
