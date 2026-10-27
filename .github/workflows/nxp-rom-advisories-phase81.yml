@@ -98,6 +98,8 @@ jobs:
               data=json.loads(Path('/tmp/stadia-nxp81/hab-'+sample+'.json').read_text())
               print(sample,'IVT header:',data['signed_file_versions']['ivt_header_version_byte'],
                     'CSF header:',data['signed_file_versions']['csf_header_version_byte'])
+              assert data['signed_file_versions']['ivt_header_version_byte']=='0x41'
+              assert data['signed_file_versions']['csf_header_version_byte']=='0x42'
               assert data['signed_file_versions']['these_bytes_are_exact_rom_hab_version'] is False
               assert data['documented_rom_rvt']['get_version_pointer_slot']=='0x00200330'
               assert data['operator_supplied_rvt_snapshot'] is None
