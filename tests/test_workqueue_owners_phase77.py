@@ -8,7 +8,7 @@ class Phase77OwnerOriginTests(unittest.TestCase):
     def test_known_signed_fields(self):
         self.assertEqual(p.CALL_A,0x6006228C)
         self.assertEqual(p.CALL_B,0x6006B2B0)
-        self.assertEqual(len(p.TARGETS),9)
+        self.assertEqual(len(p.TARGETS),10)
 
     def test_original_B_ready_and_reset_pins(self):
         self.assertEqual(p.B_INIT_ANCHORS[0x6006B3EA],("ldrb.w","r3, [r0, #0x180]"))
