@@ -1,0 +1,128 @@
+{
+  "phase": 88,
+  "date": "2026-10-27",
+  "research_line": "bootloader_A_GPR6_update_bit3_provenance",
+  "sources": {
+    "signed_bruce_sample": {
+      "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+      "sample": "bruce_prod",
+      "whole_original_sha_verified_in_ci": true
+    },
+    "bootloader_a": {
+      "recorded_sha256": "59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0",
+      "build": 169429,
+      "source": "selected published original Thumb instructions",
+      "original_full_raw_file_available_this_turn": false,
+      "instructions_in_corpus": 903
+    }
+  },
+  "phase87_pinned_update_gate": {
+    "gpr6_register": "0x400f8038",
+    "required_bit_mask": "0x08",
+    "read": "0x60802866",
+    "clear": "0x6080286a",
+    "conditional_update_wrapper": "0x608028c6 -> 0x60801ed0",
+    "source_of_update_bit3": "UNKNOWN"
+  },
+  "signed_bruce_literal_survey": {
+    "pre_csf_stop_exclusive": "0xff030",
+    "block_base_0x400f8000_literal_hits": [
+      {
+        "file_offset": "0x1f160",
+        "syntactic_ldr_candidates": 5
+      },
+      {
+        "file_offset": "0x1f188",
+        "syntactic_ldr_candidates": 3
+      },
+      {
+        "file_offset": "0x204cc",
+        "syntactic_ldr_candidates": 1
+      },
+      {
+        "file_offset": "0x38abc",
+        "syntactic_ldr_candidates": 1
+      },
+      {
+        "file_offset": "0xfd454",
+        "syntactic_ldr_candidates": 1
+      },
+      {
+        "file_offset": "0xfd4ac",
+        "syntactic_ldr_candidates": 1
+      }
+    ],
+    "exact_gpr6_0x400f8038_literal_hits": 0,
+    "interpretation": "Unverified raw words and LDR encoding candidates, not a complete write census"
+  },
+  "original_signed_bruce_gpr6_writer": {
+    "site": "0x60078a28",
+    "file_offset": "0x38a28",
+    "sequence_offset": "0x38a1c",
+    "signed_thumb_bytes": "237a012b264b0cbf052206229a63",
+    "instructions": [
+      "0x60078a1c: LDRB R3,[R4,#8]",
+      "0x60078a1e: CMP R3,#1",
+      "0x60078a20: LDR R3,[PC,#0x98]",
+      "0x60078a22: ITE EQ",
+      "0x60078a24: MOVEQ R2,#5",
+      "0x60078a26: MOVNE R2,#6",
+      "0x60078a28: STR R2,[R3,#0x38]"
+    ],
+    "literal_at_file_offset": "0x38abc",
+    "literal_value": "0x400f8000",
+    "effective_register": "0x400f8038",
+    "possible_stored_values": [
+      5,
+      6
+    ],
+    "either_sets_bit3": false,
+    "runtime_execution_proven": false,
+    "host_usb_origin_proven": false,
+    "input_object_provenance": "UNRESOLVED"
+  },
+  "bootloader_selected_writer_census": {
+    "original_accesses": [
+      {
+        "site": "0x60802866",
+        "operation": "read"
+      },
+      {
+        "site": "0x6080286a",
+        "operation": "write",
+        "value": "0x00",
+        "sets_bit3": false
+      },
+      {
+        "site": "0x60801f14",
+        "operation": "write",
+        "values": [
+          "0x10",
+          "0x20"
+        ],
+        "sets_bit3": false
+      }
+    ],
+    "complete_bootloader_writer_census": false
+  },
+  "current_decision": "GO_OFFLINE_FOR_COMPUTED_AND_INDIRECT_GPR6_WRITER_PROVENANCE; NO_GO_FOR_ANY_PHYSICAL_WRITE_OR_USB_TRIGGER",
+  "unknowns": [
+    "Who sets GPR6 bit3 0x08",
+    "Whether a host request reaches any bit3 setter",
+    "Reset persistence of GPR6",
+    "Installed firmware SHA versus publicly archived Bruce",
+    "BootROM HAB version"
+  ],
+  "verification": {
+    "phase81_to88_synthetic_tests_passed": 88,
+    "pinned_oem_ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40577382352",
+    "general_ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40577382327",
+    "whole_signed_bruce_original_hash_verified": true,
+    "hardware_access": false,
+    "flash_or_otp_programming": false
+  },
+  "publication": {
+    "proprietary_binary_uploaded": false,
+    "private_bootloader_published": false
+  }
+}
