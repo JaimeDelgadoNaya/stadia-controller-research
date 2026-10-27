@@ -40,6 +40,7 @@ jobs:
             bruce)
               python -m unittest \
                 tests.test_src_gpr7_writers_phase88 \
+                tests.test_src_gpr7_movw_movt_phase89 \
                 tests.test_bruce_gpr7_status_phase88 \
                 tests.test_triage_src_gpr7_thumb_phase88 -v
               ;;

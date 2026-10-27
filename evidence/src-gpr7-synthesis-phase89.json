@@ -1,0 +1,95 @@
+{
+  "phase": 89,
+  "date": "2026-10-27",
+  "research_line": "signed_google_bruce_SRC_GPR7_update_bit3",
+  "question": "Does Thumb MOVW/MOVT synthesize SRC 0x400F8xxx and lead to an encoded GPR7 store?",
+  "inputs": [
+    {
+      "sample": "bruce_prod",
+      "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+      "verified_by_ci": true,
+      "pre_csf_only": true,
+      "movw_src_lower_candidates": 1,
+      "movt_high_0x400f_candidates": 0,
+      "movw_movt_pairs": 0,
+      "possible_gpr7_stores": 0,
+      "movw_candidate": {
+        "file_offset": "0x21e22",
+        "thumb_register": "r0",
+        "immediate": "0x8000",
+        "mapped_xip_address": "0x60061e22",
+        "six_signed_original_bytes": "48f200007047",
+        "instruction_semantics": [
+          "MOVW R0,#0x8000",
+          "BX LR"
+        ],
+        "local_context": "Nearby VABS/VCMP/VCVT floating point instructions",
+        "not_src_address_construction": true,
+        "not_gpr7_bit3_store": true,
+        "physical_reachability_measured": false
+      }
+    },
+    {
+      "sample": "restricted_ram_loader",
+      "sha256": "c39ea8962cc3094a9167ba80634f1ea0652b747b4572d1de2802d9f2f4e144c5",
+      "verified_by_ci": true,
+      "pre_csf_only": true,
+      "movw_src_lower_candidates": 0,
+      "movt_high_0x400f_candidates": 0,
+      "movw_movt_pairs": 0,
+      "possible_gpr7_stores": 0
+    }
+  ],
+  "scope": {
+    "recognized_movw_low_halves": [
+      "0x8000",
+      "0x8034",
+      "0x8038"
+    ],
+    "recognized_movt_high_half": "0x400f",
+    "max_pair_window_bytes": 96,
+    "max_store_window_bytes": 96,
+    "store_encoding_types": [
+      "thumb16_str_imm_t1",
+      "thumb32_str_imm_t3"
+    ],
+    "potential_ambiguous_instruction_bytes": true,
+    "all_code_paths_covered": false,
+    "ram_relocations_and_rom_not_scanned": true
+  },
+  "conclusion": {
+    "decision": "BOUNDED_NO_GO_FOR_THIS_MOVW_MOVT_PATTERN",
+    "gpr7_bit3_writer_identified": false,
+    "usb_host_origin_proven": false,
+    "physical_hab_bypass": false,
+    "custom_firmware_execution": false,
+    "remaining_paths": [
+      "Computed address through ADD / literal loads",
+      "Indirect pointer tables",
+      "ROM resident code and reset behavior",
+      "Unmeasured installed firmware",
+      "Bootloader A beyond selected original instruction records"
+    ]
+  },
+  "verification": {
+    "cumulative_nxp_synthetic_tests": 120,
+    "original_ci": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40583595092",
+    "parallel_workstream_ci": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40583594875",
+    "general_python_ci": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40583594965",
+    "latest_source_pin_ci": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/pull/105/checks"
+  },
+  "safety": {
+    "device_connected": false,
+    "usb_commands_sent": false,
+    "ram_flash_otp_written": false,
+    "private_bootloader_binary_uploaded": false
+  },
+  "documentary_context": {
+    "nxp_rev3_manual": "https://www.pjrc.com/teensy/IMXRT1060RM_rev3.pdf",
+    "nxp_staff_register_qualification": "https://community.nxp.com/t5/i-MX-RT-Crossover-MCUs/SRC-GPRx-Register-Usage/m-p/1037773",
+    "register_reserved_to_rom": true,
+    "rom_may_not_use_every_reserved_gpr": true,
+    "rom_writes_bit3_proven": false,
+    "warm_reset_retention_proven": false
+  }
+}
