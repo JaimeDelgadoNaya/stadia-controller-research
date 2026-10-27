@@ -1,0 +1,131 @@
+{
+  "phase": 88,
+  "date": "2026-10-27",
+  "line": "bootloader_update_trigger_provenance",
+  "title": "Correct RT1060 SRC_GPR7 and inspect signed writer lineage",
+  "nxp_documentation": {
+    "manual": "https://www.pjrc.com/teensy/IMXRT1060RM_rev3.pdf",
+    "chapter": "21.6.10-21.6.11",
+    "src_base": "0x400f8000",
+    "gpr6": "0x400f8034",
+    "gpr7": "0x400f8038",
+    "both_rom_used": true,
+    "documented_gpr7_reset_value": "0x00000000",
+    "erratum": "Phase87 initially misnamed GPR7 as GPR6; original address and bit3 gate correct.",
+    "gpr7_user_defined_bit3_not_nxp_standardized": true
+  },
+  "selected_private_original_bootloader_evidence": {
+    "file": "evidence/bootloader-analysis.json",
+    "recorded_sha256": "59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0",
+    "full_original_rehashed_this_phase": false,
+    "functions": 28,
+    "instructions": 903,
+    "src_base_literal_sites": [
+      "0x60801f0c",
+      "0x60802860"
+    ],
+    "direct_writers": [
+      {
+        "site": "0x60801f14",
+        "value_options": [
+          "0x10",
+          "0x20"
+        ],
+        "sets_bit3": false,
+        "context": "application validation error status"
+      },
+      {
+        "site": "0x6080286a",
+        "value_options": [
+          "0x00"
+        ],
+        "sets_bit3": false,
+        "context": "clear GPR7 after saving state"
+      }
+    ],
+    "writer_bit3_found": false,
+    "not_a_complete_binary_or_rom_census": true
+  },
+  "public_oem_image_census": [
+    {
+      "sample": "bruce_prod",
+      "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+      "src_base_literal_offsets": [
+        "0x1f160",
+        "0x1f188",
+        "0x204cc",
+        "0x38abc",
+        "0xfd454",
+        "0xfd4ac"
+      ],
+      "gpr6_literal_offsets": [
+        "0x5d8"
+      ],
+      "gpr7_direct_literal_offsets": [],
+      "syntactic_src_base_ldr_count": 12,
+      "straightline_thumb_src_gpr7_store_shapes": 1
+    },
+    {
+      "sample": "restricted_ram_loader",
+      "sha256": "c39ea8962cc3094a9167ba80634f1ea0652b747b4572d1de2802d9f2f4e144c5",
+      "src_base_literal_offsets": [
+        "0xa090",
+        "0xa1fc",
+        "0xa808",
+        "0xa868",
+        "0xa878",
+        "0xa9f8",
+        "0xaa88",
+        "0xaac0",
+        "0xac28",
+        "0xae48"
+      ],
+      "gpr6_literal_offsets": [],
+      "gpr7_direct_literal_offsets": [],
+      "syntactic_src_base_ldr_count": 15,
+      "straightline_thumb_src_gpr7_store_shapes": 0
+    }
+  ],
+  "new_original_bruce_signed_writer": {
+    "fragment_file_offset": "0x38a1c",
+    "fragment_mapped_xip": "0x60078a1c",
+    "exact_signed_thumb16_hex": "237a012b264b0cbf052206229a63",
+    "src_literal_file_offset": "0x38abc",
+    "src_literal_value": "0x400f8000",
+    "conditional_ops": [
+      "LDRB R3,[R4,#8]",
+      "CMP R3,#1",
+      "LDR R3,[PC,#0x98]",
+      "ITE EQ",
+      "MOVEQ R2,#5",
+      "MOVNE R2,#6",
+      "STR R2,[R3,#0x38]"
+    ],
+    "destination": "0x400f8038",
+    "value_if_equal": 5,
+    "value_if_not_equal": 6,
+    "neither_sets_update_bit3": true,
+    "host_control_or_runtime_call_established": false,
+    "r4_object_and_reboot_handoff_unresolved": true,
+    "provenance": "Whole public firmware SHA-256 and 14 original instruction bytes pinned by CI."
+  },
+  "security_limits": {
+    "rom_hab_version": "UNKNOWN",
+    "gpr7_bit3_writer": "UNKNOWN",
+    "usb_host_trigger": "NOT_DEMONSTRATED",
+    "warm_reset_persistence": "NOT_MEASURED",
+    "installed_firmware_hash": "NOT_CONFIRMED",
+    "arbitrary_firmware_execution": "NOT_DEMONSTRATED",
+    "hab_closed_bypass": "NOT_DEMONSTRATED",
+    "physical_device_access": false,
+    "flash_otp_writes": false
+  },
+  "validation": {
+    "cumulative_nxp_specific_synthetic_tests": 103,
+    "original_oem_ci": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40579561235",
+    "general_python311_312_ci": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/40579561264",
+    "conclusion": "PASS",
+    "no_private_firmware_committed": true
+  },
+  "decision": "NO_GO_FOR_HARDWARE_BIT_WRITES; GO_FOR_OFFLINE_Bruce_R4_OWNER_AND_ORIGINAL_CALLER_TRACE_IF_NEW_EVIDENCE"
+}
