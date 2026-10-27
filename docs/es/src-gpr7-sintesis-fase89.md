@@ -19,7 +19,7 @@ Las parejas deben compartir registro y estar separadas por un máximo de 96 byte
 | Parejas MOVW/MOVT | **0** | **0** |
 | STR a GPR7 derivados de esas parejas | **0** | **0** |
 
-**118 pruebas sintéticas acumuladas NXP 81–89 superadas.** Han pasado también Python 3.11/3.12 y los cinco trabajos de validación en paralelo. Un MOVW aislado no construye por sí solo una dirección completa SRC.
+**120 pruebas sintéticas acumuladas NXP 81–89 superadas.** Han pasado también Python 3.11/3.12 y los cinco trabajos de validación en paralelo. Un MOVW aislado no construye por sí solo una dirección completa SRC.
 
 ## Nota documental de NXP: reserva no equivale a escritor
 
