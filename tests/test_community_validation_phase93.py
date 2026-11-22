@@ -20,6 +20,9 @@ class CommunityValidationPhase93(unittest.TestCase):
         cls.manifest = load("manifest.json")
         cls.app_usb = load("application-usb-dispatch.json")
         cls.report = load("community-validation-phase93.json")
+        cls.patch = load("community-bootloader-patch-phase93.json")
+        cls.ram_loader = load("nxp-ram-flashloader-phase93.json")
+        cls.bruce_kvs = load("bruce-kvs-registry-phase93.json")
 
     def test_candidate_hash_and_size_match_across_phases(self):
         a = self.phase91["private_candidate_bootloader"]
@@ -122,6 +125,62 @@ class CommunityValidationPhase93(unittest.TestCase):
         self.assertEqual(k["YetiGmsgUrl_missing_from_registry"], "community_claim_not_verified_on_Gotham_image")
         self.assertEqual(k["usb_vendor_set_kvs_registry_enforcement"], "open_question")
         self.assertIn("excluded", k["AppImageFdrVer_id_44"])
+
+    def test_private_bootloader_patch_is_exactly_bounded(self):
+        d = self.patch["direct_byte_comparison"]
+        self.assertEqual(d["changed_bytes"], 72)
+        self.assertEqual(d["changed_outside_ivt_code_descriptor"], 0)
+        self.assertEqual(d["tail_removed_bytes"], 36824)
+        self.assertEqual(self.patch["source_files"]["oem"]["size_bytes"], 131072)
+        self.assertEqual(self.patch["source_files"]["candidate"]["size_bytes"], 94248)
+
+    def test_patch_keeps_device_identity_but_replaces_hid_with_cdc(self):
+        self.assertTrue(self.patch["usb_device_descriptor"]["identical"])
+        self.assertEqual(self.patch["usb_device_descriptor"]["vid"], "0x18d1")
+        self.assertEqual(self.patch["usb_device_descriptor"]["pid"], "0x946b")
+        self.assertEqual(self.patch["oem_configuration"]["interface_classes"], ["0xff", "0x03"])
+        self.assertEqual(self.patch["candidate_configuration"]["interface_classes"], ["0xff", "0x02/0x02", "0x0a"])
+        self.assertEqual(self.patch["candidate_configuration"]["cdc_union"], {"master": 1, "slaves": [2]})
+
+    def test_one_code_byte_updates_usb_descriptor_length(self):
+        p = self.patch["code_change"]
+        self.assertEqual(p["oem_thumb_halfword"], "5023")
+        self.assertEqual(p["candidate_thumb_halfword"], "5523")
+        self.assertEqual(p["original_immediate"], 0x50)
+        self.assertEqual(p["candidate_immediate"], 0x55)
+        self.assertTrue(p["length_matches_oem_config_length"])
+        self.assertTrue(p["length_matches_candidate_config_length"])
+
+    def test_candidate_clears_csf_and_omits_original_csf_tail(self):
+        a = self.patch["authentication"]
+        self.assertEqual(a["original_csf_pointer"], "0x60818000")
+        self.assertEqual(a["candidate_csf_pointer"], "0x0")
+        self.assertEqual(a["original_csf_header_at_file_offset_0x18000"], "d4006042")
+        self.assertTrue(self.patch["checks"]["candidate_truncated_before_original_csf"])
+        self.assertFalse(a["candidate_original_signature_verified"])
+
+    def test_separate_ram_flashloader_is_hid_not_cdc(self):
+        r = self.ram_loader
+        self.assertEqual(r["ivt"]["entry"], "0x20002000")
+        self.assertEqual(r["ivt"]["csf"], "0x0")
+        self.assertEqual(r["boot_data"]["file_shortfall_bytes"], 156)
+        self.assertEqual(r["usb_device"]["vid"], "0x15a2")
+        self.assertEqual(r["usb_device"]["pid"], "0x0073")
+        self.assertEqual(r["usb_configuration"]["interfaces"], 1)
+        self.assertEqual(r["usb_configuration"]["endpoints"][0]["transfer"], "interrupt")
+        self.assertTrue(r["transport_name_markers"]["CDC"])
+        self.assertFalse(r["usb_configuration"]["cdc_union_present"])
+
+    def test_bruce_kvs_ids_are_version_specific_not_gotham(self):
+        k = self.bruce_kvs
+        self.assertEqual(k["table"]["contiguous_sequential_entries"], 66)
+        self.assertEqual(k["selected_id_to_name"]["21"], "AnalyticsOptIn")
+        self.assertEqual(k["selected_id_to_name"]["22"], "LastKnownSntp")
+        self.assertEqual(k["selected_id_to_name"]["23"], "IsDfDevice")
+        self.assertEqual(k["selected_id_to_name"]["40"], "AppImageFdrVer")
+        self.assertEqual(k["selected_id_to_name"]["44"], "LogToUart")
+        self.assertFalse(k["yeti_ascii_literals"]["YetiGmsgUrl"])
+        self.assertTrue(k["limits"]["this_is_bruce_not_gotham"])
 
     def test_no_destructive_or_live_actions_occurred(self):
         s = self.report["safety"]
