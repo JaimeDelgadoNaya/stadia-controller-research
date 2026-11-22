@@ -1,0 +1,35 @@
+name: Phase 92 USB CDC candidate descriptor audit
+
+on:
+  pull_request:
+    paths:
+      - 'tools/audit_usb_descriptors_phase92.py'
+      - 'tests/test_usb_descriptors_phase92.py'
+      - 'evidence/usb-cdc-phase92.json'
+      - '.github/workflows/usb-cdc-phase92.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'tools/audit_usb_descriptors_phase92.py'
+      - 'tests/test_usb_descriptors_phase92.py'
+      - '.github/workflows/usb-cdc-phase92.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-synthetic-descriptors:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Run 12 synthetic-only descriptor consistency and failure tests
+        run: python -m unittest tests.test_usb_descriptors_phase92 -v
