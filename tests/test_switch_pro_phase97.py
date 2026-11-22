@@ -71,9 +71,12 @@ class SwitchProPhase97(unittest.TestCase):
     def test_init_requires_proper_state(self):
         d=VirtualNS1Pro97()
         with self.assertRaises(UnsupportedProtocol):d.process(make_host_subcommand(0x10))
-        self.assertEqual(d.process(b'\x80\x01'),bytes((0x81,1,0,3))+SYNTHETIC_MAC)
-        self.assertEqual(d.process(b'\x80\x02'),b'\x81\x02')
-        self.assertEqual(d.process(b'\x80\x03'),b'\x81\x03')
+        r1=d.process(b'\x80\x01')
+        self.assertEqual(len(r1),64)
+        self.assertEqual(r1[:10],bytes((0x81,1,0,3))+SYNTHETIC_MAC)
+        self.assertEqual(r1[10:],bytes(54))
+        self.assertEqual(d.process(b'\x80\x02'),b'\x81\x02'+bytes(62))
+        self.assertEqual(d.process(b'\x80\x03'),b'\x81\x03'+bytes(62))
         self.assertIsNone(d.process(b'\x80\x04'))
         self.assertEqual(d.phase,'usb_ready')
 
@@ -108,7 +111,8 @@ class SwitchProPhase97(unittest.TestCase):
     def test_malformed_report_rejected(self):
         d=ready()
         for invalid in (b'',b'\x00',b'\x01\x00',b'\xff\x00',
-                        bytes([1])+bytes(10),b'\x80\x01\x00'):
+                        bytes([1])+bytes(10),b'\x80\x01\x01',
+                        b'\x80\x01'+bytes(63)):
             with self.subTest(packet=invalid.hex()):
                 with self.assertRaises(UnsupportedProtocol):d.process(invalid)
 
