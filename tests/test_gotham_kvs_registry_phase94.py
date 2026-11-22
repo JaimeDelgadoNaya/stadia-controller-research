@@ -10,13 +10,13 @@ from tools.audit_gotham_kvs_registry_phase94 import (
 )
 
 BASE=0x60040000
-NAMES=[f"Setting{i:03d}" for i in range(1,116)]
-NAMES[20]="YetiEnvironment"
-NAMES[21]="YetiDiscoUrl"
-NAMES[22]="IsDfDevice"
-NAMES[43]="AppImageFdrVer"
-NAMES[44]="BootImageFdrVer"
-NAMES[45]="YetiGmsgUrl"  # in this fixture it is a registry entry only if intentionally included
+NAMES=[f"Setting{i:03d}" for i in range(115)]
+NAMES[21]="YetiEnvironment"
+NAMES[22]="YetiDiscoUrl"
+NAMES[23]="IsDfDevice"
+NAMES[44]="AppImageFdrVer"
+NAMES[45]="BootImageFdrVer"
+NAMES[46]="YetiGmsgUrl"  # in this fixture it is a registry entry only if intentionally included
 
 
 def make_image(include_gmsg_in_registry=False):
@@ -25,12 +25,12 @@ def make_image(include_gmsg_in_registry=False):
     string_off=0x4000
     names=NAMES.copy()
     if not include_gmsg_in_registry:
-        names[45]="Setting046"
-    for idx,name in enumerate(names,1):
+        names[46]="Setting046"
+    for idx,name in enumerate(names):
         raw=name.encode("ascii")+b"\x00"
         ptr=BASE+string_off
-        struct.pack_into("<8I",data,table+(idx-1)*0x20,
-                         ptr,0x01000001,0,0,1,0,idx,0)
+        struct.pack_into("<8I",data,table+idx*0x20,
+                         idx,0x01000001,ptr,0,0,1,0,0)
         data[string_off:string_off+len(raw)]=raw
         string_off+=len(raw)
     # Standalone literal can exist without a registry entry.
@@ -48,8 +48,8 @@ class GothamKvsPhase94(unittest.TestCase):
         r=find_registry(make_image())
         self.assertIsNotNone(r)
         self.assertEqual(r["entry_count"],115)
-        self.assertEqual(r["first_id"],1)
-        self.assertEqual(r["last_id"],115)
+        self.assertEqual(r["first_id"],0)
+        self.assertEqual(r["last_id"],114)
         self.assertEqual(r["image_base"],hex(BASE))
 
     def test_extracts_yeti_keys_and_ids(self):
@@ -73,9 +73,9 @@ class GothamKvsPhase94(unittest.TestCase):
         r=find_registry(data)
         entry=next(x for x in r["entries"] if x["name"]=="YetiEnvironment")
         off=int(entry["record_offset"],16)
-        ptr=struct.unpack_from("<I",data,off)[0]
+        ptr=struct.unpack_from("<I",data,off+8)[0]
         refs=pointer_references(data,ptr)
-        self.assertIn(hex(off),refs)
+        self.assertIn(hex(off+8),refs)
 
     def test_no_registry_is_a_supported_result(self):
         r=find_registry(b"\x00"*0x2000)
@@ -93,7 +93,7 @@ class GothamKvsPhase94(unittest.TestCase):
             self.assertTrue(r["comparison"]["registry_found_in_both"])
             self.assertEqual(r["pvt_a"]["registry"]["entry_count"],115)
             self.assertTrue(r["comparison"]["YetiGmsgUrl_literal_in_a"])
-            self.assertFalse(r["comparison"]["YetiGmsgUrl_registry_entry_in_a"])
+            self.assertFalse(r["comparison"]["YetiGmsgUrl_table_entry_in_a"])
 
     def test_wrong_git_blob_hash_is_rejected(self):
         with tempfile.TemporaryDirectory() as tmp:
