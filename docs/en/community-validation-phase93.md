@@ -56,3 +56,72 @@ Once one image is available locally, the next static audit should trace the USB 
 ## Conclusion
 
 Automated tests for the research repository are green. Discord claims remain hypotheses until checked against Gotham. The best next step is not flashing: it is obtaining the exact Gotham image and resolving the KVS path in signed firmware.
+
+## 6. Direct OEM-to-CDC bootloader comparison
+
+The two private files `bootloader-a.bin` and `bootloader-usb-acm.bin` were compared byte-for-byte.
+
+| Field | OEM original | CDC candidate |
+|---|---:|---:|
+| Size | 131,072 bytes | 94,248 bytes |
+| SHA-256 | `59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0` | `ea37f7cd38ab7ae392fa80911aeed4b07ac7e557b8bb66375e099e8ebd148957` |
+| VID:PID | `18D1:946B` | `18D1:946B` |
+| Interfaces | Vendor + HID | Vendor + CDC ACM + CDC Data |
+| Configuration length | 80 bytes | 85 bytes |
+| IAD descriptors | 2 | 0 |
+| CDC Union | No | Master 1, slave 2 |
+
+Across the 94,248-byte common prefix, **72 bytes differ** in 12 ranges. All differences are confined to three regions:
+
+1. **IVT:** the original CSF pointer `0x60818000` is cleared (three bytes of the four-byte field change).
+2. **Code:** at `0xAF4E`, the Thumb instruction changes from `MOVS r3,#0x50` to `MOVS r3,#0x55`. The pointer literal `0x6081527C` is unchanged. The immediate changes from 80 to 85, matching the new USB configuration length.
+3. **USB descriptors:** 68 bytes change to replace the HID interface with CDC ACM + CDC Data and add a CDC Union.
+
+The original authentication area begins at file offset `0x18000` with CSF header `D4 00 60 42`. The candidate ends at `0x17028`, before that area, and its CSF pointer is zero. It therefore **does not retain the original CSF chain**. The original signature was not cryptographically verified here, and candidate HAB acceptance was not tested.
+
+**Interpretation:** the CDC candidate is a very close derivative of bootloader A, mainly modified to expose CDC ACM instead of HID. It is not a new controller firmware or evidence of permanent unlock. Binary similarity does not make it safe to flash.
+
+Reproducer: `tools/audit_community_bootloader_patch_phase93.py`. CI uses synthetic fixtures; the hashes and findings above come from a local comparison of private binaries, which are not published.
+
+## 7. Separate artifact: `thebb_ivt_flashloader.bin`
+
+A separate library file was inspected:
+
+- 98,148 bytes; SHA-256 `700e2cbbb884dc74a2b5d71da420350d6dca67e55f456a24f2d3ba7a69dde258`.
+- IVT at offset `0x400`; entry `0x20002000`; Boot Data at `0x20000420`; null CSF pointer.
+- Boot Data declares `0x18000` bytes, 156 more than the supplied file.
+- USB device `15A2:0073`, one HID interface, interrupt endpoints `0x81`/`0x02`, 64 bytes.
+- The binary contains the ASCII marker `CDC`, but its parsed USB configuration has **no CDC ACM interface or CDC Union**.
+
+This is a separate RAM-flashloader-like artifact with a Freescale/NXP-style USB HID identity. Its provenance and relationship to tchebb's exploit are unverified. Do not confuse it with `bootloader-usb-acm.bin`.
+
+## 8. Bruce KVS table: evidence that IDs differ by build
+
+The signed `bruce_pvt_a_prod_signed.bin` (build 337784, exact SHA pinned in `evidence/bruce-kvs-registry-phase93.json`) contains one contiguous table of 66 sequential 32-byte records, IDs 1–66.
+
+| Bruce ID | Key |
+|---:|---|
+| 21 | `AnalyticsOptIn` |
+| 22 | `LastKnownSntp` |
+| 23 | `IsDfDevice` |
+| 24 | `UpdateGauge` |
+| 25 | `OtaFromBuild` |
+| 40 | `AppImageFdrVer` |
+| 41 | `BootImageFdrVer` |
+| 42 | `HidOverGatt` |
+| 43 | `SupportNoBat` |
+| 44 | `LogToUart` |
+
+This image contains no ASCII literals `YetiEnvironment`, `YetiDiscoUrl` or `YetiGmsgUrl`. It does contain `firmware_image_upload.cc`, `http_flash_writer.h`, `VendorUsbTask` and update-related keys.
+
+This does **not** disprove Fran's Gotham mapping. It demonstrates that Bruce's names and IDs differ: Bruce has `AppImageFdrVer` at ID 40 and `LogToUart` at ID 44. Never send an ID inferred from the wrong firmware. The original Gotham USB `set KVS` handler and write permissions remain untraced.
+
+Tool: `tools/audit_bruce_kvs_registry_phase93.py`. CI downloads the exact public Bruce image, verifies its SHA-256, and parses the table without connecting to a controller.
+
+## 9. Updated technical decision
+
+- **Verified:** the CDC candidate is a byte-level derivative of bootloader A; its code/descriptor changes are bounded; it removes the original CSF pointer and authentication tail.
+- **Verified:** `thebb_ivt_flashloader.bin` is a separate HID-descriptor artifact, not a CDC ACM device.
+- **Verified:** the Bruce KVS map does not match the IDs reported for Gotham.
+- **Pending:** inspect original Gotham `ota.282115` to resolve the 115-key registry, USB `set KVS` handler and GMsg consumer.
+- **NO-GO:** flashing the CDC candidate, invoking SDP, changing fuses, real KVS writes or invasive recovery.
