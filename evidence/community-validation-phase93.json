@@ -13,7 +13,7 @@
         "3.11",
         "3.12"
       ],
-      "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45054440655",
+      "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45057890037",
       "conclusion": "success"
     },
     "phase92": {
@@ -22,23 +22,24 @@
         "3.11",
         "3.12"
       ],
-      "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45054440648",
+      "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45057890025",
       "conclusion": "success"
     },
     "full_offline_suite": {
-      "tests_run": 1012,
-      "skipped": 34,
+      "tests_run": 1061,
+      "skipped": 35,
       "python_versions": [
         "3.11",
         "3.12"
       ],
-      "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45054440653",
-      "conclusion": "success"
+      "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45057890013",
+      "conclusion": "success",
+      "note": "35 optional skips; no failures. Exact Bruce image test is covered by the dedicated pinned-image CI lane."
     },
     "bounded_original_and_emulation_lane": {
       "tests_run": 89,
       "skipped": 0,
-      "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45054440621",
+      "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45057890012",
       "conclusion": "success"
     },
     "parallel_workstreams": {
@@ -50,6 +51,34 @@
         "independent-qa"
       ],
       "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45054440615",
+      "conclusion": "success"
+    },
+    "phase93_integrity": {
+      "tests_per_run": 21,
+      "python_versions": [
+        "3.11",
+        "3.12"
+      ],
+      "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45057889973",
+      "conclusion": "success"
+    },
+    "phase93_bootloader_fixtures": {
+      "tests_per_run": 22,
+      "python_versions": [
+        "3.11",
+        "3.12"
+      ],
+      "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45057890022",
+      "conclusion": "success"
+    },
+    "phase93_bruce_kvs": {
+      "tests_per_run": 6,
+      "python_versions": [
+        "3.11",
+        "3.12"
+      ],
+      "exact_image_sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+      "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45057890125",
       "conclusion": "success"
     }
   },
