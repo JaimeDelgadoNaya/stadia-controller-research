@@ -9,7 +9,7 @@ from hashlib import sha256
 import json
 from cryptography.exceptions import InvalidSignature
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey, Ed25519PublicKey
-from tools.simulate_xinput_phase99 import parse_bruce_hid, xusb_report, parse_xusb_report
+from tools.simulate_xinput_phase99 import parse_bruce_hid, to_xusb as xusb_report, decode_xusb as parse_xusb_report
 
 PAYLOAD_MAGIC = b'FICTIVE_STADIA_XUSB_CODEC_V1\x00'
 MAX_BUNDLE_SIZE = 128 * 1024
@@ -105,7 +105,7 @@ class VirtualStadia:
         report=xusb_report(parse_bruce_hid(NEUTRAL))
         state=parse_xusb_report(report)
         self.reports.append(report)
-        return len(report)==20 and state['buttons']==() and state['lt']==0
+        return len(report)==20 and not state['buttons'] and state['lt']==0
 
     def input(self,packet):
         if self.status!='running_xusb' or not self.health():
