@@ -1,0 +1,52 @@
+name: Phase 103 Cortex-M7 XUSB codec cross-build (offline)
+
+on:
+  push:
+    paths:
+      - "firmware_codec/stadia_xusb_codec.*"
+      - "tools/verify_arm_codec_phase103.py"
+      - "tools/audit_signed_regions_phase103.py"
+      - "tools/arm_phase103_headers/**"
+      - "tests/test_arm_boot_evidence_phase103.py"
+      - ".github/workflows/phase103-arm-codec.yml"
+  pull_request:
+    paths:
+      - "firmware_codec/stadia_xusb_codec.*"
+      - "tools/verify_arm_codec_phase103.py"
+      - "tools/audit_signed_regions_phase103.py"
+      - "tools/arm_phase103_headers/**"
+      - "tests/test_arm_boot_evidence_phase103.py"
+      - ".github/workflows/phase103-arm-codec.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  arm-cortex-m7:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Require Clang cross-target compiler and ELF inspector
+        shell: bash
+        run: |
+          set -euo pipefail
+          command -v clang
+          clang --version
+          command -v readelf
+      - name: Verify synthetic CSF model and cross-compiled ARM object
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m unittest tests.test_arm_boot_evidence_phase103 -v
+          python3 -m tools.verify_arm_codec_phase103 --codec-dir firmware_codec --out-dir "$RUNNER_TEMP/stadia-arm-phase103"
+          file "$RUNNER_TEMP/stadia-arm-phase103/stadia_xusb_codec_cortex_m7.o"
+          readelf -h "$RUNNER_TEMP/stadia-arm-phase103/stadia_xusb_codec_cortex_m7.o"
+      - name: Enforce non-installable output only
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f "$RUNNER_TEMP/stadia-arm-phase103/stadia_xusb_codec_cortex_m7.o"
+          test ! -f "$RUNNER_TEMP/stadia-arm-phase103/stadia_xusb_codec_cortex_m7.bin"
+          test ! -f "$RUNNER_TEMP/stadia-arm-phase103/flash.img"
