@@ -39,3 +39,20 @@ python -m unittest tests.test_usb_descriptors_phase92 -v
 4. Mantener como asunto aparte la cuestión de la comunidad sobre `set KVS` y `YetiGmsgUrl`: requiere firmware Gotham original firmado y un recorrido real del dispatcher/almacenamiento; el archivo de bootloader parcheado **no es prueba** sobre aquel flujo. Seguimiento: [#111](https://github.com/JaimeDelgadoNaya/stadia-controller-research/issues/111).
 
 **GO:** análisis offline, tests sintéticos, cotejo de fuentes públicas y capturas pasivas seguras ya disponibles. **NO-GO:** flasheo, cambio de fusibles, ejecución de SDP, recuperación física forzada ni publicación del bonding store.
+## Comparación con el dispositivo original **medido físicamente** en fase 61
+
+Fuente primaria interna: [`evidence/usb-enumeration-phase61.json`](../../evidence/usb-enumeration-phase61.json), captura de descriptores de hub del **26/10/2026**; ver también [fase 62](../es/coincidencia-descriptores-oem-fase62.md), que fija el descriptor original en la aplicación firmada. Se compara únicamente el contenido de los descriptores, **no** sus rutas de ejecución.
+
+| Propiedad | Aplicación OEM (hub físico, fase 61) | Candidato bootloader comunitario (archivo estático) |
+|---|---|---|
+| VID:PID | `18D1:9400` | `18D1:946B` |
+| USB / nº configuraciones declaradas | `0x0201` / 1 | `0x0200` / 3 |
+| Longitud de configuración | 80 bytes | 85 bytes |
+| Interfaces | Vendor `FF` + HID `03` | Vendor `FF` + ACM `02/02` + Data `0A` |
+| IAD en configuración | **2** | **0** |
+| Endpoints en común | `0x87`, `0x07` | `0x87`, `0x07` |
+| Índice de string de serie (no su contenido) | 3 | 4 |
+
+El **candidato es claramente diferente del modo USB normal**. Los dos endpoints Vendor compartidos **no** demuestran un controlador, protocolo, callback o ejecutabilidad común. El resultado prueba una topología declarada en bytes, no qué devuelve la ROM o el bootloader por USB. La existencia de dos IAD en el original y cero en el candidato hace más específica la hipótesis de asociación de CDC, pero no permite asegurar un fallo de Windows.
+
+Se añadieron **5 tests diferenciales contra la evidencia original archivada**, sumando **17 pruebas** (12 sintéticas + 5 de comparación), sin abrir hardware ni ejecutar firmware.
