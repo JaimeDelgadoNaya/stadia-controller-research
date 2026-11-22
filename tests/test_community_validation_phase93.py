@@ -87,10 +87,10 @@ class CommunityValidationPhase93(unittest.TestCase):
         own = self.report["own_repository"]
         self.assertEqual(own["phase91"]["tests_per_run"], 10)
         self.assertEqual(own["phase92"]["tests_per_run"], 17)
-        self.assertEqual(own["full_offline_suite"]["tests_run"], 1061)
+        self.assertEqual(own["full_offline_suite"]["tests_run"], 1063)
         self.assertEqual(own["full_offline_suite"]["skipped"], 35)
         self.assertEqual(own["bounded_original_and_emulation_lane"]["tests_run"], 89)
-        self.assertEqual(own["phase93_integrity"]["tests_per_run"], 21)
+        self.assertEqual(own["phase93_integrity"]["tests_per_run"], 23)
         self.assertEqual(own["phase93_bootloader_fixtures"]["tests_per_run"], 22)
         self.assertEqual(own["phase93_bruce_kvs"]["tests_per_run"], 6)
 
