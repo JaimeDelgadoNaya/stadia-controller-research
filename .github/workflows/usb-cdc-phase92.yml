@@ -5,6 +5,7 @@ on:
     paths:
       - 'tools/audit_usb_descriptors_phase92.py'
       - 'tests/test_usb_descriptors_phase92.py'
+      - 'tests/test_usb_delta_phase92.py'
       - 'evidence/usb-cdc-phase92.json'
       - '.github/workflows/usb-cdc-phase92.yml'
   push:
@@ -32,4 +33,4 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Run 12 synthetic-only descriptor consistency and failure tests
-        run: python -m unittest tests.test_usb_descriptors_phase92 -v
+        run: python -m unittest tests.test_usb_descriptors_phase92 tests.test_usb_delta_phase92 -v
