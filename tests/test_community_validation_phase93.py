@@ -105,12 +105,13 @@ class CommunityValidationPhase93(unittest.TestCase):
 
     def test_stadiacast_status_is_external_author_report_plus_ci(self):
         s = self.report["stadiacast_upstream"]
-        self.assertEqual(s["latest_release"], "v1.3.0")
-        self.assertEqual(s["python_3_11"]["passed"], 520)
-        self.assertEqual(s["python_3_12"]["passed"], 520)
-        self.assertEqual(s["latest_ci_run_2026_11_22"]["conclusion"], "action_required")
-        self.assertEqual(s["latest_ci_run_2026_11_22"]["jobs_started"], 0)
-        self.assertTrue(s["no_firmware_modification_in_receiver"])
+        self.assertEqual(s["release"], "v1.3.0")
+        self.assertTrue(s["ota_282115_end_to_end"])
+        self.assertTrue(s["no_firmware_modification"])
+        self.assertEqual(s["hosts"]["fvc"], "cloudcast-pa.googleapis.com")
+        self.assertEqual(s["hosts"]["gmsg"], "cloudcast-gmsg-prod.googleapis.com")
+        self.assertTrue(s["gmsg_delivers_webrtc_answer"])
+        self.assertFalse(s["direct_switch2_compatibility_verified"])
 
     def test_tchebb_switch_firmware_status_not_overstated(self):
         t = self.report["tchebb_public_statement"]
