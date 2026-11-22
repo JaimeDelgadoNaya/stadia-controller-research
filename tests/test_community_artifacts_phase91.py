@@ -9,7 +9,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from tools.audit_community_artifacts_phase91 import (
-    MAX_BYTES, bootloader_summary, bonding_summary, _read_limited, main,
+    MAX_BYTES, bootloader_summary, bonding_summary, usb_config_candidates, _read_limited, main,
 )
 
 
@@ -35,6 +35,34 @@ class LocalArtifactPhase91Tests(unittest.TestCase):
         result = bootloader_summary(fake_image(True))
         self.assertTrue(result["static_string_markers"]["cdc_acm_source_string"])
         self.assertFalse(result["cdc_descriptor_correctness_validated"])
+
+    def test_cdc_configuration_chain_from_synthetic_bytes(self):
+        descriptor = bytes.fromhex(
+            "09 02 55 00 03 01 00 80 fa "
+            "09 04 00 00 02 ff 00 00 00 "
+            "07 05 87 02 00 02 00 "
+            "07 05 07 02 00 02 00 "
+            "09 04 01 00 01 02 02 00 00 "
+            "05 24 00 10 01 "
+            "04 24 02 06 "
+            "05 24 06 01 02 "
+            "07 05 82 03 08 00 07 "
+            "09 04 02 00 02 0a 00 00 00 "
+            "07 05 81 02 00 02 00 "
+            "07 05 01 02 00 02 00"
+        )
+        self.assertEqual(len(descriptor), 85)
+        result = usb_config_candidates(fake_image() + descriptor)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]["reported_interfaces"], 3)
+        self.assertEqual(result[0]["cdc_union_pairs"], [[1, 2]])
+        self.assertTrue(result[0]["cdc_acm_functional_descriptor_present"])
+        self.assertFalse(result[0]["iad_present"])
+        self.assertFalse(result[0]["actually_exposed_by_usb_device"])
+
+    def test_truncated_usb_descriptor_chain_rejected(self):
+        malformed = bytes.fromhex("09 02 55 00 03 01 00 80 fa 09 04 00")
+        self.assertEqual(usb_config_candidates(fake_image() + malformed), [])
 
     def test_unrecognized_ivt_fails_closed(self):
         with self.assertRaisesRegex(ValueError, "No expected"):
