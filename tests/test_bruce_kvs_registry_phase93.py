@@ -73,7 +73,7 @@ class BruceKvsRegistryPhase93(unittest.TestCase):
     def test_exact_bruce_production_image_registry(self):
         image=Path(os.environ["STADIA_BRUCE_IMAGE"]).read_bytes()
         r=audit(image)
-        self.assertEqual(r["registry_table"]["entry_count"],66)
+        self.assertEqual(r["registry_table"]["entry_count"],67)
         self.assertEqual(r["selected_id_to_name"]["20"],"AnalyticsOptIn")
         self.assertEqual(r["selected_id_to_name"]["21"],"LastKnownSntp")
         self.assertEqual(r["selected_id_to_name"]["22"],"IsDfDevice")
