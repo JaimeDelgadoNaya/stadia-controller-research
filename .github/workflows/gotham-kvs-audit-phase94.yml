@@ -1,0 +1,73 @@
+name: Phase 94 Gotham PVT-A/B KVS and URL audit (pinned public firmware)
+
+on:
+  pull_request:
+    paths:
+      - 'tools/audit_gotham_kvs_registry_phase94.py'
+      - 'tests/test_gotham_kvs_registry_phase94.py'
+      - '.github/workflows/gotham-kvs-audit-phase94.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'tools/audit_gotham_kvs_registry_phase94.py'
+      - 'tests/test_gotham_kvs_registry_phase94.py'
+      - '.github/workflows/gotham-kvs-audit-phase94.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  exact-gotham-pvt-static-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download exact Gotham PVT-A and PVT-B images from pinned repository commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/gotham-phase94"
+          curl --fail --location --silent --show-error --retry 3 --max-time 120 \
+            'https://raw.githubusercontent.com/StadiaMemories/firmware/c86e2a397a747ce51c0988cd967142e5324ef0f9/ota.282115.stable-channel.gotham-pvt-a.214f6fe20f7b993046c77a9245c5805b056882dc.bin' \
+            -o "$RUNNER_TEMP/gotham-phase94/pvt-a.bin"
+          curl --fail --location --silent --show-error --retry 3 --max-time 120 \
+            'https://raw.githubusercontent.com/StadiaMemories/firmware/c86e2a397a747ce51c0988cd967142e5324ef0f9/ota.282115.stable-channel.gotham-pvt-b.b252d0d5a16538621abfb09609746cabc0f33292.bin' \
+            -o "$RUNNER_TEMP/gotham-phase94/pvt-b.bin"
+          test "$(stat -c%s "$RUNNER_TEMP/gotham-phase94/pvt-a.bin")" = 4163944
+          test "$(stat -c%s "$RUNNER_TEMP/gotham-phase94/pvt-b.bin")" = 4163944
+      - name: Run static Gotham registry, URL and USB KVS marker audit
+        run: |
+          python -m tools.audit_gotham_kvs_registry_phase94 \
+            "$RUNNER_TEMP/gotham-phase94/pvt-a.bin" \
+            "$RUNNER_TEMP/gotham-phase94/pvt-b.bin" \
+            --pvt-a-blob e87bbd94e3843746af39c5920725e0bcf2b42c54 \
+            --pvt-b-blob 128c65d9a5b5f44d1d2a217e5c6502370958dd86 \
+            > "$RUNNER_TEMP/gotham-phase94/report.json"
+          python -m unittest tests.test_gotham_kvs_registry_phase94 -v
+          python - "$RUNNER_TEMP/gotham-phase94/report.json" <<'PY'
+          import json,sys
+          from pathlib import Path
+          r=json.loads(Path(sys.argv[1]).read_text())
+          for label in ("pvt_a","pvt_b"):
+              x=r[label]
+              print(label, "size", x["size_bytes"], "sha256", x["sha256"], "git_blob", x["git_blob_sha1"])
+              print(label, "registry", x["registry"])
+              print(label, "selected keys", x["registry"]["selected_name_to_id"])
+              print(label, "YetiGmsgUrl offsets", x["literal_offsets"]["YetiGmsgUrl"])
+              print(label, "KVS markers", {k:x["literal_offsets"][k] for k in ("kvs_operations.cc","vendor_usb_task.cc","Missing key name","Failed to set value")})
+          print("PVT comparison",r["comparison"])
+          PY
+      - name: Upload sanitized report only (no firmware binaries)
+        uses: actions/upload-artifact@v4
+        with:
+          name: gotham-phase94-sanitized-report
+          path: ${{ runner.temp }}/gotham-phase94/report.json
+          if-no-files-found: error
+          retention-days: 14
+      - name: Remove temporary public firmware binaries
+        if: always()
+        run: rm -rf "$RUNNER_TEMP/gotham-phase94"
