@@ -1,5 +1,8 @@
 # Fase 93 — Auditoría integral de evidencias y pruebas
 
+> **Actualización 22/11/2026 (fase 95):** las tablas KVS y los binarios originales Gotham ya se han reanalizado. Se corrigió un desfase de 8 bytes: Bruce contiene 67 claves y Gotham 115 por imagen. Los IDs verificados de Gotham son `YetiEnvironment=21`, `YetiDiscoUrl=22`, `AppImageFdrVer=44`. La sección 5 registra el estado histórico antes de obtener Gotham por CI.
+
+
 **Fecha: 22/11/2026.** Esta fase contrasta las afirmaciones de las fases 91–92 con el estado real del repositorio, sus ejecuciones de GitHub Actions y las fuentes públicas nuevas. No se ejecuta firmware ni se conecta ningún mando.
 
 ## 1. Resultado de las pruebas del repositorio propio
@@ -96,28 +99,28 @@ Se inspeccionó por separado otro archivo de la biblioteca:
 
 Es un artefacto separado de tipo flashloader RAM con identidad USB Freescale/NXP. Su procedencia y relación con el exploit de tchebb no están verificadas. No debe confundirse con `bootloader-usb-acm.bin`.
 
-## 8. Tabla KVS de Bruce: evidencia de que los IDs cambian entre builds
+## 8. Tabla KVS de Bruce: corrección verificada en fase 95
 
-En el binario firmado `bruce_pvt_a_prod_signed.bin` (build 337784, SHA-256 fijado en `evidence/bruce-kvs-registry-phase93.json`) se ha identificado una tabla contigua de 66 registros de 32 bytes, con IDs secuenciales 1–66.
+Las nuevas notas de ingeniería inversa revelaron que el analizador inicial empezaba ocho bytes tarde: la tabla real empieza en offset de archivo `0xC3C58`, cada registro mide 32 bytes, el **ID está en +0** y el puntero al nombre en **+8**. El analizador antiguo atribuía a cada nombre el ID del registro siguiente.
 
-| ID Bruce | Clave |
+La imagen Bruce firmada exacta, validada por SHA-256 y analizada de nuevo en CI, tiene **67 claves** con IDs 0–66.
+
+| ID Bruce real | Clave |
 |---:|---|
-| 21 | `AnalyticsOptIn` |
-| 22 | `LastKnownSntp` |
-| 23 | `IsDfDevice` |
-| 24 | `UpdateGauge` |
-| 25 | `OtaFromBuild` |
-| 40 | `AppImageFdrVer` |
-| 41 | `BootImageFdrVer` |
-| 42 | `HidOverGatt` |
-| 43 | `SupportNoBat` |
-| 44 | `LogToUart` |
+| 20 | `AnalyticsOptIn` |
+| 21 | `LastKnownSntp` |
+| 22 | `IsDfDevice` |
+| 23 | `UpdateGauge` |
+| 24 | `OtaFromBuild` |
+| 39 | `AppImageFdrVer` |
+| 40 | `BootImageFdrVer` |
+| 41 | `HidOverGatt` |
+| 43 | `LogToUart` |
+| 44 | `CrashReboot` |
 
-En este binario no aparecen las cadenas ASCII `YetiEnvironment`, `YetiDiscoUrl` ni `YetiGmsgUrl`. Sí aparecen `firmware_image_upload.cc`, `http_flash_writer.h`, `VendorUsbTask` y claves de actualización.
+**Estos son identificadores de Bruce, no de Gotham.** La versión Wi-Fi Gotham tiene 115 claves y diferentes IDs. En Bruce no están las cadenas ASCII `YetiEnvironment`, `YetiDiscoUrl` ni `YetiGmsgUrl`.
 
-Esto **no refuta** el mapa que Fran describe para Gotham. Demuestra que los IDs y nombres del build Bruce son distintos: en Bruce, `AppImageFdrVer` es ID 40 y el ID 44 es `LogToUart`. No se debe enviar ningún ID basado en el firmware equivocado. El handler USB `set KVS` y sus permisos siguen sin estar trazados.
-
-Herramienta: `tools/audit_bruce_kvs_registry_phase93.py`. La CI descarga el Bruce público exacto, verifica SHA-256 y analiza la tabla sin conectarse a ningún mando.
+La CI confirma el mapa original: [Bruce con imagen exacta](https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45062718753). Los metadatos corregidos están en `evidence/bruce-kvs-registry-phase93.json` y `evidence/community-file-intake-phase95.json`. No se realizó ninguna escritura KVS real.
 
 ## 9. Decisión técnica actualizada
 
