@@ -31,3 +31,20 @@ python -m unittest tests.test_usb_descriptors_phase92 -v
 - The Gotham `set KVS` vendor handler and `YetiGmsgUrl` registry question is **separate** and still requires exact signed Gotham firmware static evidence. See [#111](https://github.com/JaimeDelgadoNaya/stadia-controller-research/issues/111).
 
 **GO** only for static analysis and synthetic checks. **NO-GO** for flashing, SDP execution, fuse operations, intrusive recovery, or exposing the confidential bonding file.
+## Differential comparison with the **physically measured** OEM phase61 USB descriptors
+
+Internal primary source: [`evidence/usb-enumeration-phase61.json`](../../evidence/usb-enumeration-phase61.json), physical host hub measurement **26 October 2026**; [phase62](usb-descriptor-oem-match-phase62.md) separately matched its 80-byte configuration to the signed OEM application. This is a **descriptor-only** comparison of different execution contexts.
+
+| Field | Live original OEM application | Private community bootloader candidate |
+|---|---|---|
+| VID:PID | `18D1:9400` | `18D1:946B` |
+| bcdUSB / advertised config count | `0x0201` / 1 | `0x0200` / 3 |
+| Config length | 80 bytes | 85 bytes |
+| Interfaces | Vendor `FF` + HID `03` | Vendor `FF` + ACM `02/02` + CDC Data `0A` |
+| IAD count | **2** | **0** |
+| Shared endpoints | `0x87`, `0x07` | `0x87`, `0x07` |
+| Serial string index (not its value) | 3 | 4 |
+
+The candidate is **not the measured normal USB mode**. Two common Vendor endpoints do not establish a shared handler, working host protocol, boot success or flashing safety. The original firmware's two IADs and candidate's zero IADs sharpen the Windows CDC enumeration hypothesis, but do **not** prove a Windows problem.
+
+Five additional differential tests now compare the archived phase61 measured bytes with the synthetic community-descriptor fixture: **17 total tests**, no device contact.
