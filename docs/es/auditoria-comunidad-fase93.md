@@ -8,7 +8,7 @@
 |---|---:|---|
 | Fase 91 — análisis de archivos privados | 10/10 por versión | Python 3.11 y 3.12 |
 | Fase 92 — descriptores USB y comparación OEM | 17/17 por versión | Python 3.11 y 3.12 |
-| Suite offline completa | 1.061 correctas; 35 omitidas | Python 3.11 y 3.12 |
+| Suite offline completa | 1.063 correctas; 35 omitidas | Python 3.11 y 3.12 |
 | Carril de muestras OEM y emulación acotada | 89 correctas; 0 omitidas | GitHub Actions |
 | Cinco carriles de regresión | Todos correctos | Bruce, bootloader, NXP HAB, USB HID e independent QA |
 
