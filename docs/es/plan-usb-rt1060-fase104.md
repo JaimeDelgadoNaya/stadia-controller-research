@@ -43,3 +43,9 @@ El ejemplo público [espp XInput](https://esp-cpp.github.io/espp/buses/xinput_ex
 | Autenticación en consola Xbox | **No** |
 
 **NO FLASH:** No usar bootloader CDC, RAM flashloader, ROM SDP, `FIELD_RETURN`, eFuses ni modificaciones SPI. El siguiente avance requiere hardware de desarrollo independiente, no experimentar con la unidad Stadia comercial.
+
+
+## Resultado de GitHub Actions
+
+[Workflow dedicado de fase 104](https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45074690362): **14/14 pruebas superadas** tanto en Python 3.11 como en Python 3.12. Incluye compilación nativa C con UBSan, pruebas `ctypes`, simulación de eventos de host y compilación cruzada ARM Cortex-M7 con Clang. Estos 14 tests son **nuevos**; no se declara reevaluada la suite completa de fases previas en este commit. Esta ejecución no usa hardware.
+
