@@ -4,6 +4,12 @@ on:
   pull_request:
     paths:
       - 'evidence/community-validation-phase93.json'
+      - 'evidence/community-bootloader-patch-phase93.json'
+      - 'evidence/nxp-ram-flashloader-phase93.json'
+      - 'evidence/bruce-kvs-registry-phase93.json'
+      - 'evidence/community-bootloader-patch-phase93.json'
+      - 'evidence/nxp-ram-flashloader-phase93.json'
+      - 'evidence/bruce-kvs-registry-phase93.json'
       - 'evidence/community-phase91.json'
       - 'evidence/usb-cdc-phase92.json'
       - 'evidence/manifest.json'
