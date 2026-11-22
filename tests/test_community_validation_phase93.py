@@ -146,17 +146,17 @@ class CommunityValidationPhase93(unittest.TestCase):
         p = self.patch["code_change"]
         self.assertEqual(p["oem_thumb_halfword"], "5023")
         self.assertEqual(p["candidate_thumb_halfword"], "5523")
-        self.assertEqual(p["original_immediate"], 0x50)
-        self.assertEqual(p["candidate_immediate"], 0x55)
-        self.assertTrue(p["length_matches_oem_config_length"])
-        self.assertTrue(p["length_matches_candidate_config_length"])
+        self.assertTrue(p["immediate_matches_oem_config_length"])
+        self.assertTrue(p["immediate_matches_candidate_config_length"])
+        self.assertEqual(p["descriptor_pointer_literal"], "0x6081527c")
+        self.assertTrue(p["pointer_unchanged"])
 
     def test_candidate_clears_csf_and_omits_original_csf_tail(self):
         a = self.patch["authentication"]
-        self.assertEqual(a["original_csf_pointer"], "0x60818000")
-        self.assertEqual(a["candidate_csf_pointer"], "0x0")
-        self.assertEqual(a["original_csf_header_at_file_offset_0x18000"], "d4006042")
-        self.assertTrue(self.patch["checks"]["candidate_truncated_before_original_csf"])
+        self.assertEqual(self.patch["ivt"]["oem"]["csf"], "0x60818000")
+        self.assertEqual(self.patch["ivt"]["candidate"]["csf"], "0x0")
+        self.assertEqual(a["oem_csf_header_at_file_offset_0x18000"], "d4006042")
+        self.assertTrue(a["candidate_ends_before_csf_offset"])
         self.assertFalse(a["candidate_original_signature_verified"])
 
     def test_separate_ram_flashloader_is_hid_not_cdc(self):
@@ -180,7 +180,7 @@ class CommunityValidationPhase93(unittest.TestCase):
         self.assertEqual(k["selected_id_to_name"]["40"], "AppImageFdrVer")
         self.assertEqual(k["selected_id_to_name"]["44"], "LogToUart")
         self.assertFalse(k["yeti_ascii_literals"]["YetiGmsgUrl"])
-        self.assertTrue(k["limits"]["this_is_bruce_not_gotham"])
+        self.assertTrue(k["limits"]["sample_is_bruce_not_gotham"])
 
     def test_no_destructive_or_live_actions_occurred(self):
         s = self.report["safety"]
