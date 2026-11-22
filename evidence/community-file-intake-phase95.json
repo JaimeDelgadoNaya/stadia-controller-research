@@ -1,0 +1,159 @@
+{
+  "phase": 95,
+  "date": "2026-11-22",
+  "kind": "user_supplied_community_archive_static_intake",
+  "status": "source_claims_and_binary_metadata_verified_offline_no_hardware",
+  "inputs": {
+    "message.txt": {
+      "bytes": 2712,
+      "sha256": "26e5c1f373b99a77ae2586808c643311943cf3f3ee8a5cf25cb1f88e23e11040",
+      "type": "third_party_narrative"
+    },
+    "bluetooth(1).bin": {
+      "bytes": 2048,
+      "prefix": "#BONDING",
+      "classification": "private_bluetooth_bonding_store",
+      "hash_published": false,
+      "contents_published": false
+    },
+    "thebb_ivt_flashloader.bin": {
+      "bytes": 98148,
+      "sha256": "700e2cbbb884dc74a2b5d71da420350d6dca67e55f456a24f2d3ba7a69dde258",
+      "matches_previous_phase93_sample": true
+    },
+    "bootloader-usb-acm(1).bin": {
+      "bytes": 94248,
+      "sha256": "ea37f7cd38ab7ae392fa80911aeed4b07ac7e557b8bb66375e099e8ebd148957",
+      "matches_previous_phase92_93_sample": true
+    },
+    "bluetooth-image-public.md": {
+      "bytes": 42153,
+      "sha256": "4ca08e531185fcf64237c8b149d50491ab55c0d9fe64b04e2dabef49b8c95abf",
+      "type": "third_party_Bruce_reverse_engineering_notes"
+    },
+    "led-public.md": {
+      "bytes": 14322,
+      "sha256": "85c3b05e8035b9014530c1bc1ef4c7c3d1d67fb32e5716121c2b195b75a6265e",
+      "type": "third_party_LED_notes"
+    },
+    "fwlog-kit.zip": {
+      "bytes": 25551,
+      "sha256": "b60d6c2a126a6e7386c99c84bf75852a7bac9c02676d670fdc9c91c8399a59ae",
+      "entries": 15,
+      "python_modules": 13,
+      "python_ast_parse_failures": 0,
+      "unsafe_zip_paths": 0,
+      "files_executed": false
+    }
+  },
+  "community_message_claims": {
+    "build_scope": 169429,
+    "stock_application_slot": "B",
+    "application_base": "0x60840000",
+    "sdp_request": "0xC0",
+    "class_out_bmRequestType": "0x21",
+    "vendor_type_0x40_does_not_dispatch_claim": true,
+    "rom_usb_identity": "1fc9:0135",
+    "application_dispatcher_claim": "0x608fa264",
+    "nonmatching_bootloader_ack_not_semantic_success": true,
+    "independent_hardware_reproduction": false
+  },
+  "fwlog_kit_observations": {
+    "build_scope": 169429,
+    "usb_vendor_bulk_ep_out": "0x07",
+    "usb_vendor_bulk_ep_in": "0x87",
+    "flash_sector_modify": "0x8fa000",
+    "ram_read_change_bytes": 22,
+    "df_unlock_change_bytes": 8,
+    "total_changed_bytes": 30,
+    "patch_memread_writes_flash": true,
+    "patch_restart_writes_flash": true,
+    "sdp_load_uploads_and_jumps_into_RAM": true,
+    "patch_flashloader_expands_NOR_read_whitelist": true,
+    "firmware_signature_after_patch_valid": false,
+    "stock_closed_board_compatibility_proven": false,
+    "unmodified_retail_board_tested_in_this_session": false,
+    "import_only_ast_syntax_validation": true,
+    "executed_live_scripts": false,
+    "scripts_referencing_missing_docs": [
+      "docs/usb-diagnostics.md",
+      "docs/enter-sdp.md",
+      "docs/config-fuse.md",
+      "docs/flashloader.md",
+      "docs/restart-command.md",
+      "docs/xbox-one.md"
+    ],
+    "raw_fwlog_can_include_device_identifiers_or_private_messages": true,
+    "source_notes_include_hardware_results_not_reproduced_here": true
+  },
+  "correction": {
+    "earlier_bruce_parser_error": "Old parser started 8 bytes into each 32-byte record; read name pointer as word0 and next record ID as word6.",
+    "verified_bruce_layout": {
+      "table_offset": "0xc3c58",
+      "image_base": "0x60040000",
+      "record_bytes": 32,
+      "id_offset": 0,
+      "name_pointer_offset": 8,
+      "count": 67,
+      "first_id": 0,
+      "last_id": 66
+    },
+    "verified_bruce_ids": {
+      "20": "AnalyticsOptIn",
+      "21": "LastKnownSntp",
+      "22": "IsDfDevice",
+      "39": "AppImageFdrVer",
+      "40": "BootImageFdrVer",
+      "41": "HidOverGatt",
+      "43": "LogToUart",
+      "44": "CrashReboot"
+    },
+    "gotham_layout": {
+      "table_offset": "0x2c4b60",
+      "record_bytes": 32,
+      "id_offset": 0,
+      "name_pointer_offset": 8,
+      "count_per_image": 115,
+      "first_id": 0,
+      "last_id": 114,
+      "pvt_a_image_base": "0x60040000",
+      "pvt_b_image_base": "0x60840000"
+    },
+    "verified_gotham_ids": {
+      "21": "YetiEnvironment",
+      "22": "YetiDiscoUrl",
+      "23": "AnalyticsOptIn",
+      "44": "AppImageFdrVer",
+      "45": "BootImageFdrVer"
+    },
+    "yeti_gmsg_url_ascii_in_both_images": true,
+    "yeti_gmsg_url_registry_key_in_either_image": false,
+    "public_gotham_test_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45062738379",
+    "public_bruce_test_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45062718753"
+  },
+  "led_notes": {
+    "source_claims_not_reproduced_here": true,
+    "driver": "LP5562",
+    "bus": "LPI2C2",
+    "i2c_7bit": "0x30",
+    "connected_channels": [
+      "red",
+      "amber",
+      "white"
+    ],
+    "blue_hardware_channel_connected": false,
+    "stock_patterns_claimed": 39,
+    "custom_direct_led_control_unsafe_unvalidated": true
+  },
+  "current_research_boundary": {
+    "custom_firmware_boot_verified": false,
+    "usb_vendor_kvs_writer_arbitrary_key_support_verified": false,
+    "sdp_overrun_exploit_verified": false,
+    "real_controller_commands_sent": false,
+    "memory_dump_captured": false,
+    "flash_written": false,
+    "fuse_programmed": false,
+    "private_bonding_store_published": false
+  },
+  "next_recommended_work": "Trace the original signed Gotham USB Vendor KVS write dispatcher and name validation (static only), then design an isolated host-side log parser/fixture without touching the device."
+}
