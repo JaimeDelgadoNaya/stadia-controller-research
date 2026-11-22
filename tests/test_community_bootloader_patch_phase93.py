@@ -76,6 +76,8 @@ class CommunityBootloaderPatchPhase93(unittest.TestCase):
     def test_code_constant_tracks_configuration_length(self):
         c = self.report["code_patch"]
         self.assertEqual(c["original_descriptor_length_constant"], 0x50)
+        self.assertEqual(c["original_thumb_halfword"], "5023")
+        self.assertEqual(c["candidate_thumb_halfword"], "5523")
         self.assertEqual(c["candidate_descriptor_length_constant"], 0x55)
         self.assertEqual(c["pointer_literal"], "0x6081527c")
         self.assertTrue(c["pointer_unchanged"])
