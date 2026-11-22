@@ -129,7 +129,7 @@ class CommunityValidationPhase93(unittest.TestCase):
         k = self.report["community_kvs_claims"]
         self.assertEqual(k["YetiDiscoUrl_registry_id_22"], "verified_from_Gotham_PVT_A_and_PVT_B_phase94")
         self.assertEqual(k["YetiGmsgUrl_missing_from_registry"], "verified_absent_in_115_key_registries_both_PVT_images")
-        self.assertEqual(k["usb_vendor_set_kvs_registry_enforcement"], "open_question")
+        self.assertEqual(k["usb_vendor_set_kvs_registry_enforcement"], "unverified")
         self.assertIn("excluded", k["AppImageFdrVer_id_44"])
 
     def test_private_bootloader_patch_is_exactly_bounded(self):
