@@ -9,24 +9,27 @@
     "build": 337784
   },
   "table": {
-    "file_offset": "0xc3c60",
+    "file_offset": "0xc3c58",
     "entry_size_bytes": 32,
-    "contiguous_sequential_entries": 66,
-    "first_id": 1,
+    "contiguous_sequential_entries": 67,
+    "first_id": 0,
     "last_id": 66,
-    "next_record_does_not_continue_sequential_id": true
+    "next_record_does_not_continue_sequential_id": true,
+    "id_offset": 0,
+    "name_pointer_offset": 8
   },
   "selected_id_to_name": {
-    "21": "AnalyticsOptIn",
-    "22": "LastKnownSntp",
-    "23": "IsDfDevice",
-    "24": "UpdateGauge",
-    "25": "OtaFromBuild",
-    "40": "AppImageFdrVer",
-    "41": "BootImageFdrVer",
-    "42": "HidOverGatt",
-    "43": "SupportNoBat",
-    "44": "LogToUart"
+    "20": "AnalyticsOptIn",
+    "21": "LastKnownSntp",
+    "22": "IsDfDevice",
+    "23": "UpdateGauge",
+    "24": "OtaFromBuild",
+    "39": "AppImageFdrVer",
+    "40": "BootImageFdrVer",
+    "41": "HidOverGatt",
+    "42": "SupportNoBat",
+    "43": "LogToUart",
+    "44": "CrashReboot"
   },
   "yeti_ascii_literals": {
     "YetiEnvironment": false,
@@ -49,5 +52,6 @@
     "real_kvs_write_performed": false,
     "device_accessed": false
   },
-  "conclusion": "This exact Bruce BLE production image contains one contiguous 66-entry sequential name/ID table. Its IDs differ from the community-reported Gotham mapping: Bruce ID21=AnalyticsOptIn, ID22=LastKnownSntp, ID23=IsDfDevice, ID40=AppImageFdrVer, ID44=LogToUart. Therefore Bruce IDs must not be applied to Gotham. This does not prove the Gotham registry contents."
+  "conclusion": "This exact Bruce BLE production image contains one contiguous 66-entry sequential name/ID table. Its IDs differ from the community-reported Gotham mapping: Bruce ID21=AnalyticsOptIn, ID22=LastKnownSntp, ID23=IsDfDevice, ID40=AppImageFdrVer, ID44=LogToUart. Therefore Bruce IDs must not be applied to Gotham. This does not prove the Gotham registry contents.",
+  "correction": "Phase 95: user-provided Bruce disassembly notes show ID +0 and name-pointer +8; phase93 parser was shifted +8 and displayed each name with next record's ID. Exact public signed image reverified in CI on 2026-11-22."
 }
