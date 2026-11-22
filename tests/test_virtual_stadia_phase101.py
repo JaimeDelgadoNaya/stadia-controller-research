@@ -8,7 +8,7 @@ from tools.virtual_stadia_firmware_phase101 import (
     lab_keys, xusb_lab_payload, scenarios, manifest, NEUTRAL, PAYLOAD_MAGIC,
     MAX_BUNDLE_SIZE,
 )
-from tools.simulate_xinput_phase99 import parse_xusb_report
+from tools.simulate_xinput_phase99 import decode_xusb as parse_xusb_report
 
 SOURCE = (Path(__file__).resolve().parents[1]/'firmware_codec'/'stadia_xusb_codec.c').read_bytes()
 FACTORY = b'FAKE_FACTORY_BOOT'
