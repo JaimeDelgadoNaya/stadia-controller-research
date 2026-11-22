@@ -8,11 +8,11 @@
 |---|---:|---|
 | Phase 91 private-artifact intake | 10/10 per version | Python 3.11 and 3.12 |
 | Phase 92 USB descriptors and OEM differential | 17/17 per version | Python 3.11 and 3.12 |
-| Full offline suite | 1,012 passed; 34 skipped | Python 3.11 and 3.12 |
+| Full offline suite | 1,061 passed; 35 skipped | Python 3.11 and 3.12 |
 | OEM sample and bounded-emulation lane | 89 passed; 0 skipped | GitHub Actions |
 | Five regression lanes | All successful | Bruce, bootloader, NXP HAB, USB HID and independent QA |
 
-The 34 skips in the general offline suite are conditional tests requiring optional samples/fixtures, not failures. A separate original-sample/emulation lane completed 89 tests. Action run URLs are pinned in `evidence/community-validation-phase93.json`.
+The 35 skips in the general offline suite are conditional tests requiring optional samples/fixtures, not failures. A separate original-sample/emulation lane completed 89 tests. Action run URLs are pinned in `evidence/community-validation-phase93.json`.
 
 **Documentation correction:** PR #110 initially said eight Phase 91 tests. The actual test file contains ten; the PR and report should say ten.
 
