@@ -1,0 +1,85 @@
+{
+  "phase": 93,
+  "date": "2026-11-22",
+  "kind": "offline_nxp_style_ram_flashloader_candidate_not_authenticated",
+  "source_file": {
+    "name": "thebb_ivt_flashloader.bin",
+    "size_bytes": 98148,
+    "size_hex": "0x17f64",
+    "sha256": "700e2cbbb884dc74a2b5d71da420350d6dca67e55f456a24f2d3ba7a69dde258",
+    "provenance_verified": false
+  },
+  "ivt": {
+    "file_offset": "0x400",
+    "entry": "0x20002000",
+    "dcd": "0x0",
+    "boot_data": "0x20000420",
+    "self": "0x20000400",
+    "csf": "0x0"
+  },
+  "boot_data": {
+    "file_offset": "0x420",
+    "load_address": "0x20000000",
+    "declared_length": "0x18000",
+    "plugin": 0,
+    "file_shortfall_bytes": 156,
+    "length_match": false
+  },
+  "entry_vector_candidate": {
+    "file_offset": "0x2000",
+    "initial_stack_pointer": "0x20217000",
+    "reset_handler": "0x2000262d",
+    "reset_handler_thumb_bit_set": true,
+    "reset_handler_in_declared_load_range": true
+  },
+  "usb_device": {
+    "file_offset": "0x17ec1",
+    "vid": "0x15a2",
+    "pid": "0x0073",
+    "bcdUSB": "0x0200",
+    "device_class": 0,
+    "iManufacturer": 1,
+    "iProduct": 2,
+    "iSerialNumber": 0,
+    "bNumConfigurations": 1
+  },
+  "usb_configuration": {
+    "file_offset": "0x17e98",
+    "length": 41,
+    "interfaces": 1,
+    "interface_class": "0x03 HID",
+    "endpoints": [
+      {
+        "address": "0x81",
+        "transfer": "interrupt",
+        "max_packet": 64
+      },
+      {
+        "address": "0x02",
+        "transfer": "interrupt",
+        "max_packet": 64
+      }
+    ],
+    "hid_report_descriptor_length": 76,
+    "cdc_union_present": false
+  },
+  "transport_name_markers": {
+    "UART": true,
+    "I2C": true,
+    "SPI": true,
+    "CAN": true,
+    "HID": true,
+    "CDC": true,
+    "DFU": true,
+    "MSD": true
+  },
+  "interpretation": "A separate RAM flashloader-like image with a Freescale/NXP-style USB HID descriptor. The presence of the CDC string marker does not mean its actual USB configuration exposes CDC ACM. It is not the 18D1:946B Stadia CDC candidate and is not proven to be the exact public restricted_ivt_flashloader image or to be the tchebb SDP payload.",
+  "limits": {
+    "csf_present": false,
+    "hab_signature_verified": false,
+    "sdpoverrun_applicability_verified": false,
+    "exploit_executed": false,
+    "firmware_executed": false,
+    "hardware_accessed": false
+  }
+}

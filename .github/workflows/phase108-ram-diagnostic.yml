@@ -1,0 +1,60 @@
+name: Phase 108 RT1061 RAM diagnostic cross-link (offline)
+on:
+  push:
+    paths:
+      - 'firmware/**'
+      - 'firmware_codec/stadia_xusb_codec.*'
+      - 'firmware_codec/stadia_xusb_transport.*'
+      - 'tools/build_ram_probe.py'
+      - 'tools/arm_phase108_headers/**'
+      - 'tests/test_phase108.py'
+      - 'tests/test_rt1061_inputs.c'
+      - '.github/workflows/phase108-ram-diagnostic.yml'
+  pull_request:
+    paths:
+      - 'firmware/**'
+      - 'firmware_codec/stadia_xusb_codec.*'
+      - 'firmware_codec/stadia_xusb_transport.*'
+      - 'tools/build_ram_probe.py'
+      - 'tools/arm_phase108_headers/**'
+      - 'tests/test_phase108.py'
+      - 'tests/test_rt1061_inputs.c'
+      - '.github/workflows/phase108-ram-diagnostic.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  proof:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install ARM ELF linker dependency
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -q
+          sudo apt-get install -y lld
+      - name: Verify toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          command -v python3
+          command -v clang
+          command -v ld.lld
+          command -v readelf
+          command -v cc
+      - name: Build synthetic-only Cortex-M7 ELF
+        run: python3 tools/build_ram_probe.py
+      - name: Run input/transport, UBSan, linker and OCRAM checks
+        run: python3 -m unittest discover -s tests -p 'test_phase108.py' -v
+      - name: Verify no board-image output and no hardware use
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f build/arm/stadia_ram_codec_selftest.elf
+          test ! -f build/arm/stadia_xbox.bin
+          test ! -f build/arm/flash.img
+          echo 'Offline only. No SDP, NOR write, HAB changes or Field Return.'

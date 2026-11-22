@@ -1,0 +1,38 @@
+{
+  "phase": 93,
+  "date": "2026-11-22",
+  "kind": "upstream_public_source_verification",
+  "repository": "https://github.com/jkfran/stadiacast",
+  "commit": "9605bf461a157608b8a8756ba21fb68f7afd5ffb",
+  "release": {
+    "tag": "v1.3.0",
+    "published_at": "2026-11-18T21:05:18Z"
+  },
+  "claims_verified_in_upstream_source": {
+    "works_end_to_end_with_wifi_firmware_ota_282115": true,
+    "no_controller_firmware_modification_required": true,
+    "receiver_speaks_stock_controller_protocol": true,
+    "fvc_hosts": [
+      "cloudcast-pa.googleapis.com"
+    ],
+    "gmsg_host": "cloudcast-gmsg-prod.googleapis.com",
+    "clearcut_host": "play.googleapis.com",
+    "sntp_host": "time.google.com",
+    "connectivitycheck_forwarded_to_google": true,
+    "clients3_forwarded_to_google": true,
+    "gmsg_delivers_webrtc_answer_bundle": true
+  },
+  "source_paths": {
+    "readme": "https://github.com/jkfran/stadiacast/blob/9605bf461a157608b8a8756ba21fb68f7afd5ffb/README.md",
+    "protocol": "https://github.com/jkfran/stadiacast/blob/9605bf461a157608b8a8756ba21fb68f7afd5ffb/docs/protocol.md",
+    "config": "https://github.com/jkfran/stadiacast/blob/9605bf461a157608b8a8756ba21fb68f7afd5ffb/src/stadiacast/config.py",
+    "receiver": "https://github.com/jkfran/stadiacast/blob/9605bf461a157608b8a8756ba21fb68f7afd5ffb/src/stadiacast/receiver.py"
+  },
+  "limits": {
+    "KVS_registry_claims_verified": false,
+    "USB_vendor_set_KVS_handler_verified": false,
+    "direct_Switch_2_compatibility_verified": false,
+    "user_controller_connected_during_this_review": false
+  },
+  "conclusion": "The Discord's separation of FVC, GMsg, Clearcut and SNTP is corroborated by the public Stadiacast v1.3.0 source. This verifies the network interoperability architecture, not arbitrary KVS writes or a custom firmware unlock."
+}

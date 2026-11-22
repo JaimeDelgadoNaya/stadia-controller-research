@@ -1,0 +1,49 @@
+name: Phase 93 cross-phase evidence integrity
+
+on:
+  pull_request:
+    paths:
+      - 'evidence/community-validation-phase93.json'
+      - 'evidence/community-bootloader-patch-phase93.json'
+      - 'evidence/nxp-ram-flashloader-phase93.json'
+      - 'evidence/bruce-kvs-registry-phase93.json'
+      - 'evidence/stadiacast-upstream-phase93.json'
+      - 'evidence/field-return-risk-phase93.json'
+      - 'evidence/community-phase91.json'
+      - 'evidence/usb-cdc-phase92.json'
+      - 'evidence/manifest.json'
+      - 'evidence/application-usb-dispatch.json'
+      - 'evidence/external-research-phase90.json'
+      - 'tests/test_community_validation_phase93.py'
+      - '.github/workflows/community-validation-phase93.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'evidence/community-validation-phase93.json'
+      - 'evidence/community-bootloader-patch-phase93.json'
+      - 'evidence/nxp-ram-flashloader-phase93.json'
+      - 'evidence/bruce-kvs-registry-phase93.json'
+      - 'evidence/stadiacast-upstream-phase93.json'
+      - 'evidence/field-return-risk-phase93.json'
+      - 'tests/test_community_validation_phase93.py'
+      - '.github/workflows/community-validation-phase93.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  evidence-integrity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Check phase91-93 source claims, binary provenance and redaction boundaries
+        run: python -m unittest tests.test_community_validation_phase93 -v

@@ -1,0 +1,35 @@
+name: Phase 91 community artifact intake (offline)
+
+on:
+  pull_request:
+    paths:
+      - 'tools/audit_community_artifacts_phase91.py'
+      - 'tests/test_community_artifacts_phase91.py'
+      - 'evidence/community-phase91.json'
+      - '.github/workflows/community-phase91.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'tools/audit_community_artifacts_phase91.py'
+      - 'tests/test_community_artifacts_phase91.py'
+      - '.github/workflows/community-phase91.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-synthetic-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Test strict IVT and confidential bonding intake without device access
+        run: python -m unittest tests.test_community_artifacts_phase91 -v

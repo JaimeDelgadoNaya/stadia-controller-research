@@ -1,0 +1,69 @@
+{
+  "phase": "99-100",
+  "date": "2026-11-22",
+  "execution": "offline_only",
+  "sources": {
+    "bruce": "bluetooth-image-public.md, Bruce 337784, source offsets and limits from third-party notes",
+    "gotham_sdp": "message.txt, author claims class USB 0xC0 only in stock app build 169429",
+    "xbox_usb": "https://www.partsnotincluded.com/understanding-the-xbox-360-wired-controllers-usb-data/",
+    "gp2040": "https://gp2040-ce.info/web-configurator/menu-pages/settings/",
+    "nxp_hab": "https://docs.mcuxpresso.nxp.com/mcuxsdk/latest/middleware/mcu_bootloader/docs/iMXRT1060_Manufacturing_User_Guide/topics/program_bootable_image.html"
+  },
+  "data_layout": {
+    "bruce_hid_bytes": 11,
+    "bruce_raw_source": "buttons +0x08…0x1a, four axes uint32 +0x1c,+0x20,+0x24,+0x28, triggers +0x2c/+0x30; range0..0x1000",
+    "xbox_xusb_input_bytes": 20,
+    "xbox_xusb_rumble_output_bytes": 8,
+    "stadia_rumble_report_id": 5,
+    "stadia_rumble_report_bytes": 5,
+    "y_axis_orientation_unverified": true
+  },
+  "usb_reference": {
+    "manufacturer_usb_ids_for_research_only": "045e:028e",
+    "device_descriptor_bytes": 18,
+    "configuration_bytes": 153,
+    "class": "ff/ff/ff",
+    "gamepad_interface": "ff/5d/01",
+    "gamepad_interrupt_in": "0x81",
+    "gamepad_interrupt_out": "0x01",
+    "interfaces": 4,
+    "security_interface": "ff/fd/13",
+    "generic_hid_gamepad_descriptor": false
+  },
+  "original_binary_evidence": {
+    "original_bootloader_bytes": 131072,
+    "usb_acm_candidate_bytes": 94248,
+    "changed_bytes_in_common_prefix": 72,
+    "prefix_equal_percent": 99.9236,
+    "original_csf_pointer_present": true,
+    "candidate_csf_pointer_present": false,
+    "ram_loader_file_bytes": 98148,
+    "ram_loader_bootdata_declared_size": 98304,
+    "ram_loader_ivt_offset": "0x400",
+    "ram_loader_csf_pointer_present": false,
+    "both_candidates_retail_hab_closed_boot_proven": false
+  },
+  "tests": {
+    "local_standalone_python_cases": 57,
+    "local_standalone_failed": 0,
+    "cross_language_golden_hid_cases": 500,
+    "cross_language_golden_raw_variants": 1000,
+    "c11_compiler_flags": "-std=c11 -Wall -Wextra -Werror -pedantic",
+    "github_ci_status": "separately verified by Github Actions"
+  },
+  "safety_and_validation": {
+    "actual_usb_connected": false,
+    "windows_xusb_driver_binding_observed": false,
+    "xbox_console_connected": false,
+    "stadia_custom_firmware_executed": false,
+    "hab_closed_unsigned_boot_proven": false,
+    "signature_validated_cryptographically": false,
+    "flashed": false,
+    "sdp_called": false,
+    "fuse_changed": false,
+    "field_return_invoked": false,
+    "bluetooth_bonding_file_read": false,
+    "bluetooth_bonding_file_published": false
+  },
+  "recommended_next": "Board-specific read-only HAB/boot/recovery validation; then XUSB driver on recoverable RT1061 dev hardware; only after that discuss Stadia firmware integration"
+}

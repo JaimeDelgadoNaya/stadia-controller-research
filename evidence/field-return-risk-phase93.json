@@ -1,0 +1,32 @@
+{
+  "phase": 93,
+  "date": "2026-11-22",
+  "kind": "field_return_fuse_safety_review",
+  "sources": {
+    "imx_rt1060_reference_manual_rev3": "https://www.pjrc.com/teensy/IMXRT1060RM_rev3.pdf",
+    "imx_rt1061_nxp_community_security_config": "https://community.nxp.com/t5/i-MX-RT-Crossover-MCUs/1061-fuse-configuration/td-p/1705836",
+    "imx7d_nxp_field_return_warning": "https://community.nxp.com/t5/i-MX-Processors/iMX7D-not-booting-after-FIELD-RETURN-fuse-blown/m-p/1206202/highlight/true"
+  },
+  "documented_facts": {
+    "rt1060_manual_field_return_fuse": "0x400[31]",
+    "rt1060_manual_field_return_setting_0": "functional / secure mode",
+    "rt1060_manual_field_return_setting_1": "open for field-return testing",
+    "rt1060_manual_purpose": "parts returned from shipped products; fuse burning protected by a CSF command",
+    "rt1061_nxp_community_closed_config": "SEC_CONFIG_CLOSED 0x00000002: image executes only if authenticated",
+    "imx7d_support_warning": "NXP support describes field-return as factory-return test mode; it can void programmed keys and that specific i.MX7D case did not boot"
+  },
+  "applicability": {
+    "stadia_soc_reported_as": "i.MX RT1061",
+    "exact_rt1061_field_return_fuse_mapping_verified": false,
+    "imx7d_failure_generalizes_to_rt1061": false,
+    "actual_controller_fuse_state_read": false
+  },
+  "decision": "NO_GO",
+  "reason": "Do not treat FIELD_RETURN as a routine developer unlock. It is a one-way eFuse state change intended for returned-part testing; the exact RT1061 behavior and a safe recovery path have not been established.",
+  "actions": {
+    "fuses_read": false,
+    "fuses_written": false,
+    "sdp_executed": false,
+    "hardware_touched": false
+  }
+}

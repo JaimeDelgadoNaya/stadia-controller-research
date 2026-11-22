@@ -1,0 +1,147 @@
+{
+  "phase": 92,
+  "date": "2026-11-22",
+  "evidence_type": "private_uploaded_candidate_static_bytes",
+  "file_label": "bootloader-usb-acm.bin",
+  "sha256": "ea37f7cd38ab7ae392fa80911aeed4b07ac7e557b8bb66375e099e8ebd148957",
+  "size_bytes": 94248,
+  "device_descriptor": {
+    "offset": "0xbf78",
+    "bLength": 18,
+    "bDescriptorType": 1,
+    "bcdUSB": "0x0200",
+    "class_triple": [
+      "0xef",
+      "0x02",
+      "0x01"
+    ],
+    "bMaxPacketSize0": 64,
+    "idVendor": "0x18d1",
+    "idProduct": "0x946b",
+    "bcdDevice": "0x0001",
+    "iManufacturer": 1,
+    "iProduct": 2,
+    "iSerialNumber": 4,
+    "bNumConfigurations": 3
+  },
+  "configuration_descriptor": {
+    "offset": "0x1527c",
+    "wTotalLength": 85,
+    "bNumInterfaces": 3,
+    "bConfigurationValue": 1,
+    "descriptor_count": 12,
+    "actual_length_matches": true,
+    "parsed_endpoint_counts_match": true,
+    "iad_count": 0,
+    "interfaces": [
+      {
+        "number": 0,
+        "class": "vendor 0xff",
+        "endpoints": [
+          "0x87 bulk 512",
+          "0x07 bulk 512"
+        ]
+      },
+      {
+        "number": 1,
+        "class": "CDC communications 0x02 subclass ACM 0x02",
+        "endpoints": [
+          "0x82 interrupt 8"
+        ]
+      },
+      {
+        "number": 2,
+        "class": "CDC data 0x0a",
+        "endpoints": [
+          "0x81 bulk 512",
+          "0x01 bulk 512"
+        ]
+      }
+    ],
+    "cdc_union": {
+      "master_interface": 1,
+      "slave_interfaces": [
+        2
+      ]
+    }
+  },
+  "static_findings": [
+    "configuration record parses without structural length/count errors",
+    "device class EF/02/01 and no IAD descriptor inside identified 85-byte configuration",
+    "CDC union functional descriptor present",
+    "device bNumConfigurations=3 but only one structurally parseable 09 02 configuration found in raw file scan; runtime synthesis or other source cannot be ruled out"
+  ],
+  "reference_docs": [
+    "https://learn.microsoft.com/en-us/windows-hardware/drivers/usbcon/usb-interface-association-descriptor",
+    "https://learn.microsoft.com/en-us/windows-hardware/drivers/usbcon/support-for-interface-collections"
+  ],
+  "caveats": {
+    "firmware_signature_verified": false,
+    "host_usb_enumeration_observed": false,
+    "windows_driver_binding_observed": false,
+    "corrected_cdc_descriptor_proven": false,
+    "original_signed_firmware_compared": false,
+    "bootrom_sdp_exploit_validated": false,
+    "device_interactions": false,
+    "flash_or_fuse_operations": false
+  },
+  "test_status": "17 tests passed locally (12 synthetic + 5 phase61 baseline comparison)",
+  "baseline_comparison_phase61": {
+    "source": "evidence/usb-enumeration-phase61.json",
+    "source_type": "owner_measured_host_hub_descriptor_2026-10-26",
+    "oem_device": {
+      "vid": "0x18d1",
+      "pid": "0x9400",
+      "bcdUSB": "0x0201",
+      "iSerialNumber": 3,
+      "bNumConfigurations": 1
+    },
+    "oem_configuration": {
+      "bytes": 80,
+      "interfaces": [
+        "vendor 0xff",
+        "HID 0x03"
+      ],
+      "iad_count": 2,
+      "endpoints": [
+        "0x87",
+        "0x07",
+        "0x83",
+        "0x03"
+      ]
+    },
+    "candidate_source_type": "uploaded_private_community_binary_static_only",
+    "candidate_device": {
+      "vid": "0x18d1",
+      "pid": "0x946b",
+      "bcdUSB": "0x0200",
+      "iSerialNumber": 4,
+      "bNumConfigurations": 3
+    },
+    "candidate_configuration": {
+      "bytes": 85,
+      "interfaces": [
+        "vendor 0xff",
+        "communications ACM 0x02/0x02",
+        "CDC data 0x0a"
+      ],
+      "iad_count": 0,
+      "endpoints": [
+        "0x87",
+        "0x07",
+        "0x82",
+        "0x81",
+        "0x01"
+      ]
+    },
+    "common_endpoints": [
+      "0x07",
+      "0x87"
+    ],
+    "limitations": [
+      "Different firmware context (OEM application physically enumerated vs patched bootloader candidate static bytes)",
+      "No inference of shared code, successful boot, safe flashing, or Windows failure from shared endpoints",
+      "Candidate string descriptor index is not the string content; no real USB serial number collected"
+    ]
+  }
+}

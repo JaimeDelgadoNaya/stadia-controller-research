@@ -1,0 +1,57 @@
+{
+  "phase": 93,
+  "date": "2026-11-22",
+  "kind": "static_bruce_production_kvs_name_id_table_not_gotham",
+  "image": {
+    "name": "bruce_pvt_a_prod_signed.bin",
+    "size_bytes": 1050984,
+    "sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+    "build": 337784
+  },
+  "table": {
+    "file_offset": "0xc3c58",
+    "entry_size_bytes": 32,
+    "contiguous_sequential_entries": 67,
+    "first_id": 0,
+    "last_id": 66,
+    "next_record_does_not_continue_sequential_id": true,
+    "id_offset": 0,
+    "name_pointer_offset": 8
+  },
+  "selected_id_to_name": {
+    "20": "AnalyticsOptIn",
+    "21": "LastKnownSntp",
+    "22": "IsDfDevice",
+    "23": "UpdateGauge",
+    "24": "OtaFromBuild",
+    "39": "AppImageFdrVer",
+    "40": "BootImageFdrVer",
+    "41": "HidOverGatt",
+    "42": "SupportNoBat",
+    "43": "LogToUart",
+    "44": "CrashReboot"
+  },
+  "yeti_ascii_literals": {
+    "YetiEnvironment": false,
+    "YetiDiscoUrl": false,
+    "YetiGmsgUrl": false
+  },
+  "update_related_ascii_literals": {
+    "IsDfDevice": true,
+    "AppImageFdrVer": true,
+    "BootImageFdrVer": true,
+    "firmware_image_upload.cc": true,
+    "http_flash_writer.h": true,
+    "VendorUsbTask": true
+  },
+  "limits": {
+    "sample_is_bruce_not_gotham": true,
+    "gotham_registry_verified": false,
+    "usb_vendor_set_kvs_call_chain_verified": false,
+    "writer_permissions_verified": false,
+    "real_kvs_write_performed": false,
+    "device_accessed": false
+  },
+  "conclusion": "This exact Bruce BLE production image contains one contiguous 66-entry sequential name/ID table. Its IDs differ from the community-reported Gotham mapping: Bruce ID21=AnalyticsOptIn, ID22=LastKnownSntp, ID23=IsDfDevice, ID40=AppImageFdrVer, ID44=LogToUart. Therefore Bruce IDs must not be applied to Gotham. This does not prove the Gotham registry contents.",
+  "correction": "Phase 95: user-provided Bruce disassembly notes show ID +0 and name-pointer +8; phase93 parser was shifted +8 and displayed each name with next record's ID. Exact public signed image reverified in CI on 2026-11-22."
+}

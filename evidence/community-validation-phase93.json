@@ -1,0 +1,275 @@
+{
+  "phase": 93,
+  "date": "2026-11-22",
+  "purpose": "Cross-check phases 91-92, run CI evidence, classify new public leads, and identify the exact next missing source for Gotham KVS analysis.",
+  "own_repository": {
+    "pull_request": 110,
+    "branch": "research/phase91-sdp-community-intake",
+    "base": "main",
+    "main_modified": false,
+    "phase91": {
+      "tests_per_run": 10,
+      "python_versions": [
+        "3.11",
+        "3.12"
+      ],
+      "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45058774366",
+      "conclusion": "success"
+    },
+    "phase92": {
+      "tests_per_run": 17,
+      "python_versions": [
+        "3.11",
+        "3.12"
+      ],
+      "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45058774391",
+      "conclusion": "success"
+    },
+    "full_offline_suite": {
+      "tests_run": 1063,
+      "skipped": 35,
+      "python_versions": [
+        "3.11",
+        "3.12"
+      ],
+      "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45058774390",
+      "conclusion": "success",
+      "note": "1,063 tests passed on both Python 3.11 and 3.12; 35 optional skips; zero failures."
+    },
+    "bounded_original_and_emulation_lane": {
+      "tests_run": 89,
+      "skipped": 0,
+      "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45058774331",
+      "conclusion": "success"
+    },
+    "parallel_workstreams": {
+      "lanes": [
+        "bruce",
+        "bootloader",
+        "nxp-hab",
+        "usb-hid",
+        "independent-qa"
+      ],
+      "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45058774382",
+      "conclusion": "success"
+    },
+    "phase93_integrity": {
+      "tests_per_run": 23,
+      "python_versions": [
+        "3.11",
+        "3.12"
+      ],
+      "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45058774349",
+      "conclusion": "success"
+    },
+    "phase93_bootloader_fixtures": {
+      "tests_per_run": 22,
+      "python_versions": [
+        "3.11",
+        "3.12"
+      ],
+      "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45058774323",
+      "conclusion": "success"
+    },
+    "phase93_bruce_kvs": {
+      "tests_per_run": 6,
+      "python_versions": [
+        "3.11",
+        "3.12"
+      ],
+      "exact_image_sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+      "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45058774330",
+      "conclusion": "success"
+    }
+  },
+  "cross_phase_binary_consistency": {
+    "phase91_candidate_size_bytes": 94248,
+    "phase92_candidate_size_bytes": 94248,
+    "phase91_candidate_sha256": "ea37f7cd38ab7ae392fa80911aeed4b07ac7e557b8bb66375e099e8ebd148957",
+    "phase92_candidate_sha256": "ea37f7cd38ab7ae392fa80911aeed4b07ac7e557b8bb66375e099e8ebd148957",
+    "candidate_signature_verified": false,
+    "candidate_flash_safety_verified": false,
+    "private_bonding_content_published": false
+  },
+  "gotham_original_firmware": {
+    "repository": "StadiaMemories/firmware",
+    "repository_commit": "c86e2a397a747ce51c0988cd967142e5324ef0f9",
+    "repository_commit_date": "2023-04-05T02:39:35Z",
+    "pvt_a": {
+      "filename": "ota.282115.stable-channel.gotham-pvt-a.214f6fe20f7b993046c77a9245c5805b056882dc.bin",
+      "size_bytes": 4163944,
+      "git_blob_sha": "e87bbd94e3843746af39c5920725e0bcf2b42c54",
+      "url": "https://github.com/StadiaMemories/firmware/blob/main/ota.282115.stable-channel.gotham-pvt-a.214f6fe20f7b993046c77a9245c5805b056882dc.bin"
+    },
+    "pvt_b": {
+      "filename": "ota.282115.stable-channel.gotham-pvt-b.b252d0d5a16538621abfb09609746cabc0f33292.bin",
+      "size_bytes": 4163944,
+      "git_blob_sha": "128c65d9a5b5f44d1d2a217e5c6502370958dd86",
+      "url": "https://github.com/StadiaMemories/firmware/blob/main/ota.282115.stable-channel.gotham-pvt-b.b252d0d5a16538621abfb09609746cabc0f33292.bin"
+    },
+    "binary_bytes_available_in_this_analysis_session": false,
+    "gotham_code_audited": false,
+    "kvs_set_handler_verified": false,
+    "yetigmsgurl_registry_claim_verified": true,
+    "registry_static_verified_later": true,
+    "registry_entries_per_PVT": 115,
+    "registry_verified_via_ci": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45062738379",
+    "pvt_a_sha256": "269bb21160ea6d1366e71bb9c9b148e2782ea967b81c7b6ff038e7d49b61e00f",
+    "pvt_b_sha256": "1cbc35203ff83a5244a8a9b2590938983f162259dfdb6235321d60e9356ce44e",
+    "pvt_a_image_base": "0x60040000",
+    "pvt_b_image_base": "0x60840000",
+    "registry_id_offset": 0,
+    "registry_name_pointer_offset": 8,
+    "registry_ids": {
+      "21": "YetiEnvironment",
+      "22": "YetiDiscoUrl",
+      "23": "AnalyticsOptIn",
+      "44": "AppImageFdrVer",
+      "45": "BootImageFdrVer"
+    },
+    "scope_note": "Only registry and strings checked. Gotham USB set-KVS writer, permission checks and any arbitrary-name acceptance remain unverified."
+  },
+  "existing_repository_scope": {
+    "bootloader_manifest_sample": "sample-001",
+    "bootloader_build": 169429,
+    "application_build": 337784,
+    "application_usb_dispatch_sample_kind": "signed Bruce update image; installed identity unverified",
+    "full_firmware_binaries_included": false,
+    "gotham_ota_image_in_research_repository": false
+  },
+  "stadiacast_upstream": {
+    "repository": "jkfran/stadiacast",
+    "commit": "9605bf461a157608b8a8756ba21fb68f7afd5ffb",
+    "release": "v1.3.0",
+    "published_at": "2026-11-18",
+    "ota_282115_end_to_end": true,
+    "no_firmware_modification": true,
+    "hosts": {
+      "fvc": "cloudcast-pa.googleapis.com",
+      "gmsg": "cloudcast-gmsg-prod.googleapis.com",
+      "clearcut": "play.googleapis.com",
+      "sntp": "time.google.com"
+    },
+    "gmsg_delivers_webrtc_answer": true,
+    "source_code_verified": true,
+    "usb_vendor_set_kvs_verified": false,
+    "gotham_kvs_registry_verified": false,
+    "direct_switch2_compatibility_verified": false
+  },
+  "tchebb_public_statement": {
+    "source": "https://www.reddit.com/r/Stadia/comments/1xwcedq/has_anyone_bypassed_the_bootloader_signage/",
+    "date": "2026-11-14",
+    "author_reports_zephyr_port_and_custom_firmware": "works_fairly_well_but_not_ready_for_release",
+    "author_said_switch_emulation_firmware": "not_started_at_time_of_post",
+    "field_return_shellcode": "planned_not_independently_verified",
+    "author_requested_no_duplicate_zephyr_or_switch_firmware_vibe_coding": true,
+    "nxp_sdp_overrun_source_accessible_for_independent_audit": false
+  },
+  "additional_external_lead": {
+    "repository": "erikb-lab/stadiacast-esp32",
+    "latest_observed_commit": "8b8f9b8863bc99949b017db0ebdad34bba2d1d83",
+    "description": "ESP32-S3 external Wi-Fi-to-USB adapter, not firmware running on the Stadia Controller",
+    "relevance_to_direct_switch2_goal": "out_of_scope_fallback_only",
+    "latest_build_status": "in_progress_or_pending_at_observation",
+    "real_console_compatibility_independently_verified": false
+  },
+  "community_kvs_claims": {
+    "source": "owner-provided Discord excerpt dated 2026-11-17",
+    "YetiDiscoUrl_registry_id_22": "verified_from_Gotham_PVT_A_and_PVT_B_phase94",
+    "YetiEnvironment_registry_id_21": "verified_from_Gotham_PVT_A_and_PVT_B_phase94",
+    "YetiGmsgUrl_missing_from_registry": "verified_absent_in_115_key_registries_both_PVT_images",
+    "usb_vendor_set_kvs_registry_enforcement": "unverified",
+    "AppImageFdrVer_id_44": "excluded_from_all_tests_and_generated_packets"
+  },
+  "safety": {
+    "controller_usb_ble_network_interactions": false,
+    "firmware_execution": false,
+    "flash_or_fuse_writes": false,
+    "sdp_exploit_invoked": false,
+    "real_kvs_vendor_command_sent": false,
+    "bonding_secrets_published": false,
+    "author_request_for_no_duplicate_switch_firmware_respected": true
+  },
+  "next_required_input": "The exact public Gotham ota.282115 PVT-A or PVT-B binary must be available as local bytes to trace the original signed KVS name-to-ID lookup, USB vendor set-KVS handler, and YetiGmsgUrl consumers.",
+  "private_bootloader_patch": {
+    "original_sha256": "59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0",
+    "candidate_sha256": "ea37f7cd38ab7ae392fa80911aeed4b07ac7e557b8bb66375e099e8ebd148957",
+    "candidate_derives_from_oem": true,
+    "overlap_changed_bytes": 72,
+    "changed_bytes_outside_expected_regions": 0,
+    "changed_region_summary": {
+      "ivt_csf_pointer_bytes": 3,
+      "usb_length_instruction_immediate": 1,
+      "usb_descriptor_table": 68
+    },
+    "common_bytes_percent": 99.923605,
+    "original_csf_pointer": "0x60818000",
+    "candidate_csf_pointer": "0x0",
+    "original_csf_header": "d4006042",
+    "candidate_truncated_before_csf": true,
+    "usb_mode_change": "Vendor + HID -> Vendor + CDC ACM + CDC Data",
+    "original_iad_count": 2,
+    "candidate_iad_count": 0,
+    "cdc_union": {
+      "master": 1,
+      "slave": 2
+    },
+    "code_length_change": "0x50 -> 0x55",
+    "code_pointer_literal": "0x6081527c",
+    "flash_safety_or_hab_acceptance_proven": false
+  },
+  "nxp_ram_flashloader_artifact": {
+    "name": "thebb_ivt_flashloader.bin",
+    "size_bytes": 98148,
+    "sha256": "700e2cbbb884dc74a2b5d71da420350d6dca67e55f456a24f2d3ba7a69dde258",
+    "ivt_offset": "0x400",
+    "entry": "0x20002000",
+    "boot_data_load_address": "0x20000000",
+    "boot_data_declared_length": "0x18000",
+    "file_shortfall_bytes": 156,
+    "csf_pointer": "0x0",
+    "usb_vid_pid": "15A2:0073",
+    "usb_configuration": "one HID interface with interrupt endpoints 0x81 and 0x02; no CDC Union",
+    "cdc_transport_string_present": true,
+    "exact_provenance_or_link_to_tchebb_exploit_verified": false,
+    "firmware_or_exploit_executed": false
+  },
+  "bruce_kvs_registry": {
+    "image_sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+    "table_offset": "0xc3c58",
+    "entry_size_bytes": 32,
+    "contiguous_sequential_entries": 67,
+    "selected_id_to_name": {
+      "20": "AnalyticsOptIn",
+      "21": "LastKnownSntp",
+      "22": "IsDfDevice",
+      "23": "UpdateGauge",
+      "24": "OtaFromBuild",
+      "39": "AppImageFdrVer",
+      "40": "BootImageFdrVer",
+      "41": "HidOverGatt",
+      "42": "SupportNoBat",
+      "43": "LogToUart",
+      "44": "CrashReboot"
+    },
+    "yeti_ascii_literals_present": false,
+    "this_is_bruce_not_gotham": true,
+    "gotham_registry_verified": false,
+    "usb_vendor_set_kvs_call_chain_verified": false,
+    "first_id": 0,
+    "last_id": 66,
+    "id_offset": 0,
+    "name_pointer_offset": 8,
+    "correction_source": "evidence/community-file-intake-phase95.json"
+  },
+  "field_return_safety": {
+    "rt1060_manual_field_return_bit": "0x400[31]",
+    "purpose": "returned-part testing",
+    "rt1060_manual_1_state": "open for field-return testing",
+    "rt1061_specific_mapping_verified": false,
+    "imx7d_support_warning_not_generalized_to_rt1061": true,
+    "decision": "NO_GO",
+    "fuses_read": false,
+    "fuses_written": false
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "phase": 104,
+  "date": "2026-11-22",
+  "scope": "C11 XUSB transport/host-only simulation",
+  "new_unit_tests": 14,
+  "pseudo_random_events": 7800,
+  "native_c_ubsan": "passed",
+  "cross_target": "armv7em-none-eabi/cortex-m7",
+  "cross_target_objects": [
+    {
+      "name": "stadia_xusb_codec_cortex_m7.o",
+      "size_bytes": 2540,
+      "sha256": "26deeeef21d46024a9cb2ad0574356ade82bbcd51b39d3364855c527fadfa6d6",
+      "format": "ELF32 little-endian ARM relocatable EABI5, not bootable"
+    },
+    {
+      "name": "stadia_xusb_transport_cortex_m7.o",
+      "size_bytes": 2260,
+      "sha256": "6f821b3a11dafe26881c3e43fca67ca526833b9a4819163b4f52164356803988",
+      "format": "ELF32 little-endian ARM relocatable EABI5, not bootable"
+    }
+  ],
+  "portable_sources": {
+    "README.md": "c168a74021bd0213be3d5efd99f3dcea1dee25564d980890015f2a247027cc3a",
+    "docs/es/plan-usb-rt1060-fase104.md": "e06687da917066aeca823dd8c7a6b0c316d61746e42f3e0b41f1b52f11f8e316",
+    "firmware_codec/stadia_xusb_codec.c": "912f7b8d2ac5b7b8ee8062487bb953c39fdc8d864778174d5c019d0ff2476f2c",
+    "firmware_codec/stadia_xusb_codec.h": "79468f9b977c6c635c68d9f0c56d3ea656ed8c2ad55c3d6b25d66ef988c57e21",
+    "firmware_codec/stadia_xusb_transport.c": "dca8a50e847b62ae90d2e1de46bc7b99384b7cc4b25b3d9b61addd4ee603df1f",
+    "firmware_codec/stadia_xusb_transport.h": "374cb29d21f985ef7803930994612382802789680ead78c86d62f4fdc54df31c",
+    "tools/arm_phase104_headers/string.h": "d673c826d279a5443ebe1fab2b06ca75f04565cda0cc885a8350db83cb866037",
+    "tests/test_xusb_transport.c": "7104f8d8b59d8c0db7c62af23b580cf20157eb0173558423625e200d2055d229",
+    "tests/test_xusb_transport_phase104.py": "5e80c908a3fbab2c74a033847ee68e66886af3c8442d6fe95a2e043e81a7f131",
+    "tests/test_xusb_transport_build_phase104.py": "233d3ed836e95686e54aa19eeb9690a9e3f0e5690884edfe2702344c747ee8ef"
+  },
+  "windows_xinput_driver_bound": false,
+  "nxp_sdk_driver_linked": false,
+  "usb_phy_touched": false,
+  "firmware_booted_any_hardware": false,
+  "retail_stadia_hab_closed_boot_authenticated": false,
+  "bios_or_fuses_written": false,
+  "third_party_usb_identity_used": false,
+  "next_gate": "MCUXpresso SDK class/event integration for EVK RT1060 and real Windows driver binding using licensed device identity"
+}

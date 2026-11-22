@@ -1,0 +1,59 @@
+{
+  "model": "fictional_state_machine_not_ARM_or_NXP_HAB",
+  "date": "2026-11-22",
+  "virtual_install_open_unsigned": "installed_in_virtual_flash",
+  "virtual_install_closed_lab_signed": "installed_in_virtual_flash",
+  "closed_unsigned_rejected": "rejected_auth_or_integrity",
+  "closed_wrong_signer_rejected": "rejected_auth_or_integrity",
+  "rollback_cases": {
+    "during_write": {
+      "after_power_restore": "running_factory",
+      "bank": "A",
+      "confirmed": "A",
+      "unconfirmed": false
+    },
+    "before_commit": {
+      "after_power_restore": "running_factory",
+      "bank": "A",
+      "confirmed": "A",
+      "unconfirmed": false
+    },
+    "after_commit": {
+      "after_power_restore": "running_factory",
+      "bank": "A",
+      "confirmed": "A",
+      "unconfirmed": false
+    },
+    "before_confirmation": {
+      "after_power_restore": "running_factory",
+      "bank": "A",
+      "confirmed": "A",
+      "unconfirmed": false
+    },
+    "xusb_health_failure": {
+      "active": "A",
+      "confirmed": "A",
+      "device_contacted": false,
+      "mode": "OPEN",
+      "outcome": "rolled_back",
+      "real_firmware_installed": false,
+      "real_hab_authenticated": false,
+      "real_usb_enumerated": false,
+      "running": "running_factory",
+      "target": "B",
+      "virtual_xusb_running": false
+    }
+  },
+  "local_unit_tests": 95,
+  "random_fault_scenarios": 500,
+  "cross_language_codec_vectors_from_prior_suite": 1500,
+  "security": {
+    "virtual_lab_signer_only": true,
+    "private_keys_exported": false,
+    "actual_hab_boot": false,
+    "actual_usb_enumeration": false,
+    "real_controller_modified": false,
+    "firmware_binary_executable_on_RT1061": false
+  },
+  "github_ci": "not_run_yet"
+}

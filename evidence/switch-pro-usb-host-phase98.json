@@ -1,0 +1,123 @@
+{
+  "phase": 98,
+  "date": "2026-11-22",
+  "kind": "offline_usb_hid_reference_and_host_clock_negative_control",
+  "source": {
+    "repository": "hifihedgehog/HIDMaestro",
+    "path": "profiles/nintendo/switch-pro-usb.json",
+    "git_blob_sha": "0b1646a3694a72fa135f17e89773a85ff98e131f",
+    "descriptor_bytes": 203,
+    "descriptor_sha256": "25f0b3b7e59bdfec05e8cced16e43a8878509865a0cb223f05025c556f3bedba",
+    "source_description": "third-party public profile says descriptor is a captured USB HID Pro NS1 descriptor",
+    "independently_captured_on_switch2": false
+  },
+  "reference_usb_profile": {
+    "vid": "0x057e",
+    "pid": "0x2009",
+    "interface_class": "0x03 HID",
+    "input_report_size_bytes": {
+      "0x21": 64,
+      "0x30": 64,
+      "0x81": 64
+    },
+    "output_report_size_bytes": {
+      "0x01": 64,
+      "0x10": 64,
+      "0x80": 64,
+      "0x82": 64
+    },
+    "usb_simple_report_0x3f_present": false,
+    "real_hardware_enumeration_verified": false
+  },
+  "actual_firmware_artifacts": [
+    {
+      "name": "original_stadia_bootloader_A",
+      "vid_pid": "18d1:946b",
+      "interface_classes": [
+        "0xff",
+        "0x03"
+      ],
+      "compatible_with_ns1_usb_descriptor_gate": false,
+      "reason": "VID/PID and report-descriptor mismatch"
+    },
+    {
+      "name": "community_stadia_bootloader_CDC",
+      "vid_pid": "18d1:946b",
+      "interface_classes": [
+        "0xff",
+        "0x02",
+        "0x0a"
+      ],
+      "compatible_with_ns1_usb_descriptor_gate": false,
+      "reason": "VID/PID, class and report-descriptor mismatch"
+    },
+    {
+      "name": "community_nxp_ram_flashloader",
+      "vid_pid": "15a2:0073",
+      "interface_classes": [
+        "0x03"
+      ],
+      "compatible_with_ns1_usb_descriptor_gate": false,
+      "reason": "VID/PID and report-descriptor mismatch"
+    }
+  ],
+  "phase97_corrections": {
+    "usb_0x81_reply_length_bytes": 64,
+    "previous_reply_lengths": [
+      10,
+      2,
+      2
+    ],
+    "now_padded_to_64": true,
+    "accepts_zero_padded_host_0x80_commands_up_to_64_bytes": true,
+    "rejects_nonzero_padding": true,
+    "device_commands_sent": false
+  },
+  "virtual_host_scenarios": {
+    "profile_reference_structural_gate_pass": true,
+    "physical_stadia_bootloader_gate_pass": false,
+    "physical_nxp_ram_flashloader_gate_pass": false,
+    "init_usb_response_sizes": [
+      64,
+      64,
+      64,
+      null
+    ],
+    "timer_interval_ms": 15,
+    "timer_interval_source": "community-profile assumption, not Switch2 measurement",
+    "no_reports_in_45ms_after_0x80_04_before_report_mode": true,
+    "after_0x03_mode_0x30_reports_in_45ms": 3,
+    "report_length_bytes": 64,
+    "early_reporting_required_by_switch2": false,
+    "early_reporting_requirement_proven": false
+  },
+  "verification": {
+    "new_phase98_synthetic_tests": 15,
+    "phase97_local_tests": 19,
+    "legacy_phase96_local_tests": 54,
+    "total_local_tests": 88,
+    "local_failures": 0,
+    "github_full_suite_cases_per_version": 1131,
+    "github_suite_skipped_per_version": 35,
+    "github_suite_passed_per_version": 1096,
+    "github_versions": [
+      "3.11",
+      "3.12"
+    ],
+    "github_conclusion": "success",
+    "github_ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45066787388"
+  },
+  "limitations": {
+    "full_usb_enumeration_performed": false,
+    "console_response_to_early_report_gap_observed": false,
+    "real_switch2_usb_capture_used": false,
+    "real_nintendo_hid_descriptor_authentication": false,
+    "firmware_executed_on_stadia": false,
+    "switch2_controller_accepted": false,
+    "closed_hab_custom_boot_proven": false,
+    "device_usb_commands_sent": false,
+    "device_memory_written": false,
+    "fuse_or_field_return_changed": false
+  },
+  "next_required_input": "Independent complete genuine NS1 Pro <-> Switch 2 USB capture including enumeration, interrupt report timing and subcommands, with identifiers scrubbed."
+}
