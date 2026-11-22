@@ -183,8 +183,8 @@ def audit(original, candidate):
         "code_patch":{
             "file_offset":hex(CODE_LENGTH_OFFSET),
             "original_immediate":hex(code_o),"candidate_immediate":hex(code_c),
-            "original_thumb_halfword":original[CODE_LENGTH_OFFSET-1:CODE_LENGTH_OFFSET+1].hex(),
-            "candidate_thumb_halfword":candidate[CODE_LENGTH_OFFSET-1:CODE_LENGTH_OFFSET+1].hex(),
+            "original_thumb_halfword":original[CODE_LENGTH_OFFSET:CODE_LENGTH_OFFSET+2].hex(),
+            "candidate_thumb_halfword":candidate[CODE_LENGTH_OFFSET:CODE_LENGTH_OFFSET+2].hex(),
             "original_descriptor_length_constant":code_o,
             "candidate_descriptor_length_constant":code_c,
             "pointer_literal":hex(ptr_o),
