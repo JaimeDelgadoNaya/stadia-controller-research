@@ -127,8 +127,8 @@ class CommunityValidationPhase93(unittest.TestCase):
 
     def test_community_kvs_claims_remain_unverified_and_reset_key_is_excluded(self):
         k = self.report["community_kvs_claims"]
-        self.assertEqual(k["YetiDiscoUrl_registry_id_22"], "community_claim_not_verified_on_Gotham_image")
-        self.assertEqual(k["YetiGmsgUrl_missing_from_registry"], "community_claim_not_verified_on_Gotham_image")
+        self.assertEqual(k["YetiDiscoUrl_registry_id_22"], "verified_from_Gotham_PVT_A_and_PVT_B_phase94")
+        self.assertEqual(k["YetiGmsgUrl_missing_from_registry"], "verified_absent_in_115_key_registries_both_PVT_images")
         self.assertEqual(k["usb_vendor_set_kvs_registry_enforcement"], "open_question")
         self.assertIn("excluded", k["AppImageFdrVer_id_44"])
 
@@ -179,12 +179,15 @@ class CommunityValidationPhase93(unittest.TestCase):
 
     def test_bruce_kvs_ids_are_version_specific_not_gotham(self):
         k = self.bruce_kvs
-        self.assertEqual(k["table"]["contiguous_sequential_entries"], 66)
-        self.assertEqual(k["selected_id_to_name"]["21"], "AnalyticsOptIn")
-        self.assertEqual(k["selected_id_to_name"]["22"], "LastKnownSntp")
-        self.assertEqual(k["selected_id_to_name"]["23"], "IsDfDevice")
-        self.assertEqual(k["selected_id_to_name"]["40"], "AppImageFdrVer")
-        self.assertEqual(k["selected_id_to_name"]["44"], "LogToUart")
+        self.assertEqual(k["table"]["contiguous_sequential_entries"], 67)
+        self.assertEqual(k["table"]["id_offset"], 0)
+        self.assertEqual(k["table"]["name_pointer_offset"], 8)
+        self.assertEqual(k["selected_id_to_name"]["20"], "AnalyticsOptIn")
+        self.assertEqual(k["selected_id_to_name"]["21"], "LastKnownSntp")
+        self.assertEqual(k["selected_id_to_name"]["22"], "IsDfDevice")
+        self.assertEqual(k["selected_id_to_name"]["39"], "AppImageFdrVer")
+        self.assertEqual(k["selected_id_to_name"]["41"], "HidOverGatt")
+        self.assertEqual(k["selected_id_to_name"]["44"], "CrashReboot")
         self.assertFalse(k["yeti_ascii_literals"]["YetiGmsgUrl"])
         self.assertTrue(k["limits"]["sample_is_bruce_not_gotham"])
 
