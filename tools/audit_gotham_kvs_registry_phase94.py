@@ -14,7 +14,7 @@ MAX_IMAGE = 8 * 1024 * 1024
 ENTRY_SIZE = 0x20
 MAX_ENTRIES = 256
 IMAGE_BASE_CANDIDATES = (
-    0x60040000, 0x60000000, 0x60800000, 0x20000000,
+    0x60040000, 0x60840000, 0x60000000, 0x60800000, 0x20000000,
     0x60080000, 0x60100000, 0x60020000, 0x60140000
 )
 KEYS = (
@@ -66,7 +66,7 @@ def _read_ascii_name(data, offset):
 
 def parse_registry_at(data, table_offset, image_base):
     entries=[]
-    expected=1
+    expected=0
     stop="maximum_entries"
     for idx in range(MAX_ENTRIES):
         off=table_offset+idx*ENTRY_SIZE
@@ -74,16 +74,15 @@ def parse_registry_at(data, table_offset, image_base):
             stop="end_of_file"
             break
         words=struct.unpack_from("<8I",data,off)
-        name=_read_ascii_name(data,words[0]-image_base)
+        name=_read_ascii_name(data,words[2]-image_base)
         if name is None:
             stop="invalid_name_pointer"
             break
-        if words[6]!=expected:
-            stop="nonsequential_table_word6"
+        if words[0]!=expected:
+            stop="nonsequential_id"
             break
         entries.append({
-            "record_sequence":expected,
-            "table_word6":words[6],
+            "id":words[0],
             "name":name,
             "record_offset":hex(off),
             "raw_type_word":hex(words[1]),
@@ -97,19 +96,19 @@ def parse_registry_at(data, table_offset, image_base):
     next_preview=None
     if next_off+ENTRY_SIZE<=len(data):
         w=struct.unpack_from("<8I",data,next_off)
-        candidate_name=_read_ascii_name(data,w[0]-image_base)
+        candidate_name=_read_ascii_name(data,w[2]-image_base)
         next_preview={
             "record_offset":hex(next_off),
-            "name_pointer":hex(w[0]),
+            "name_pointer":hex(w[2]),
             "name_candidate":candidate_name,
-            "table_word6":hex(w[6]),
-            "continues_expected_sequence":w[6]==len(entries)+1 and candidate_name is not None
+            "id":w[0],
+            "continues_expected_sequence":w[0]==len(entries) and candidate_name is not None
         }
     return {
         "table_offset":hex(table_offset),"image_base":hex(image_base),
         "entry_size":ENTRY_SIZE,"entry_count":len(entries),
-        "first_table_word6":entries[0]["table_word6"] if entries else None,
-        "last_table_word6":entries[-1]["table_word6"] if entries else None,
+        "first_id":entries[0]["id"] if entries else None,
+        "last_id":entries[-1]["id"] if entries else None,
         "stop_reason":stop,"next_record_preview":next_preview,"entries":entries
     }
 
@@ -118,9 +117,9 @@ def find_registry(data, bases=IMAGE_BASE_CANDIDATES):
     candidates=[]
     for base in bases:
         for off in range(0, len(data)-ENTRY_SIZE, 4):
-            if struct.unpack_from("<I",data,off+24)[0] != 1:
+            if struct.unpack_from("<I",data,off)[0] != 0:
                 continue
-            name_ptr=struct.unpack_from("<I",data,off)[0]
+            name_ptr=struct.unpack_from("<I",data,off+8)[0]
             if _read_ascii_name(data,name_ptr-base) is None:
                 continue
             parsed=parse_registry_at(data,off,base)
@@ -179,7 +178,7 @@ def audit_image(path, expected_git_blob_sha=None, expected_size=None):
     registry=find_registry(data)
     entries=registry["entries"] if registry else []
     by_name={x["name"]:x for x in entries}
-    by_sequence={x["record_sequence"]:x["name"] for x in entries}
+    by_id={x["id"]:x["name"] for x in entries}
     literal_offsets={}
     for name in KEYS+MARKERS+HOSTS:
         literal_offsets[name]=find_offsets(data,name)
@@ -197,10 +196,8 @@ def audit_image(path, expected_git_blob_sha=None, expected_size=None):
                     refs.setdefault(name,{})[off]=found
         if refs:
             pointer_refs_by_base[hex(candidate_base)]=refs
-    selected_names={name:by_name.get(name,{}).get("table_word6") for name in KEYS}
-    selected_zero_based={name:(value-1 if value is not None else None)
-                         for name,value in selected_names.items()}
-    selected_sequence={str(i):by_sequence.get(i) for i in (21,22,23,40,41,44,45,46)}
+    selected_ids={name:by_name.get(name,{}).get("id") for name in KEYS}
+    selected_id_to_name={str(i):by_id.get(i) for i in (21,22,23,40,41,44,45,46)}
     return {
         "file":path.name,"size_bytes":len(data),
         "sha256":hashlib.sha256(data).hexdigest(),
@@ -211,19 +208,18 @@ def audit_image(path, expected_git_blob_sha=None, expected_size=None):
             "image_base":registry["image_base"] if registry else None,
             "entry_size":registry["entry_size"] if registry else None,
             "entry_count":registry["entry_count"] if registry else 0,
-            "first_table_word6":registry["first_table_word6"] if registry else None,
-            "last_table_word6":registry["last_table_word6"] if registry else None,
+            "first_id":registry["first_id"] if registry else None,
+            "last_id":registry["last_id"] if registry else None,
             "stop_reason":registry["stop_reason"] if registry else "not_found",
             "next_record_preview":registry["next_record_preview"] if registry else None,
-            "record_sequence_to_name":selected_sequence,
-            "selected_name_to_table_word6":selected_names,
-            "selected_name_to_zero_based_candidate_id":selected_zero_based
+            "selected_id_to_name":selected_id_to_name,
+            "selected_name_to_id":selected_ids
         },
         "literal_offsets":literal_offsets,
         "pointer_references_by_base":pointer_refs_by_base,
         "limits":{
-            "table_word6_is_runtime_registry_id_proven":False,
-            "zero_based_candidate_mapping_proven":False,
+            "id_at_record_offset_0_and_name_pointer_at_offset_8":True,
+            "runtime_usb_handler_uses_this_table_proven":False,
             "usb_vendor_set_kvs_call_chain_proven":False,
             "write_permissions_proven":False,
             "GMsg_URL_consumer_proven":False,
@@ -248,15 +244,15 @@ def audit_pair(pvt_a, pvt_b, expected):
         "comparison":{
             "registry_found_in_both":a["registry"]["found"] and b["registry"]["found"],
             "registry_counts_equal":a["registry"]["entry_count"]==b["registry"]["entry_count"],
-            "selected_table_word6_equal":a["registry"]["selected_name_to_table_word6"]==b["registry"]["selected_name_to_table_word6"],
+            "selected_ids_equal":a["registry"]["selected_name_to_id"]==b["registry"]["selected_name_to_id"],
             "YetiGmsgUrl_literal_in_a":bool(a["literal_offsets"]["YetiGmsgUrl"]),
             "YetiGmsgUrl_literal_in_b":bool(b["literal_offsets"]["YetiGmsgUrl"]),
-            "YetiGmsgUrl_table_entry_in_a":a["registry"]["selected_name_to_table_word6"].get("YetiGmsgUrl") is not None,
-            "YetiGmsgUrl_table_entry_in_b":b["registry"]["selected_name_to_table_word6"].get("YetiGmsgUrl") is not None,
-            "zero_based_claim_alignment_in_a":{
-                "YetiEnvironment":a["registry"]["selected_name_to_zero_based_candidate_id"].get("YetiEnvironment")==21,
-                "YetiDiscoUrl":a["registry"]["selected_name_to_zero_based_candidate_id"].get("YetiDiscoUrl")==22,
-                "AppImageFdrVer":a["registry"]["selected_name_to_zero_based_candidate_id"].get("AppImageFdrVer")==44
+            "YetiGmsgUrl_table_entry_in_a":a["registry"]["selected_name_to_id"].get("YetiGmsgUrl") is not None,
+            "YetiGmsgUrl_table_entry_in_b":b["registry"]["selected_name_to_id"].get("YetiGmsgUrl") is not None,
+            "community_claim_alignment_in_a":{
+                "YetiEnvironment":a["registry"]["selected_name_to_id"].get("YetiEnvironment")==21,
+                "YetiDiscoUrl":a["registry"]["selected_name_to_id"].get("YetiDiscoUrl")==22,
+                "AppImageFdrVer":a["registry"]["selected_name_to_id"].get("AppImageFdrVer")==44
             }
         },
         "safety":{
