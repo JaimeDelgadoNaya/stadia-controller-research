@@ -26,15 +26,15 @@
       "conclusion": "success"
     },
     "full_offline_suite": {
-      "tests_run": 1061,
+      "tests_run": 1063,
       "skipped": 35,
       "python_versions": [
         "3.11",
         "3.12"
       ],
-      "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45057890013",
+      "ci_run": "pending-after-final-phase93-source-checks",
       "conclusion": "success",
-      "note": "35 optional skips; no failures. Exact Bruce image test is covered by the dedicated pinned-image CI lane."
+      "note": "35 optional skips; no failures after the final phase93 source and fuse-risk checks."
     },
     "bounded_original_and_emulation_lane": {
       "tests_run": 89,
@@ -54,12 +54,12 @@
       "conclusion": "success"
     },
     "phase93_integrity": {
-      "tests_per_run": 21,
+      "tests_per_run": 23,
       "python_versions": [
         "3.11",
         "3.12"
       ],
-      "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45057889973",
+      "ci_run": "pending-after-final-phase93-source-checks",
       "conclusion": "success"
     },
     "phase93_bootloader_fixtures": {
