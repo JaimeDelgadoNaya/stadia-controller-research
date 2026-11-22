@@ -100,22 +100,29 @@ class VirtualNS1Pro97:
         self.tick = (self.tick + 1) & 255
         return bytes(r)
 
+    @staticmethod
+    def _init_reply(data: bytes) -> bytes:
+        """HID INPUT report: 64 bytes total, padded after the documented prefix."""
+        if len(data) > 64:
+            raise UnsupportedProtocol("USB init reply exceeds 64-byte HID report")
+        return data + bytes(64 - len(data))
+
     def process(self, output: bytes) -> bytes | None:
         if type(output) is not bytes or len(output) < 2:
             raise UnsupportedProtocol("Truncated USB output report")
         if output[0] == 0x80:
             sub = output[1]
-            if len(output) != 2:
-                raise UnsupportedProtocol("Synthetic init accepts exact two bytes")
+            if len(output) > 64 or any(output[2:]):
+                raise UnsupportedProtocol("Invalid USB init framing or nonzero padding")
             if sub == 1 and self.phase == "fresh":
                 self.phase = "identified"
-                return bytes((0x81, 1, 0, 3)) + SYNTHETIC_MAC
+                return self._init_reply(bytes((0x81, 1, 0, 3)) + SYNTHETIC_MAC)
             if sub == 2 and self.phase in ("identified", "baud"):
                 self.phase = "handshake"
-                return b"\x81\x02"
+                return self._init_reply(b"\x81\x02")
             if sub == 3 and self.phase == "handshake":
                 self.phase = "baud"
-                return b"\x81\x03"
+                return self._init_reply(b"\x81\x03")
             if sub == 4 and self.phase in ("handshake", "baud"):
                 self.phase = "usb_ready"
                 return None
