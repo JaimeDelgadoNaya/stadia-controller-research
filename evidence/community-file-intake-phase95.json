@@ -5,7 +5,7 @@
   "status": "source_claims_and_binary_metadata_verified_offline_no_hardware",
   "inputs": {
     "message.txt": {
-      "bytes": 2712,
+      "bytes": 2671,
       "sha256": "26e5c1f373b99a77ae2586808c643311943cf3f3ee8a5cf25cb1f88e23e11040",
       "type": "third_party_narrative"
     },
@@ -27,12 +27,12 @@
       "matches_previous_phase92_93_sample": true
     },
     "bluetooth-image-public.md": {
-      "bytes": 42153,
+      "bytes": 41534,
       "sha256": "4ca08e531185fcf64237c8b149d50491ab55c0d9fe64b04e2dabef49b8c95abf",
       "type": "third_party_Bruce_reverse_engineering_notes"
     },
     "led-public.md": {
-      "bytes": 14322,
+      "bytes": 13795,
       "sha256": "85c3b05e8035b9014530c1bc1ef4c7c3d1d67fb32e5716121c2b195b75a6265e",
       "type": "third_party_LED_notes"
     },
