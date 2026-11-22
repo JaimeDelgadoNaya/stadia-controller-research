@@ -125,3 +125,33 @@ Tool: `tools/audit_bruce_kvs_registry_phase93.py`. CI downloads the exact public
 - **Verified:** the Bruce KVS map does not match the IDs reported for Gotham.
 - **Pending:** inspect original Gotham `ota.282115` to resolve the 115-key registry, USB `set KVS` handler and GMsg consumer.
 - **NO-GO:** flashing the CDC candidate, invoking SDP, changing fuses, real KVS writes or invasive recovery.
+
+
+## 10. Stadiacast upstream source check
+
+Reviewed public repository `jkfran/stadiacast`, commit `9605bf461a157608b8a8756ba21fb68f7afd5ffb`, release **v1.3.0**, published 18 November 2026. Its README states end-to-end operation with stock Wi-Fi firmware `ota.282115` and **no controller firmware modification**.
+
+Its `docs/protocol.md`, `config.py` and `receiver.py` corroborate the split:
+
+| Service | Host |
+|---|---|
+| FVC / Discovery RPC | `cloudcast-pa.googleapis.com` |
+| GMsg / signaling-message delivery | `cloudcast-gmsg-prod.googleapis.com` |
+| Clearcut | `play.googleapis.com` |
+| SNTP | `time.google.com` |
+
+The project also forwards `connectivitycheck.gstatic.com` and `clients3.google.com` to Google. GMsg delivers the WebRTC answer bundle to the controller. The Discord network description is consistent with this public source.
+
+**Limit:** Stadiacast verifies stock-firmware network interoperability. It does not prove that USB `set KVS` accepts arbitrary keys, nor that Tomás's custom firmware is published or works on Switch 2.
+
+Sources: [README](https://github.com/jkfran/stadiacast/blob/9605bf461a157608b8a8756ba21fb68f7afd5ffb/README.md), [protocol](https://github.com/jkfran/stadiacast/blob/9605bf461a157608b8a8756ba21fb68f7afd5ffb/docs/protocol.md), [config](https://github.com/jkfran/stadiacast/blob/9605bf461a157608b8a8756ba21fb68f7afd5ffb/src/stadiacast/config.py).
+
+## 11. FIELD_RETURN fuse risk: NO-GO
+
+The i.MX RT1060 reference manual describes `FIELD_RETURN` at `0x400[31]`: 0 is functional/secure mode; 1 opens the device for field-return testing. It is intended for parts returned from shipped products and fuse burning is CSF-protected. NXP community guidance for RT1061 confirms `SEC_CONFIG_CLOSED` means only authenticated images execute.
+
+We have not found sufficient primary evidence to confirm the exact FIELD_RETURN map and consequences on the controller's RT1061. An NXP i.MX7D case where Field Return left the part unable to boot is a different SoC and is **not generalized** to RT1061; it is a caution against assuming Field Return is a harmless unlock.
+
+**Decision:** do not read or program fuses in this research. Do not invoke any FIELD_RETURN command. No hardware was touched.
+
+Sources: [i.MX RT1060 Reference Manual, fuse table](https://www.pjrc.com/teensy/IMXRT1060RM_rev3.pdf), [NXP RT1061 fuse discussion](https://community.nxp.com/t5/i-MX-RT-Crossover-MCUs/1061-fuse-configuration/td-p/1705836), [NXP i.MX7D FIELD_RETURN warning](https://community.nxp.com/t5/i-MX-Processors/iMX7D-not-booting-after-FIELD-RETURN-fuse-blown/m-p/1206202/highlight/true).
