@@ -1,0 +1,62 @@
+name: Phase 93 Bruce KVS registry audit (pinned public image)
+
+on:
+  pull_request:
+    paths:
+      - 'tools/audit_bruce_kvs_registry_phase93.py'
+      - 'tests/test_bruce_kvs_registry_phase93.py'
+      - '.github/workflows/bruce-kvs-registry-phase93.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'tools/audit_bruce_kvs_registry_phase93.py'
+      - 'tests/test_bruce_kvs_registry_phase93.py'
+      - '.github/workflows/bruce-kvs-registry-phase93.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  exact-image-static-kvs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Download exact public Bruce production image and verify SHA-256
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/stadia-bruce-kvs"
+          image="$RUNNER_TEMP/stadia-bruce-kvs/bruce.bin"
+          curl --fail --location --silent --show-error --retry 3 --max-time 60 \
+            'https://raw.githubusercontent.com/StadiaMemories/firmware/main/bruce_pvt_a_prod_signed.bin' \
+            -o "$image"
+          echo '466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3  '"$image" | sha256sum -c -
+      - name: Parse the static KVS name-to-ID table and test version-specific IDs
+        env:
+          STADIA_BRUCE_IMAGE: ${{ runner.temp }}/stadia-bruce-kvs/bruce.bin
+        run: |
+          python -m tools.audit_bruce_kvs_registry_phase93 "$STADIA_BRUCE_IMAGE" \
+            > "$RUNNER_TEMP/stadia-bruce-kvs/report.json"
+          python -m unittest tests.test_bruce_kvs_registry_phase93 -v
+          python - "$RUNNER_TEMP/stadia-bruce-kvs/report.json" <<'PY'
+          import json,sys
+          from pathlib import Path
+          r=json.loads(Path(sys.argv[1]).read_text())
+          print('Bruce KVS entries:',r['registry_table']['entry_count'])
+          print('IDs 21–25:',{k:r['selected_id_to_name'][k] for k in ('21','22','23','24','25')})
+          print('IDs 40–44:',{k:r['selected_id_to_name'][k] for k in ('40','41','42','43','44')})
+          print('Yeti literals:',r['yeti_ascii_literals'])
+          print('Gotham registry verified:',r['limits']['gotham_registry_verified'])
+          PY
+      - name: Remove downloaded public image
+        if: always()
+        run: rm -rf "$RUNNER_TEMP/stadia-bruce-kvs"
