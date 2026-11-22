@@ -77,3 +77,12 @@ Las notas Bruce también describen un **host USB** que interpreta entradas de Sw
 El problema que merece investigación ahora es la ruta **USB Vendor → validación de nombre KVS → almacenamiento** en Gotham firmado. Tenemos los nombres e IDs correctos, pero no la comprobación de permisos ni la aceptación de claves no registradas. El diseño de un lector de mensajes de log con datos sintéticos es un camino de prueba seguro.
 
 **NO-GO:** ejecutar las herramientas sobre un mando, desbloqueos SDP, `FIELD_RETURN`, escritura KVS, restauraciones o parches de flash sin una validación independiente del modelo/revisión, copia de seguridad y plan de recuperación. La fase 95 solo incorpora metadatos y pruebas estáticas.
+
+
+## 7. Pruebas nuevas sin acceso a dispositivos
+
+Se ha añadido `tools/audit_fwlog_protocol_phase95.py`, un lector **puramente offline** de tramas protobuf, basado en los campos observados en el kit. No importa `pyusb`, `hidapi` ni los scripts originales, no abre dispositivos y no genera comandos. Por defecto devuelve solo metadatos del log (instante, nivel y archivo/línea); oculta el texto del mensaje y los tokens o identificadores de desbloqueo.
+
+`tests/test_fwlog_protocol_phase95.py` comprueba con tramas sintéticas el parseo de registros, desafíos y estados, además de varints truncados, longitudes inválidas, campos duplicados y sanitización de datos privados. Esto **no** demuestra que la captura en vivo funcione en un mando retail.
+
+La suite offline del repositorio completó **1.081 tests en Python 3.11 y 3.12, con 35 omitidos y ninguno fallido**, según [GitHub Actions](https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45063168049).
