@@ -1,0 +1,54 @@
+{
+  "phase": 91,
+  "date": "2026-11-22",
+  "scope": "offline uploaded-file metadata and community primary-source claims",
+  "owner_device_touched": false,
+  "external_exploit_code_fetched": false,
+  "nxp_sdp_overrun_implemented_or_tested": false,
+  "web_sources": {
+    "reddit": {
+      "url": "https://www.reddit.com/r/Stadia/comments/1xwcedq/has_anyone_bypassed_the_bootloader_signage/",
+      "classification": "author_claim"
+    },
+    "codeberg": {
+      "url": "https://codeberg.org/tchebb/nxp-sdp-overrun",
+      "classification": "author_link_unavailable_for_source_audit"
+    },
+    "stadiacast": {
+      "url": "https://github.com/jkfran/stadiacast",
+      "head_observed": "9605bf461a157608b8a8756ba21fb68f7afd5ffb",
+      "classification": "upstream_author_documented"
+    },
+    "discord": {
+      "excerpt_date": "2026-11-17",
+      "classification": "user_supplied_research_claims_not_binary_verified"
+    }
+  },
+  "private_candidate_bootloader": {
+    "size_bytes": 94248,
+    "sha256": "ea37f7cd38ab7ae392fa80911aeed4b07ac7e557b8bb66375e099e8ebd148957",
+    "ivt_candidate_at_offset_zero": true,
+    "ivt_entry": "0x60801000",
+    "ivt_self": "0x60001000",
+    "ivt_boot_data": "0x60001020",
+    "ivt_csf_pointer": "0x00000000",
+    "ivt_dcd_pointer": "0x00000000",
+    "source_marker_cdc_acm": true,
+    "descriptor_fixed_confirmed": false,
+    "signed_valid_confirmed": false,
+    "flashing_safe_confirmed": false
+  },
+  "private_bonding_candidate": {
+    "size_bytes": 2048,
+    "recognized_prefix": "#BONDING",
+    "classified_as": "bonding_store_not_firmware",
+    "contents_exported": false,
+    "device_ids_exported": false,
+    "hash_exported": false
+  },
+  "risk_decision": "NO_GO_for_flash_sdp_execution_fuses_or_unsafe_recovery",
+  "test_status": {
+    "local_synthetic_tests": 8,
+    "passed": 8
+  }
+}
