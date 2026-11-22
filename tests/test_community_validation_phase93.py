@@ -23,6 +23,8 @@ class CommunityValidationPhase93(unittest.TestCase):
         cls.patch = load("community-bootloader-patch-phase93.json")
         cls.ram_loader = load("nxp-ram-flashloader-phase93.json")
         cls.bruce_kvs = load("bruce-kvs-registry-phase93.json")
+        cls.stadiacast = load("stadiacast-upstream-phase93.json")
+        cls.field_return = load("field-return-risk-phase93.json")
 
     def test_candidate_hash_and_size_match_across_phases(self):
         a = self.phase91["private_candidate_bootloader"]
@@ -184,6 +186,22 @@ class CommunityValidationPhase93(unittest.TestCase):
         self.assertEqual(k["selected_id_to_name"]["44"], "LogToUart")
         self.assertFalse(k["yeti_ascii_literals"]["YetiGmsgUrl"])
         self.assertTrue(k["limits"]["sample_is_bruce_not_gotham"])
+
+    def test_stadiacast_upstream_confirms_stock_wifi_path(self):
+        s = self.stadiacast
+        self.assertTrue(s["claims_verified_in_upstream_source"]["works_end_to_end_with_wifi_firmware_ota_282115"])
+        self.assertTrue(s["claims_verified_in_upstream_source"]["no_controller_firmware_modification_required"])
+        self.assertEqual(s["claims_verified_in_upstream_source"]["fvc_hosts"], ["cloudcast-pa.googleapis.com"])
+        self.assertEqual(s["claims_verified_in_upstream_source"]["gmsg_host"], "cloudcast-gmsg-prod.googleapis.com")
+        self.assertTrue(s["claims_verified_in_upstream_source"]["gmsg_delivers_webrtc_answer_bundle"])
+        self.assertFalse(s["limits"]["direct_Switch_2_compatibility_verified"])
+
+    def test_field_return_is_explicit_no_go_for_rt1061(self):
+        f = self.field_return
+        self.assertEqual(f["decision"], "NO_GO")
+        self.assertFalse(f["applicability"]["exact_rt1061_field_return_fuse_mapping_verified"])
+        self.assertFalse(f["actions"]["fuses_written"])
+        self.assertEqual(f["documented_facts"]["rt1060_manual_field_return_fuse"], "0x400[31]")
 
     def test_no_destructive_or_live_actions_occurred(self):
         s = self.report["safety"]
