@@ -70,7 +70,10 @@
       ]
     ],
     "changed_outside_ivt_code_descriptor": 0,
-    "tail_removed_bytes": 36824
+    "tail_removed_bytes": 36824,
+    "ivt_csf_field_changed_bytes": 3,
+    "code_immediate_changed_bytes": 1,
+    "usb_descriptor_changed_bytes": 68
   },
   "ivt": {
     "oem": {
@@ -197,7 +200,7 @@
     "candidate_ends_before_csf_offset": true,
     "candidate_original_signature_verified": false,
     "candidate_hab_acceptance_verified": false,
-    "candidate_is_complete_flash_partition_image": false
+    "candidate_partition_completeness_verified": false
   },
   "conclusion": "The CDC candidate is a highly similar, truncated derivative of the supplied OEM bootloader-A file. Within the shared prefix, all 72 changed bytes are confined to the IVT CSF pointer, one descriptor-length instruction immediate, and the USB configuration descriptor. The original Vendor+HID configuration is replaced with Vendor+CDC ACM+CDC Data. This is static file evidence only; it does not prove bootability, HAB state, recovery, or flash safety.",
   "safety": {
