@@ -31,6 +31,12 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+      - name: Install ARM ELF linker dependency
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -q
+          sudo apt-get install -y lld
       - name: Verify toolchain
         shell: bash
         run: |
