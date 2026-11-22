@@ -5,8 +5,8 @@ Microsoft-licensed VID use, a running USB device, or Windows driver binding.
 """
 from dataclasses import dataclass, field
 from tools.audit_xusb_usb_phase100 import (
-    REFERENCE_X360_DEVICE, REFERENCE_X360_CONFIG, inspect_x360_reference)
-from tools.simulate_xinput_phase99 import xusb_rumble_to_bruce, parse_xusb_report
+    REFERENCE_DEVICE as REFERENCE_X360_DEVICE, REFERENCE_CONFIG as REFERENCE_X360_CONFIG, inspect_xusb_usb as inspect_x360_reference)
+from tools.simulate_xinput_phase99 import rumble_xusb_to_stadia as xusb_rumble_to_bruce, decode_xusb as parse_xusb_report
 from tools.virtual_stadia_firmware_phase101 import VirtualStadia,VirtualBootError
 
 
@@ -27,7 +27,7 @@ class VirtualWindowsHost:
         if device.status!='running_xusb' or not device.health():
             raise VirtualUSBError('Virtual USB controller is not in XUSB firmware mode')
         gate=inspect_x360_reference(REFERENCE_X360_DEVICE,REFERENCE_X360_CONFIG)
-        if not gate['original_reference_structural_match']:
+        if not gate['xusb_original_reference_structure']:
             raise VirtualUSBError('XUSB reference descriptor structure invalid')
         self.connected=device
         return {'virtual_descriptor_match':True,'xusb_report_bytes':20,
