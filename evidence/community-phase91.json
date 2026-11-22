@@ -36,7 +36,32 @@
     "source_marker_cdc_acm": true,
     "descriptor_fixed_confirmed": false,
     "signed_valid_confirmed": false,
-    "flashing_safe_confirmed": false
+    "flashing_safe_confirmed": false,
+    "usb_configuration_candidate": {
+      "file_offset": "0x1527c",
+      "total_length": 85,
+      "declared_interfaces": 3,
+      "interfaces": [
+        "vendor:0",
+        "cdc-communication:1",
+        "cdc-data:2"
+      ],
+      "endpoint_addresses": [
+        "0x87",
+        "0x07",
+        "0x82",
+        "0x81",
+        "0x01"
+      ],
+      "cdc_acm_functional_descriptor_present": true,
+      "cdc_union_master_slave": [
+        1,
+        2
+      ],
+      "iad_present": false,
+      "structurally_parseable": true,
+      "proven_live_usb": false
+    }
   },
   "private_bonding_candidate": {
     "size_bytes": 2048,
@@ -48,7 +73,7 @@
   },
   "risk_decision": "NO_GO_for_flash_sdp_execution_fuses_or_unsafe_recovery",
   "test_status": {
-    "local_synthetic_tests": 8,
-    "passed": 8
+    "local_synthetic_tests": 10,
+    "passed": 10
   }
 }
