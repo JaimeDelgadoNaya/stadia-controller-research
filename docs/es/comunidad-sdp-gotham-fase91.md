@@ -14,7 +14,7 @@ Estos avances no prueban por sí solos una instalación segura ni un bypass gene
 
 | Artefacto | Evidencia observada | Límite de lo demostrado |
 | --- | --- | --- |
-| `bootloader-usb-acm.bin` | 94.248 bytes; SHA-256 `ea37f7cd38ab7ae392fa80911aeed4b07ac7e557b8bb66375e099e8ebd148957`. Cabecera IVT `d1 00 20 41`; entrada `0x60801000`; dirección self `0x60001000`; boot-data `0x60001020`; DCD y CSF a cero; aparecen nombres de código CDC ACM y USB Vendor. | **No** se ha verificado autenticidad, firma, corrección del descriptor, compatibilidad, ejecución o recuperación. No equivale al bootloader A original de 131.072 bytes registrado en `evidence/manifest.json`. |
+| `bootloader-usb-acm.bin` | 94.248 bytes; SHA-256 `ea37f7cd38ab7ae392fa80911aeed4b07ac7e557b8bb66375e099e8ebd148957`. Cabecera IVT `d1 00 20 41`; entrada `0x60801000`; dirección self `0x60001000`; boot-data `0x60001020`; DCD y CSF a cero; aparecen nombres de código CDC ACM y USB Vendor. **Observación estática nueva:** una cadena de descriptores USB de 85 bytes en `0x1527c` es estructuralmente coherente y anuncia tres interfaces (Vendor 0, CDC comunicaciones 1, CDC datos 2), cinco endpoints, descriptor funcional ACM y unión CDC `1→2`; **no contiene un descriptor IAD**. Esto no acredita enumeración real ni compatibilidad con Windows. | **No** se ha verificado autenticidad, firma, corrección del descriptor, compatibilidad, ejecución o recuperación. No equivale al bootloader A original de 131.072 bytes registrado en `evidence/manifest.json`. |
 | `bluetooth.bin` | 2.048 bytes y prefijo `#BONDING`. | Parece almacén privado de emparejamientos, **no firmware Bluetooth**. No se publican claves, contenido ni hash. |
 
 Se incluye una herramienta local exclusivamente de lectura:
