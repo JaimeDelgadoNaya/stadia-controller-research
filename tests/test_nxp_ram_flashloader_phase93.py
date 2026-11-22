@@ -20,7 +20,7 @@ def fixture():
         0x412000D1,0x20002000,0,0,0x20000420,0x20000400,0,0)
     struct.pack_into("<3I",data,0x420,0x20000000,0x18000,0)
     struct.pack_into("<2I",data,0x2000,0x20217000,0x2000262D)
-    data[0x1000:0x1020]=b"UART\x00I2C\x00SPI\x00CAN\x00HID\x00CDC\x00DFU\x00MSD\x00"
+    data[0x1000:0x1020]=b"UART\x00I2C\x00SPI\x00CAN\x00HID\x00CDC\x00DFU\x00MSD"
     data[0x17E98:0x17E98+len(CONFIG)]=CONFIG
     data[0x17EC1:0x17EC1+18]=DEVICE
     return bytes(data)
