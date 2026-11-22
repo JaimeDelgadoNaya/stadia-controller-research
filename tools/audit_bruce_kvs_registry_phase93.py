@@ -1,6 +1,6 @@
 """Parse the KVS name/ID table in one exact signed Bruce production image.
 
-This is NOT a Gotham registry parser. No device I/O, KVS writes or firmware execution.
+This is NOT a Gotham registry parser. Record layout: ID at +0, name pointer at +8.\nNo device I/O, KVS writes or firmware execution.
 """
 import argparse
 import hashlib
@@ -10,17 +10,17 @@ from pathlib import Path
 
 EXPECTED_SHA256 = "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3"
 IMAGE_BASE = 0x60040000
-TABLE_OFFSET = 0xC3C60
+TABLE_OFFSET = 0xC3C58
 ENTRY_SIZE = 0x20
 MAX_ENTRIES = 128
-SELECTED_IDS = (21,22,23,24,25,40,41,42,43,44)
+SELECTED_IDS = (20,21,22,23,24,25,26,39,40,41,42,43,44)
 
 
 def parse_registry(data, table_offset=TABLE_OFFSET, image_base=IMAGE_BASE):
     if not isinstance(data, bytes) or table_offset < 0:
         raise ValueError("Invalid input")
     entries=[]
-    expected_id=1
+    expected_id=0
     stop_reason="maximum_entries"
     for index in range(MAX_ENTRIES):
         off=table_offset+index*ENTRY_SIZE
@@ -28,7 +28,7 @@ def parse_registry(data, table_offset=TABLE_OFFSET, image_base=IMAGE_BASE):
             stop_reason="end_of_file"
             break
         words=struct.unpack_from("<8I",data,off)
-        name_ptr=words[0]
+        name_ptr=words[2]
         name_off=name_ptr-image_base
         if name_off<0 or name_off>=len(data):
             stop_reason="name_pointer_out_of_image"
@@ -41,15 +41,15 @@ def parse_registry(data, table_offset=TABLE_OFFSET, image_base=IMAGE_BASE):
         if not raw_name or any(c<0x20 or c>0x7e for c in raw_name):
             stop_reason="non_ascii_or_empty_name"
             break
-        if words[6] != expected_id:
+        if words[0] != expected_id:
             stop_reason="nonsequential_id"
             break
         entries.append({
-            "id":words[6],
+            "id":words[0],
             "name":raw_name.decode("ascii"),
-            "raw_type_word":hex(words[1]),
-            "raw_default_word":hex(words[2]),
-            "raw_flag_word":hex(words[4]),
+            "raw_word1":hex(words[1]),
+            "raw_word3":hex(words[3]),
+            "raw_word4":hex(words[4]),
             "record_offset":hex(off)
         })
         expected_id+=1
