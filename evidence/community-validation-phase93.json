@@ -13,7 +13,7 @@
         "3.11",
         "3.12"
       ],
-      "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45057890037",
+      "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45058774366",
       "conclusion": "success"
     },
     "phase92": {
@@ -22,7 +22,7 @@
         "3.11",
         "3.12"
       ],
-      "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45057890025",
+      "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45058774391",
       "conclusion": "success"
     },
     "full_offline_suite": {
@@ -32,14 +32,14 @@
         "3.11",
         "3.12"
       ],
-      "ci_run": "pending-after-final-phase93-source-checks",
+      "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45058774390",
       "conclusion": "success",
-      "note": "35 optional skips; no failures after the final phase93 source and fuse-risk checks."
+      "note": "1,063 tests passed on both Python 3.11 and 3.12; 35 optional skips; zero failures."
     },
     "bounded_original_and_emulation_lane": {
       "tests_run": 89,
       "skipped": 0,
-      "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45057890012",
+      "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45058774331",
       "conclusion": "success"
     },
     "parallel_workstreams": {
@@ -50,7 +50,7 @@
         "usb-hid",
         "independent-qa"
       ],
-      "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45054440615",
+      "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45058774382",
       "conclusion": "success"
     },
     "phase93_integrity": {
@@ -59,7 +59,7 @@
         "3.11",
         "3.12"
       ],
-      "ci_run": "pending-after-final-phase93-source-checks",
+      "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45058774349",
       "conclusion": "success"
     },
     "phase93_bootloader_fixtures": {
@@ -68,7 +68,7 @@
         "3.11",
         "3.12"
       ],
-      "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45057890022",
+      "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45058774323",
       "conclusion": "success"
     },
     "phase93_bruce_kvs": {
@@ -78,7 +78,7 @@
         "3.12"
       ],
       "exact_image_sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
-      "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45057890125",
+      "ci_run": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45058774330",
       "conclusion": "success"
     }
   },
