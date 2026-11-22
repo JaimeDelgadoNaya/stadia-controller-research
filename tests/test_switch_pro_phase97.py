@@ -132,6 +132,34 @@ class SwitchProPhase97(unittest.TestCase):
         self.assertFalse(r['stadia_retail_custom_firmware_boot_proven'])
         self.assertFalse(r['actual_devices_contacted'])
 
+    def test_report_0x30_requires_mode_and_valid_renderer(self):
+        d=ready()
+        def good_renderer(data, *, tick=0):
+            return bytes((0x30, tick)) + bytes(62)
+        with self.assertRaisesRegex(UnsupportedProtocol,'not been negotiated'):
+            d.sample(b"synthetic", good_renderer)
+        d.process(make_host_subcommand(0x03,b"\x30"))
+        with self.assertRaisesRegex(UnsupportedProtocol,'renderer'):
+            d.sample(b"synthetic", None)
+
+    def test_stadia_to_switch_end_to_end_synthetic_report(self):
+        d=ready()
+        d.process(make_host_subcommand(0x03,b"\x30"))
+        from tools.simulate_switch_pro_phase96 import translate_bruce as renderer
+        pressed=(1<<14)|(1<<4)  # A + Home in source Bruce bitmap
+        source=bytes((3,8))+pressed.to_bytes(2,"little")+bytes((128,128,128,128,0,0,0))
+        output=d.sample(source,renderer)
+        self.assertEqual(len(output),64)
+        self.assertEqual(output[0],0x30)
+        self.assertEqual(output[4]&0x10,0x10)
+        self.assertEqual(output[3]&0x04,0x04)
+
+    def test_renderer_invalid_shape_rejected(self):
+        d=ready()
+        d.process(make_host_subcommand(0x03,b"\x30"))
+        with self.assertRaisesRegex(UnsupportedProtocol,'64-byte'):
+            d.sample(b"dummy",lambda data,*,tick=0: b"\x30")
+
     def test_no_external_device_module_imports(self):
         import inspect, tools.simulate_switch_pro_phase97 as module
         source=inspect.getsource(module)
