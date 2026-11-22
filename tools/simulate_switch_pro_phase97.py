@@ -168,6 +168,18 @@ class VirtualNS1Pro97:
     def can_stream(self) -> bool:
         return self.phase == "usb_ready" and self.report_mode == 0x30
 
+    def sample(self, bruce_packet: bytes, renderer) -> bytes:
+        """Integra la fase 96 mediante un renderer inyectado; jamás emite USB."""
+        if not self.can_stream():
+            raise UnsupportedProtocol("Output report 0x30 has not been negotiated")
+        if not callable(renderer):
+            raise UnsupportedProtocol("No valid Phase96 renderer was supplied")
+        result = renderer(bruce_packet, tick=self.tick)
+        if type(result) is not bytes or len(result) != 64 or result[0] != 0x30:
+            raise UnsupportedProtocol("Renderer must return a 64-byte 0x30 report")
+        self.tick = (self.tick + 1) & 255
+        return result
+
 
 def run_offline_trace() -> dict[str, object]:
     """Host script del SUBCONJUNTO público, no inicialización probada de Switch2."""
