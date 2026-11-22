@@ -1,0 +1,24 @@
+{
+  "phase": 103,
+  "source_date": "2026-11-22",
+  "codec_target": "ARMv7E-M Cortex-M7 Thumb2",
+  "local_arm_object_sha256": "26deeeef21d46024a9cb2ad0574356ade82bbcd51b39d3364855c527fadfa6d6",
+  "local_object_size": 2540,
+  "object_type": "relocatable ELF32 ARM EABI5",
+  "object_is_flashable": false,
+  "codec_functions": [
+    "stadia_xusb_from_bruce_hid",
+    "stadia_xusb_from_bruce_raw",
+    "stadia_xusb_rumble_to_bruce"
+  ],
+  "missing_runtime_symbols": [
+    "memset"
+  ],
+  "usb_device_stack_integrated": false,
+  "retail_hab_signature_validated": false,
+  "retail_device_contacted": false,
+  "original_bootloader_csf_pointer_outside_file": true,
+  "bruce_csf_header_present_not_signature_verified": true,
+  "tests_local_passed": 13,
+  "hardware_actions_performed": false
+}
