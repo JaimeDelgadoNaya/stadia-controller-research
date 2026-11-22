@@ -8,11 +8,11 @@
 |---|---:|---|
 | Fase 91 — análisis de archivos privados | 10/10 por versión | Python 3.11 y 3.12 |
 | Fase 92 — descriptores USB y comparación OEM | 17/17 por versión | Python 3.11 y 3.12 |
-| Suite offline completa | 1.012 correctas; 34 omitidas | Python 3.11 y 3.12 |
+| Suite offline completa | 1.061 correctas; 35 omitidas | Python 3.11 y 3.12 |
 | Carril de muestras OEM y emulación acotada | 89 correctas; 0 omitidas | GitHub Actions |
 | Cinco carriles de regresión | Todos correctos | Bruce, bootloader, NXP HAB, USB HID e independent QA |
 
-Las 34 omisiones de la suite general no son fallos; corresponden a pruebas opcionales condicionadas por muestras/fixtures. El carril separado de originales y emulación completó 89 pruebas. Los registros de Actions están enlazados en `evidence/community-validation-phase93.json`.
+Las 35 omisiones de la suite general no son fallos; corresponden a pruebas opcionales condicionadas por muestras/fixtures. El carril separado de originales y emulación completó 89 pruebas. Los registros de Actions están enlazados en `evidence/community-validation-phase93.json`.
 
 **Corrección documental:** el PR #110 decía inicialmente ocho pruebas para la fase 91. El archivo real contiene diez; el informe y el PR deben indicar diez.
 
