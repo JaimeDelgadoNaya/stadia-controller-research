@@ -18,7 +18,7 @@
 2. `VirtualNS1Pro97`: maneja `0x80 01/02/03/04`, información sintética de dispositivo (`0x02`), modo `0x30` (`0x03`), tiempo ficticio (`0x04`), envío no persistente (`0x08`), SPI `0x10`, luces `0x30`, IMU solo desactivación `0x40`, y bandera de vibración `0x48`.
 3. Respuestas `0x21` de **64 bytes**, con `ACK=0x90`, eco `0x10`, dirección `LE32` y longitud en bytes `15–19`, carga útil en `20+`. Identidad MAC sintética y local.
 4. Rechazo explícito de lecturas fuera de lista blanca, longitud excesiva, petición incompleta, entrada de subcomandos antes del init, IMU activo y NFC/IR `0x21`.
-5. `run_offline_trace()`: traza de 13 pasos soportados y tres casos bloqueados; devuelve indicadores que no permiten afirmar compatibilidad de consola ni arranque retail.
+5. `sample(bruce_packet, renderer)`: conecta el simulador SPI con `translate_bruce` de fase 96 para generar un reporte `0x30` de 64 bytes **solo después** de negociar el modo; con pruebas de integración y rechazos del renderer.\n6. `run_offline_trace()`: traza de 13 pasos soportados y tres casos bloqueados; devuelve indicadores que no permiten afirmar compatibilidad de consola ni arranque retail.
 
 ### Comandos del laboratorio
 
@@ -27,7 +27,7 @@ python -m unittest tests.test_switch_pro_phase97 -v
 python -m tools.simulate_switch_pro_phase97
 ```
 
-**16 pruebas de fase 97 superadas en entorno local.** Además se comprueban formas, límites, valores sintéticos, respuestas de 64 bytes y seguridad. La suite de GitHub Actions debe verificarse en el commit correspondiente antes de afirmar un resultado de CI global.
+**19 pruebas de fase 97 superadas en entorno local**, incluidas tres que integran la conversión de entradas de la fase 96, el modo 0x30 y los controles de validación del reporte. El paquete local completo reproduce también 54 pruebas anteriores: **73 pruebas correctas**. Además se comprueban formas, límites, valores sintéticos, respuestas de 64 bytes y seguridad. [GitHub Actions del commit actualizado](https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45065977635): **1.116 pruebas descubiertas por versión de Python, 35 omitidas, 1.081 superadas y ninguna fallida**, con Python 3.11 y 3.12.
 
 ## Lo que aún no está demostrado
 
