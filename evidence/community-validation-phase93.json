@@ -110,7 +110,24 @@
     "binary_bytes_available_in_this_analysis_session": false,
     "gotham_code_audited": false,
     "kvs_set_handler_verified": false,
-    "yetigmsgurl_registry_claim_verified": false
+    "yetigmsgurl_registry_claim_verified": true,
+    "registry_static_verified_later": true,
+    "registry_entries_per_PVT": 115,
+    "registry_verified_via_ci": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45062738379",
+    "pvt_a_sha256": "269bb21160ea6d1366e71bb9c9b148e2782ea967b81c7b6ff038e7d49b61e00f",
+    "pvt_b_sha256": "1cbc35203ff83a5244a8a9b2590938983f162259dfdb6235321d60e9356ce44e",
+    "pvt_a_image_base": "0x60040000",
+    "pvt_b_image_base": "0x60840000",
+    "registry_id_offset": 0,
+    "registry_name_pointer_offset": 8,
+    "registry_ids": {
+      "21": "YetiEnvironment",
+      "22": "YetiDiscoUrl",
+      "23": "AnalyticsOptIn",
+      "44": "AppImageFdrVer",
+      "45": "BootImageFdrVer"
+    },
+    "scope_note": "Only registry and strings checked. Gotham USB set-KVS writer, permission checks and any arbitrary-name acceptance remain unverified."
   },
   "existing_repository_scope": {
     "bootloader_manifest_sample": "sample-001",
@@ -158,10 +175,10 @@
   },
   "community_kvs_claims": {
     "source": "owner-provided Discord excerpt dated 2026-11-17",
-    "YetiDiscoUrl_registry_id_22": "community_claim_not_verified_on_Gotham_image",
-    "YetiEnvironment_registry_id_21": "community_claim_not_verified_on_Gotham_image",
-    "YetiGmsgUrl_missing_from_registry": "community_claim_not_verified_on_Gotham_image",
-    "usb_vendor_set_kvs_registry_enforcement": "open_question",
+    "YetiDiscoUrl_registry_id_22": "verified_from_Gotham_PVT_A_and_PVT_B_phase94",
+    "YetiEnvironment_registry_id_21": "verified_from_Gotham_PVT_A_and_PVT_B_phase94",
+    "YetiGmsgUrl_missing_from_registry": "verified_absent_in_115_key_registries_both_PVT_images",
+    "usb_vendor_set_kvs_registry_enforcement": "unverified",
     "AppImageFdrVer_id_44": "excluded_from_all_tests_and_generated_packets"
   },
   "safety": {
@@ -219,25 +236,31 @@
   },
   "bruce_kvs_registry": {
     "image_sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
-    "table_offset": "0xc3c60",
+    "table_offset": "0xc3c58",
     "entry_size_bytes": 32,
-    "contiguous_sequential_entries": 66,
+    "contiguous_sequential_entries": 67,
     "selected_id_to_name": {
-      "21": "AnalyticsOptIn",
-      "22": "LastKnownSntp",
-      "23": "IsDfDevice",
-      "24": "UpdateGauge",
-      "25": "OtaFromBuild",
-      "40": "AppImageFdrVer",
-      "41": "BootImageFdrVer",
-      "42": "HidOverGatt",
-      "43": "SupportNoBat",
-      "44": "LogToUart"
+      "20": "AnalyticsOptIn",
+      "21": "LastKnownSntp",
+      "22": "IsDfDevice",
+      "23": "UpdateGauge",
+      "24": "OtaFromBuild",
+      "39": "AppImageFdrVer",
+      "40": "BootImageFdrVer",
+      "41": "HidOverGatt",
+      "42": "SupportNoBat",
+      "43": "LogToUart",
+      "44": "CrashReboot"
     },
     "yeti_ascii_literals_present": false,
     "this_is_bruce_not_gotham": true,
     "gotham_registry_verified": false,
-    "usb_vendor_set_kvs_call_chain_verified": false
+    "usb_vendor_set_kvs_call_chain_verified": false,
+    "first_id": 0,
+    "last_id": 66,
+    "id_offset": 0,
+    "name_pointer_offset": 8,
+    "correction_source": "evidence/community-file-intake-phase95.json"
   },
   "field_return_safety": {
     "rt1060_manual_field_return_bit": "0x400[31]",
