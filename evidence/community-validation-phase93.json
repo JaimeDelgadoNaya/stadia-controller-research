@@ -122,31 +122,22 @@
   },
   "stadiacast_upstream": {
     "repository": "jkfran/stadiacast",
-    "head": "9605bf461a157608b8a8756ba21fb68f7afd5ffb",
-    "latest_release": "v1.3.0",
-    "release_date": "2026-11-18T21:05:18Z",
-    "last_successful_ci_run": 44396810333,
-    "last_successful_ci_commit": "9605bf461a157608b8a8756ba21fb68f7afd5ffb",
-    "python_3_11": {
-      "passed": 520,
-      "skipped": 45
+    "commit": "9605bf461a157608b8a8756ba21fb68f7afd5ffb",
+    "release": "v1.3.0",
+    "published_at": "2026-11-18",
+    "ota_282115_end_to_end": true,
+    "no_firmware_modification": true,
+    "hosts": {
+      "fvc": "cloudcast-pa.googleapis.com",
+      "gmsg": "cloudcast-gmsg-prod.googleapis.com",
+      "clearcut": "play.googleapis.com",
+      "sntp": "time.google.com"
     },
-    "python_3_12": {
-      "passed": 520,
-      "skipped": 45
-    },
-    "lowest_direct_dependencies": {
-      "passed": 506,
-      "skipped": 59
-    },
-    "latest_ci_run_2026_11_22": {
-      "id": 45014258196,
-      "conclusion": "action_required",
-      "jobs_started": 0,
-      "classification": "not_a_test_failure; no jobs ran"
-    },
-    "test_architecture": "fake_controller.py drives loopback end-to-end tests; normal test suite does not require a physical controller",
-    "no_firmware_modification_in_receiver": true
+    "gmsg_delivers_webrtc_answer": true,
+    "source_code_verified": true,
+    "usb_vendor_set_kvs_verified": false,
+    "gotham_kvs_registry_verified": false,
+    "direct_switch2_compatibility_verified": false
   },
   "tchebb_public_statement": {
     "source": "https://www.reddit.com/r/Stadia/comments/1xwcedq/has_anyone_bypassed_the_bootloader_signage/",
@@ -247,5 +238,15 @@
     "this_is_bruce_not_gotham": true,
     "gotham_registry_verified": false,
     "usb_vendor_set_kvs_call_chain_verified": false
+  },
+  "field_return_safety": {
+    "rt1060_manual_field_return_bit": "0x400[31]",
+    "purpose": "returned-part testing",
+    "rt1060_manual_1_state": "open for field-return testing",
+    "rt1061_specific_mapping_verified": false,
+    "imx7d_support_warning_not_generalized_to_rt1061": true,
+    "decision": "NO_GO",
+    "fuses_read": false,
+    "fuses_written": false
   }
 }
