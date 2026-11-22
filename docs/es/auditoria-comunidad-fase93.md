@@ -126,3 +126,33 @@ Herramienta: `tools/audit_bruce_kvs_registry_phase93.py`. La CI descarga el Bruc
 - **Confirmado:** el mapa KVS de Bruce no coincide con los IDs comunicados para Gotham.
 - **Pendiente:** auditar el original Gotham `ota.282115` para resolver el registro de 115 claves, el handler `set KVS` y el consumidor GMsg.
 - **NO-GO:** flasheo del candidato CDC, ejecución SDP, modificación de fusibles, escrituras KVS reales o recuperación invasiva.
+
+
+## 10. Comprobación de Stadiacast contra el código upstream
+
+Se ha revisado el repositorio público `jkfran/stadiacast`, commit `9605bf461a157608b8a8756ba21fb68f7afd5ffb`, release **v1.3.0** publicada el 18/11/2026. El README declara funcionamiento extremo a extremo con el firmware Wi-Fi original `ota.282115`, sin modificar el firmware del mando.
+
+El documento `docs/protocol.md` y el código de `config.py`/`receiver.py` corroboran la separación:
+
+| Servicio | Host |
+|---|---|
+| FVC / Discovery RPC | `cloudcast-pa.googleapis.com` |
+| GMsg / entrega del mensaje de señalización | `cloudcast-gmsg-prod.googleapis.com` |
+| Clearcut | `play.googleapis.com` |
+| SNTP | `time.google.com` |
+
+También documenta el reenvío de `connectivitycheck.gstatic.com` y `clients3.google.com` a Google. El canal GMsg entrega el paquete de respuesta WebRTC al mando. Por tanto, los detalles de red compartidos en Discord son coherentes con el proyecto público.
+
+**Límite:** Stadiacast demuestra interoperabilidad de red con el firmware stock; no demuestra que el USB `set KVS` admita claves arbitrarias, ni que el firmware personalizado de Tomás esté publicado o funcione en Switch 2.
+
+Fuentes: [README](https://github.com/jkfran/stadiacast/blob/9605bf461a157608b8a8756ba21fb68f7afd5ffb/README.md), [protocolo](https://github.com/jkfran/stadiacast/blob/9605bf461a157608b8a8756ba21fb68f7afd5ffb/docs/protocol.md), [configuración](https://github.com/jkfran/stadiacast/blob/9605bf461a157608b8a8756ba21fb68f7afd5ffb/src/stadiacast/config.py).
+
+## 11. Riesgo de FIELD_RETURN: NO-GO
+
+El manual de referencia i.MX RT1060 describe el fusible `FIELD_RETURN` en `0x400[31]`: estado 0 funcional/seguro; estado 1 abierto para pruebas de devolución. Está destinado a componentes devueltos desde productos comercializados y su programación está protegida mediante CSF. La comunidad NXP confirma para RT1061 que `SEC_CONFIG_CLOSED` implica ejecutar solo imágenes autenticadas.
+
+No hemos encontrado una fuente primaria suficiente para confirmar el mapa exacto y las consecuencias de FIELD_RETURN en el RT1061 del mando. El caso NXP de i.MX7D donde el modo de retorno dejó el dispositivo sin arrancar es de otro SoC y **no se generaliza** al RT1061; sí demuestra por qué no debe asumirse que el modo sea un desbloqueo inocuo.
+
+**Decisión:** no leer ni programar fusibles en esta investigación. No ejecutar ningún comando de FIELD_RETURN. No se ha tocado hardware.
+
+Fuentes: [i.MX RT1060 Reference Manual, tabla de fusibles](https://www.pjrc.com/teensy/IMXRT1060RM_rev3.pdf), [NXP: configuración de fusibles RT1061](https://community.nxp.com/t5/i-MX-RT-Crossover-MCUs/1061-fuse-configuration/td-p/1705836), [NXP: advertencia FIELD_RETURN en i.MX7D](https://community.nxp.com/t5/i-MX-Processors/iMX7D-not-booting-after-FIELD-RETURN-fuse-blown/m-p/1206202/highlight/true).
