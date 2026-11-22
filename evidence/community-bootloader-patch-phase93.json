@@ -1,0 +1,208 @@
+{
+  "phase": 93,
+  "date": "2026-11-22",
+  "kind": "static_oem_to_community_bootloader_differential",
+  "source_files": {
+    "oem": {
+      "name": "bootloader-a.bin",
+      "size_bytes": 131072,
+      "sha256": "59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0"
+    },
+    "candidate": {
+      "name": "bootloader-usb-acm.bin",
+      "size_bytes": 94248,
+      "sha256": "ea37f7cd38ab7ae392fa80911aeed4b07ac7e557b8bb66375e099e8ebd148957"
+    }
+  },
+  "direct_byte_comparison": {
+    "overlap_bytes": 94248,
+    "identical_bytes": 94176,
+    "changed_bytes": 72,
+    "same_bytes_percent": 99.923605,
+    "changed_ranges": [
+      [
+        "0x19",
+        "0x1c"
+      ],
+      [
+        "0xaf4e",
+        "0xaf4f"
+      ],
+      [
+        "0x1527e",
+        "0x1527f"
+      ],
+      [
+        "0x15280",
+        "0x15281"
+      ],
+      [
+        "0x15285",
+        "0x15287"
+      ],
+      [
+        "0x15288",
+        "0x1528b"
+      ],
+      [
+        "0x1528d",
+        "0x15291"
+      ],
+      [
+        "0x15292",
+        "0x15294"
+      ],
+      [
+        "0x15295",
+        "0x152a2"
+      ],
+      [
+        "0x152a4",
+        "0x152bd"
+      ],
+      [
+        "0x152be",
+        "0x152ce"
+      ],
+      [
+        "0x152cf",
+        "0x152d0"
+      ]
+    ],
+    "changed_outside_ivt_code_descriptor": 0,
+    "tail_removed_bytes": 36824
+  },
+  "ivt": {
+    "oem": {
+      "entry": "0x60801000",
+      "dcd": "0x0",
+      "boot_data": "0x60001020",
+      "self": "0x60001000",
+      "csf": "0x60818000"
+    },
+    "candidate": {
+      "entry": "0x60801000",
+      "dcd": "0x0",
+      "boot_data": "0x60001020",
+      "self": "0x60001000",
+      "csf": "0x0"
+    },
+    "csf_field_changed_bytes": 3
+  },
+  "usb_device_descriptor": {
+    "file_offset": "0xbf78",
+    "identical": true,
+    "bcdUSB": "0x0200",
+    "class_subclass_protocol": [
+      "0xef",
+      "0x02",
+      "0x01"
+    ],
+    "vid": "0x18d1",
+    "pid": "0x946b",
+    "bMaxPacketSize0": 64,
+    "iSerialNumber_index": 4,
+    "bNumConfigurations": 3
+  },
+  "oem_configuration": {
+    "file_offset": "0x1527c",
+    "length": 80,
+    "interfaces": 2,
+    "iad_count": 2,
+    "interface_classes": [
+      "0xff",
+      "0x03"
+    ],
+    "endpoints": [
+      {
+        "address": "0x87",
+        "transfer": "bulk",
+        "max_packet": 512
+      },
+      {
+        "address": "0x07",
+        "transfer": "bulk",
+        "max_packet": 512
+      },
+      {
+        "address": "0x83",
+        "transfer": "interrupt",
+        "max_packet": 64
+      },
+      {
+        "address": "0x03",
+        "transfer": "interrupt",
+        "max_packet": 64
+      }
+    ],
+    "hid_report_descriptor_length": 156
+  },
+  "candidate_configuration": {
+    "file_offset": "0x1527c",
+    "length": 85,
+    "interfaces": 3,
+    "iad_count": 0,
+    "interface_classes": [
+      "0xff",
+      "0x02/0x02",
+      "0x0a"
+    ],
+    "endpoints": [
+      {
+        "address": "0x87",
+        "transfer": "bulk",
+        "max_packet": 512
+      },
+      {
+        "address": "0x07",
+        "transfer": "bulk",
+        "max_packet": 512
+      },
+      {
+        "address": "0x82",
+        "transfer": "interrupt",
+        "max_packet": 8
+      },
+      {
+        "address": "0x81",
+        "transfer": "bulk",
+        "max_packet": 512
+      },
+      {
+        "address": "0x01",
+        "transfer": "bulk",
+        "max_packet": 512
+      }
+    ],
+    "cdc_union": {
+      "master": 1,
+      "slaves": [
+        2
+      ]
+    }
+  },
+  "code_change": {
+    "file_offset": "0xaf4e",
+    "oem_thumb_halfword": "5023",
+    "candidate_thumb_halfword": "5523",
+    "interpretation": "Thumb MOVS r3,#0x50 becomes MOVS r3,#0x55; following code stores this value in the descriptor-length field",
+    "descriptor_pointer_literal": "0x6081527c",
+    "pointer_unchanged": true,
+    "immediate_matches_oem_config_length": true,
+    "immediate_matches_candidate_config_length": true
+  },
+  "authentication": {
+    "oem_csf_header_at_file_offset_0x18000": "d4006042",
+    "candidate_csf_pointer_zeroed": true,
+    "candidate_ends_before_csf_offset": true,
+    "candidate_original_signature_verified": false,
+    "candidate_hab_acceptance_verified": false,
+    "candidate_is_complete_flash_partition_image": false
+  },
+  "conclusion": "The CDC candidate is a highly similar, truncated derivative of the supplied OEM bootloader-A file. Within the shared prefix, all 72 changed bytes are confined to the IVT CSF pointer, one descriptor-length instruction immediate, and the USB configuration descriptor. The original Vendor+HID configuration is replaced with Vendor+CDC ACM+CDC Data. This is static file evidence only; it does not prove bootability, HAB state, recovery, or flash safety.",
+  "safety": {
+    "hardware_accessed": false,
+    "firmware_executed": false,
+    "flash_or_fuse_written": false
+  }
+}
