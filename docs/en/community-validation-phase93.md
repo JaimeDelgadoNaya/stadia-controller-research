@@ -8,7 +8,7 @@
 |---|---:|---|
 | Phase 91 private-artifact intake | 10/10 per version | Python 3.11 and 3.12 |
 | Phase 92 USB descriptors and OEM differential | 17/17 per version | Python 3.11 and 3.12 |
-| Full offline suite | 1,061 passed; 35 skipped | Python 3.11 and 3.12 |
+| Full offline suite | 1,063 passed; 35 skipped | Python 3.11 and 3.12 |
 | OEM sample and bounded-emulation lane | 89 passed; 0 skipped | GitHub Actions |
 | Five regression lanes | All successful | Bruce, bootloader, NXP HAB, USB HID and independent QA |
 
