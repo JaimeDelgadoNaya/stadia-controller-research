@@ -153,5 +153,70 @@
     "bonding_secrets_published": false,
     "author_request_for_no_duplicate_switch_firmware_respected": true
   },
-  "next_required_input": "The exact public Gotham ota.282115 PVT-A or PVT-B binary must be available as local bytes to trace the original signed KVS name-to-ID lookup, USB vendor set-KVS handler, and YetiGmsgUrl consumers."
+  "next_required_input": "The exact public Gotham ota.282115 PVT-A or PVT-B binary must be available as local bytes to trace the original signed KVS name-to-ID lookup, USB vendor set-KVS handler, and YetiGmsgUrl consumers.",
+  "private_bootloader_patch": {
+    "original_sha256": "59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0",
+    "candidate_sha256": "ea37f7cd38ab7ae392fa80911aeed4b07ac7e557b8bb66375e099e8ebd148957",
+    "candidate_derives_from_oem": true,
+    "overlap_changed_bytes": 72,
+    "changed_bytes_outside_expected_regions": 0,
+    "changed_region_summary": {
+      "ivt_csf_pointer_bytes": 3,
+      "usb_length_instruction_immediate": 1,
+      "usb_descriptor_table": 68
+    },
+    "common_bytes_percent": 99.923605,
+    "original_csf_pointer": "0x60818000",
+    "candidate_csf_pointer": "0x0",
+    "original_csf_header": "d4006042",
+    "candidate_truncated_before_csf": true,
+    "usb_mode_change": "Vendor + HID -> Vendor + CDC ACM + CDC Data",
+    "original_iad_count": 2,
+    "candidate_iad_count": 0,
+    "cdc_union": {
+      "master": 1,
+      "slave": 2
+    },
+    "code_length_change": "0x50 -> 0x55",
+    "code_pointer_literal": "0x6081527c",
+    "flash_safety_or_hab_acceptance_proven": false
+  },
+  "nxp_ram_flashloader_artifact": {
+    "name": "thebb_ivt_flashloader.bin",
+    "size_bytes": 98148,
+    "sha256": "700e2cbbb884dc74a2b5d71da420350d6dca67e55f456a24f2d3ba7a69dde258",
+    "ivt_offset": "0x400",
+    "entry": "0x20002000",
+    "boot_data_load_address": "0x20000000",
+    "boot_data_declared_length": "0x18000",
+    "file_shortfall_bytes": 156,
+    "csf_pointer": "0x0",
+    "usb_vid_pid": "15A2:0073",
+    "usb_configuration": "one HID interface with interrupt endpoints 0x81 and 0x02; no CDC Union",
+    "cdc_transport_string_present": true,
+    "exact_provenance_or_link_to_tchebb_exploit_verified": false,
+    "firmware_or_exploit_executed": false
+  },
+  "bruce_kvs_registry": {
+    "image_sha256": "466ddd2dbcd8d1a66e2826f25849a6e5e45d9bb7e696e3fe0d500af56a5507a3",
+    "table_offset": "0xc3c60",
+    "entry_size_bytes": 32,
+    "contiguous_sequential_entries": 66,
+    "selected_id_to_name": {
+      "21": "AnalyticsOptIn",
+      "22": "LastKnownSntp",
+      "23": "IsDfDevice",
+      "24": "UpdateGauge",
+      "25": "OtaFromBuild",
+      "40": "AppImageFdrVer",
+      "41": "BootImageFdrVer",
+      "42": "HidOverGatt",
+      "43": "SupportNoBat",
+      "44": "LogToUart"
+    },
+    "yeti_ascii_literals_present": false,
+    "this_is_bruce_not_gotham": true,
+    "gotham_registry_verified": false,
+    "usb_vendor_set_kvs_call_chain_verified": false
+  }
 }
