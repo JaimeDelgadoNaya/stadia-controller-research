@@ -1,0 +1,71 @@
+name: Phase 103 - provenance gate, avoid external-flash BootROM false positives
+
+on:
+  pull_request:
+    paths:
+      - 'research/phase103/**'
+      - 'tests/test_rom_provenance_phase103.py'
+      - '.github/workflows/phase103-rom-provenance.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  false-positive-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test sixteen synthetic format/provenance rejection cases
+        run: python -m unittest discover -s tests -p 'test_rom_provenance_phase103.py' -v
+      - name: Download only known public RT1060 ROM for same-size false-positive tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --output "$RUNNER_TEMP/public-rt1060.bin" \
+            "https://raw.githubusercontent.com/Zenofex/SoC-BootROMs/main/nxp/imxrt1060.bootrom.bin"
+          echo "a5d9af17f0e21866774df91c1e634e955e72b1442aedd84c8aac8eefc8e58f8e  $RUNNER_TEMP/public-rt1060.bin" | sha256sum -c -
+      - name: Verify the actual public ROM remains untrusted as owner provenance
+        shell: bash
+        run: |
+          RT1060_REF="$RUNNER_TEMP/public-rt1060.bin" python - <<'PY'
+          import json,os
+          from pathlib import Path
+          from research.phase103.triage_rom_origin import classify,SIZE
+          rom=Path(os.environ["RT1060_REF"]).read_bytes()
+          identical=classify(rom,reference=rom,manifest={"source_kind":"declared_internal_mask_rom",
+                             "acquisition_record":"self-reported, unauthenticated"})
+          assert identical["status"]=="PUBLIC_RT1060_BYTES_NOT_DEVICE_PROVENANCE",identical
+          assert identical["full_reference_byte_match"] is True
+          assert identical["physical_origin_authenticated"] is False
+          tampered=bytearray(rom)
+          tampered[0x1f000] ^= 1
+          windows_only=classify(bytes(tampered),reference=rom)
+          assert windows_only["status"]=="ONLY_REFERENCE_WINDOWS_MATCH",windows_only
+          assert windows_only["full_reference_byte_match"] is False
+          assert len(windows_only["matching_reference_windows"])==7
+          assert all(windows_only["matching_reference_windows"].values())
+          external=bytearray(b"\x31"*SIZE)
+          external[:4]=b"FCFB"
+          rejected=classify(bytes(external))
+          assert rejected["status"]=="REJECT_FLEXSPI_NOR_HEADER"
+          absent=classify(None)
+          assert absent["status"]=="CANDIDATE_MISSING"
+          out={"phase":103,"source":"public RT1060, synthetic false candidates only",
+               "checks":{"public_identical_is_not_stadia_provenance":identical["status"],
+                         "seven_windows_same_with_changed_byte_elsewhere":windows_only["status"],
+                         "external_FCFB_rejected":rejected["status"],
+                         "missing_owner_internal_rom":absent["status"]},
+               "reference_sha256":identical["candidate_sha256"],
+               "hardware_touched":False,"actual_rom_identity_proven":False,
+               "exploit_or_firmware_execution_proven":False}
+          Path("phase103-false-positive-evidence.json").write_text(json.dumps(out,indent=2)+"\n")
+          print(json.dumps(out,indent=2))
+          PY
+      - name: Publish only textual negative-test evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase103-provenance-gate-evidence
+          path: phase103-false-positive-evidence.json
+          retention-days: 30
