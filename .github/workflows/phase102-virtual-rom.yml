@@ -28,7 +28,7 @@ jobs:
           assert "sha256Portable" in js
           assert "pReference" in src
           import re
-          executable=re.sub(r"//[^\\n]*", "", js)
+          executable=re.sub(r"//[^\n]*", "", js)
           for forbidden in ("fetch(", "XMLHttpRequest(", "navigator.usb", "navigator.hid", "navigator.serial"):
               assert forbidden not in executable, f"Unexpected external/device API {forbidden}"
           Path("phase102-browser.js").write_text(js)
