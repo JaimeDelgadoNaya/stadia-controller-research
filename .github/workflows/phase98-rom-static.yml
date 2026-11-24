@@ -38,9 +38,18 @@ jobs:
           python research/phase98/inspect_rom.py \
             "$RUNNER_TEMP/rt1060-bootrom.bin" \
             --out phase98-rom-disassembly.json
+      - name: Verify two reported ROM mechanisms from exact Thumb opcodes
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_rom_claims_phase98.py' -v
+          python -m research.phase98.verify_claims \
+            "$RUNNER_TEMP/rt1060-bootrom.bin" --out phase98-claims.json
       - name: Store textual evidence only
         uses: actions/upload-artifact@v4
         with:
           name: public-rt1060-rom-excerpts-phase98
-          path: phase98-rom-disassembly.json
+          path: |
+            phase98-rom-disassembly.json
+            phase98-claims.json
           retention-days: 30
