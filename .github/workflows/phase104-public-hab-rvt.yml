@@ -1,0 +1,41 @@
+name: Phase 104 - public RT1060 HAB RVT slot, no Stadia hardware
+
+on:
+  pull_request:
+    paths:
+      - 'research/phase104/**'
+      - 'tests/test_hab_rvt_reference_phase104.py'
+      - '.github/workflows/phase104-public-hab-rvt.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  static-public-rom-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install bounded Thumb decoder
+        run: python -m pip install --disable-pip-version-check capstone==5.0.6
+      - name: Eleven synthetic tests
+        run: python -m unittest discover -s tests -p 'test_hab_rvt_reference_phase104.py' -v
+      - name: Retrieve SHA-pinned PUBLIC ROM, never Stadia private contents
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 \
+            --output "$RUNNER_TEMP/reference-rt1060-rom.bin" \
+            "https://raw.githubusercontent.com/Zenofex/SoC-BootROMs/main/nxp/imxrt1060.bootrom.bin"
+          echo "a5d9af17f0e21866774df91c1e634e955e72b1442aedd84c8aac8eefc8e58f8e  $RUNNER_TEMP/reference-rt1060-rom.bin" | sha256sum --check
+      - name: Parse real HAB RVT get_version pointer without invoking it
+        run: |
+          python -m research.phase104.audit_hab_rvt_reference \
+            "$RUNNER_TEMP/reference-rt1060-rom.bin" --out phase104-hab-rvt-reference.json
+      - name: Publish textual evidence only
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-rt1060-hab-rvt-phase104
+          path: phase104-hab-rvt-reference.json
+          retention-days: 30
