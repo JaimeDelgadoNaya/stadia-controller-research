@@ -1,5 +1,7 @@
 # Fase 92 — Evaluación de exploit SDP y límites de transferencia al Stadia
 
+> **Actualización 24/11/2026:** Se recibió y auditó el ZIP original de código fuente. El estado de `nxp-sdp-overrun` ya no es «no accesible»: consultar [fase 93](rom-exploit-fase93.md) para las conclusiones y las siete comprobaciones offline. La compatibilidad real del Stadia RT1061 sigue sin demostrarse.
+
 **23/11/2026. Investigación documental y estática, sin dispositivo conectado.**
 
 ## Hallazgo de noviembre 2026: vulnerabilidad de U-Boot SPL
