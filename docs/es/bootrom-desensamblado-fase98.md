@@ -20,13 +20,13 @@ En la ROM pública, la función que el autor denomina `enable_mpu` se localiza e
 
 | Dirección absoluta | Instrucción Thumb | Efecto interpretado |
 |---|---|---|
-| `0x0020CADE` | `movw r6,#0xED94` / `movt r6,#0xE000` | Forma `r6=0xE000ED94` (registro CTRL de MPU) |
-| `0x0020CAE6` | `str r1,[r6]` | `r1=0` según instrucciones precedentes: pone CTRL a cero |
-| `0x0020CAFA` | `movs r7,#7` | Prepara valor no nulo |
-| `0x0020CB5C` | `cmp r1,r5` | Final de ciclo de regiones |
-| `0x0020CB5E` | `blo ...` | Si quedan regiones, vuelve al bucle |
-| `0x0020CB60` | `b 0x0020CB6A` | Salta por encima de la escritura de habilitación |
-| `0x0020CB62` | `str r7,[r6]` | Solo accesible en una ruta anterior de salida prematura |
+| `0x0020CAD6` y `0x0020CADA` | `movw r6,#0xED94` / `movt r6,#0xE000` | Forma `r6=0xE000ED94` (registro CTRL de MPU) |
+| `0x0020CAE8` | `str r1,[r6]` | `r1=0` según instrucciones precedentes: pone CTRL a cero |
+| `0x0020CAF6` | `movs r7,#7` | Prepara valor no nulo |
+| `0x0020CB5A` | `cmp r1,r5` | Final de ciclo de regiones |
+| `0x0020CB5C` | `blo ...` | Si quedan regiones, vuelve al bucle |
+| `0x0020CB5E` | `b 0x0020CB6A` | Salta por encima de la escritura de habilitación |
+| `0x0020CB60` | `str r7,[r6]` | Solo accesible en una ruta anterior de salida prematura |
 | `0x0020CB6A` | ... | Continuación |
 
 Los desplazamientos en la salida relativa del desensblador son `+0xA4, +0xA6, +0xA8, +0xB2`, y las direcciones absolutas se calculan sumando la dirección de la rutina. La escritura del valor 7 en CTRL se produce en la rama ubicada justo después de un salto del camino normal.
