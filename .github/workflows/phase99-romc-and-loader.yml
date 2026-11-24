@@ -32,9 +32,15 @@ jobs:
         run: |
           python -m research.phase99.audit_signed_readmemory \
             "$RUNNER_TEMP/signed-loader.bin" --out phase99-signed-readmemory.json
+      - name: Reconstruct signed loader initialized range-table pointers statically
+        run: |
+          python -m research.phase99.trace_read_policy \
+            "$RUNNER_TEMP/signed-loader.bin" --out phase99-range-pointer.json
       - name: Archive text-only evidence (no OEM binary)
         uses: actions/upload-artifact@v4
         with:
           name: phase99-signed-readmemory-static
-          path: phase99-signed-readmemory.json
+          path: |
+            phase99-signed-readmemory.json
+            phase99-range-pointer.json
           retention-days: 30
