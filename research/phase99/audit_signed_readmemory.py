@@ -19,6 +19,7 @@ WINDOWS = {
     "ReadMemory surrounding code": (0x37a4, 256),
     "memory backend": (0x3b7c, 384),
     "range policy": (0x39a8, 192),
+    "readmemory shared checker candidate": (0x39f4, 288),
 }
 
 def entry(data: bytes, tag: int) -> dict:
@@ -66,4 +67,5 @@ if __name__ == "__main__":
     if a.out:a.out.write_text(text,encoding="utf-8")
     print(json.dumps({"SHA_verified":True,"command_table":data["commands"],
           "direct_calls_by_window":{k:v.get("direct_calls",[]) for k,v in data["windows"].items()},
-          "read_rom_policy_proven":False,"device_touched":False},indent=2))
+          "read_rom_policy_proven":False,"device_touched":False,
+          "candidate_checker_excerpt":data["windows"]["readmemory shared checker candidate"].get("instructions",[])[:100]},indent=2))
