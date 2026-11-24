@@ -60,6 +60,29 @@ def public_rom_audit(data: bytes, decoder=None) -> dict:
         index = (pointer & ~1)-ROM_START
         first = data[index:index+64]
         result["get_version_first_bytes_hex"] = first[:32].hex()
+        # The PUBLIC RT1060 function has 'LDR r0,[PC,#imm]' at entry+4.
+        # This loads a ROM constant into R0 on the normal return path, but it
+        # is NOT an invocation and does NOT measure the owner's RT1061.
+        expected_entry = bytes.fromhex("07b5064b06481a680192019a1b689a4201d0")
+        if data[index:index + len(expected_entry)] != expected_entry:
+            raise ValueError("Unexpected public RT1060 get_version entry instructions")
+        ldr_at = (pointer & ~1) + 4
+        instr = struct.unpack_from("<H", data, ldr_at-ROM_START)[0]
+        if (instr & 0xFF00) != 0x4800:
+            raise ValueError("Expected a Thumb16 LDR-literal into R0")
+        literal_address = ((ldr_at + 4) & ~3) + ((instr & 0xFF) << 2)
+        literal_off = literal_address-ROM_START
+        if not 0 <= literal_off <= ROM_BYTES-4:
+            raise ValueError("LDR return literal outside the public ROM")
+        literal_value = struct.unpack_from("<I", data, literal_off)[0]
+        result["get_version_normal_path_static_return_literal"] = {
+            "ldr_thumb_opcode": f"0x{instr:04x}",
+            "literal_address": f"0x{literal_address:08x}",
+            "raw_value": f"0x{literal_value:08x}",
+            "full_normal_branch_preconditions_proven": False,
+            "actual_function_invocation_performed": False,
+            "result_authenticates_stadia_rom_version": False,
+        }
         if decoder is not None:
             instructions = list(decoder.disasm(first, pointer & ~1))
             result["get_version_first_instructions"] = [
