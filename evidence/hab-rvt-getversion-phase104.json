@@ -1,0 +1,49 @@
+{
+  "phase": 104,
+  "date": "2026-11-24",
+  "reference": {
+    "source": "Zenofex/SoC-BootROMs/nxp/imxrt1060.bootrom.bin",
+    "bytes": 131072,
+    "sha256": "a5d9af17f0e21866774df91c1e634e955e72b1442aedd84c8aac8eefc8e58f8e"
+  },
+  "rvt": {
+    "base": "0x00200300",
+    "length": 56,
+    "header_version_byte": "0x43",
+    "get_version_slot": "0x00200330",
+    "get_version_function_pointer": "0x00202171",
+    "authenticate_image_no_dcd_slot": "0x0020032c",
+    "authenticate_image_no_dcd_function_pointer": "0x002034d1"
+  },
+  "static_function_inspection": {
+    "entry": "0x00202170",
+    "thumb_ldr_r0_opcode": "0x4806",
+    "ldr_instruction_address": "0x00202174",
+    "return_literal_address": "0x00202190",
+    "return_literal_value": "0x00040307",
+    "interpreted_public_reference_version": "4.3.7",
+    "normal_return_branch_assumed": true,
+    "actual_get_version_function_invoked": false
+  },
+  "ci": {
+    "result": "success",
+    "synthetic_tests_passed": 11,
+    "source_bytes_sha_verified": true,
+    "run_url": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45388520058"
+  },
+  "provenance": {
+    "owner_stadia_hab_version_measured": false,
+    "owner_stadia_internal_rom_dump_available": false,
+    "owner_usb_hab_closed_measured": true,
+    "owner_digprog_identifies_mask_revision": false,
+    "community_source": "https://community.nxp.com/t5/Other-NXP-Products/i-MXRT106x-HAB-closed-boot-fail-HAB-log-stops-at-AUTHENTICATION/m-p/2409914"
+  },
+  "limits": {
+    "external_public_rom_only": true,
+    "no_hardware_access": true,
+    "no_flash_write": true,
+    "no_otp_write": true,
+    "no_real_custom_firmware_execution": true
+  },
+  "decision": "REFERENCE_HAB_4_3_7_STATICALLY_CONFIRMED__STADIA_ROM_VERSION_UNMEASURED"
+}
