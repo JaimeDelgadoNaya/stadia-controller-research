@@ -33,6 +33,28 @@ jobs:
         run: |
           python -m research.phase104.audit_hab_rvt_reference \
             "$RUNNER_TEMP/reference-rt1060-rom.bin" --out phase104-hab-rvt-reference.json
+      - name: Independently assert public RT1060 HAB 4.3.7 static return literal
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path("phase104-hab-rvt-reference.json").read_text())
+          assert d["reference_sha256"]=="a5d9af17f0e21866774df91c1e634e955e72b1442aedd84c8aac8eefc8e58f8e"
+          assert d["rvt"]["declared_bytes"]==56
+          assert d["rvt"]["rvt_header_version_byte"]=="0x43"
+          assert d["rvt"]["get_version_slot"]["pointer"]=="0x00202171"
+          assert d["rvt"]["authenticate_image_no_dcd_slot"]["pointer"]=="0x002034d1"
+          result=d["get_version_normal_path_static_return_literal"]
+          assert result["ldr_thumb_opcode"]=="0x4806"
+          assert result["literal_address"]=="0x00202190"
+          assert result["raw_value"]=="0x00040307"
+          assert d["get_version_invoked"] is False
+          assert d["owner_stadia_hab_patch_version"]=="UNKNOWN"
+          assert d["owner_stadia_rom_observed"] is False
+          print("RT1060 public ROM: static get_version normal return literal = 0x00040307 (HAB 4.3.7); owner Stadia NOT measured")
+          PY
+
       - name: Publish textual evidence only
         uses: actions/upload-artifact@v4
         with:
