@@ -1,0 +1,43 @@
+name: Phase 97 - RAM-only Thumb build and synthetic execution
+
+on:
+  pull_request:
+    paths:
+      - 'research/phase97/**'
+      - 'tests/test_ram_execution_phase97.py'
+      - '.github/workflows/phase97-ram-execution.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-arm-image:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install LLVM cross-assembler and linker
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends clang lld llvm
+      - name: Build standalone Cortex-M7 SRAM-only demo
+        run: |
+          mkdir -p build/phase97
+          clang --target=arm-none-eabi -mcpu=cortex-m7 -mthumb -nostdlib \
+            -fuse-ld=lld -Wl,-T,research/phase97/ram_only.ld \
+            -o build/phase97/firmware.elf research/phase97/minimal_ram.S
+          llvm-objcopy -O binary build/phase97/firmware.elf \
+            build/phase97/firmware.bin
+          echo "68a75935017e47c373d2df0b9294c31781705894511bc62fea78b6a265806f38  build/phase97/firmware.bin" | sha256sum --check
+      - name: Run read-only interpreter against actual built bytes
+        run: |
+          python research/phase97/simulate_ram.py \
+            build/phase97/firmware.bin --out build/phase97/offline-simulation.json
+          python -m unittest discover -s tests -p 'test_ram_execution_phase97.py' -v
+      - name: Upload simulation evidence ONLY
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase97-simulated-ram-evidence
+          path: build/phase97/offline-simulation.json
+          retention-days: 30
