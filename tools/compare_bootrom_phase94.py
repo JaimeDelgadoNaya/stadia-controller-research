@@ -71,6 +71,18 @@ def compare(reference: bytes | None, candidate: bytes | None,
         result["status"] = "UNVERIFIED_REFERENCE_HASH"
         return result
     if candidate is None:
+        # Hash all seven windows on the verified public ROM reference.
+        # No candidate means the match remains UNKNOWN, not TRUE.
+        for name, address in ROM_ANCHORS.items():
+            start = max(0, (address - ROM_BASE) - window_bytes // 2)
+            stop = min(ROM_SIZE, start + window_bytes)
+            result["anchor_windows"][name] = {
+                "rom_address": f"0x{address:08x}",
+                "window_start": f"0x{ROM_BASE+start:08x}",
+                "reference_sha256": digest(reference[start:stop]),
+                "candidate_sha256": None,
+                "match": None,
+            }
         result["status"] = "CANDIDATE_MISSING"
         return result
     result["exact_binary_match"] = reference == candidate
