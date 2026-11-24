@@ -45,8 +45,17 @@ def trace(data: bytes):
         out["next_dereference_source"]=space2
         # This is an address candidate, not proof of an enabled range.
         try:
-            vals=[word(data,second+4*i)[0] for i in range(16)]
+            remaining=(INIT_RUNTIME_BASE+INIT_LENGTH-second)//4
+            vals=[word(data,second+4*i)[0] for i in range(remaining)]
             out["candidate_table_words"]=[hex(v) for v in vals]
+            out["candidate_table_rows_of_4"]=[
+                [hex(w) for w in vals[i:i+4]] for i in range(0,len(vals)//4*4,4)
+            ]
+            out["candidate_table_trailing_words"]=[hex(w) for w in vals[len(vals)//4*4:]]
+            out["internal_rom_address_is_listed_in_candidate_ranges"] = any(
+                vals[i] <= 0x00200000 <= vals[i+1] for i in range(0,len(vals)-3,4)
+                if vals[i] <= vals[i+1]
+            )
         except ValueError as e:
             out["candidate_table_note"]=str(e)
     except ValueError as e:
