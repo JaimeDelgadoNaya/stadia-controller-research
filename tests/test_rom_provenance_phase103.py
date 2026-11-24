@@ -15,7 +15,7 @@ class ProvenanceGatePhase103Tests(unittest.TestCase):
 
     def test_03_all_ff_slot(self):
         self.assertEqual(classify(bytes([255])*SIZE)["status"],
-                         "REJECT_ERASED_EXTERNAL_OR_BLANK")
+                         "REJECT_KNOWN_EXTERNAL_FLASH")
 
     def test_04_all_zero_slot(self):
         self.assertEqual(classify(bytes(SIZE))["status"], "REJECT_BLANK")
