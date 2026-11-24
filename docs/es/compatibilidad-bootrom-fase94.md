@@ -48,7 +48,8 @@ Estos **son offsets de la ROM de referencia**: no se ha demostrado que sean punt
 - [Comparador read-only](../../tools/compare_bootrom_phase94.py).
 - [Ocho pruebas sintéticas](../../tests/test_compare_bootrom_phase94.py) ejecutadas localmente el 24/11/2026: **8/8 PASS**.
 - [CI de verificación pública](../../.github/workflows/bootrom-compat-phase94.yml) descarga únicamente el binario público RT1060, exige el hash publicado, ejecuta tests y genera estado `CANDIDATE_MISSING`; no utiliza hardware ni descarga fuentes/firmware OEM privados.
-- [Salida de evidencia sin ROM](../../evidence/bootrom-compat-phase94.json).
+- [Salida de evidencia sin ROM del Stadia](../../evidence/bootrom-compat-phase94.json).
+- [Huellas SHA-256 de las 7 ventanas, calculadas sobre la ROM pública y verificadas por CI](../../evidence/bootrom-reference-fingerprints-phase94.json).
 
 Comprobación manual *cuando ya existen ambos archivos ROM internos obtenidos legítimamente y con procedencia contrastada*:
 
