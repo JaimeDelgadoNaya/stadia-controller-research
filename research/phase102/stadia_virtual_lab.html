@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark"><title>Stadia Virtual Lab · Fase 102</title>
+<style>
+:root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:#ebf4ff;background:#070e18;--line:#213247;--muted:#92a8be;--blue:#56b5ff;--green:#65d5a5;--orange:#ffbc74;--red:#ff8991}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse 90% 45% at 50% -8%,#143255,transparent 65%),#070e18;min-height:100vh}.wrap{max-width:1220px;margin:0 auto;padding:26px 20px 50px}h1{font-size:clamp(27px,4vw,45px);margin:6px 0;letter-spacing:-1.6px}h2{font-size:16px;letter-spacing:.1px;margin:0 0 13px}p{line-height:1.6}small,.hint,.muted{color:var(--muted)}.eyebrow{color:#8bd0ff;font-weight:800;font-size:12px;letter-spacing:1.5px;text-transform:uppercase}.subtitle{max-width:860px;color:#bdcfe1;font-size:15px;margin:8px 0 24px}.banners{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}.tag{border:1px solid #27415b;border-radius:100px;padding:7px 12px;font-size:12px;font-weight:700;background:#112236;color:#a6deff}.tag.safe{border-color:#205747;background:#102b25;color:#73dfb7}.tag.warn{border-color:#76532d;background:#392a18;color:#ffce8a}.layout{display:grid;grid-template-columns:1.13fr .87fr;gap:18px;align-items:start}.stack{display:grid;gap:18px}.panel{border:1px solid var(--line);border-radius:20px;background:linear-gradient(145deg,#101e2e,#0b1422);padding:20px;box-shadow:0 20px 40px #00000020}.toprow{display:flex;align-items:center;justify-content:space-between;gap:14px}.status{border-radius:99px;background:#2b1c25;border:1px solid #72404c;color:var(--red);font-size:12px;padding:6px 11px;white-space:nowrap}.status.on{border-color:#315f59;color:var(--green);background:#14302d}.switch{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.switch button{padding:11px 9px;border:1px solid #334458;border-radius:12px;background:#122236;color:#bed0de;cursor:pointer;text-align:center;font:inherit;font-size:13px;font-weight:700}.switch button.selected{background:#15344e;color:white;border-color:#58a8ee;box-shadow:0 0 0 1px #296390 inset}.assumption{font-size:12px;min-height:40px;color:#9cb0c7;margin-bottom:0}.controller-area{height:318px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;margin-top:9px}.controller{width:min(100%,505px);height:270px;position:relative;background:linear-gradient(153deg,#f3f6fb,#d6e0ea 65%,#b2c0cc);border:3px solid #94a6b9;border-radius:46% 46% 44% 44% / 37% 37% 57% 57%;box-shadow:inset 0 11px 19px #ffffffaa,inset 0 -18px 22px #8fa6ba77,0 35px 35px #0007;transform:scale(.94)}.controller:before{content:"";position:absolute;inset:12px 75px 20px;border-radius:50%;background:linear-gradient(#e4ecf3,#cad7e4);box-shadow:inset 0 2px 15px #bccbd7}.controller:after{content:"STADIA • VIRTUAL";position:absolute;top:89px;left:50%;transform:translateX(-50%);font-size:10px;letter-spacing:1.7px;font-weight:900;color:#697b8d;white-space:nowrap}.pad-button{position:absolute;z-index:2;border:2px solid #526172;background:linear-gradient(#3c4f62,#1c2939);color:#fff;border-radius:50%;font-weight:800;box-shadow:inset 0 -3px 3px #0006,0 3px 2px #7d94aa;display:flex;justify-content:center;align-items:center;cursor:pointer;user-select:none;touch-action:manipulation}.pad-button:hover{filter:brightness(1.3)}.pad-button.down{background:#42c99c;box-shadow:0 0 0 5px #48ddb62c;color:#0d2330}.face{width:39px;height:39px;font-size:13px}.x{right:110px;top:41px}.y{right:74px;top:80px}.b{right:39px;top:117px}.a{right:76px;top:154px}.dpad{position:absolute;top:114px;left:48px;width:112px;height:110px;z-index:2}.dir{width:35px;height:35px;border-radius:8px;font-size:13px}.up{top:0;left:38px}.down-key{bottom:0;left:38px}.left{top:38px;left:0}.right{top:38px;right:0}.stick{position:absolute;top:69px;left:162px;width:54px;height:54px;border-radius:50%;background:radial-gradient(circle at 35% 32%,#4b5e72,#172334 60%);border:5px solid #8d9ca9;box-shadow:inset 0 0 10px #0008;z-index:2}.stick.rightstick{top:172px;left:278px}.shoulder{position:absolute;top:-12px;width:85px;height:35px;border-radius:16px;background:#becddb;border:2px solid #8598a8;z-index:0}.shoulder.leftshoulder{left:57px}.shoulder.rightshoulder{right:57px}.menu-dot{position:absolute;top:67px;left:244px;z-index:3;width:27px;height:27px;border-radius:50%;background:#35495c;border:3px solid #8da4ba}.power-indicator{position:absolute;top:34px;left:50%;transform:translateX(-50%);width:10px;height:10px;border-radius:50%;background:#8d9bad;box-shadow:none;z-index:3}.power-indicator.on{background:#56e7ae;box-shadow:0 0 17px #41eaa0}.mininote{text-align:center;font-size:12px;margin-top:-4px;color:#8ca8c2}.metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:18px}.metric{padding:13px;border:1px solid #263c53;border-radius:13px;background:#0a1829}.metric .label{font-size:11px;color:#8ba4be;margin-bottom:6px}.metric .value{font-weight:800;font-size:14px;color:#e6f4ff;overflow-wrap:anywhere}.metric .value.green{color:var(--green)}.metric .value.amber{color:var(--orange)}.actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}button.action{min-height:44px;padding:10px 12px;border-radius:12px;background:#152c42;color:#e5f4ff;border:1px solid #36556f;cursor:pointer;font-weight:750;font-size:13px;text-align:center}button.action:hover{background:#1f3e58;border-color:#65b7e5}button.action.primary{background:#276b9c;border-color:#399dd8;color:#fff}button.action.negative{background:#33222a;border-color:#694352;color:#ffc2c2}button.action:disabled{opacity:.6;cursor:not-allowed}.help{font-size:12px;color:#91aabe;line-height:1.6;margin-top:13px}.steps{display:grid;gap:8px;margin-top:12px}.step{display:flex;gap:11px;align-items:center;justify-content:space-between;border:1px solid #24364a;padding:10px 12px;border-radius:11px;font-size:13px}.step i{font-style:normal;font-weight:800;font-size:12px}.step.done{border-color:#275946;background:#112b27}.step.done i{color:#7feac4}.step.blocked{border-color:#6a4231;background:#2b211c}.step.blocked i{color:#ffd098}.step:not(.done):not(.blocked) i{color:#8ba4b8}.log{height:245px;overflow:auto;background:#071321;padding:12px;border-radius:12px;border:1px solid #203247;display:flex;flex-direction:column;gap:9px}.event{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:11px;color:#b6cadd;border-left:2px solid #2e81bd;padding:2px 0 2px 9px;line-height:1.6}.event.fail{border-color:#ff9c78;color:#e2b6ad}.event small{color:#7692ad}.foot{padding:14px 0;color:#91a8be;font-size:12px;max-width:940px;line-height:1.65}.link{color:#6fbfff}code{background:#142b40;padding:2px 5px;border-radius:5px;color:#b8dcff;font-size:.92em}@media(max-width:860px){.layout{grid-template-columns:1fr}.controller-area{height:290px}.controller{transform:scale(.84)}.wrap{padding:18px 12px 35px}.panel{padding:16px}}@media(max-width:430px){.switch{grid-template-columns:1fr}.switch button{min-height:38px}.controller{transform:scale(.65);min-width:480px}.controller-area{height:235px}.metrics{grid-template-columns:1fr 1fr}button.action{font-size:12px}}:focus-visible{outline:2px solid #8fe6e6;outline-offset:2px}
+</style></head>
+<body><main class="wrap"><div class="eyebrow">Investigación Stadia / Fase 102</div><h1>Laboratorio de mando virtual</h1><p class="subtitle">Tres escenarios diferenciados por la procedencia de las pruebas: Stadia observado, instrucciones de ROM pública y cadena hipotética completa. <strong>Todo ocurre dentro del navegador.</strong> Sin conexión USB, sin cambios en la flash ni fusibles.</p>
+<div class="banners"><span class="tag safe">● 100 % offline</span><span class="tag">Comparador SHA-256 local</span><span class="tag warn">La ejecución hipotética NO prueba bypass real</span></div>
+<div class="layout"><div class="stack"><section class="panel"><div class="toprow"><h2>Mando Stadia (virtual)</h2><span id="powerBadge" class="status">APAGADO</span></div><div class="controller-area"><div class="controller" aria-label="Mando virtual interactivo"><div class="shoulder leftshoulder"></div><div class="shoulder rightshoulder"></div><div class="power-indicator" id="led"></div><div class="stick"></div><div class="stick rightstick"></div><div class="menu-dot"></div><div class="dpad"><button aria-label="Arriba" data-key="UP" class="pad-button dir up">▲</button><button aria-label="Izquierda" data-key="LEFT" class="pad-button dir left">◀</button><button aria-label="Derecha" data-key="RIGHT" class="pad-button dir right">▶</button><button aria-label="Abajo" data-key="DOWN" class="pad-button dir down-key">▼</button></div><button data-key="X" class="pad-button face x">X</button><button data-key="Y" class="pad-button face y">Y</button><button data-key="B" class="pad-button face b">B</button><button data-key="A" class="pad-button face a">A</button></div></div><p class="mininote">Pulsa A/B/X/Y o la cruceta después del arranque virtual. Los botones son una demostración de interfaz: el programa ARM marcador no contiene controladores HID.</p><div class="metrics"><div class="metric"><div class="label">Seguridad real documentada</div><div class="value" id="habReal">HAB CLOSED</div></div><div class="metric"><div class="label">Respuesta HAB del modelo</div><div class="value" id="habModel">CLOSED</div></div><div class="metric"><div class="label">Programa ARM en RAM virtual</div><div class="value" id="firmware">No cargado</div></div><div class="metric"><div class="label">Marcador de ejecución</div><div class="value" id="marker">—</div></div></div></section>
+<section class="panel"><h2>Historial de ejecución</h2><div id="log" class="log" role="log" aria-live="polite"></div><div class="help">Puedes repetir la secuencia con otro perfil, comprobar un informe demasiado largo o reiniciar para ver que el supuesto parche no persiste.</div></section></div>
+<div class="stack"><section class="panel"><h2>1 · Selecciona el escenario</h2><div class="switch"><button id="pObserved" class="selected" data-profile="observed">Stadia observado</button><button id="pReference" data-profile="reference">ROM pública RT1060</button><button id="pHypo" data-profile="hypothesis">Cadena hipotética</button></div><p class="assumption" id="assumption">Datos medidos: familia RT106x, ROM SDP y HAB CLOSED. Sin copia de ROM interna: la ejecución queda bloqueada.</p></section>
+<section class="panel"><h2>2 · Ejecuta las etapas</h2><div class="actions"><button class="action" id="on">⏻ Encender</button><button class="action" id="identify">Identificar ROM</button><button class="action" id="hid2048">HID: 2048 bytes</button><button class="action" id="hid2049">HID: 2049 bytes</button><button class="action" id="patch">Aplicar ROMC</button><button class="action" id="load">Cargar imagen RAM</button><button class="action" id="run">Ejecutar ARM</button><button class="action negative" id="reset">↻ Reiniciar</button><button class="action primary" id="all" style="grid-column:span 2">▶ Ejecutar escenario completo</button></div><div class="steps"><div class="step" id="sPower"><span>ROM SDP / HAB CLOSED</span><i>ESPERA</i></div><div class="step" id="sHid"><span>Informe HID / puntero ROM</span><i>ESPERA</i></div><div class="step" id="sPatch"><span>Parche temporal ROMC</span><i>ESPERA</i></div><div class="step" id="sLoad"><span>Imagen ARM sin firma en RAM</span><i>ESPERA</i></div><div class="step" id="sRun"><span>Marcador <code>0x5A</code> virtual</span><i>ESPERA</i></div></div></section>
+<section class="panel"><h2>3 · Comparador local de BootROM (sin subir archivos)</h2><p class="hint">Selecciona <strong>solo si ya tienes una copia obtenida legítimamente</strong> de la ROM <em>interna</em>. Una imagen de flash externa de 128 KiB no es la BootROM. Solo se leen bytes dentro del navegador.</p><input id="romFile" type="file" accept=".bin,.rom,.img,application/octet-stream" aria-label="Seleccionar imagen binaria candidata" style="width:100%;padding:12px;border:1px dashed #476078;border-radius:10px;color:#cfe0ef;background:#081625"/><p class="hint" id="romResult" aria-live="polite">Sin archivo: ROM interna del Stadia desconocida.</p><div class="help" id="fingerprints"></div><div class="actions"><button class="action" id="exportEvidence">Exportar resultado JSON (local)</button><button class="action" id="clearRom">Limpiar comparación</button></div><div class="help">Un SHA-256 coincidente demuestra igualdad de <strong>bytes del archivo elegido</strong>, no su procedencia física ni que el exploit funcione. No cambia el estado del arranque seguro en el simulador.</div></section><section class="panel"><h2>4 · Interpretación técnica</h2><p class="hint" id="interpretation">El mando simulado está apagado.</p><div class="help"><strong>Hecho previo:</strong> el fragmento real de la ROM RT1060 acepta hasta 2048 bytes y apunta a <code>0x2020723F</code> (fase 100). <strong>Hipótesis:</strong> compatibilidad exacta y éxito del parche ROMC en Stadia RT1061; no se han comprobado.</div></section></div></div>
+<div class="foot">Origen del modelo: código <code>nxp-sdp-overrun</code> aportado, ROM pública RT1060 validada por hash en fase 100 y programa ARM marcador de fase 97. El comparador funciona únicamente con archivos locales. El modo hipotético no demuestra ejecución en hardware, persistencia, autenticación USB Xbox ni compatibilidad con la BootROM interna del Stadia. <strong>Nunca se usa FIELD_RETURN ni se programa flash/OTP.</strong></div>
+</main>
+<script>
+'use strict';
+/* Self-contained offline SHA-256 fallback for file:// or restricted browser contexts.
+ * Verifiable against standard SHA-256 test vectors; no network request involved.
+ */
+function sha256Portable(buffer){
+  const data=new Uint8Array(buffer);
+  const padLen=Math.ceil((data.length+9)/64)*64;
+  const padded=new Uint8Array(padLen);padded.set(data);padded[data.length]=0x80;
+  const view=new DataView(padded.buffer);
+  const bitLen=BigInt(data.length)*8n;
+  view.setUint32(padLen-8, Number((bitLen>>32n)&0xffffffffn),false);
+  view.setUint32(padLen-4, Number(bitLen&0xffffffffn),false);
+  const K=[
+    0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
+    0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
+    0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
+    0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
+    0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,
+    0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
+    0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
+    0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2
+  ];
+  const h=[0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+  const rr=(v,n)=>(v>>>n)|(v<<(32-n));const w=new Uint32Array(64);
+  for(let offset=0;offset<padded.length;offset+=64){
+    for(let i=0;i<16;i++)w[i]=view.getUint32(offset+i*4,false);
+    for(let i=16;i<64;i++){
+      const a=w[i-15],b=w[i-2];
+      const s0=rr(a,7)^rr(a,18)^(a>>>3),s1=rr(b,17)^rr(b,19)^(b>>>10);
+      w[i]=(w[i-16]+s0+w[i-7]+s1)>>>0;
+    }
+    let [a,b,c,d,e,f,g,hh]=h;
+    for(let i=0;i<64;i++){
+      const s1=rr(e,6)^rr(e,11)^rr(e,25),ch=(e&f)^(~e&g);
+      const t1=(hh+s1+ch+K[i]+w[i])>>>0;
+      const s0=rr(a,2)^rr(a,13)^rr(a,22),maj=(a&b)^(a&c)^(b&c);
+      const t2=(s0+maj)>>>0;
+      hh=g;g=f;f=e;e=(d+t1)>>>0;d=c;c=b;b=a;a=(t1+t2)>>>0;
+    }
+    for(const [i,v] of [a,b,c,d,e,f,g,hh].entries())h[i]=(h[i]+v)>>>0;
+  }
+  return h.map(v=>v.toString(16).padStart(8,'0')).join('');
+}
+
+'use strict';
+// Offline virtual-controller view, no fetch(), WebUSB, WebHID or network calls.
+const $ = id => document.getElementById(id);
+const PUBLIC_REFERENCE_SHA = 'a5d9af17f0e21866774df91c1e634e955e72b1442aedd84c8aac8eefc8e58f8e';
+const ROM_BYTES = 131072, ROM_BASE = 0x00200000;
+// Verified by GitHub Actions: phase94 public RT1060 source only.
+const WINDOWS = [
+  ['HAB_GET_CONFIG_FN', 0x002147d8, 'ba037e7ef35384422ad298fdb660876391524b97987ebc372abfa17d3d3b51fd'],
+  ['USB_DeviceClassInit', 0x0020d738, '81cefe817b49a2e08580dfc49443b98ca9f100db42d487762acc9f760dfdd8ad'],
+  ['USB_DeviceEhciIsrFunction', 0x0020e32c, 'a9809c2f6b6e409ece43d7b6ebbd4a5fefb881052efa48d02618cc93bec3e1d8'],
+  ['enable_mpu', 0x0020ca98, 'cd2837b4fbe39c90ca9cb82bf8894645d60bc3fc26185fb356436d9cdbcf1e73'],
+  ['sdp_hid_callback', 0x0020ea5e, 'acd8ddae72fba87005bd685d9316942be9d079bf5a4bb9984c6590da45292703'],
+  ['sdp_usb_pump', 0x0020ed18, '234458dd599ba8b75f98eb0173607752a17489f9bcd2f9841115e924cd14df98'],
+  ['sdp_usb_run', 0x0020ef5c, 'b3aada5319bdffe19d7b67961800d56065dcc7e9d1c0b7d5f57614eade496eef']
+];
+const PROFILES = {
+  observed: 'Datos medidos en el Stadia (octubre de 2026): modo SDP, HAB CLOSED, familia RT106x. NO se midió la ROM interna ni el callback HID. El parche y el firmware propio quedan bloqueados.',
+  reference: 'Referencia pública RT1060: el código Thumb HID ha sido ejecutado en Unicorn y acepta hasta 2048 bytes. Eso NO verifica la BootROM de nuestro RT1061 ni el parche ROMC. La cadena se detiene ahí.',
+  hypothesis: 'CONTRAFACTUAL: se SUPONE que el Stadia comparte BootROM, que ROMC funciona y que acepta una imagen sin firma. La simulación avanza, pero ningún supuesto es prueba del mando.'
+};
+let profile = 'observed', st, logCount = 0, romEvidence = null;
+
+function init(p) {
+  if (!Object.prototype.hasOwnProperty.call(PROFILES,p)) throw new Error('Perfil inválido');
+  profile=p; logCount=0;
+  st={power:false,boot:0,hid:null,patch:false,loaded:false,running:false,marker:null,pressed:new Set(),events:[],blocked:false};
+  $('pObserved').classList.toggle('selected',p==='observed');
+  $('pReference').classList.toggle('selected',p==='reference');
+  $('pHypo').classList.toggle('selected',p==='hypothesis');
+  $('assumption').textContent=PROFILES[p];
+  $('log').textContent='';
+  log(true,'INICIO','Laboratorio completamente offline. Perfil '+p+'. Comparación de ROM separada del simulador.');
+  refresh();
+}
+function log(ok,title,msg) {
+  const item={ok,title,msg,profile,boot:st.boot};st.events.push(item);
+  const div=document.createElement('div');div.className='event'+(ok?'':' fail');
+  const strong=document.createElement('strong');strong.textContent=`${String(++logCount).padStart(2,'0')}. ${ok?'✓':'✕'} ${title}`;
+  div.appendChild(strong);div.appendChild(document.createTextNode(' · '+msg));
+  $('log').appendChild(div);$('log').scrollTop=$('log').scrollHeight;
+}
+function clearBoot(){st.hid=null;st.patch=false;st.loaded=false;st.running=false;st.marker=null;st.pressed.clear();st.blocked=false;}
+function on(){if(st.power){log(false,'ENCENDER','Ya está encendido');return}st.power=true;st.boot++;clearBoot();log(true,'ROM SDP [SIMULADOR]','En Stadia se midió previamente USB 1FC9:0135 y HAB CLOSED. Aquí no se conecta ningún mando.');refresh()}
+function identify(){if(!st.power){log(false,'IDENTIDAD','Enciende primero');return}log(true,'IDENTIDAD',profile==='observed'?'DIGPROG 0x006C0000 solo indica familia RT106x; máscara y ROM internas desconocidas.':profile==='reference'?'Ejecutamos ROM pública RT1060 en un emulador, no la extraída del Stadia.':'Se presupone identidad de BootROM sin medición real.');refresh()}
+function hid(length){
+  if(!st.power){log(false,'HID','Enciende primero');return}
+  if(!Number.isInteger(length)||length<0||length>65535){log(false,'HID','Longitud inválida');return}
+  if(profile==='observed'){
+    st.hid=null;st.blocked=true;
+    log(false,'HID [SIN PRUEBA RT1061]',`No hay evidencia de aceptación de ${length} bytes en la BootROM interna del Stadia. La ROM RT1060 pública NO es una medición de esta unidad.`);
+    refresh();return;
+  }
+  const accept=length<=2048;st.hid=accept?length:null;
+  const overlap=accept?Math.max(0,0x2020723f+length-0x20207a3c):0;
+  log(accept,`HID ROM RT1060 · ${length}`,accept?`Ruta de ROM pública ejecutada en Unicorn: R0=0, buffer 0x2020723F, geometría de solapamiento ${overlap} bytes. No USB real.`:'R0=5 en la ROM pública: longitud rechazada por el fragmento emulado.');
+  refresh();
+}
+function patch(){
+  if(!st.power){log(false,'ROMC','Mando virtual apagado');return}
+  if(profile==='observed'){st.blocked=true;log(false,'ROMC','BLOQUEADO: identidad del BootROM RT1061 y ejecución real desconocidas.');refresh();return}
+  if(profile==='reference'){st.blocked=true;log(false,'ROMC','BLOQUEADO: solo se emuló el callback HID, NO ROMC, HAB ni la secuencia explotadora.');refresh();return}
+  if(st.hid!==2048){log(false,'ROMC','La hipótesis requiere antes 2048 bytes aceptados en ROM referencia.');refresh();return}
+  st.patch=true;log(true,'ROMC [HIPÓTESIS]','Estado simulado, sin acceso a registros ROMC. HAB físico siempre CLOSED.');refresh();
+}
+function load(){if(!st.power||!st.patch){log(false,'CARGA','No hay bypass demostrado ni supuesto habilitado en este perfil.');refresh();return}st.loaded=true;log(true,'RAM [HIPÓTESIS]','Estructura unsigned IVT de 8192 bytes aceptada por decisión del modelo, no por un dispositivo.');refresh()}
+function run(){if(!st.loaded){log(false,'ARM','No hay imagen RAM que el modelo haya aceptado');refresh();return}st.running=true;st.marker=0x5a;log(true,'ARM [INTÉRPRETE]','Demo Thumb de 20 bytes reproduce marcador 0x5A; NO hay código propio ejecutado en Stadia.');refresh()}
+function reset(){if(!st.power){log(false,'RESET','Está apagado');return}st.boot++;clearBoot();log(true,'RESET','ROMC hipotético, imagen RAM y marcador eliminados. HAB físico permanece CLOSED.');refresh()}
+function all(){if(st.power)reset();else on();identify();hid(2048);patch();load();run();refresh()}
+function press(key,active){
+  if(!st.running){if(active)log(false,'ENTRADA '+key,'Interfaz bloqueada; el demo de marcador NO implementa un controlador HID.');return}
+  if(active)st.pressed.add(key);else st.pressed.delete(key);
+  if(active)log(true,'ENTRADA '+key,'Evento exclusivo de interfaz, no de firmware ARM.');refresh();
+}
+function mark(id,done,blocked,label='✓ MODELO'){
+  const e=$(id);e.classList.toggle('done',!!done);e.classList.toggle('blocked',!done&&!!blocked);
+  e.querySelector('i').textContent=done?label:blocked?'NO DEMOSTRADO':'ESPERA';
+}
+function refresh(){
+  const powered=st.power;
+  $('powerBadge').textContent=powered?'ENCENDIDO · VIRTUAL':'APAGADO';$('powerBadge').classList.toggle('on',powered);$('led').classList.toggle('on',powered);
+  $('habReal').textContent='HAB CLOSED';$('habModel').textContent=st.patch?'OPEN (supuesto ROMC)':'CLOSED';$('habModel').className='value '+(st.patch?'amber':'');
+  $('firmware').textContent=st.running?'Marcador ARM (modelo)':st.loaded?'Imagen RAM (supuesto)':'No cargado';$('firmware').className='value '+(st.running?'green':'');
+  $('marker').textContent=st.marker===90?'0x5A · RAM virtual':'—';$('marker').className='value '+(st.marker===90?'green':'');
+  mark('sPower',powered,false,'✓ VIRTUAL');
+  mark('sHid',st.hid===2048,st.blocked,profile==='reference'?'✓ ROM REF':'✓ HIPÓTESIS');
+  mark('sPatch',st.patch,st.blocked,'✓ SUPUESTO');mark('sLoad',st.loaded,st.blocked,'✓ SUPUESTO');mark('sRun',st.running,st.blocked,'✓ INTÉRPRETE');
+  document.querySelectorAll('[data-key]').forEach(el=>el.classList.toggle('down',st.pressed.has(el.dataset.key)));
+  $('interpretation').textContent=st.running?'El marcador 0x5A se ha producido SOLO dentro de un intérprete de cuatro instrucciones. Los pasos ROMC, carga y ejecución real son supuestos.':st.blocked?(profile==='observed'?'Detenido: no existe imagen verificable de la BootROM interna de nuestro Stadia; los resultados RT1060 no se transfieren automáticamente.':'Detenido: el callback ROM público sí se ha probado, pero ROMC, HAB y ejecución en hardware NO.'):st.patch?'ROMC OPEN exclusivamente como hipótesis en el mismo arranque virtual; tras RESET se pierde.':powered?'Se muestran datos de referencia para el perfil elegido. USB, RAM y ROM del dispositivo físico no se acceden.':'Mando simulado apagado.';
+}
+function hex(bytes){return Array.from(new Uint8Array(bytes),v=>v.toString(16).padStart(2,'0')).join('')}
+async function sha256(data){
+  if(globalThis.crypto?.subtle?.digest)return hex(await crypto.subtle.digest('SHA-256',data));
+  return sha256Portable(data);
+}
+async function fingerprint(file){
+  if(file.size!==ROM_BYTES)return {status:'INVALID_SIZE',bytes:file.size,expected_bytes:ROM_BYTES,provenance:'UNVERIFIED_OPERATOR_FILE',device_equivalence_proven:false};
+  const bytes=await file.arrayBuffer();
+  const sha=await sha256(bytes);
+  const windows=[];
+  for(const [name,romStart,expected] of WINDOWS){
+    const offset=romStart-ROM_BASE;
+    const actual=await sha256(bytes.slice(offset,offset+64));
+    windows.push({name,address:'0x'+romStart.toString(16),matches_public_rt1060:actual===expected,sha256:actual});
+  }
+  return {status:sha===PUBLIC_REFERENCE_SHA?'FILE_BYTES_IDENTICAL_TO_PUBLIC_REFERENCE':windows.every(w=>w.matches_public_rt1060)?'ONLY_7_REFERENCE_WINDOWS_MATCH':'REFERENCE_DIFFERS',
+    bytes:file.size,sha256:sha,reference_sha256:PUBLIC_REFERENCE_SHA,window_matches:windows.filter(w=>w.matches_public_rt1060).length,total_windows:7,windows,
+    provenance:'UNVERIFIED_OPERATOR_FILE',device_equivalence_proven:false,hab_bypass_proven:false,real_firmware_execution_proven:false};
+}
+function showEvidence(v){
+  $('fingerprints').textContent='';
+  if(!v){$('romResult').textContent='Sin archivo: ROM interna del Stadia desconocida.';return;}
+  const msgs={INVALID_SIZE:'Tamaño no válido: no es una imagen ROM interna raw de 128 KiB.',FILE_BYTES_IDENTICAL_TO_PUBLIC_REFERENCE:'Bytes idénticos a la ROM pública RT1060. NO se ha autenticado de qué chip proviene el archivo.',ONLY_7_REFERENCE_WINDOWS_MATCH:'Coinciden 7 huellas, pero el archivo completo difiere: NO debe asumirse compatibilidad.',REFERENCE_DIFFERS:'El archivo difiere de la referencia pública RT1060; no se pueden reutilizar offsets sin verificar.',ERROR:'No se ha podido calcular el hash SHA-256.'};
+  $('romResult').textContent=(msgs[v.status]||v.status)+(v.sha256?' SHA-256: '+v.sha256:'')+' Procedencia: sin verificar.';
+  if(v.windows){for(const w of v.windows){const line=document.createElement('div');line.textContent=`${w.matches_public_rt1060?'✓':'✕'} ${w.name} (${w.address})`;$('fingerprints').appendChild(line)}}
+}
+async function fileSelected(){
+  const f=$('romFile').files?.[0];if(!f)return;
+  $('romResult').textContent='Calculando SHA-256 dentro del navegador…';
+  try{romEvidence=await fingerprint(f);romEvidence.filename=f.name;showEvidence(romEvidence)}
+  catch(e){romEvidence={status:'ERROR',message:String(e),provenance:'UNVERIFIED_OPERATOR_FILE',device_equivalence_proven:false};showEvidence(romEvidence)}
+}
+function exportEvidence(){
+  const report={phase:102,profile,virtual_boot:st.boot,virtual_powered:st.power,virtual_romc_patch:st.patch,virtual_ram_loaded:st.loaded,virtual_marker:st.marker,local_file_evidence:romEvidence,
+    limitations:{actual_stadia_rom_dump_available:false,source_provenance_verified:false,real_hab_bypass:false,real_arm_execution:false,efuses_written:false,flash_written:false},trace:st.events};
+  const url=URL.createObjectURL(new Blob([JSON.stringify(report,null,2)+'\n'],{type:'application/json'}));
+  const a=document.createElement('a');a.href=url;a.download='stadia-fase102-evidencia-local.json';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+}
+$('pObserved').addEventListener('click',()=>init('observed'));
+$('pReference').addEventListener('click',()=>init('reference'));
+$('pHypo').addEventListener('click',()=>init('hypothesis'));
+for(const [id,fn] of Object.entries({on,identify,hid2048:()=>hid(2048),hid2049:()=>hid(2049),patch,load,run,reset,all}))$(id).addEventListener('click',fn);
+$('romFile').addEventListener('change',fileSelected);
+$('clearRom').addEventListener('click',()=>{romEvidence=null;$('romFile').value='';showEvidence(null)});
+$('exportEvidence').addEventListener('click',exportEvidence);
+document.querySelectorAll('[data-key]').forEach(el=>{const key=el.dataset.key;el.addEventListener('pointerdown',ev=>{ev.preventDefault();el.setPointerCapture(ev.pointerId);press(key,true)});el.addEventListener('pointerup',()=>press(key,false));el.addEventListener('pointercancel',()=>press(key,false))});
+const keyMap={j:'A',k:'B',u:'X',i:'Y',ArrowUp:'UP',ArrowDown:'DOWN',ArrowLeft:'LEFT',ArrowRight:'RIGHT'};
+document.addEventListener('keydown',ev=>{if(ev.repeat)return;const key=keyMap[ev.key];if(key){ev.preventDefault();press(key,true)}});
+document.addEventListener('keyup',ev=>{const key=keyMap[ev.key];if(key){ev.preventDefault();press(key,false)}});
+init('observed');
+
+</script></body></html>

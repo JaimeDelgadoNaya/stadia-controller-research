@@ -1,0 +1,110 @@
+{
+  "phase": 99,
+  "date": "2026-11-24",
+  "provenance": {
+    "supplied_exploit_main_sha256": "e41e659f25388578ef9b2c1a1800adecf9e290d5ec0b57fbabb8705c3f765404",
+    "signed_ram_loader_sha256": "c39ea8962cc3094a9167ba80634f1ea0652b747b4572d1de2802d9f2f4e144c5",
+    "github_action": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45356121721",
+    "github_action_conclusion": "success"
+  },
+  "romc": {
+    "target": "RT1060 source constants, not Stadia-verified",
+    "mode": "temporary default",
+    "patched_function": "HAB_GET_CONFIG_FN",
+    "expected_return": "0xf0",
+    "patch_word": "0x477020f0",
+    "patch_data_register": "0x401800f0",
+    "compare_register": "0x40180100",
+    "enable_register": "0x401800fc",
+    "control_register": "0x401800f4",
+    "restores_original_usb_pointer_first": true,
+    "default_branch_programs_ocotp": false,
+    "permanent_branch_has_irreversible_otp": true,
+    "hardware_verified": false
+  },
+  "oem_loader": {
+    "readmemory": {
+      "tag": 3,
+      "handler": "0x200035a5",
+      "enabled": true
+    },
+    "execute": {
+      "tag": 9,
+      "enabled": false
+    },
+    "call": {
+      "tag": 10,
+      "enabled": false
+    },
+    "readmemory_visible_call_to_range_check": {
+      "from": "0x20003686",
+      "to": "0x200039f4"
+    },
+    "initializer": {
+      "copy_source": "0x200164d8",
+      "copy_destination": "0x20208000",
+      "copy_bytes": 2096
+    },
+    "pointer_chain": [
+      "0x20003a38 literal contains 0x202081f4",
+      "0x202081f8 initially contains 0x202087bc from initialized copy",
+      "0x202087bc initialized range table"
+    ],
+    "initialized_descriptor_quadruples": [
+      [
+        "0x00000000",
+        "0x0001ffff",
+        "0x11",
+        "0x20015ea8"
+      ],
+      [
+        "0x20000000",
+        "0x2001ffff",
+        "0x11",
+        "0x20015ea8"
+      ],
+      [
+        "0x20200000",
+        "0x2023ffff",
+        "0x11",
+        "0x20015ea8"
+      ],
+      [
+        "0x60000000",
+        "0x6fffffff",
+        "0x0",
+        "0x20015fb8"
+      ],
+      [
+        "0x90000000",
+        "0x01000000",
+        "0x0",
+        "0x20016024"
+      ],
+      [
+        "0x40000000",
+        "0x403fffff",
+        "0x20",
+        "0x20015e74"
+      ],
+      [
+        "0x00000000",
+        "0x00000000",
+        "0x0",
+        "0x00000000"
+      ]
+    ],
+    "bootrom_internal_base": "0x00200000",
+    "bootrom_internal_end": "0x0021ffff",
+    "explicitly_listed_in_initialized_ranges": false,
+    "static_inference": "ReadMemory internal ROM access not justified by the initial table; likely excluded along verified normal handler path",
+    "policy_may_change_at_runtime": "not excluded",
+    "physical_rom_read_tested": false
+  },
+  "tests": {
+    "local_source_and_synthetic_passed": 16,
+    "ci_synthetic_passed": 12,
+    "actual_device_tests": 0
+  },
+  "bottom_line": "No confirmed custom firmware execution, secure boot bypass or persistence. No physical requests or device modifications."
+}

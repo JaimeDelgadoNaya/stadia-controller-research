@@ -1,0 +1,60 @@
+name: Phase 100 - genuine RT1060 HID callback bounded CPU emulation
+
+on:
+  pull_request:
+    paths:
+      - 'research/phase100/**'
+      - 'tests/test_hid_rom_emulation_phase100.py'
+      - '.github/workflows/phase100-hid-rom-emulation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  public-rom-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install CPU emulation dependency (no device drivers)
+        run: python -m pip install --disable-pip-version-check unicorn==2.1.4
+      - name: Run nine synthetic tests
+        run: python -m unittest discover -s tests -p 'test_hid_rom_emulation_phase100.py' -v
+      - name: Fetch upstream reference BootROM and verify its whole-file SHA
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 \
+            -o "$RUNNER_TEMP/reference-rt1060-rom.bin" \
+            "https://raw.githubusercontent.com/Zenofex/SoC-BootROMs/main/nxp/imxrt1060.bootrom.bin"
+          echo "a5d9af17f0e21866774df91c1e634e955e72b1442aedd84c8aac8eefc8e58f8e  $RUNNER_TEMP/reference-rt1060-rom.bin" | sha256sum --check
+      - name: Emulate bounded callback on six synthetic report lengths
+        run: |
+          python -m research.phase100.emulate_hid_callback \
+            "$RUNNER_TEMP/reference-rt1060-rom.bin" --out phase100-hid-rom-emulation.json
+      - name: Build and package a hypothetical unsigned IVT RAM demo (never send it)
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends clang lld llvm
+          mkdir -p build/phase100
+          clang --target=arm-none-eabi -mcpu=cortex-m7 -mthumb -nostdlib \
+            -fuse-ld=lld -Wl,-T,research/phase97/ram_only.ld \
+            -o build/phase100/marker.elf research/phase97/minimal_ram.S
+          llvm-objcopy -O binary build/phase100/marker.elf \
+            build/phase100/marker.bin
+          echo "68a75935017e47c373d2df0b9294c31781705894511bc62fea78b6a265806f38  build/phase100/marker.bin" | sha256sum --check
+          python -m research.phase100.build_unsigned_ram_image \
+            build/phase100/marker.bin --out build/phase100/ram-image-not-for-flashing.bin \
+            --report phase100-unsigned-ivt-report.json
+          python -m unittest discover -s tests -p 'test_unsigned_ram_image_phase100.py' -v
+      - name: Publish only JSON trace (never the ROM bytes)
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase100-hid-static-rom-cpu-emulation
+          path: |
+            phase100-hid-rom-emulation.json
+            phase100-unsigned-ivt-report.json
+          retention-days: 30

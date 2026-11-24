@@ -1,0 +1,32 @@
+name: Phase 94 - offline RT1060 BootROM reference check
+
+on:
+  pull_request:
+    paths:
+      - 'tools/compare_bootrom_phase94.py'
+      - 'tests/test_compare_bootrom_phase94.py'
+      - '.github/workflows/bootrom-compat-phase94.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-public-reference-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run synthetic unit tests without a device
+        run: python -m unittest discover -s tests -p 'test_compare_bootrom_phase94.py' -v
+      - name: Hash-check the reference BootROM supplied by public upstream
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --output "$RUNNER_TEMP/imxrt1060.reference.bin" \
+            "https://raw.githubusercontent.com/Zenofex/SoC-BootROMs/main/nxp/imxrt1060.bootrom.bin"
+          echo "a5d9af17f0e21866774df91c1e634e955e72b1442aedd84c8aac8eefc8e58f8e  $RUNNER_TEMP/imxrt1060.reference.bin" | sha256sum --check
+          python tools/compare_bootrom_phase94.py \
+            --reference "$RUNNER_TEMP/imxrt1060.reference.bin" \
+            --out "$RUNNER_TEMP/phase94-reference-only.json"
+          python -c 'import json,os,pathlib; p=pathlib.Path(os.environ["RUNNER_TEMP"])/"phase94-reference-only.json"; r=json.loads(p.read_text()); assert r["status"] == "CANDIDATE_MISSING"; assert r["reference"]["matches_documented_sha256"] is True; assert r["actual_stadia_exploit_execution_verified"] is False'

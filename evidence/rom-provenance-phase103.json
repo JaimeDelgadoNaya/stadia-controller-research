@@ -1,0 +1,51 @@
+{
+  "phase": 103,
+  "verification_date": "2026-11-24",
+  "goal": "prevent externally sourced images from being misidentified as owner's internal mask BootROM",
+  "source_evidence": {
+    "owner_hab_status": "HAB_CLOSED",
+    "owner_rom_sdp": "1FC9:0135",
+    "owner_digprog": "0x006c0000",
+    "owner_internal_maskrom_dump_available": false,
+    "owner_signed_external_bootloader_A": {
+      "address": "0x60800000",
+      "size_bytes": 131072,
+      "sha256": "59ebfd2c156075e498ecf318984cb297750c9c5b7cb321b0ea97edee315f2ca0"
+    },
+    "owner_erased_external_bootloader_B": {
+      "address": "0x60820000",
+      "size_bytes": 131072,
+      "sha256": "b5a41c3758763bbec72769fab4a2533bf2db0b6312d93d25a695f9e4b9e02260"
+    },
+    "reference_public_rom": {
+      "from": "Zenofex/SoC-BootROMs/nxp/imxrt1060.bootrom.bin",
+      "size_bytes": 131072,
+      "sha256": "a5d9af17f0e21866774df91c1e634e955e72b1442aedd84c8aac8eefc8e58f8e"
+    },
+    "historic_article": "https://blog.lidskialf.net/2021/04/07/taking-a-google-stadia-controller-apart-and-dumping-its-rom/",
+    "historic_article_dump_content": "external SPI NOR flash, not internal silicon BootROM",
+    "nxp_maskset_revision_source": "https://www.nxp.com/pcn/202007035F01U01",
+    "tchebb_port_status_source": "https://www.reddit.com/r/Stadia/comments/1xwcedq/has_anyone_bypassed_the_bootloader_signage/"
+  },
+  "verified_offline": {
+    "github_ci_url": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45381425674",
+    "github_ci_result": "success",
+    "synthetic_tests_passed": 16,
+    "genuine_public_rom_tested": true,
+    "public_rom_identical_still_provenance_unknown": true,
+    "seven_matching_windows_but_full_image_diff_tested": true,
+    "external_FCFB_candidate_rejected": true,
+    "erased_external_slot_hash_rejected": true
+  },
+  "limitations": {
+    "physical_owner_mask_rom_verified": false,
+    "hw_connected": false,
+    "romc_patch_on_owner_applied": false,
+    "unsigned_firmware_run_on_owner": false,
+    "otp_modified": false,
+    "flash_modified": false,
+    "ble_or_usb_transfers": false,
+    "signed_manifest_proves_provenance": false
+  },
+  "decision": "NO_GO_REAL_EXECUTION_UNTIL_INDEPENDENT_INTERNAL_ROM_IDENTITY_OR_REPRODUCIBLE_DEVICE_SPECIFIC_RELEASE"
+}

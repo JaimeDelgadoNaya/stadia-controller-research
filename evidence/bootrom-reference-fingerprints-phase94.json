@@ -1,0 +1,52 @@
+{
+  "phase": 94,
+  "source": "Zenofex/SoC-BootROMs/nxp/imxrt1060.bootrom.bin",
+  "source_url": "https://github.com/Zenofex/SoC-BootROMs/blob/main/nxp/imxrt1060.bootrom.bin",
+  "reference_size": 131072,
+  "rom_base": "0x00200000",
+  "reference_sha256": "a5d9af17f0e21866774df91c1e634e955e72b1442aedd84c8aac8eefc8e58f8e",
+  "verification": "GitHub Actions sha256sum --check succeeded on 2026-11-24",
+  "ci_url": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45348902534",
+  "window_size_bytes": 64,
+  "reference_windows": {
+    "HAB_GET_CONFIG_FN": {
+      "rom_address": "0x002147f8",
+      "window_start": "0x002147d8",
+      "sha256": "ba037e7ef35384422ad298fdb660876391524b97987ebc372abfa17d3d3b51fd"
+    },
+    "USB_DeviceClassInit": {
+      "rom_address": "0x0020d758",
+      "window_start": "0x0020d738",
+      "sha256": "81cefe817b49a2e08580dfc49443b98ca9f100db42d487762acc9f760dfdd8ad"
+    },
+    "USB_DeviceEhciIsrFunction": {
+      "rom_address": "0x0020e34c",
+      "window_start": "0x0020e32c",
+      "sha256": "a9809c2f6b6e409ece43d7b6ebbd4a5fefb881052efa48d02618cc93bec3e1d8"
+    },
+    "enable_mpu": {
+      "rom_address": "0x0020cab8",
+      "window_start": "0x0020ca98",
+      "sha256": "cd2837b4fbe39c90ca9cb82bf8894645d60bc3fc26185fb356436d9cdbcf1e73"
+    },
+    "sdp_hid_callback": {
+      "rom_address": "0x0020ea7e",
+      "window_start": "0x0020ea5e",
+      "sha256": "acd8ddae72fba87005bd685d9316942be9d079bf5a4bb9984c6590da45292703"
+    },
+    "sdp_usb_pump": {
+      "rom_address": "0x0020ed38",
+      "window_start": "0x0020ed18",
+      "sha256": "234458dd599ba8b75f98eb0173607752a17489f9bcd2f9841115e924cd14df98"
+    },
+    "sdp_usb_run": {
+      "rom_address": "0x0020ef7c",
+      "window_start": "0x0020ef5c",
+      "sha256": "b3aada5319bdffe19d7b67961800d56065dcc7e9d1c0b7d5f57614eade496eef"
+    }
+  },
+  "stadia_candidate_available": false,
+  "actual_match_result": "NOT_TESTED",
+  "exploitation_verified": false,
+  "notes": "Reference-only signatures; NOT RT1061-specific. Author-assigned symbol labels, no direct proof of Stadia internal BootROM or live execution."
+}

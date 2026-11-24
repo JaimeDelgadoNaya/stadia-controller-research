@@ -1,0 +1,56 @@
+{
+  "phase": 94,
+  "date": "2026-11-24",
+  "type": "offline_reference_and_candidate_rom_gate",
+  "provenance": {
+    "reference_repo": "https://github.com/Zenofex/SoC-BootROMs",
+    "reference_path": "nxp/imxrt1060.bootrom.bin",
+    "published_sha256": "a5d9af17f0e21866774df91c1e634e955e72b1442aedd84c8aac8eefc8e58f8e",
+    "expected_size_bytes": 131072,
+    "reference_binary_downloaded_and_rehashed_in_local_session": false,
+    "user_stadia_internal_bootrom_image_available": false,
+    "reference_binary_downloaded_and_rehashed_in_GitHub_Actions": true,
+    "reference_binary_rehashed_in_ci_url": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45348669198",
+    "reference_binary_sha256_verified_in_ci": true
+  },
+  "earlier_owner_measurements": {
+    "source": "docs/es/mediciones.md + evidence/rom-status.json",
+    "earlier_measurement_date": "2026-10-25",
+    "mcu_family_digprog": "0x006C0000",
+    "usb_rom_sdp_vid_pid": "1fc9:0135",
+    "hab": "CLOSED",
+    "exact_hab_rom_version": "UNKNOWN",
+    "physical_maskset": "UNKNOWN"
+  },
+  "offline_tests": {
+    "passed": 8,
+    "failed": 0,
+    "synthetic_only": true
+  },
+  "reference": {
+    "provided": false,
+    "sha256": null,
+    "matches_documented_sha256": null,
+    "verification_context": "LOCAL_REFERENCE_ABSENT_CI_REFERENCE_VALIDATED",
+    "verified_by_ci": true,
+    "ci_sha256": "a5d9af17f0e21866774df91c1e634e955e72b1442aedd84c8aac8eefc8e58f8e"
+  },
+  "candidate": {
+    "provided": false,
+    "sha256": null
+  },
+  "status": "REFERENCE_MISSING",
+  "exact_binary_match": null,
+  "rom_equivalence_proven": false,
+  "stadia_exploit_execution_proven": false,
+  "physical_writes_performed": false,
+  "next_gate": "Reference hash verified by CI. Need provenance-backed internal Stadia ROM (not external NOR dump) for actual comparison",
+  "ci_tests": {
+    "passed": 8,
+    "failed": 0,
+    "workflow": "Phase 94 - offline RT1060 BootROM reference check",
+    "run_id": 45348669198,
+    "conclusion": "success",
+    "candidate_status": "CANDIDATE_MISSING"
+  }
+}

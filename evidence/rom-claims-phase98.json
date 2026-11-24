@@ -1,0 +1,38 @@
+{
+  "phase": 98,
+  "date": "2026-11-24",
+  "source": "Public RT1060 BootROM, not a Stadia dump",
+  "source_uri": "https://github.com/Zenofex/SoC-BootROMs/blob/main/nxp/imxrt1060.bootrom.bin",
+  "source_sha256": "a5d9af17f0e21866774df91c1e634e955e72b1442aedd84c8aac8eefc8e58f8e",
+  "analysis_workflow": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45353776621",
+  "analysis_workflow_conclusion": "success",
+  "tests": {
+    "hash_size_region": 5,
+    "thumb_branch_geometry": 7,
+    "total": 12,
+    "all_passed": true
+  },
+  "static_observations": {
+    "expected_opcode_signatures": 9,
+    "matched_opcode_signatures": 9,
+    "mpu_ctrl_register": "0xe000ed94",
+    "mpu_disable_store_at": "0x0020cae8",
+    "mpu_normal_loop_exit_at": "0x0020cb5e",
+    "mpu_normal_loop_exit_branch_to": "0x0020cb6a",
+    "mpu_enable_store_at": "0x0020cb60",
+    "mpu_early_exit_branch_to": "0x0020cb60",
+    "hid_report_limit": 2048,
+    "hid_report_buffer_pointer": "0x2020723f",
+    "hid_buffer_declared_by_author": "0x2020723c",
+    "hid_adjacent_state_declared_by_author": "0x20207a3c",
+    "three_byte_overflow_geometry": true
+  },
+  "verification_scope": "Static Thumb instructions and bounded slices of hash-verified RT1060 BootROM. No complete control-flow proof.",
+  "stage98_verdict": "PUBLIC_RT1060_ROM_MECHANISM_CORROBORATED__STADIA_APPLICABILITY_UNPROVEN",
+  "stadia_internal_bootrom_hash": null,
+  "stadia_hab_version": null,
+  "physical_stadia_hardware_touched": false,
+  "romc_patch_executed": false,
+  "custom_firmware_executed_on_stadia": false,
+  "efuse_or_flash_written": false
+}

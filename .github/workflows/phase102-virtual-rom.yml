@@ -1,0 +1,86 @@
+name: Phase 102 - virtual Stadia ROM reference evidence
+
+on:
+  pull_request:
+    paths:
+      - 'research/phase102/stadia_virtual_lab.html'
+      - 'docs/es/mando-virtual-verificacion-rom-fase102.md'
+      - '.github/workflows/phase102-virtual-rom.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  browser-bundle-reference-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Extract embedded Javascript from standalone HTML
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          src=Path("research/phase102/stadia_virtual_lab.html").read_text()
+          assert src.count("<script>") == 1 and src.count("</script>") == 1
+          js=src.split("<script>",1)[1].split("</script>",1)[0]
+          assert "sha256Portable" in js
+          assert "pReference" in src
+          import re
+          executable=re.sub(r"//[^\n]*", "", js)
+          for forbidden in ("fetch(", "XMLHttpRequest(", "navigator.usb", "navigator.hid", "navigator.serial"):
+              assert forbidden not in executable, f"Unexpected external/device API {forbidden}"
+          Path("phase102-browser.js").write_text(js)
+          Path("phase102-hash-only.js").write_text(js.split("// Offline virtual-controller view")[0])
+          print("Offline browser bundle and API surface: VERIFIED")
+          PY
+          node --check phase102-browser.js
+      - name: Test portable SHA-256 fallback against Node's SHA-256 implementation
+        shell: bash
+        run: |
+          node - <<'JS'
+          const fs=require('fs'),vm=require('vm'),crypto=require('crypto');
+          const script=fs.readFileSync('phase102-hash-only.js','utf8');
+          const ctx={Uint8Array,Uint32Array,DataView,BigInt,Number,Math};
+          vm.createContext(ctx);vm.runInContext(script,ctx);
+          const sha=vm.runInContext('sha256Portable',ctx);
+          let n=0;
+          for(const src of [Buffer.alloc(0), Buffer.from('abc'), Buffer.from('The quick brown fox jumps over the lazy dog'),Buffer.alloc(131072,0), Buffer.alloc(131072,254),Buffer.alloc(1,255)]){
+            const expected=crypto.createHash('sha256').update(src).digest('hex');
+            if(sha(src)!==expected)throw Error('SHA-256 vector mismatch');
+            n++;
+          }
+          console.log(n,'portable SHA-256 test vectors PASS');
+          JS
+      - name: Fetch and hash-verify PUBLIC RT1060 BootROM reference only
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --output "$RUNNER_TEMP/public-rt1060.bin" \
+            "https://raw.githubusercontent.com/Zenofex/SoC-BootROMs/main/nxp/imxrt1060.bootrom.bin"
+          echo "a5d9af17f0e21866774df91c1e634e955e72b1442aedd84c8aac8eefc8e58f8e  $RUNNER_TEMP/public-rt1060.bin" | sha256sum --check
+          ROM="$RUNNER_TEMP/public-rt1060.bin" python - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          p=Path(os.environ['ROM']).read_bytes()
+          ref=json.loads(Path("evidence/bootrom-reference-fingerprints-phase94.json").read_text())
+          assert len(p) == ref['reference_size'] == 131072
+          matches={}
+          for name,rec in ref['reference_windows'].items():
+              start=int(rec['window_start'],16)-0x00200000
+              actual=hashlib.sha256(p[start:start+64]).hexdigest()
+              matches[name]=(actual==rec['sha256'])
+          assert len(matches)==7 and all(matches.values()),'Reference ROM anchor mismatch'
+          out={"phase":102,"reference_verified":True,"reference_sha256":ref['reference_sha256'],
+               "seven_anchor_matches":matches,"stadia_rom_dump_tested":False,
+               "hardware_hab_bypass_proven":False}
+          Path('phase102-reference-verification.json').write_text(json.dumps(out,indent=2)+'\n')
+          print("7/7 public reference ROM fingerprints PASS; no Stadia candidate provided")
+          PY
+      - name: Publish JSON evidence only, not the ROM binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase102-public-reference-only
+          path: phase102-reference-verification.json
+          retention-days: 30

@@ -1,0 +1,113 @@
+{
+  "phase": 91,
+  "title": "Stadia controller 17-contact UART/SWD debug connector — source-reported",
+  "evidence_class": "user_supplied_external_report_not_independently_verified",
+  "source": {
+    "filename": "debug-connector.md",
+    "author": "unknown in supplied excerpt",
+    "publication_date": "unknown",
+    "basis": "external text provided by user",
+    "background": "https://blog.lidskialf.net/2021/04/07/taking-a-google-stadia-controller-apart-and-dumping-its-rom/"
+  },
+  "connector": {
+    "reported_part": "Hirose FH35C-17S-0.3SHW",
+    "pads_count": 17,
+    "numbering_is_official": false,
+    "pads": [
+      {
+        "pad": "1",
+        "signal": "NC"
+      },
+      {
+        "pad": "A",
+        "signal": "NC"
+      },
+      {
+        "pad": "2",
+        "signal": "nPWR"
+      },
+      {
+        "pad": "B",
+        "signal": "NC"
+      },
+      {
+        "pad": "3",
+        "signal": "NC"
+      },
+      {
+        "pad": "C",
+        "signal": "NC"
+      },
+      {
+        "pad": "4",
+        "signal": "TX"
+      },
+      {
+        "pad": "D",
+        "signal": "RX"
+      },
+      {
+        "pad": "5",
+        "signal": "SWCLK"
+      },
+      {
+        "pad": "E",
+        "signal": "GND"
+      },
+      {
+        "pad": "6",
+        "signal": "SWO"
+      },
+      {
+        "pad": "F",
+        "signal": "nRESET"
+      },
+      {
+        "pad": "7",
+        "signal": "SWDIO"
+      },
+      {
+        "pad": "G",
+        "signal": "GND"
+      },
+      {
+        "pad": "8",
+        "signal": "NC"
+      },
+      {
+        "pad": "H",
+        "signal": "Vdd"
+      },
+      {
+        "pad": "9",
+        "signal": "GND"
+      }
+    ]
+  },
+  "alternate_swd_points": {
+    "reported_location": "near left trigger; four vertical points",
+    "top_to_bottom": [
+      "SWDIO/TMS",
+      "SWCLK/TCK",
+      "SWO/TDO",
+      "TDI"
+    ],
+    "swd_uses_tdi": false
+  },
+  "reported_observations": {
+    "uart": "author reports reliable electrical probing; no capture provided",
+    "swd_main_pads": "author reports unstable connection",
+    "swd_alternate_points": "author reports easier probing; no verified debug session provided",
+    "vdd": "3.3 V from board; do not inject supply"
+  },
+  "independently_verified": {
+    "pad_mapping_on_owner_board": false,
+    "successful_uart_capture": false,
+    "swd_debug_access": false,
+    "hab_bypass": false,
+    "custom_execution": false
+  },
+  "hardware_actions_performed": false,
+  "security_comment": "HAB CLOSED evidence from owner device does not alone establish SWD/SJC state",
+  "codeberg_claim": "External 2026 report concerning nxp-sdp-overrun; source unreviewed; not demonstrated on owner unit"
+}
