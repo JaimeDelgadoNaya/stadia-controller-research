@@ -11,7 +11,7 @@ La imagen de referencia vinculada por el autor es **Zenofex/SoC-BootROMs**, `nxp
 
 - Repositorio: https://github.com/Zenofex/SoC-BootROMs/tree/main/nxp
 - Fuente de los offsets: ZIP `nxp-sdp-overrun` suministrado, `README.md` y `main.py`.
-- Se confirmó la existencia y el tamaño del binario de referencia con el listado de GitHub. **Su contenido no pudo descargarse a este entorno**: el conector GitHub rechaza archivos binarios y este entorno no tiene acceso DNS a `raw.githubusercontent.com`. La CI propuesta intenta verificar el hash contra la fuente pública, pero **no afirmar que ha pasado sin consultar el resultado de la ejecución**.
+- Se confirmó la existencia y el tamaño del binario de referencia con GitHub. Este entorno local no pudo descargarlo (el conector GitHub rechaza binarios y no hay DNS hacia `raw.githubusercontent.com`). **Sin embargo, GitHub Actions SÍ lo descargó, verificó su hash SHA-256 y superó las ocho pruebas sintéticas**: [ejecución comprobada #45348669198](https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45348669198). El reporte termina correctamente en `CANDIDATE_MISSING`: no hay ROM interna Stadia disponible.
 - Ninguna ROM interna de la unidad Stadia ha sido aportada; el *dump* del bootloader A hecho en octubre de 2026 es **flash NOR externa**, no ROM NXP. Sus 131072 bytes de tamaño no la convierten en BootROM aunque coincida el tamaño.
 
 ## Datos reales de nuestro mando — medidos antes, NO hoy
@@ -29,7 +29,7 @@ https://community.nxp.com/t5/i-MX-RT-Crossover-MCUs/RT1061-1062-Not-Recommended-
 
 ## Huellas internas comparadas de forma reproducible
 
-El verificador solo puede comparar **imágenes binarias raw de ROM interna**, no flash SPI ni un archivo de firmware firmado. Las siete ventanas de 64 bytes se centran en referencias del autor:
+El verificador solo puede comparar **imágenes binarias raw de ROM interna**, no flash SPI ni un archivo de firmware firmado. Las siete ventanas de 64 bytes se centran en referencias del autor. **El comparador registra huellas SHA-256 de las siete ventanas de la ROM pública incluso sin candidata, sin marcar una comparación ficticia como positiva**:
 
 | Símbolo nombrado por el autor | Dirección ROM | Uso como huella |
 |---|---|---|
@@ -73,7 +73,7 @@ En el mismo hilo, otro participante afirmó estar probando modo Xbox Series X po
 ## Estado de decisión
 
 - **VERIFICADO:** fuente del ZIP, esquema de direcciones RT1060, datos previos de HAB CLOSED/USB SDP, 8 pruebas unitarias del comparador.
-- **PENDIENTE:** ejecución CI con descarga del binario de referencia; ROM interna autenticada del Stadia; versión/máscara del BootROM; equivalencia de funciones/callbacks en RT1061.
+- **PENDIENTE:** ROM interna autenticada del Stadia; versión/máscara del BootROM; equivalencia de funciones/callbacks en RT1061.
 - **NO-GO:** usar `--permanent`, cualquier operación FIELD_RETURN/OTP, escribir firmware o probar directamente el exploit en el mando único.
 - **Siguiente hito con mejor coste/beneficio:** revisión del trabajo público de tchebb cuando publique un port RT1061/Zephyr o datos de huellas; no inventar una ROM interna a partir del backup de flash de Google.
 
