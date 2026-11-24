@@ -1,0 +1,98 @@
+{
+  "phase": 100,
+  "date": "2026-11-24",
+  "status": "PUBLIC_ROM_CPU_EMULATION_AND_UNSIGNED_RAM_IMAGE_LOCAL_PREFLIGHT_ONLY",
+  "reference": {
+    "origin": "Zenofex/SoC-BootROMs/nxp/imxrt1060.bootrom.bin",
+    "bytes": 131072,
+    "sha256": "a5d9af17f0e21866774df91c1e634e955e72b1442aedd84c8aac8eefc8e58f8e",
+    "public_rt1060_only": true,
+    "stadia_rt1061_verified": false
+  },
+  "emulation": {
+    "cpu": "ARM Thumb Unicorn",
+    "function": "author-assigned sdp_hid_callback (bounded inner branch only)",
+    "address": "0x0020eac4",
+    "entry_state": "synthetic r4=1, r2=0x20210000, initialized fake length field",
+    "opcodes_checked": 9,
+    "synthetic_case_results": [
+      {
+        "length": 0,
+        "accepted": true,
+        "registered_pointer": "0x2020723f",
+        "r0": 0
+      },
+      {
+        "length": 1,
+        "accepted": true,
+        "registered_pointer": "0x2020723f",
+        "r0": 0
+      },
+      {
+        "length": 2047,
+        "accepted": true,
+        "registered_pointer": "0x2020723f",
+        "r0": 0
+      },
+      {
+        "length": 2048,
+        "accepted": true,
+        "registered_pointer": "0x2020723f",
+        "r0": 0
+      },
+      {
+        "length": 2049,
+        "accepted": false,
+        "registered_pointer": "0x0",
+        "r0": 5
+      },
+      {
+        "length": 4096,
+        "accepted": false,
+        "registered_pointer": "0x0",
+        "r0": 5
+      }
+    ],
+    "full_usb_stack_emulated": false,
+    "overflow_activated_on_hardware": false
+  },
+  "unsigned_image": {
+    "based_on": "phase97 RAM marker demo",
+    "marker_sha256": "68a75935017e47c373d2df0b9294c31781705894511bc62fea78b6a265806f38",
+    "load_base": "0x20000000",
+    "length": 8192,
+    "ivt": "0x20000400",
+    "ivt_header": "0x412000d1",
+    "entry_thumb": "0x20000009",
+    "boot_data": "0x20000420",
+    "csf": 0,
+    "dcd": 0,
+    "sha256": "ac958c5e9d482b748a6ea8b771477c0cd4c2a7696eff14c4944db281e1808796",
+    "rom_acceptance_verified": false,
+    "physical_jump_verified": false
+  },
+  "ci": {
+    "url": "https://github.com/JaimeDelgadoNaya/stadia-controller-research/actions/runs/45369756474",
+    "result": "success",
+    "synthetic_fail_closed_tests": 9,
+    "structure_tests": 8,
+    "passes": 17,
+    "live_hardware_tests": 0
+  },
+  "external_context": {
+    "nxp_pcn": "https://www.nxp.com/pcn/202007035F01U01",
+    "public_claims": "https://www.reddit.com/r/Stadia/comments/1xwcedq/has_anyone_bypassed_the_bootloader_signage/",
+    "community_persistent_poc_requires_irreversible_field_return": true
+  },
+  "unresolved": [
+    "Exact Stadia RT1061 internal BootROM identity and maskset",
+    "ROMC effect observable on Stadia without OTP",
+    "Acceptance of unsigned RAM image after reversible ROMC patch",
+    "Independent proof-of-life measurement from real Cortex-M7",
+    "Persistence without irreversible fuse edits"
+  ],
+  "no_device_usb_operations": true,
+  "no_flash_writes": true,
+  "no_fuse_writes": true,
+  "no_real_stadia_firmware_execution": true
+}
