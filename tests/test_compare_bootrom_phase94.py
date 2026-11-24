@@ -18,6 +18,8 @@ class CompareBootROMPhase94Tests(unittest.TestCase):
     def test_reference_only_is_not_candidate(self):
         r = m.compare(self.reference, None, self.test_hash)
         self.assertEqual(r["status"], "CANDIDATE_MISSING")
+        self.assertEqual(len(r["anchor_windows"]), 7)
+        self.assertTrue(all(x["candidate_sha256"] is None and x["match"] is None for x in r["anchor_windows"].values()))
 
     def test_reference_hash_must_match(self):
         r = m.compare(self.reference, self.reference)
